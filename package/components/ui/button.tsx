@@ -1,35 +1,70 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-
 import { cn } from '../../lib/utils';
+import { Spinner } from './spinner';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  [
+    'active:translate-y-[0.5px]',
+    'disabled:pointer-events-none',
+    'disabled:opacity-50',
+    'focus-visible:outline-none',
+    'focus-visible:ring-1',
+    'focus-visible:ring-ring',
+    'font-medium',
+    'gap-2',
+    'inline-flex',
+    'items-center',
+    'justify-center',
+    'rounded-sm',
+    'text-sm',
+    'transform',
+    'transition',
+    'transition-colors',
+    'whitespace-nowrap',
+    '[&_svg]:pointer-events-none',
+    '[&_svg]:shrink-0',
+    '[&_svg]:size-4',
+  ],
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
-        // outline:
-        // "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        primary: 'border border-primary bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
+        secondary: 'border border-secondary bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/90',
+        success: 'border border-success bg-success text-success-foreground shadow-sm hover:bg-success/90',
+        warning: 'border border-warning bg-warning text-warning-foreground shadow-sm hover:bg-warning/90',
+        danger: 'border border-danger bg-danger text-danger-foreground shadow-sm hover:bg-danger/90',
+        info: 'border border-info bg-info text-info-foreground shadow-sm hover:bg-info/90',
+        light: 'border border-light bg-light text-light-foreground shadow-sm hover:bg-light/90',
+        dark: 'border border-dark bg-dark text-dark-foreground shadow-sm hover:bg-dark/90',
+        accent: 'border border-accent bg-accent text-accent-foreground shadow-sm hover:bg-accent/90',
+        destructive:
+          'border border-destructive bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+        muted: 'border border-muted bg-muted text-muted-foreground shadow-sm hover:bg-muted/90',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-9 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
+        sm: 'h-8 rounded-sm px-3 text-xs',
+        lg: 'h-10 rounded-sm px-8',
         icon: 'h-9 w-9',
       },
       outline: {
         false: null,
         true: '',
       },
+      outlineFilled: {
+        false: null,
+        true: '',
+      },
+      loading: {
+        false: null,
+        true: '',
+      },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
       size: 'default',
       outline: false,
     },
@@ -44,22 +79,120 @@ export interface ButtonProps
 
 function getOutlineClasses(variant: any) {
   const colors: Record<string, string> = {
-    default: 'border border-primary text-primary bg-white hover:text-white shadow-none',
-    destructive: 'border-destructive text-destructive',
-    secondary: 'border-secondary text-secondary',
-    ghost: 'border-accent text-accent',
-    link: 'border-transparent text-primary',
+    primary: 'bg-white border border-primary text-primary shadow-sm hover:bg-primary/10',
+    secondary: 'bg-white border border-secondary text-secondary shadow-sm hover:bg-secondary/10',
+    success: 'bg-white border border-success text-success shadow-sm hover:bg-success/10',
+    warning: 'bg-white border border-warning text-warning shadow-sm hover:bg-warning/10',
+    danger: 'bg-white border border-danger text-danger shadow-sm hover:bg-danger/10',
+    info: 'bg-white border border-info text-info shadow-sm hover:bg-info/10',
+    light: 'bg-white border border-light text-light-foreground shadow-sm hover:bg-light/10',
+    dark: 'bg-white border border-dark text-dark shadow-sm hover:bg-dark/10',
+    accent: 'bg-white border border-accent text-accent shadow-sm hover:bg-accent/10',
+    destructive: 'bg-white border border-destructive text-destructive shadow-sm hover:bg-destructive/10',
+    muted: 'bg-white border border-muted text-muted shadow-sm hover:bg-muted/10',
   };
 
-  return colors[variant ?? 'default'];
+  return colors[variant ?? 'primary'];
+}
+
+function getOutlineFilledClasses(variant: any) {
+  const colors: Record<string, string> = {
+    primary: 'bg-white border border-primary text-primary shadow-sm hover:bg-primary hover:text-primary-foreground',
+    secondary:
+      'bg-white border border-secondary text-secondary shadow-sm hover:bg-secondary hover:text-secondary-foreground',
+    success: 'bg-white border border-success text-success shadow-sm hover:bg-success hover:text-success-foreground',
+    warning: 'bg-white border border-warning text-warning shadow-sm hover:bg-warning hover:text-warning-foreground',
+    danger: 'bg-white border border-danger text-danger shadow-sm hover:bg-danger hover:text-danger-foreground',
+    info: 'bg-white border border-info text-info shadow-sm hover:bg-info hover:text-info-foreground',
+    light: 'bg-white border border-light text-light-foreground shadow-sm hover:bg-light hover:text-light-foreground',
+    dark: 'bg-white border border-dark text-dark shadow-sm hover:bg-dark hover:text-dark-foreground',
+    accent: 'bg-white border border-accent text-accent shadow-sm hover:bg-accent hover:text-accent-foreground',
+    destructive:
+      'bg-white border border-destructive text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground',
+    muted: 'bg-white border border-muted text-muted shadow-sm hover:bg-muted hover:text-muted-foreground',
+  };
+
+  return colors[variant ?? 'primary'];
+}
+
+function getSpinnerClasses(variant: any) {
+  const colors: Record<string, string> = {
+    primary: 'bg-primary text-primary-foreground hover:bg-primary',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary',
+    success: 'bg-success text-success-foreground hover:bg-success',
+    warning: 'bg-warning text-warning-foreground hover:bg-warning',
+    danger: 'bg-danger text-danger-foreground hover:bg-danger',
+    info: 'bg-info text-info-foreground hover:bg-info',
+    light: 'bg-light text-light-foreground hover:bg-light',
+    dark: 'bg-dark text-dark-foreground hover:bg-dark',
+    accent: 'bg-accent text-accent-foreground hover:bg-accent',
+    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive',
+    muted: 'bg-muted text-muted-foreground hover:bg-muted',
+    link: 'text-primary',
+  };
+
+  return colors[variant ?? 'primary'];
+}
+
+function getOutlineSpinnerClasses(variant: any) {
+  const colors: Record<string, string> = {
+    primary: 'text-primary',
+    secondary: 'text-secondary',
+    success: 'text-success',
+    warning: 'text-warning',
+    danger: 'text-danger',
+    info: 'text-info',
+    light: 'text-light',
+    dark: 'text-dark',
+    accent: 'text-accent',
+    destructive: 'text-destructive',
+    muted: 'text-muted',
+    link: 'text-primary',
+  };
+
+  return colors[variant ?? 'primary'];
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, outline, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, outline, outlineFilled, loading, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
+
+    let outlineClasses = '';
+    if (outline) {
+      outlineClasses = getOutlineClasses(variant);
+    } else if (outlineFilled) {
+      outlineClasses = getOutlineFilledClasses(variant);
+    }
+
+    if (loading) {
+      const { children, ...loaderProps } = props;
+      const spinnerClasses = outline || outlineFilled ? getOutlineSpinnerClasses(variant) : getSpinnerClasses(variant);
+      const loadingClasses = 'pointer-events-none';
+
+      return (
+        <Comp
+          className={cn(
+            buttonVariants({ variant, size, outline, className }),
+            outlineClasses,
+            spinnerClasses,
+            loadingClasses,
+          )}
+          ref={ref}
+          {...loaderProps}
+        >
+          <div className="relative inline-flex items-center">
+            <span className="invisible">{children}</span>
+            <span className="absolute inset-0 flex items-center justify-center">
+              <Spinner className={cn(spinnerClasses, loadingClasses)} />
+            </span>
+          </div>
+        </Comp>
+      );
+    }
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, outline, className }), outline && getOutlineClasses(variant))}
+        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses)}
         ref={ref}
         {...props}
       />

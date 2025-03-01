@@ -17,3 +17,7 @@ install:
 .PHONY: detect-secret
 detect-secret:
 	detect-secrets scan --exclude-files "(pnpm-lock\.yaml|.*/pnpm-lock\.yaml)" > .secrets.baseline
+
+.PHONY: devapp
+devapp:
+	pnpm --dir devapp dev
