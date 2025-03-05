@@ -79,17 +79,17 @@ export interface ButtonProps
 
 function getOutlineClasses(variant: any) {
   const colors: Record<string, string> = {
-    primary: 'bg-white border border-primary text-primary shadow-sm hover:bg-primary/10',
-    secondary: 'bg-white border border-secondary text-secondary shadow-sm hover:bg-secondary/10',
-    success: 'bg-white border border-success text-success shadow-sm hover:bg-success/10',
-    warning: 'bg-white border border-warning text-warning shadow-sm hover:bg-warning/10',
-    danger: 'bg-white border border-danger text-danger shadow-sm hover:bg-danger/10',
-    info: 'bg-white border border-info text-info shadow-sm hover:bg-info/10',
-    light: 'bg-white border border-light text-light-foreground shadow-sm hover:bg-light/10',
-    dark: 'bg-white border border-dark text-dark shadow-sm hover:bg-dark/10',
-    accent: 'bg-white border border-accent text-accent shadow-sm hover:bg-accent/10',
-    destructive: 'bg-white border border-destructive text-destructive shadow-sm hover:bg-destructive/10',
-    muted: 'bg-white border border-muted text-muted shadow-sm hover:bg-muted/10',
+    primary: 'border-primary text-primary shadow-sm hover:bg-primary/10',
+    secondary: 'border-secondary text-secondary shadow-sm hover:bg-secondary/10',
+    success: 'border-success text-success shadow-sm hover:bg-success/10',
+    warning: 'border-warning text-warning shadow-sm hover:bg-warning/10',
+    danger: 'border-danger text-danger shadow-sm hover:bg-danger/10',
+    info: 'border-info text-info shadow-sm hover:bg-info/10',
+    light: 'border-light text-light-foreground shadow-sm hover:bg-light/10',
+    dark: 'border-dark text-dark shadow-sm hover:bg-dark/10',
+    accent: 'border-accent text-accent shadow-sm hover:bg-accent/10',
+    destructive: 'border-destructive text-destructive shadow-sm hover:bg-destructive/10',
+    muted: 'border-muted text-muted shadow-sm hover:bg-muted/10',
   };
 
   return colors[variant ?? 'primary'];
@@ -97,19 +97,17 @@ function getOutlineClasses(variant: any) {
 
 function getOutlineFilledClasses(variant: any) {
   const colors: Record<string, string> = {
-    primary: 'bg-white border border-primary text-primary shadow-sm hover:bg-primary hover:text-primary-foreground',
-    secondary:
-      'bg-white border border-secondary text-secondary shadow-sm hover:bg-secondary hover:text-secondary-foreground',
-    success: 'bg-white border border-success text-success shadow-sm hover:bg-success hover:text-success-foreground',
-    warning: 'bg-white border border-warning text-warning shadow-sm hover:bg-warning hover:text-warning-foreground',
-    danger: 'bg-white border border-danger text-danger shadow-sm hover:bg-danger hover:text-danger-foreground',
-    info: 'bg-white border border-info text-info shadow-sm hover:bg-info hover:text-info-foreground',
-    light: 'bg-white border border-light text-light-foreground shadow-sm hover:bg-light hover:text-light-foreground',
-    dark: 'bg-white border border-dark text-dark shadow-sm hover:bg-dark hover:text-dark-foreground',
-    accent: 'bg-white border border-accent text-accent shadow-sm hover:bg-accent hover:text-accent-foreground',
-    destructive:
-      'bg-white border border-destructive text-destructive shadow-sm hover:bg-destructive hover:text-destructive-foreground',
-    muted: 'bg-white border border-muted text-muted shadow-sm hover:bg-muted hover:text-muted-foreground',
+    primary: 'hover:bg-primary hover:text-primary-foreground',
+    secondary: 'hover:bg-secondary hover:text-secondary-foreground',
+    success: 'hover:bg-success hover:text-success-foreground',
+    warning: 'hover:bg-warning hover:text-warning-foreground',
+    danger: 'hover:bg-danger hover:text-danger-foreground',
+    info: 'hover:bg-info hover:text-info-foreground',
+    light: 'hover:bg-light hover:text-light-foreground',
+    dark: 'hover:bg-dark hover:text-dark-foreground',
+    accent: 'hover:bg-accent hover:text-accent-foreground',
+    destructive: 'hover:bg-destructive hover:text-destructive-foreground',
+    muted: 'hover:bg-muted hover:text-muted-foreground',
   };
 
   return colors[variant ?? 'primary'];
@@ -157,11 +155,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, outline, outlineFilled, loading, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
 
-    let outlineClasses = '';
-    if (outline) {
-      outlineClasses = getOutlineClasses(variant);
-    } else if (outlineFilled) {
-      outlineClasses = getOutlineFilledClasses(variant);
+    let outlineClasses: string[] = [];
+    if (outline || outlineFilled) {
+      outlineClasses = ['bg-white border', getOutlineClasses(variant)];
+      if (outlineFilled) outlineClasses.push(getOutlineFilledClasses(variant));
     }
 
     if (loading) {

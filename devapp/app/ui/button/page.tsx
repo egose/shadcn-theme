@@ -19,7 +19,7 @@ const variants = [
 export default function Page() {
   return (
     <>
-      <div className="font-semibold">
+      <div className="font-semibold animate-in">
         <h3>Basic</h3>
         <div className="flex gap-2">
           {variants.map((variant) => {
