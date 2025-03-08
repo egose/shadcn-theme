@@ -101,6 +101,18 @@ export default function RootLayout({
               },
             ],
           },
+          {
+            title: 'Form',
+            url: '/form',
+            icon: Component,
+            isActive: false,
+            subItems: [
+              {
+                title: 'Text Input',
+                url: '/form/textinput',
+              },
+            ],
+          },
         ],
       },
     ],

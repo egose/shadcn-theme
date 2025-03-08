@@ -1,3 +1,5 @@
+'use client';
+
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
 
@@ -19,7 +21,9 @@ const variants = [
 export default function Page() {
   return (
     <>
-      <div className="font-semibold animate-in">
+      <h1 className="font-bold text-2xl mt-4 mb-5">Button</h1>
+
+      <div className="font-semibold">
         <h3>Basic</h3>
         <div className="flex gap-2">
           {variants.map((variant) => {
