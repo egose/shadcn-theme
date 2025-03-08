@@ -1,0 +1,29 @@
+name: Setup NPM Packages
+description: Setup required NPM packages
+
+runs:
+  using: composite
+  steps:
+  - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+    with:
+      # pnpm store path
+      path: |
+        ~/.local/share/pnpm/store/v3
+      key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+      restore-keys: |
+        ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+  - name: Install Root NPM packages
+    run: |
+      pnpm install --no-frozen-lockfile
+    shell: bash
+
+  - name: Install Package NPM packages
+    run: pnpm install --no-frozen-lockfile
+    shell: bash
+    working-directory: package
+
+  - name: Install Devapp NPM packages
+    run: pnpm install --no-frozen-lockfile
+    shell: bash
+    working-directory: devapp

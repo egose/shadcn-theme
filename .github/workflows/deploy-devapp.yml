@@ -1,0 +1,35 @@
+name: Publish Devapp in GitHub Pages
+
+on:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build 📦
+      run: |
+        pnpm build
+        touch out/.nojekyll
+      working-directory: devapp
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      with:
+        folder: devapp/out
