@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Geist, Geist_Mono } from 'next/font/google';
 import {
   AudioWaveform,
@@ -8,6 +9,7 @@ import {
   Bot,
   Command,
   Frame,
+  Component,
   GalleryVerticalEnd,
   Map,
   PieChart,
@@ -19,7 +21,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import './globals.css';
-import SidebarLayout from '../../package/layouts/sidebar1';
+import SidebarLayout, { ISidebarData } from '../../package/layouts/sidebar1';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,90 +33,109 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  contexts: [
-    {
-      name: 'Egose Inc',
-      text: 'Enterprise',
-      logo: GalleryVerticalEnd,
-    },
-  ],
-  menus: [
-    {
-      title: 'Platform',
-      items: [
-        {
-          title: 'GitHub',
-          url: '/github',
-          icon: SquareTerminal,
-          isActive: true,
-        },
-        {
-          title: 'GitLab',
-          url: '/gitlab',
-          icon: CircleDollarSign,
-          isActive: true,
-        },
-      ],
-    },
-    {
-      title: 'Projects',
-      items: [
-        {
-          title: 'Webapp',
-          url: '#',
-          icon: SquareTerminal,
-          isActive: true,
-          subItems: [
-            {
-              title: 'App1',
-              url: '/Webapp/app1',
-            },
-            {
-              title: 'App2',
-              url: '/Webapp/app2',
-            },
-            {
-              title: 'App3',
-              url: '/Webapp/app3',
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  userMenus: [
-    {
-      title: 'Account',
-      // url: '/github',
-      icon: BadgeCheck,
-      onClick: console.log,
-    },
-    {
-      title: 'Billing',
-      // url: '/gitlab',
-      icon: CreditCard,
-      onClick: console.log,
-    },
-    {
-      title: 'Notifications',
-      // url: '/gitlab',
-      icon: Bell,
-      onClick: console.log,
-    },
-  ],
-};
+function isPathMatch(pathname: string, url: string) {
+  if (!url) return false;
+
+  if (pathname === url) return true;
+  return pathname.startsWith(url + '/');
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
+  const data: ISidebarData = {
+    user: {
+      name: 'shadcn',
+      email: 'm@example.com',
+      avatar: '/avatars/shadcn.jpg',
+    },
+    contexts: [
+      {
+        name: 'Egose Inc',
+        text: 'Enterprise',
+        logo: GalleryVerticalEnd,
+      },
+    ],
+    menus: [
+      {
+        title: 'Platform',
+        items: [
+          {
+            title: 'GitHub',
+            url: '/github',
+            icon: SquareTerminal,
+            isActive: false,
+          },
+          {
+            title: 'GitLab',
+            url: '/gitlab',
+            icon: CircleDollarSign,
+            isActive: false,
+          },
+        ],
+      },
+      {
+        title: 'Theme',
+        items: [
+          {
+            title: 'Components',
+            url: '/components',
+            icon: Component,
+            isActive: false,
+            subItems: [
+              {
+                title: 'Button',
+                url: '/components/button',
+              },
+              {
+                title: 'App2',
+                url: '/bitbucket/app2',
+              },
+              {
+                title: 'App3',
+                url: '/bitbucket/app3',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    userMenus: [
+      {
+        title: 'Account',
+        icon: BadgeCheck,
+        onClick: console.log,
+      },
+      {
+        title: 'Billing',
+        icon: CreditCard,
+        onClick: console.log,
+      },
+      {
+        title: 'Notifications',
+        icon: Bell,
+        onClick: console.log,
+      },
+    ],
+  };
+
+  data.menus.forEach((menu) => {
+    menu.items.forEach((item) => {
+      if (item.subItems) {
+        item.subItems.forEach((subItem) => {
+          subItem.isActive = isPathMatch(pathname, subItem.url ?? '');
+          if (subItem.isActive) item.isActive = true;
+        });
+      } else {
+        item.isActive = isPathMatch(pathname, item.url ?? '');
+      }
+    });
+  });
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
