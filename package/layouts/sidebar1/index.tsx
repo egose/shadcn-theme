@@ -65,7 +65,7 @@ export default function SidebarLayout({
             </Breadcrumb>
           </div>
         </header>
-        <main className="px-4 pb-2">{children}</main>
+        <main className="px-4 pb-2 overflow-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
