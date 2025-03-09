@@ -1,4 +1,4 @@
-name: Publish Devapp in GitHub Pages
+name: Test
 
 on: push
 
