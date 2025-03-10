@@ -92,8 +92,8 @@ export default function RootLayout({
                 url: '/components/button',
               },
               {
-                title: 'App2',
-                url: '/bitbucket/app2',
+                title: 'Dialog',
+                url: '/components/dialog',
               },
               {
                 title: 'App3',
@@ -110,6 +110,10 @@ export default function RootLayout({
               {
                 title: 'Text Input',
                 url: '/form/textinput',
+              },
+              {
+                title: 'Textarea',
+                url: '/form/textarea',
               },
             ],
           },
