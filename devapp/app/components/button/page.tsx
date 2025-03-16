@@ -76,6 +76,19 @@ export default function Page() {
       </div>
 
       <div className="font-semibold mt-4">
+        <h3>Basic - thin</h3>
+        <div className="flex gap-2">
+          {variants.map((variant) => {
+            return (
+              <Button key={variant} variant={variant} thin>
+                {_startCase(variant)}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="font-semibold mt-4">
         <h3>Outline</h3>
         <div className="flex gap-2">
           {variants.map((variant) => {
@@ -128,6 +141,19 @@ export default function Page() {
       </div>
 
       <div className="font-semibold mt-4">
+        <h3>Outline - thin</h3>
+        <div className="flex gap-2">
+          {variants.map((variant) => {
+            return (
+              <Button key={variant} variant={variant} outline thin>
+                {_startCase(variant)}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="font-semibold mt-4">
         <h3>Outline filled</h3>
         <div className="flex gap-2">
           {variants.map((variant) => {
@@ -172,6 +198,19 @@ export default function Page() {
           {variants.map((variant) => {
             return (
               <Button key={variant} variant={variant} outlineFilled disabled loading>
+                {_startCase(variant)}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="font-semibold mt-4">
+        <h3>Outline filled - thin</h3>
+        <div className="flex gap-2">
+          {variants.map((variant) => {
+            return (
+              <Button key={variant} variant={variant} outlineFilled thin>
                 {_startCase(variant)}
               </Button>
             );

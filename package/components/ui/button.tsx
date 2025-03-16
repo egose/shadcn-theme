@@ -62,11 +62,18 @@ const buttonVariants = cva(
         false: null,
         true: '',
       },
+      thin: {
+        false: null,
+        true: '',
+      },
     },
     defaultVariants: {
       variant: 'primary',
       size: 'default',
       outline: false,
+      outlineFilled: false,
+      loading: false,
+      thin: false,
     },
   },
 );
@@ -151,8 +158,19 @@ function getOutlineSpinnerClasses(variant: any) {
   return colors[variant ?? 'primary'];
 }
 
+function getThinClasses(size: any) {
+  const colors: Record<string, string> = {
+    default: 'h-8 px-2 py-1',
+    sm: 'h-7 px-2 py-1',
+    lg: 'h-9 px-2 py-1',
+    icon: 'h-8 w-8',
+  };
+
+  return colors[size ?? 'default'];
+}
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, outline, outlineFilled, loading, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, outline, outlineFilled, loading, thin, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
 
     let outlineClasses: string[] = [];
@@ -160,6 +178,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       outlineClasses = ['bg-white border', getOutlineClasses(variant)];
       if (outlineFilled) outlineClasses.push(getOutlineFilledClasses(variant));
     }
+
+    const thinClasses = thin ? getThinClasses(size) : '';
 
     if (loading) {
       const { children, ...loaderProps } = props;
@@ -171,6 +191,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(
             buttonVariants({ variant, size, outline, className }),
             outlineClasses,
+            thinClasses,
             spinnerClasses,
             loadingClasses,
           )}
@@ -189,7 +210,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses)}
+        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, thinClasses)}
         ref={ref}
         {...props}
       />
