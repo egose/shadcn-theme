@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
 import { TextareaHTMLAttributes, useRef } from 'react';
