@@ -1,10 +1,103 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@custom-variant dark (&:is(.dark *));
+@source "../../package/components";
+@source "../../package/layouts";
 
+/* See https://github.com/shadcn/app-tailwind-v4/blob/main/app/globals.css */
 body {
   font-family: Arial, Helvetica, sans-serif;
   touch-action: manipulation; /* Prevents double-tap zoom */
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+/* See https://tailwindcss.com/docs/theme */
+@theme {
+  --color-primary: #228be6;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #6c757d;
+  --color-secondary-foreground: #ffffff;
+
+  --color-success: #28a745;
+  --color-success-foreground: #ffffff;
+
+  --color-warning: #fab005;
+  --color-warning-foreground: #ffffff;
+
+  --color-danger: #dc3545;
+  --color-danger-foreground: #ffffff;
+
+  --color-info: #17a2b8;
+  --color-info-foreground: #ffffff;
+
+  --color-light: #f8f9fa;
+  --color-light-foreground: #000000;
+
+  --color-dark: #343a40;
+  --color-dark-foreground: #ffffff;
+
+  --color-destructive: #d2575a;
+  --color-destructive-foreground: #ffffff;
+
+  --color-accent: #7950f2;
+  --color-accent-foreground: #ffffff;
+
+  --color-muted: #f7f7f7;
+  --color-muted-foreground: #8e8e8e;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 @layer base {
@@ -78,12 +171,3 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
-
-/* @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-} */

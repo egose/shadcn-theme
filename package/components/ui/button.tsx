@@ -6,6 +6,7 @@ import { Spinner } from './spinner';
 
 const buttonVariants = cva(
   [
+    'cursor-pointer',
     'active:translate-y-[0.5px]',
     'disabled:pointer-events-none',
     'disabled:opacity-50',

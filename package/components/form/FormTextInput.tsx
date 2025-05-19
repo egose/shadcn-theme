@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import { InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/utils';
@@ -36,7 +37,7 @@ export default function TextInput({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('text-input', classNames?.wrapper)}>
+    <div className={cn('_text-input', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}
