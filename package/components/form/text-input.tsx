@@ -23,7 +23,7 @@ export interface FormTextInputProps extends InputProps {
   };
 }
 
-export default function TextInput({
+export function FormTextInput({
   id,
   name,
   label,

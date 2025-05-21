@@ -4,10 +4,11 @@ import React from 'react';
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
-import FormError from './FormError';
-import FormTextarea, { FormTextareaProps } from './FormTextarea';
+import { FormError } from './error';
+import { FormTextInput } from './text-input';
+import type { FormTextInputProps } from './text-input';
 
-export default function HookFormTextarea<T extends FieldValues>({
+export function HookFormTextInput<T extends FieldValues>({
   id,
   name,
   options,
@@ -16,7 +17,7 @@ export default function HookFormTextarea<T extends FieldValues>({
   classNames,
   disabled,
   ...others
-}: Omit<FormTextareaProps, 'name' | 'inputProps'> & {
+}: Omit<FormTextInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
   options?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;
@@ -35,7 +36,7 @@ export default function HookFormTextarea<T extends FieldValues>({
 
   return (
     <div className={classNames?.wrapper}>
-      <FormTextarea
+      <FormTextInput
         id={id}
         name={name}
         label={label}

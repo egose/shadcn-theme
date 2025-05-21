@@ -24,7 +24,7 @@ export interface FormTextareaProps extends InputProps {
   };
 }
 
-export default function FormTextarea({
+export function FormTextarea({
   id,
   name,
   label,

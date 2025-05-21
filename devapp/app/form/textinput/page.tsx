@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
-import HookFormTextInput from '../../../../package/components/form/HookFormTextInput';
+import { HookFormTextInput } from '../../../../package/components/form/hook-text-input';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
