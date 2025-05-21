@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../package/layouts/sidebar1';
+import { DialogManagerProvider } from '../../package/components/widgets/dialog-manager';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -95,10 +96,6 @@ export default function RootLayout({
                 title: 'Dialog',
                 url: '/components/dialog',
               },
-              {
-                title: 'App3',
-                url: '/bitbucket/app3',
-              },
             ],
           },
           {
@@ -114,6 +111,18 @@ export default function RootLayout({
               {
                 title: 'Textarea',
                 url: '/form/textarea',
+              },
+            ],
+          },
+          {
+            title: 'Widgets',
+            url: '/widgets',
+            icon: Component,
+            isActive: false,
+            subItems: [
+              {
+                title: 'Dialog Manager',
+                url: '/widgets/dialog-manager',
               },
             ],
           },
@@ -159,7 +168,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarLayout aslink={Link} data={data} onLogout={console.log}>
-          {children}
+          <DialogManagerProvider>{children}</DialogManagerProvider>
         </SidebarLayout>
       </body>
     </html>
