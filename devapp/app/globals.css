@@ -20,8 +20,17 @@ body {
   }
 }
 
+@layer utilities {
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
 /* See https://tailwindcss.com/docs/theme */
 @theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
   --color-primary: #228be6;
   --color-primary-foreground: #ffffff;
 
@@ -102,7 +111,7 @@ body {
 
 @layer base {
   :root {
-    --background: white;
+    --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
