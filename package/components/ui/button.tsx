@@ -189,6 +189,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       return (
         <Comp
+          type="button"
           className={cn(
             buttonVariants({ variant, size, outline, className }),
             outlineClasses,
@@ -211,6 +212,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
+        type="button"
         className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, thinClasses)}
         ref={ref}
         {...props}
