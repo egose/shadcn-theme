@@ -1,6 +1,6 @@
 'use client';
 
-import React, { HTMLAttributes, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { addDays, format, isEqual } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
@@ -60,10 +60,15 @@ export function FormDateRangePicker({
   onChange,
   classNames,
 }: FormDateRangePickerProps) {
+  const now = new Date();
   const [value, setValue] = useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
+    from: now,
+    to: now,
   });
+
+  useEffect(() => {
+    onChange(value);
+  }, [value]);
 
   if (!id) id = _kebabCase(name);
 
@@ -103,7 +108,6 @@ export function FormDateRangePicker({
               selected={value}
               onSelect={(dateRange) => {
                 if (!isEqualDates([value?.from, value?.to], [dateRange?.from, dateRange?.to])) {
-                  onChange(dateRange);
                   setValue(dateRange);
                 }
               }}
