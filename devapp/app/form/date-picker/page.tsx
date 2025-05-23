@@ -11,7 +11,7 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '../../../../package/lib/utils';
 import { Calendar } from '../../../../package/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../../package/components/ui/popover';
-import { DatePickerWithRange } from '../../../../package/components/form/date-range-picker';
+import { FormDateRangePicker } from '../../../../package/components/form/date-range-picker';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -31,7 +31,17 @@ export default function Page() {
 
   return (
     <>
-      <DatePickerWithRange />
+      <div className="flex gap-x-2">
+        <FormDateRangePicker
+          name="test"
+          label="Select Date Range"
+          required
+          onChange={(dateRange) => {
+            console.log('onChange', dateRange);
+          }}
+        />
+      </div>
+
       {/* <Popover>
         <PopoverTrigger asChild>
           <Button

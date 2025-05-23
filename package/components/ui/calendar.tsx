@@ -11,6 +11,11 @@ import { buttonVariants } from '../../components/ui/button';
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+  const navigationButtonClass = cn(
+    buttonVariants({ variant: 'light' }),
+    'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-10',
+  );
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -22,14 +27,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         month_grid: 'w-full border-collapse space-y-1',
         caption_label: 'text-sm font-medium',
         nav: 'flex items-center justify-between absolute inset-x-0',
-        button_previous: cn(
-          buttonVariants({ variant: 'light' }),
-          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-10',
-        ),
-        button_next: cn(
-          buttonVariants({ variant: 'light' }),
-          'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-10',
-        ),
+        button_previous: navigationButtonClass,
+        button_next: navigationButtonClass,
         weeks: 'w-full border-collapse',
         weekdays: 'flex',
         weekday: 'text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]',

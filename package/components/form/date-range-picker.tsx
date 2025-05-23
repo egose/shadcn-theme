@@ -1,56 +1,117 @@
 'use client';
 
-import * as React from 'react';
-import { addDays, format } from 'date-fns';
+import React, { HTMLAttributes, useState } from 'react';
+import { addDays, format, isEqual } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
+import _kebabCase from 'lodash-es/kebabCase';
+import _isNil from 'lodash-es/isNil';
 
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
+import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 
-export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
+function formatDate(date: Date) {
+  return format(date, 'LLL dd, y');
+}
+
+export function isEqualDate(dt1: Date | undefined, dt2: Date | undefined) {
+  const nildt1 = _isNil(dt1);
+  const nildt2 = _isNil(dt2);
+
+  if (nildt1) dt1 = undefined;
+  if (nildt2) dt2 = undefined;
+
+  if (nildt1 || nildt2) {
+    return nildt1 === nildt2;
+  }
+
+  return isEqual(dt1 as Date, dt2 as Date);
+}
+
+export function isEqualDates(dts1: [Date | undefined, Date | undefined], dts2: [Date | undefined, Date | undefined]) {
+  const dts11 = dts1[0];
+  const dts12 = dts1[1];
+  const dts21 = dts2[0];
+  const dts22 = dts2[1];
+
+  return isEqualDate(dts11, dts21) && isEqualDate(dts12, dts22);
+}
+
+export interface FormDateRangePickerProps {
+  id?: string;
+  name: string;
+  label?: string;
+  required?: boolean;
+  onChange: (value: DateRange | undefined) => void;
+  classNames?: {
+    wrapper?: string;
+    label?: string;
+  };
+}
+
+export function FormDateRangePicker({
+  id,
+  name,
+  label,
+  required = false,
+  onChange,
+  classNames,
+}: FormDateRangePickerProps) {
+  const [value, setValue] = useState<DateRange | undefined>({
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
 
+  if (!id) id = _kebabCase(name);
+
   return (
-    <div className={cn('grid gap-2', className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={date ? 'secondary' : 'muted'}
-            outline
-            className={cn('w-[300px] justify-start text-left font-normal')}
-          >
-            <CalendarIcon />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
-                </>
+    <div className={cn('date-range-picker', classNames?.wrapper)}>
+      {label && (
+        <Label htmlFor={id} className={classNames?.label} required={required}>
+          {label}
+        </Label>
+      )}
+      <div className={cn('grid gap-2')}>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={value ? 'secondary' : 'muted'}
+              outline
+              className={cn('w-[300px] justify-start text-left font-normal')}
+            >
+              <CalendarIcon />
+              {value?.from ? (
+                value.to ? (
+                  <>
+                    {formatDate(value.from)} - {formatDate(value.to)}
+                  </>
+                ) : (
+                  formatDate(value.from)
+                )
               ) : (
-                format(date.from, 'LLL dd, y')
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
+                <span>Pick a date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="range"
+              defaultMonth={value?.from}
+              selected={value}
+              onSelect={(dateRange) => {
+                if (!isEqualDates([value?.from, value?.to], [dateRange?.from, dateRange?.to])) {
+                  onChange(dateRange);
+                  setValue(dateRange);
+                }
+              }}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
   );
 }
