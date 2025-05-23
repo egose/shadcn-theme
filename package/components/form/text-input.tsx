@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
-import { InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/utils';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';

@@ -9,6 +9,7 @@ import {
 } from '../../../../package/components/ui/dialog';
 import { createTypedDialog } from '../../../../package/components/widgets/dialog-manager';
 import type { DialogProps } from '../../../../package/components/widgets/dialog-manager';
+import { DatePickerWithRange } from '../../../../package/components/form/date-range-picker';
 
 function Dialog2({ open, args, onClose }: DialogProps<{ age: number }, number>) {
   return (
@@ -18,6 +19,7 @@ function Dialog2({ open, args, onClose }: DialogProps<{ age: number }, number>) 
           <DialogTitle>Dialog2</DialogTitle>
         </DialogHeader>
         <p>Age is: {args.age}</p>
+        <DatePickerWithRange />
         <DialogFooter>
           <Button onClick={() => onClose(args.age * 2)}>Multiply</Button>
         </DialogFooter>

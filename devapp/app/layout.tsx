@@ -112,6 +112,10 @@ export default function RootLayout({
                 title: 'Textarea',
                 url: '/form/textarea',
               },
+              {
+                title: 'Date Picker',
+                url: '/form/date-picker',
+              },
             ],
           },
           {
