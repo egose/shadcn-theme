@@ -5,6 +5,7 @@ import { addDays, format, isEqual } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isNil from 'lodash-es/isNil';
+import _isString from 'lodash-es/isString';
 
 import { isEqualDate } from '../../lib/date';
 import { cn } from '../../lib/utils';
@@ -23,7 +24,7 @@ export interface FormDatePickerProps {
   label?: string;
   required?: boolean;
   disabled?: boolean;
-  value?: Date;
+  value?: Date | string;
   onChange: (value?: Date) => void;
   classNames?: {
     wrapper?: string;
@@ -41,7 +42,7 @@ export function FormDatePicker({
   onChange,
   classNames,
 }: FormDatePickerProps) {
-  const dt = initialValue ?? new Date();
+  const dt = _isNil(initialValue) ? new Date() : _isString(initialValue) ? new Date(initialValue) : initialValue;
   const startOfDay = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
   const [value, setValue] = useState<Date | undefined>(startOfDay);
 
