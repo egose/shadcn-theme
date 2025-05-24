@@ -1,61 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import React from 'react';
+import { FormProvider, useForm } from '../../../../package/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { format } from 'date-fns';
+import { addDays } from 'date-fns/addDays';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
-import { cn } from '../../../../package/lib/utils';
-import { Calendar } from '../../../../package/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../package/components/ui/popover';
+import { FormDatePicker } from '../../../../package/components/form/date-picker';
+import { HookFormDatePicker } from '../../../../package/components/form/hook-date-picker';
 import { FormDateRangePicker } from '../../../../package/components/form/date-range-picker';
 
 const validationSchema = z.object({
-  firstName: z.string().min(1).max(100),
-  lastName: z.string().min(1).max(100),
-  address: z.string().min(1).max(100),
-  age: z.preprocess((v) => Number(v), z.number().min(20)),
-  height: z.preprocess((v) => Number(v), z.number().min(100)),
+  date2: z.date().optional(),
 });
 
 export default function Page() {
-  const [date, setDate] = useState<Date>();
-
   const methods = useForm({
     resolver: zodResolver(validationSchema),
-    defaultValues: {},
+    defaultValues: { date2: addDays(new Date(), 2) },
   });
 
   return (
     <>
-      <div className="flex gap-x-2">
-        <FormDateRangePicker
-          name="test"
-          label="Select Date Range"
-          required
-          onChange={(dateRange) => {
-            console.log('onChange', dateRange);
-          }}
-        />
-      </div>
+      <h1 className="font-bold text-2xl mt-4 mb-5">Date Pickers</h1>
 
-      {/* <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            outline
-            className={cn('w-[240px] justify-start text-left font-normal', !date && 'text-muted-foreground')}
-          >
-            <CalendarIcon />
-            {date ? format(date, 'PPP') : <span>Pick a date</span>}
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
+          <div className="flex gap-x-2">
+            <FormDatePicker
+              name="date"
+              label="Select Date"
+              required
+              onChange={(dateRange) => {
+                console.log('onChange', dateRange);
+              }}
+            />
+            <HookFormDatePicker name="date2" label="Select Date2" required disabled />
+            <FormDateRangePicker
+              name="dates"
+              label="Select Date Range"
+              required
+              onChange={(dateRange) => {
+                console.log('onChange', dateRange);
+              }}
+            />
+          </div>
+
+          <Button variant="primary" type="submit" className="mt-2">
+            Submit
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar mode="range" numberOfMonths={2} />
-        </PopoverContent>
-      </Popover> */}
+        </form>
+      </FormProvider>
     </>
   );
 }

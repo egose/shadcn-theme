@@ -7,6 +7,7 @@ import { DateRange } from 'react-day-picker';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isNil from 'lodash-es/isNil';
 
+import { isEqualDates } from '../../lib/date';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
@@ -17,34 +18,12 @@ function formatDate(date: Date) {
   return format(date, 'LLL dd, y');
 }
 
-export function isEqualDate(dt1: Date | undefined, dt2: Date | undefined) {
-  const nildt1 = _isNil(dt1);
-  const nildt2 = _isNil(dt2);
-
-  if (nildt1) dt1 = undefined;
-  if (nildt2) dt2 = undefined;
-
-  if (nildt1 || nildt2) {
-    return nildt1 === nildt2;
-  }
-
-  return isEqual(dt1 as Date, dt2 as Date);
-}
-
-export function isEqualDates(dts1: [Date | undefined, Date | undefined], dts2: [Date | undefined, Date | undefined]) {
-  const dts11 = dts1[0];
-  const dts12 = dts1[1];
-  const dts21 = dts2[0];
-  const dts22 = dts2[1];
-
-  return isEqualDate(dts11, dts21) && isEqualDate(dts12, dts22);
-}
-
 export interface FormDateRangePickerProps {
   id?: string;
   name: string;
   label?: string;
   required?: boolean;
+  value?: DateRange;
   onChange: (value: DateRange | undefined) => void;
   classNames?: {
     wrapper?: string;
@@ -57,13 +36,28 @@ export function FormDateRangePicker({
   name,
   label,
   required = false,
+  value: initialValue,
   onChange,
   classNames,
 }: FormDateRangePickerProps) {
-  const now = new Date();
+  let initialFrom!: Date;
+  let initialTo!: Date;
+
+  if (initialValue) {
+    const from = initialValue.from ?? new Date();
+    const to = initialValue.to ?? new Date();
+    initialFrom = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    initialTo = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+  } else {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    initialFrom = startOfDay;
+    initialTo = startOfDay;
+  }
+
   const [value, setValue] = useState<DateRange | undefined>({
-    from: now,
-    to: now,
+    from: initialFrom,
+    to: initialTo,
   });
 
   useEffect(() => {

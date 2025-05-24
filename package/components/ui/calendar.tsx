@@ -46,9 +46,9 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         selected: cn(
           props.mode === 'range'
             ? 'bg-primary hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground'
-            : '[&>button]:focus:bg-primary [&>button]:focus:text-primary-foreground',
+            : 'rounded-md [&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground',
         ),
-        today: 'text-success italic',
+        today: 'text-success italic [&>button]:underline [&>button]:font-semibold',
         outside:
           'day-outside text-muted-foreground opacity-50 !aria-selected:bg-secondary/50 !aria-selected:text-muted-foreground !aria-selected:opacity-30',
         disabled: 'text-muted-foreground opacity-50',
