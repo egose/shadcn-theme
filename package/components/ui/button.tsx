@@ -84,6 +84,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  left?: React.ReactNode;
 }
 
 function getOutlineClasses(variant: any) {
@@ -172,7 +173,10 @@ function getThinClasses(size: any) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, outline, outlineFilled, loading, thin, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, outline, outlineFilled, loading, thin, asChild = false, children, left, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
 
     let outlineClasses: string[] = [];
@@ -184,7 +188,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const thinClasses = thin ? getThinClasses(size) : '';
 
     if (loading) {
-      const { children, ...loaderProps } = props;
+      const { ...loaderProps } = props;
       const spinnerClasses = outline || outlineFilled ? getOutlineSpinnerClasses(variant) : getSpinnerClasses(variant);
       const loadingClasses = 'pointer-events-none';
 
@@ -217,7 +221,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, thinClasses)}
         ref={ref}
         {...props}
-      />
+      >
+        <div className="flex items-center gap-1">
+          {left}
+          {children}
+        </div>
+      </Comp>
     );
   },
 );
