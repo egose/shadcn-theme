@@ -42,10 +42,20 @@ export default function Page() {
               label="Select Date Range"
               required
               onChange={(dateRange) => {
-                console.log('onChange', dateRange);
+                console.log('dateRange', dateRange);
               }}
             />
           </div>
+
+          <Button
+            variant="primary"
+            className="mt-2"
+            onClick={() => {
+              methods.setValue('date2', new Date());
+            }}
+          >
+            Today
+          </Button>
 
           <Button variant="primary" type="submit" className="mt-2">
             Submit

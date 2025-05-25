@@ -28,6 +28,7 @@ export interface FormDateRangePickerProps {
   classNames?: {
     wrapper?: string;
     label?: string;
+    button?: string;
   };
 }
 
@@ -79,7 +80,7 @@ export function FormDateRangePicker({
             <Button
               variant={value ? 'secondary' : 'muted'}
               outline
-              className={cn('w-[300px] justify-start text-left font-normal')}
+              className={cn('min-w-[240px] justify-start text-left font-normal', classNames?.button)}
             >
               <CalendarIcon />
               {value?.from ? (
