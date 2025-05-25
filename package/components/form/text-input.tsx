@@ -46,6 +46,7 @@ export function FormTextInput({
         type={type}
         id={id}
         name={name}
+        required={required}
         disabled={disabled}
         autoComplete="off"
         {...inputProps}

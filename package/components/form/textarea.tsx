@@ -48,6 +48,7 @@ export function FormTextarea({
         id={id}
         name={name}
         rows={rows}
+        required={required}
         disabled={disabled}
         autoComplete="off"
         {...inputProps}
