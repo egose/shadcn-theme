@@ -5,10 +5,10 @@ import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
 import { FormError } from './error';
-import { FormSelect } from './select';
-import type { FormSelectProps } from './select';
+import { FormSelect } from './native-select';
+import type { FormNativeSelectProps } from './native-select';
 
-export function HookFormSelect<T extends FieldValues>({
+export function HookFormNativeSelect<T extends FieldValues>({
   id,
   name,
   options,
@@ -17,7 +17,7 @@ export function HookFormSelect<T extends FieldValues>({
   classNames,
   disabled,
   ...others
-}: Omit<FormSelectProps, 'name' | 'selectProps'> & {
+}: Omit<FormNativeSelectProps, 'name' | 'selectProps'> & {
   name: Path<T>;
   options?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;

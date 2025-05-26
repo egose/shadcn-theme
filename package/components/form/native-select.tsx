@@ -6,7 +6,7 @@ import _isString from 'lodash-es/isString';
 import { cn } from '../../lib/utils';
 import { Label } from '../ui/label';
 
-type SelectProps = SelectHTMLAttributes<HTMLSelectElement>;
+type NativeSelectProps = SelectHTMLAttributes<HTMLSelectElement>;
 
 export interface SelectOption {
   label: string;
@@ -19,11 +19,11 @@ function listToSelectOptions(items: string[]) {
   });
 }
 
-export interface FormSelectProps extends SelectProps {
+export interface FormNativeSelectProps extends NativeSelectProps {
   id?: string;
   name: string;
   label: string;
-  selectProps: SelectProps;
+  selectProps: NativeSelectProps;
   data: SelectOption[] | string[];
   defaultValue?: string;
   classNames?: {
@@ -33,7 +33,7 @@ export interface FormSelectProps extends SelectProps {
   };
 }
 
-export function FormSelect({
+export function FormNativeSelect({
   id,
   name,
   label,
@@ -44,7 +44,7 @@ export function FormSelect({
   required,
   disabled,
   ...others
-}: FormSelectProps) {
+}: FormNativeSelectProps) {
   let _options: SelectOption[] = [];
   if (data.length > 0) {
     if (_isString(data[0])) {

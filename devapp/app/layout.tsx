@@ -121,6 +121,10 @@ export default function RootLayout({
                 title: 'Native Select',
                 url: '/form/native-select',
               },
+              {
+                title: 'Select',
+                url: '/form/select',
+              },
             ],
           },
           {
