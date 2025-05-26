@@ -1,12 +1,12 @@
 'use client';
 
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from '../../../../package/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
-import { FormNativeSelect } from '../../../../package/components/form/native-select';
-import { HookFormNativeSelect } from '../../../../package/components/form/hook-native-select';
+import { FormSelect } from '../../../../package/components/form/select';
+import { HookFormSelect } from '../../../../package/components/form/hook-select';
 
 const validationSchema = z.object({
   name: z.string(),
@@ -15,7 +15,7 @@ const validationSchema = z.object({
 export default function Page() {
   const methods = useForm({
     resolver: zodResolver(validationSchema),
-    defaultValues: {},
+    defaultValues: { name: 'jane' },
   });
 
   return (
@@ -25,19 +25,23 @@ export default function Page() {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 md:py-2">
-            <FormNativeSelect
+            <FormSelect
               label="First name"
               name="firstName"
               data={['John', 'Jane', 'Doe']}
-              selectProps={{ required: true }}
+              defaultValue="Doe"
               required
               classNames={{ wrapper: 'col-span-1 mt-2' }}
-              onChange={(event) => console.log(event.target.value)}
+              onChange={(val) => console.log(val)}
             />
-            <HookFormNativeSelect
+            <HookFormSelect
               label="Name"
               name="name"
-              data={['John', 'Jane', 'Doe']}
+              data={[
+                { label: 'John', value: 'john' },
+                { label: 'Jane', value: 'jane' },
+                { label: 'Doe', value: 'doe' },
+              ]}
               required
               classNames={{ wrapper: 'col-span-1 mt-2' }}
             />

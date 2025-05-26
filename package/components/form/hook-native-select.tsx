@@ -5,7 +5,7 @@ import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
 import { FormError } from './error';
-import { FormSelect } from './native-select';
+import { FormNativeSelect } from './native-select';
 import type { FormNativeSelectProps } from './native-select';
 
 export function HookFormNativeSelect<T extends FieldValues>({
@@ -36,7 +36,7 @@ export function HookFormNativeSelect<T extends FieldValues>({
 
   return (
     <div className={classNames?.wrapper}>
-      <FormSelect
+      <FormNativeSelect
         id={id}
         name={name}
         label={label}

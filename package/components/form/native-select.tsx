@@ -57,7 +57,7 @@ export function FormNativeSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('_native-select', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}
