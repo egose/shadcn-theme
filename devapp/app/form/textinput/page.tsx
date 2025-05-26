@@ -6,16 +6,19 @@ import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
 import { HookFormTextInput } from '../../../../package/components/form/hook-text-input';
+import { useToast } from '../../../../package/hooks/use-toast';
+import { ToastAction } from '../../../../package/components/ui/toast';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
   address: z.string().min(1).max(100),
   age: z.preprocess((v) => Number(v), z.number().min(20)),
-  height: z.preprocess((v) => Number(v), z.number().min(100)),
+  height: z.string().optional(),
 });
 
 export default function Page() {
+  const { toast } = useToast();
   const methods = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: {},
@@ -26,7 +29,16 @@ export default function Page() {
       <h1 className="font-bold text-2xl mt-4 mb-5">Text Input</h1>
 
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
+        <form
+          onSubmit={methods.handleSubmit(() => {
+            toast({
+              title: 'Submitted',
+              description: 'Successfully submitted the form.',
+              action: <ToastAction altText="undo">Undo</ToastAction>,
+            });
+          })}
+          autoComplete="off"
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 md:py-2">
             <HookFormTextInput
               label="First name"

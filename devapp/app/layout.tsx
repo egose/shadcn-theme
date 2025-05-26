@@ -23,6 +23,7 @@ import {
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../package/layouts/sidebar1';
 import { DialogManagerProvider } from '../../package/components/widgets/dialog-manager';
+import { Toaster } from '../../package/components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -177,6 +178,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarLayout aslink={Link} data={data} onLogout={console.log}>
           <DialogManagerProvider>{children}</DialogManagerProvider>
+          <Toaster />
         </SidebarLayout>
       </body>
     </html>
