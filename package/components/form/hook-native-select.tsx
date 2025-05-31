@@ -11,7 +11,7 @@ import type { FormNativeSelectProps } from './native-select';
 export function HookFormNativeSelect<T extends FieldValues>({
   id,
   name,
-  options,
+  rules,
   label,
   error,
   classNames,
@@ -19,7 +19,7 @@ export function HookFormNativeSelect<T extends FieldValues>({
   ...others
 }: Omit<FormNativeSelectProps, 'name' | 'selectProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  rules?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;
 }) {
   const methods = useFormContext<T>();
@@ -50,7 +50,7 @@ export function HookFormNativeSelect<T extends FieldValues>({
             'ring-danger text-danger': showError,
           }),
         }}
-        selectProps={register(name, options)}
+        selectProps={register(name, rules)}
       />
       {showError && <FormError field={name} className="mt-1" message={errorMessage} />}
     </div>

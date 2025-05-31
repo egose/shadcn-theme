@@ -11,7 +11,7 @@ import type { FormTextareaProps } from './textarea';
 export function HookFormTextarea<T extends FieldValues>({
   id,
   name,
-  options,
+  rules,
   label,
   error,
   classNames,
@@ -19,7 +19,7 @@ export function HookFormTextarea<T extends FieldValues>({
   ...others
 }: Omit<FormTextareaProps, 'name' | 'inputProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  rules?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;
 }) {
   const methods = useFormContext<T>();
@@ -50,7 +50,7 @@ export function HookFormTextarea<T extends FieldValues>({
             'ring-danger text-danger': showError,
           }),
         }}
-        inputProps={register(name, options)}
+        inputProps={register(name, rules)}
       />
       {showError && <FormError field={name} className="mt-1" message={errorMessage} />}
     </div>
