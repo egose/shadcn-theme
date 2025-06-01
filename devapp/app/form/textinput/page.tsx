@@ -6,6 +6,8 @@ import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
 import { HookFormTextInput } from '../../../../package/components/form/hook-text-input';
+import { FormTimeTextInput } from '../../../../package/components/form/time-text-input';
+import { HookFormTimeTextInput } from '../../../../package/components/form/hook-time-text-input';
 import { useToast } from '../../../../package/hooks/use-toast';
 import { ToastAction } from '../../../../package/components/ui/toast';
 
@@ -15,6 +17,7 @@ const validationSchema = z.object({
   address: z.string().min(1).max(100),
   age: z.preprocess((v) => Number(v), z.number().min(20)),
   height: z.string().optional(),
+  duration: z.number(),
 });
 
 export default function Page() {
@@ -72,6 +75,13 @@ export default function Page() {
               disabled
               classNames={{ wrapper: 'col-span-1 mt-2' }}
             />
+            <HookFormTimeTextInput
+              label="Duration"
+              name="duration"
+              placeholder="Enter duration..."
+              required
+              classNames={{ wrapper: 'col-span-1 mt-2' }}
+            />
           </div>
 
           <Button variant="primary" type="submit" className="mt-2">
@@ -79,6 +89,18 @@ export default function Page() {
           </Button>
         </form>
       </FormProvider>
+      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 md:py-2">
+        <FormTimeTextInput
+          label="Duration"
+          name="duration"
+          placeholder="Enter duration..."
+          required
+          onChange={(value) => {
+            console.log('Duration changed:', value);
+          }}
+          classNames={{ wrapper: 'col-span-1 mt-2' }}
+        />
+      </div>
     </>
   );
 }
