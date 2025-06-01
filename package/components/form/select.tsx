@@ -48,7 +48,7 @@ export function FormSelect({
   classNames,
   required,
   disabled,
-  ...others
+  ...rest
 }: FormSelectProps) {
   let _options: SelectOption[] = [];
   if (data.length > 0) {

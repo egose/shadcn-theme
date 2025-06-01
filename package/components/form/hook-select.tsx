@@ -19,7 +19,7 @@ export function HookFormSelect<T extends FieldValues>({
   rules,
   classNames,
   disabled = false,
-  ...others
+  ...rest
 }: Omit<FormSelectProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;
   name: Path<T>;
@@ -43,7 +43,7 @@ export function HookFormSelect<T extends FieldValues>({
               onChange={onChange}
               value={value}
               disabled={disabled}
-              {...others}
+              {...rest}
               classNames={restClassnames}
             />
           );

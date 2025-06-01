@@ -32,7 +32,7 @@ export function FormTextarea({
   required,
   disabled,
   inputProps = {},
-  ...others
+  ...rest
 }: FormTextareaProps) {
   if (!id) id = _kebabCase(name);
   const _ref = useRef<HTMLTextAreaElement>(null);
@@ -52,7 +52,7 @@ export function FormTextarea({
         disabled={disabled}
         autoComplete="off"
         {...inputProps}
-        {...others}
+        {...rest}
         // Required to bind three potential refs:
         // 1. From the inputProps ex) react-hook-form.
         // 2. From the this component instance itself.

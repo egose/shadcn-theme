@@ -16,7 +16,7 @@ export function HookFormTextInput<T extends FieldValues>({
   error,
   classNames,
   disabled,
-  ...others
+  ...rest
 }: Omit<FormTextInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
   rules?: RegisterOptions<T, Path<T>> | undefined;
@@ -41,7 +41,7 @@ export function HookFormTextInput<T extends FieldValues>({
         name={name}
         label={label}
         disabled={disabled}
-        {...others}
+        {...rest}
         classNames={{
           label: cn(classNames?.label, {
             'text-danger': showError,

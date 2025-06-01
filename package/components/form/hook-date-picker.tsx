@@ -19,7 +19,7 @@ export function HookFormDatePicker<T extends FieldValues>({
   rules,
   classNames,
   disabled = false,
-  ...others
+  ...rest
 }: Omit<FormDatePickerProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;
   name: Path<T>;
@@ -44,7 +44,7 @@ export function HookFormDatePicker<T extends FieldValues>({
               // onBlur={onBlur}
               value={value}
               disabled={disabled}
-              {...others}
+              {...rest}
               classNames={restClassnames}
             />
           );

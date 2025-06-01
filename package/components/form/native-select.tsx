@@ -43,7 +43,7 @@ export function FormNativeSelect({
   classNames,
   required,
   disabled,
-  ...others
+  ...rest
 }: FormNativeSelectProps) {
   let _options: SelectOption[] = [];
   if (data.length > 0) {
@@ -76,7 +76,7 @@ export function FormNativeSelect({
         required={required}
         disabled={disabled}
         defaultValue={defaultValue}
-        {...others}
+        {...rest}
       >
         {_options.map((option, index) => {
           return (

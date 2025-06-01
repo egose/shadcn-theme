@@ -6,10 +6,12 @@ import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
 import { HookFormTextInput } from '../../../../package/components/form/hook-text-input';
-import { FormTimeTextInput } from '../../../../package/components/form/time-text-input';
-import { HookFormTimeTextInput } from '../../../../package/components/form/hook-time-text-input';
+import { FormTimeInput } from '../../../../package/components/form/time-input';
+import { HookFormTimeInput } from '../../../../package/components/form/hook-time-input';
 import { useToast } from '../../../../package/hooks/use-toast';
 import { ToastAction } from '../../../../package/components/ui/toast';
+import { FormCheckbox } from '../../../../package/components/form/checkbox';
+import { HookFormCheckbox } from '../../../../package/components/form/hook-checkbox';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -18,6 +20,9 @@ const validationSchema = z.object({
   age: z.preprocess((v) => Number(v), z.number().min(20)),
   height: z.string().optional(),
   duration: z.number(),
+  terms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms and conditions',
+  }),
 });
 
 export default function Page() {
@@ -33,7 +38,8 @@ export default function Page() {
 
       <FormProvider {...methods}>
         <form
-          onSubmit={methods.handleSubmit(() => {
+          onSubmit={methods.handleSubmit((formData) => {
+            console.log('Form submitted:', formData);
             toast({
               title: 'Submitted',
               description: 'Successfully submitted the form.',
@@ -75,7 +81,7 @@ export default function Page() {
               disabled
               classNames={{ wrapper: 'col-span-1 mt-2' }}
             />
-            <HookFormTimeTextInput
+            <HookFormTimeInput
               label="Duration"
               name="duration"
               placeholder="Enter duration..."
@@ -83,6 +89,7 @@ export default function Page() {
               classNames={{ wrapper: 'col-span-1 mt-2' }}
             />
           </div>
+          <HookFormCheckbox name="terms" label="Accept terms and conditions" />
 
           <Button variant="primary" type="submit" className="mt-2">
             Submit
@@ -90,7 +97,7 @@ export default function Page() {
         </form>
       </FormProvider>
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 md:py-2">
-        <FormTimeTextInput
+        <FormTimeInput
           label="Duration"
           name="duration"
           placeholder="Enter duration..."
@@ -101,6 +108,13 @@ export default function Page() {
           classNames={{ wrapper: 'col-span-1 mt-2' }}
         />
       </div>
+      <FormCheckbox
+        name="terms"
+        label="Accept terms and conditions"
+        onCheckedChange={(checked) => {
+          console.log('Terms accepted:', checked);
+        }}
+      />
     </>
   );
 }

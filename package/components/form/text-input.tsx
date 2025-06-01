@@ -31,7 +31,7 @@ export function FormTextInput({
   required,
   disabled,
   inputProps = {},
-  ...others
+  ...rest
 }: FormTextInputProps) {
   if (!id) id = _kebabCase(name);
 
@@ -50,7 +50,7 @@ export function FormTextInput({
         disabled={disabled}
         autoComplete="off"
         {...inputProps}
-        {...others}
+        {...rest}
         className={cn(inputClass, classNames?.input)}
       />
     </div>
