@@ -5,23 +5,26 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../../components/ui/too
 import { UnstyledButton } from './unstyled-button';
 import { cn } from '../../lib/utils';
 
+// See https://tabler.io/icons/icon/clipboard-copy
 function CopyClipboardIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="none"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
+      fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-copy"
       {...props}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-4 4h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"
-      />
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h3m9 -9v-5a2 2 0 0 0 -2 -2h-2" />
+      <path d="M13 17v-1a1 1 0 0 1 1 -1h1m3 0h1a1 1 0 0 1 1 1v1m0 3v1a1 1 0 0 1 -1 1h-1m-3 0h-1a1 1 0 0 1 -1 -1v-1" />
+      <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
     </svg>
   );
 }
@@ -53,7 +56,7 @@ export function CopyableButton({
           title="Copy to clipboard"
         >
           <span className={cn({ 'hover:underline': isText })}>{children}</span>
-          {isText && <CopyClipboardIcon className="text-muted" />}
+          {isText && <CopyClipboardIcon />}
         </UnstyledButton>
       </TooltipTrigger>
       <TooltipContent>{clipboard.copied ? 'Copied' : 'Copy'}</TooltipContent>
