@@ -12,6 +12,7 @@ import { useToast } from '../../../../package/hooks/use-toast';
 import { ToastAction } from '../../../../package/components/ui/toast';
 import { FormCheckbox } from '../../../../package/components/form/checkbox';
 import { HookFormCheckbox } from '../../../../package/components/form/hook-checkbox';
+import { CopyableButton } from '../../../../package/components/ui/copy-button';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -115,6 +116,7 @@ export default function Page() {
           console.log('Terms accepted:', checked);
         }}
       />
+      <CopyableButton>{new Date().toISOString()}</CopyableButton>
     </>
   );
 }
