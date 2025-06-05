@@ -21,7 +21,7 @@ function listToSelectOptions(items: string[]) {
 export interface FormSelectProps {
   id?: string;
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   data: SelectOption[] | string[];
   defaultValue?: string;
@@ -69,7 +69,7 @@ export function FormSelect({
         </Label>
       )}
 
-      <Select onValueChange={onChange} defaultValue={defaultValue ?? value ?? ''}>
+      <Select onValueChange={onChange} defaultValue={defaultValue ?? value ?? ''} value={value}>
         <SelectTrigger className="">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

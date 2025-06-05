@@ -122,9 +122,6 @@ importers:
       react-day-picker:
         specifier: 9.6.7
         version: 9.6.7(react@19.0.0)
-      react-hook-form:
-        specifier: ^7.54.2
-        version: 7.54.2(react@19.0.0)
       react-resizable-panels:
         specifier: ^2.1.7
         version: 2.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -159,6 +156,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      react-hook-form:
+        specifier: ^7.54.2
+        version: 7.54.2(react@19.0.0)
       tsup:
         specifier: ^8.3.6
         version: 8.4.0(typescript@5.8.2)
