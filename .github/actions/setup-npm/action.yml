@@ -23,7 +23,12 @@ runs:
     shell: bash
     working-directory: package
 
-  - name: Install Devapp NPM packages
+  - name: Install Nextjs app NPM packages
     run: pnpm install --no-frozen-lockfile
     shell: bash
-    working-directory: devapp
+    working-directory: apps/nextjs
+
+  - name: Install Angular app NPM packages
+    run: pnpm install --no-frozen-lockfile
+    shell: bash
+    working-directory: apps/angular
