@@ -1,5 +1,6 @@
 'use client';
 
+import { IconInbox } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../package/components/ui/button';
 
@@ -211,6 +212,19 @@ export default function Page() {
           {variants.map((variant) => {
             return (
               <Button key={variant} variant={variant} outlineFilled thin>
+                {_startCase(variant)}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="font-semibold mt-4">
+        <h3>Icon</h3>
+        <div className="flex gap-2">
+          {variants.map((variant) => {
+            return (
+              <Button key={variant} variant={variant} left={<IconInbox />}>
                 {_startCase(variant)}
               </Button>
             );

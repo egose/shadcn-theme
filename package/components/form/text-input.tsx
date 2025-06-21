@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
-import { InputHTMLAttributes } from 'react';
 import { cn } from '../../lib/utils';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -23,7 +22,7 @@ export interface FormTextInputProps extends InputProps {
   };
 }
 
-export default function TextInput({
+export function FormTextInput({
   id,
   name,
   label,
@@ -32,7 +31,7 @@ export default function TextInput({
   required,
   disabled,
   inputProps = {},
-  ...others
+  ...rest
 }: FormTextInputProps) {
   if (!id) id = _kebabCase(name);
 
@@ -47,10 +46,11 @@ export default function TextInput({
         type={type}
         id={id}
         name={name}
+        required={required}
         disabled={disabled}
         autoComplete="off"
         {...inputProps}
-        {...others}
+        {...rest}
         className={cn(inputClass, classNames?.input)}
       />
     </div>

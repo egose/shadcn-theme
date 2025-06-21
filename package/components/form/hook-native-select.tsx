@@ -4,21 +4,22 @@ import React from 'react';
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
-import FormError from './FormError';
-import FormTextarea, { FormTextareaProps } from './FormTextarea';
+import { FormError } from './error';
+import { FormNativeSelect } from './native-select';
+import type { FormNativeSelectProps } from './native-select';
 
-export default function HookFormTextarea<T extends FieldValues>({
+export function HookFormNativeSelect<T extends FieldValues>({
   id,
   name,
-  options,
+  rules,
   label,
   error,
   classNames,
   disabled,
-  ...others
-}: Omit<FormTextareaProps, 'name' | 'inputProps'> & {
+  ...rest
+}: Omit<FormNativeSelectProps, 'name' | 'selectProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  rules?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;
 }) {
   const methods = useFormContext<T>();
@@ -35,12 +36,12 @@ export default function HookFormTextarea<T extends FieldValues>({
 
   return (
     <div className={classNames?.wrapper}>
-      <FormTextarea
+      <FormNativeSelect
         id={id}
         name={name}
         label={label}
         disabled={disabled}
-        {...others}
+        {...rest}
         classNames={{
           label: cn(classNames?.label, {
             'text-danger': showError,
@@ -49,7 +50,7 @@ export default function HookFormTextarea<T extends FieldValues>({
             'ring-danger text-danger': showError,
           }),
         }}
-        inputProps={register(name, options)}
+        selectProps={register(name, rules)}
       />
       {showError && <FormError field={name} className="mt-1" message={errorMessage} />}
     </div>

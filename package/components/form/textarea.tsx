@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { TextareaHTMLAttributes, useRef } from 'react';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
-import { TextareaHTMLAttributes, useRef } from 'react';
 import { cn } from '../../lib/utils';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -24,7 +23,7 @@ export interface FormTextareaProps extends InputProps {
   };
 }
 
-export default function FormTextarea({
+export function FormTextarea({
   id,
   name,
   label,
@@ -33,7 +32,7 @@ export default function FormTextarea({
   required,
   disabled,
   inputProps = {},
-  ...others
+  ...rest
 }: FormTextareaProps) {
   if (!id) id = _kebabCase(name);
   const _ref = useRef<HTMLTextAreaElement>(null);
@@ -49,10 +48,11 @@ export default function FormTextarea({
         id={id}
         name={name}
         rows={rows}
+        required={required}
         disabled={disabled}
         autoComplete="off"
         {...inputProps}
-        {...others}
+        {...rest}
         // Required to bind three potential refs:
         // 1. From the inputProps ex) react-hook-form.
         // 2. From the this component instance itself.

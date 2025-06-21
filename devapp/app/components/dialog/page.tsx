@@ -15,6 +15,7 @@ import {
 
 import { Input } from '../../../../package/components/ui/input';
 import { Label } from '../../../../package/components/ui/label';
+import { FormSelect } from '../../../../package/components/form/select';
 
 export default function Page() {
   const [open, setOpen] = useState(false);
@@ -42,6 +43,15 @@ export default function Page() {
             </Label>
             <Input id="username" value="@peduarte" className="col-span-3" />
           </div>
+          <FormSelect
+            label="First name"
+            name="firstName"
+            data={['John', 'Jane', 'Doe']}
+            defaultValue="Doe"
+            required
+            classNames={{ wrapper: 'col-span-1 mt-2' }}
+            onChange={(val) => console.log(val)}
+          />
         </div>
         <DialogFooter>
           <Button type="submit">Save changes</Button>

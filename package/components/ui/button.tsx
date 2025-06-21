@@ -44,6 +44,7 @@ const buttonVariants = cva(
           'border border-destructive bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
         muted: 'border border-muted bg-muted text-muted-foreground shadow-sm hover:bg-muted/90',
         link: 'text-primary underline-offset-4 hover:underline',
+        ghost: 'hover:bg-light hover:text-light-foreground',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -83,6 +84,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  left?: React.ReactNode;
 }
 
 function getOutlineClasses(variant: any) {
@@ -97,7 +99,7 @@ function getOutlineClasses(variant: any) {
     dark: 'border-dark text-dark shadow-sm hover:bg-dark/10',
     accent: 'border-accent text-accent shadow-sm hover:bg-accent/10',
     destructive: 'border-destructive text-destructive shadow-sm hover:bg-destructive/10',
-    muted: 'border-muted text-muted shadow-sm hover:bg-muted/10',
+    muted: 'border-muted text-muted-foreground shadow-sm hover:bg-muted/10',
   };
 
   return colors[variant ?? 'primary'];
@@ -152,7 +154,7 @@ function getOutlineSpinnerClasses(variant: any) {
     dark: 'text-dark',
     accent: 'text-accent',
     destructive: 'text-destructive',
-    muted: 'text-muted',
+    muted: 'text-muted-foreground',
     link: 'text-primary',
   };
 
@@ -171,7 +173,10 @@ function getThinClasses(size: any) {
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, outline, outlineFilled, loading, thin, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, outline, outlineFilled, loading, thin, asChild = false, children, left, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
 
     let outlineClasses: string[] = [];
@@ -183,12 +188,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const thinClasses = thin ? getThinClasses(size) : '';
 
     if (loading) {
-      const { children, ...loaderProps } = props;
+      const { ...loaderProps } = props;
       const spinnerClasses = outline || outlineFilled ? getOutlineSpinnerClasses(variant) : getSpinnerClasses(variant);
       const loadingClasses = 'pointer-events-none';
 
       return (
         <Comp
+          type="button"
           className={cn(
             buttonVariants({ variant, size, outline, className }),
             outlineClasses,
@@ -211,10 +217,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
+        type="button"
         className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, thinClasses)}
         ref={ref}
         {...props}
-      />
+      >
+        <div className="flex items-center gap-1">
+          {left}
+          {children}
+        </div>
+      </Comp>
     );
   },
 );

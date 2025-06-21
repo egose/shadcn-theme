@@ -4,21 +4,22 @@ import React from 'react';
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
-import FormError from './FormError';
-import FormTextInput, { FormTextInputProps } from './FormTextInput';
+import { FormError } from './error';
+import { FormTextInput } from './text-input';
+import type { FormTextInputProps } from './text-input';
 
-export default function HookTextInput<T extends FieldValues>({
+export function HookFormTextInput<T extends FieldValues>({
   id,
   name,
-  options,
+  rules,
   label,
   error,
   classNames,
   disabled,
-  ...others
+  ...rest
 }: Omit<FormTextInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  rules?: RegisterOptions<T, Path<T>> | undefined;
   error?: string;
 }) {
   const methods = useFormContext<T>();
@@ -40,7 +41,7 @@ export default function HookTextInput<T extends FieldValues>({
         name={name}
         label={label}
         disabled={disabled}
-        {...others}
+        {...rest}
         classNames={{
           label: cn(classNames?.label, {
             'text-danger': showError,
@@ -49,7 +50,7 @@ export default function HookTextInput<T extends FieldValues>({
             'ring-danger text-danger': showError,
           }),
         }}
-        inputProps={register(name, options)}
+        inputProps={register(name, rules)}
       />
       {showError && <FormError field={name} className="mt-1" message={errorMessage} />}
     </div>

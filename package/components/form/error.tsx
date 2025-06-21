@@ -4,7 +4,7 @@ import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '../../lib/utils';
 
-export default function FormError({
+export function FormError({
   field,
   className = '',
   message = '',
