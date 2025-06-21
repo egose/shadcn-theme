@@ -12,12 +12,13 @@ install: asdf-install
 install:
 	pnpm install
 	pnpm --dir package install
-	pnpm --dir devapp install
+	pnpm --dir apps/nextjs install
+	pnpm --dir apps/angular install
 
 .PHONY: detect-secret
 detect-secret:
 	detect-secrets scan --exclude-files "(pnpm-lock\.yaml|.*/pnpm-lock\.yaml)" > .secrets.baseline
 
-.PHONY: devapp
-devapp:
-	pnpm --dir devapp dev
+.PHONY: nextjs
+nextjs:
+	pnpm --dir apps/nextjs dev

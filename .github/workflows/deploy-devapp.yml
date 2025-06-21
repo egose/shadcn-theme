@@ -26,13 +26,13 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
-    - name: Build 📦
+    - name: Nextjs Build 📦
       run: |
         pnpm build
         touch out/.nojekyll
-      working-directory: devapp
+      working-directory: apps/nextjs
 
-    - name: Deploy 🚀
+    - name: Nextjs Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4.7.3
       with:
-        folder: devapp/out
+        folder: apps/nextjs/out

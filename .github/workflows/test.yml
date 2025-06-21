@@ -23,8 +23,8 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
-    - name: Lint & Build
+    - name: Nextjs Lint & Build
       run: |
         pnpm lint
         pnpm build
-      working-directory: devapp
+      working-directory: apps/nextjs
