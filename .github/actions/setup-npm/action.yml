@@ -18,10 +18,10 @@ runs:
       pnpm install --no-frozen-lockfile
     shell: bash
 
-  - name: Install Package NPM packages
+  - name: Install Package React NPM packages
     run: pnpm install --no-frozen-lockfile
     shell: bash
-    working-directory: package
+    working-directory: packages/react
 
   - name: Install Nextjs app NPM packages
     run: pnpm install --no-frozen-lockfile
