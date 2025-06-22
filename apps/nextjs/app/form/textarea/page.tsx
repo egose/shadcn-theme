@@ -1,11 +1,11 @@
 'use client';
 
-import { FormProvider, useForm } from '../../../../../package/node_modules/react-hook-form';
+import { FormProvider, useForm } from '../../../../../packages/react/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
-import { HookFormTextarea } from '../../../../../package/components/form/hook-textarea';
+import { Button } from '../../../../../packages/react/components/ui/button';
+import { HookFormTextarea } from '../../../../../packages/react/components/form/hook-textarea';
 
 const validationSchema = z.object({
   name: z.string().min(1).max(100),

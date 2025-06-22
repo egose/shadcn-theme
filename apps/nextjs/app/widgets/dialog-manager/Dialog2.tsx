@@ -1,4 +1,4 @@
-import { Button } from '../../../../../package/components/ui/button';
+import { Button } from '../../../../../packages/react/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -6,10 +6,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../../../../../package/components/ui/dialog';
-import { createTypedDialog } from '../../../../../package/components/widgets/dialog-manager';
-import type { DialogProps } from '../../../../../package/components/widgets/dialog-manager';
-import { FormDateRangePicker } from '../../../../../package/components/form/date-range-picker';
+} from '../../../../../packages/react/components/ui/dialog';
+import { createTypedDialog } from '../../../../../packages/react/components/widgets/dialog-manager';
+import type { DialogProps } from '../../../../../packages/react/components/widgets/dialog-manager';
+import { FormDateRangePicker } from '../../../../../packages/react/components/form/date-range-picker';
 
 function Dialog2({ open, args, onClose }: DialogProps<{ age: number }, number>) {
   return (
