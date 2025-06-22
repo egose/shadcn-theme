@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react';
-import { FormProvider, useForm } from '../../../../../package/node_modules/react-hook-form';
+import { FormProvider, useForm } from '../../../../../packages/react/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { addDays } from 'date-fns/addDays';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
-import { FormDatePicker } from '../../../../../package/components/form/date-picker';
-import { HookFormDatePicker } from '../../../../../package/components/form/hook-date-picker';
-import { FormDateRangePicker } from '../../../../../package/components/form/date-range-picker';
+import { Button } from '../../../../../packages/react/components/ui/button';
+import { FormDatePicker } from '../../../../../packages/react/components/form/date-picker';
+import { HookFormDatePicker } from '../../../../../packages/react/components/form/hook-date-picker';
+import { FormDateRangePicker } from '../../../../../packages/react/components/form/date-range-picker';
 
 const validationSchema = z.object({
   date2: z.date().optional(),

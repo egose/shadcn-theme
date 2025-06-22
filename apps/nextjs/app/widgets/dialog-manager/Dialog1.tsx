@@ -1,4 +1,4 @@
-import { Button } from '../../../../../package/components/ui/button';
+import { Button } from '../../../../../packages/react/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -6,10 +6,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '../../../../../package/components/ui/dialog';
-import { useDialog, createTypedDialog } from '../../../../../package/components/widgets/dialog-manager';
-import type { DialogProps } from '../../../../../package/components/widgets/dialog-manager';
-import { FormTextInput } from '../../../../../package/components/form/text-input';
+} from '../../../../../packages/react/components/ui/dialog';
+import { useDialog, createTypedDialog } from '../../../../../packages/react/components/widgets/dialog-manager';
+import type { DialogProps } from '../../../../../packages/react/components/widgets/dialog-manager';
+import { FormTextInput } from '../../../../../packages/react/components/form/text-input';
 import { Dialog2Typed } from './Dialog2';
 
 function Dialog1({ open, args, onClose }: DialogProps<{ name: string }, { confirmed: boolean }>) {

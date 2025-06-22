@@ -1,18 +1,18 @@
 'use client';
 
-import { FormProvider, useForm } from '../../../../../package/node_modules/react-hook-form';
+import { FormProvider, useForm } from '../../../../../packages/react/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
-import { HookFormTextInput } from '../../../../../package/components/form/hook-text-input';
-import { FormTimeInput } from '../../../../../package/components/form/time-input';
-import { HookFormTimeInput } from '../../../../../package/components/form/hook-time-input';
-import { useToast } from '../../../../../package/hooks/use-toast';
-import { ToastAction } from '../../../../../package/components/ui/toast';
-import { FormCheckbox } from '../../../../../package/components/form/checkbox';
-import { HookFormCheckbox } from '../../../../../package/components/form/hook-checkbox';
-import { CopyableButton } from '../../../../../package/components/ui/copy-button';
+import { Button } from '../../../../../packages/react/components/ui/button';
+import { HookFormTextInput } from '../../../../../packages/react/components/form/hook-text-input';
+import { FormTimeInput } from '../../../../../packages/react/components/form/time-input';
+import { HookFormTimeInput } from '../../../../../packages/react/components/form/hook-time-input';
+import { useToast } from '../../../../../packages/react/hooks/use-toast';
+import { ToastAction } from '../../../../../packages/react/components/ui/toast';
+import { FormCheckbox } from '../../../../../packages/react/components/form/checkbox';
+import { HookFormCheckbox } from '../../../../../packages/react/components/form/hook-checkbox';
+import { CopyableButton } from '../../../../../packages/react/components/ui/copy-button';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),

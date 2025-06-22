@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
+import { Button } from '../../../../../packages/react/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,11 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../../../../../package/components/ui/dialog';
+} from '../../../../../packages/react/components/ui/dialog';
 
-import { Input } from '../../../../../package/components/ui/input';
-import { Label } from '../../../../../package/components/ui/label';
-import { FormSelect } from '../../../../../package/components/form/select';
+import { Input } from '../../../../../packages/react/components/ui/input';
+import { Label } from '../../../../../packages/react/components/ui/label';
+import { FormSelect } from '../../../../../packages/react/components/form/select';
 
 export default function Page() {
   const [open, setOpen] = useState(false);

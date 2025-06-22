@@ -21,9 +21,9 @@ import {
   CreditCard,
 } from 'lucide-react';
 import './globals.css';
-import SidebarLayout, { ISidebarData } from '../../../package/layouts/sidebar1';
-import { DialogManagerProvider } from '../../../package/components/widgets/dialog-manager';
-import { Toaster } from '../../../package/components/ui/toaster';
+import SidebarLayout, { ISidebarData } from '../../../packages/react/layouts/sidebar1';
+import { DialogManagerProvider } from '../../../packages/react/components/widgets/dialog-manager';
+import { Toaster } from '../../../packages/react/components/ui/toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

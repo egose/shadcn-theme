@@ -1,12 +1,12 @@
 'use client';
 
-import { FormProvider, useForm } from '../../../../../package/node_modules/react-hook-form';
+import { FormProvider, useForm } from '../../../../../packages/react/node_modules/react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
-import { FormNativeSelect } from '../../../../../package/components/form/native-select';
-import { HookFormNativeSelect } from '../../../../../package/components/form/hook-native-select';
+import { Button } from '../../../../../packages/react/components/ui/button';
+import { FormNativeSelect } from '../../../../../packages/react/components/form/native-select';
+import { HookFormNativeSelect } from '../../../../../packages/react/components/form/hook-native-select';
 
 const validationSchema = z.object({
   name: z.string(),

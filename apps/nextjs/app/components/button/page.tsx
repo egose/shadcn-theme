@@ -2,7 +2,7 @@
 
 import { IconInbox } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../package/components/ui/button';
+import { Button } from '../../../../../packages/react/components/ui/button';
 
 const variants = [
   'primary',
