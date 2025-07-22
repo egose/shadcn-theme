@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @custom-variant dark (&:is(.dark *));
-@source "../../packages/react/components";
-@source "../../packages/react/layouts";
+@source "../../../packages/react/components";
+@source "../../../packages/react/layouts";
 
 /* See https://github.com/shadcn/app-tailwind-v4/blob/main/app/globals.css */
 body {
