@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { ChevronsUpDown, LogOut, type LucideIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import {
@@ -22,7 +23,7 @@ export interface INavUser {
 export interface INavUserMenuItem {
   title: string;
   url?: string;
-  icon?: LucideIcon;
+  icon?: React.ElementType;
   onClick?: (title: string) => void;
 }
 

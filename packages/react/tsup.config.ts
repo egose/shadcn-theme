@@ -44,7 +44,7 @@ const prependUseClient = (): Plugin => ({
 });
 
 export const tsup: Options = {
-  entry: ['components', 'hooks', 'lib'],
+  entry: ['components', 'hooks', 'lib', 'layouts'],
   format: ['cjs', 'esm'],
   target: 'es2017',
   dts: true,
