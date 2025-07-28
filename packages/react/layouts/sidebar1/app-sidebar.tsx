@@ -6,12 +6,17 @@ import { NavUser, INavUser, INavUserMenuItem } from './nav-user';
 import { ContextSwitcher, INavContext } from './context-switcher';
 import { INavMenu } from './nav-menus';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '../../components/ui/sidebar';
+import { Button } from '../../components/ui/button';
+import { cn } from '../../lib/utils';
 
 export interface ISidebarData {
-  user: INavUser;
+  user?: INavUser;
   contexts: INavContext[];
   menus: INavMenu[];
   userMenus: INavUserMenuItem[];
+  events?: {
+    signIn?: () => void;
+  };
 }
 
 export function AppSidebar({
@@ -32,7 +37,20 @@ export function AppSidebar({
         <NavMenus menus={data.menus} aslink={aslink} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={onLogout} />
+        {data.user ? (
+          <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={onLogout} />
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() => {
+              if (data.events?.signIn) {
+                data.events.signIn();
+              }
+            }}
+          >
+            Sign in
+          </Button>
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

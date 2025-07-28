@@ -31,6 +31,14 @@ export function ContextSwitcher({
   const { isMobile } = useSidebar();
   const [activeContext, setActiveContext] = React.useState(items[0]);
 
+  React.useEffect(() => {
+    if (!items || items.length === 0) return;
+    setActiveContext((prev) => {
+      const stillExists = items.find((item) => item.name === prev?.name);
+      return stillExists ?? items[0];
+    });
+  }, [items]);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
