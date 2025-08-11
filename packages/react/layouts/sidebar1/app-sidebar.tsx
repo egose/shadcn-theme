@@ -15,7 +15,8 @@ export interface ISidebarData {
   menus: INavMenu[];
   userMenus: INavUserMenuItem[];
   events?: {
-    signIn?: () => void;
+    login?: () => void;
+    logout?: (user: INavUser) => void;
   };
 }
 
@@ -24,9 +25,8 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   data: ISidebarData;
   aslink: React.ElementType;
-  onLogout?: (user: INavUser) => void;
 }) {
-  const { data, aslink, onLogout, ...rest } = props;
+  const { data, aslink, ...rest } = props;
 
   return (
     <Sidebar collapsible="icon" {...rest}>
@@ -38,13 +38,13 @@ export function AppSidebar({
       </SidebarContent>
       <SidebarFooter>
         {data.user ? (
-          <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={onLogout} />
+          <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={data.events?.logout} />
         ) : (
           <Button
             variant="primary"
             onClick={() => {
-              if (data.events?.signIn) {
-                data.events.signIn();
+              if (data.events?.login) {
+                data.events.login();
               }
             }}
           >

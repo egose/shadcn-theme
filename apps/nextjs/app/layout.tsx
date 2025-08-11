@@ -51,13 +51,13 @@ export default function RootLayout({
   const pathname = usePathname();
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCount((prev) => prev + 1);
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCount((prev) => prev + 1);
+  //   }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const data: ISidebarData = {
     user: {
@@ -70,6 +70,7 @@ export default function RootLayout({
         name: 'Egose Inc',
         text: `Enterprise - ${count}`,
         logo: GalleryVerticalEnd,
+        className: 'bg-purple-500 text-white',
       },
     ],
     menus: [

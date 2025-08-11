@@ -12,11 +12,13 @@ import {
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../../components/ui/sidebar';
+import { cn } from '../../lib/utils';
 
 export interface INavContext {
   name: string;
   logo: React.ElementType;
   text: string;
+  className?: string;
 }
 
 export function ContextSwitcher({
@@ -48,7 +50,12 @@ export function ContextSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-dark text-dark-foreground">
+              <div
+                className={cn(
+                  'flex aspect-square size-8 items-center justify-center rounded-lg bg-dark text-dark-foreground',
+                  activeContext.className,
+                )}
+              >
                 <activeContext.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">

@@ -13,6 +13,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '../../components/ui/sidebar';
+import { useSidebar } from '../../components/ui/sidebar';
 
 export interface IMenuSubItem {
   title: string;
@@ -32,11 +33,12 @@ export interface INavMenu {
 }
 
 function SidebarMenuLink({ item, as: LinkComponent }: { item: IMenuSubItem; as: React.ElementType }) {
+  const { setOpenMobile } = useSidebar();
   const Comp = LinkComponent && item.url ? LinkComponent : 'button';
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.title}>
+      <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.title} onClick={() => setOpenMobile(false)}>
         <Comp to={item.url} href={item.url} onClick={() => item.onClick?.(item.title)}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>
@@ -47,6 +49,7 @@ function SidebarMenuLink({ item, as: LinkComponent }: { item: IMenuSubItem; as: 
 }
 
 function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; as: React.ElementType }) {
+  const { setOpenMobile } = useSidebar();
   if (!item.subItems) return null;
 
   return (
@@ -66,7 +69,7 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
 
               return (
                 <SidebarMenuSubItem key={subItem.title}>
-                  <SidebarMenuSubButton asChild isActive={subItem.isActive}>
+                  <SidebarMenuSubButton asChild isActive={subItem.isActive} onClick={() => setOpenMobile(false)}>
                     <Comp
                       to={subItem.url}
                       href={subItem.url}
