@@ -24,6 +24,7 @@ import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../../packages/react/layouts/sidebar1';
 import { DialogManagerProvider } from '../../../packages/react/components/widgets/dialog-manager';
 import { Toaster } from '../../../packages/react/components/ui/toaster';
+import { useEffect, useState } from 'react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -48,6 +49,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const [count, setCount] = useState(0);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCount((prev) => prev + 1);
+  //   }, 1000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const data: ISidebarData = {
     user: {
@@ -58,8 +68,9 @@ export default function RootLayout({
     contexts: [
       {
         name: 'Egose Inc',
-        text: 'Enterprise',
+        text: `Enterprise - ${count}`,
         logo: GalleryVerticalEnd,
+        className: 'bg-purple-500 text-white',
       },
     ],
     menus: [
@@ -159,6 +170,11 @@ export default function RootLayout({
         onClick: console.log,
       },
     ],
+    events: {
+      signIn: () => {
+        console.log('Sign in clicked');
+      },
+    },
   };
 
   data.menus.forEach((menu) => {
@@ -173,6 +189,8 @@ export default function RootLayout({
       }
     });
   });
+
+  console.log(count);
 
   return (
     <html lang="en">
