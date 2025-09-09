@@ -171,7 +171,7 @@ export default function RootLayout({
       },
     ],
     events: {
-      signIn: () => {
+      login: () => {
         console.log('Sign in clicked');
       },
     },
@@ -198,7 +198,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SidebarLayout aslink={Link} data={data} onLogout={console.log}>
+        <SidebarLayout aslink={Link} data={data}>
           <DialogManagerProvider>{children}</DialogManagerProvider>
           <Toaster />
         </SidebarLayout>
