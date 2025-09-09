@@ -8,6 +8,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "paths": {
+      "badge": ["./dist/badge"],
       "button": ["./dist/button"]
     },
     "noFallthroughCasesInSwitch": true,
@@ -32,6 +33,12 @@
     },
     {
       "path": "./projects/button/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/badge/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/badge/tsconfig.spec.json"
     }
   ]
 }

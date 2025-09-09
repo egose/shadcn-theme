@@ -139,6 +139,10 @@ async function main() {
       name,
     };
 
+    if (context === 'angular') {
+      packageJSON.exports = parseJson(`${publishDir}/exports.json`);
+    }
+
     console.log(packageJSON);
 
     writeJson(targetPackageJSON, packageJSON);

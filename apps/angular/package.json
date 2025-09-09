@@ -16,6 +16,7 @@
     "@angular/forms": "^20.2.4",
     "@angular/platform-browser": "^20.2.4",
     "@angular/router": "^20.2.4",
+    "@egose/shadcn-theme-ng": "^0.0.3",
     "@tailwindcss/postcss": "^4.1.13",
     "postcss": "^8.5.6",
     "rxjs": "~7.8.2",

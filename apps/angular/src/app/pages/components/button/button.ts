@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MyButtonComponent } from '../../../../../../../packages/my-workspace/projects/button/src/public-api';
+import { MyButtonComponent } from '../../../../../../../packages/angular/projects/button/src/public-api';
 
 @Component({
   selector: 'app-button',
