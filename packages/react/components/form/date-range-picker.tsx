@@ -79,7 +79,7 @@ export function FormDateRangePicker({
           <PopoverTrigger asChild>
             <Button
               variant={value ? 'secondary' : 'muted'}
-              outline
+              appearance="outline"
               className={cn('min-w-[240px] justify-start text-left font-normal', classNames?.button)}
             >
               <CalendarIcon />

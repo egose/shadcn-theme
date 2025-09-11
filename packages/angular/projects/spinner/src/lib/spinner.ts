@@ -34,16 +34,16 @@ export class EgSpinner {
 
   // Map sizes to Tailwind classes
   private readonly sizeClasses: Record<SpinnerSize, string> = {
-    small: '!size-6',
-    medium: '!size-8',
-    large: '!size-12',
+    small: 'tw:size-6!',
+    medium: 'tw:size-8!',
+    large: 'tw:size-12!',
   };
 
   // Outer container class (visibility + layout)
   protected readonly _containerClass = computed(() =>
     hlm(
-      'flex-col items-center justify-center', // base container styles
-      this.show() ? 'flex' : 'hidden',
+      'tw:flex-col tw:items-center tw:justify-center', // base container styles
+      this.show() ? 'tw:flex' : 'tw:hidden',
       this.wrapperClass(),
     ),
   );
@@ -51,7 +51,7 @@ export class EgSpinner {
   // SVG spinner class (size + animation + color)
   protected readonly _iconClass = computed(() =>
     hlm(
-      '[&>svg]:animate-spin [&>svg]:text-primary', // base svg styles
+      'tw:[&>svg]:animate-spin tw:[&>svg]:text-primary', // base svg styles
       this.sizeClasses[this.size()],
       this.spinnerClass(),
     ),

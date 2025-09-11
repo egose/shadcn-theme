@@ -98,7 +98,7 @@ export function FormDatePicker({
           <PopoverTrigger asChild>
             <Button
               variant={date ? 'secondary' : 'muted'}
-              outline
+              appearance="outline"
               className={cn('min-w-[145px] justify-start text-left font-normal', classNames?.button)}
             >
               <CalendarIcon />

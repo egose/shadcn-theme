@@ -51,44 +51,45 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-sm px-3 text-xs',
         lg: 'h-10 rounded-sm px-8',
         icon: 'h-9 w-9',
+        'compact-default': 'h-8 px-2 py-1',
+        'compact-sm': 'h-7 px-2 py-1',
+        'compact-lg': 'h-9 px-2 py-1',
+        'compact-icon': 'h-8 w-8',
       },
-      outline: {
-        false: null,
-        true: '',
-      },
-      outlineFilled: {
-        false: null,
-        true: '',
+      appearance: {
+        solid: '',
+        outline: 'bg-white border',
+        outlineFilled: 'bg-white border',
       },
       loading: {
+        true: 'pointer-events-none',
         false: null,
-        true: '',
-      },
-      compact: {
-        false: null,
-        true: '',
       },
     },
     defaultVariants: {
       variant: 'primary',
       size: 'default',
-      outline: false,
-      outlineFilled: false,
+      appearance: 'solid',
       loading: false,
-      compact: false,
     },
   },
 );
 
+// Type safety for variant and size
+export type VariantType = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
+export type SizeType = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['appearance']>;
+
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  left?: React.ReactNode;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
 }
 
-function getOutlineClasses(variant: any) {
-  const colors: Record<string, string> = {
+function getOutlineClasses(variant: VariantType) {
+  const colors: Record<VariantType, string> = {
     primary: 'border-primary text-primary shadow-sm hover:bg-primary/10',
     secondary: 'border-secondary text-secondary shadow-sm hover:bg-secondary/10',
     success: 'border-success text-success shadow-sm hover:bg-success/10',
@@ -100,13 +101,14 @@ function getOutlineClasses(variant: any) {
     accent: 'border-accent text-accent shadow-sm hover:bg-accent/10',
     destructive: 'border-destructive text-destructive shadow-sm hover:bg-destructive/10',
     muted: 'border-muted text-muted-foreground shadow-sm hover:bg-muted/10',
+    link: 'text-primary',
+    ghost: 'text-light-foreground',
   };
-
-  return colors[variant ?? 'primary'];
+  return colors[variant];
 }
 
-function getOutlineFilledClasses(variant: any) {
-  const colors: Record<string, string> = {
+function getOutlineFilledClasses(variant: VariantType) {
+  const colors: Record<VariantType, string> = {
     primary: 'hover:bg-primary hover:text-primary-foreground',
     secondary: 'hover:bg-secondary hover:text-secondary-foreground',
     success: 'hover:bg-success hover:text-success-foreground',
@@ -118,32 +120,33 @@ function getOutlineFilledClasses(variant: any) {
     accent: 'hover:bg-accent hover:text-accent-foreground',
     destructive: 'hover:bg-destructive hover:text-destructive-foreground',
     muted: 'hover:bg-muted hover:text-muted-foreground',
+    link: 'hover:underline',
+    ghost: 'hover:bg-light',
   };
-
-  return colors[variant ?? 'primary'];
+  return colors[variant];
 }
 
-function getSpinnerClasses(variant: any) {
-  const colors: Record<string, string> = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary',
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary',
-    success: 'bg-success text-success-foreground hover:bg-success',
-    warning: 'bg-warning text-warning-foreground hover:bg-warning',
-    danger: 'bg-danger text-danger-foreground hover:bg-danger',
-    info: 'bg-info text-info-foreground hover:bg-info',
-    light: 'bg-light text-light-foreground hover:bg-light',
-    dark: 'bg-dark text-dark-foreground hover:bg-dark',
-    accent: 'bg-accent text-accent-foreground hover:bg-accent',
-    destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive',
-    muted: 'bg-muted text-muted-foreground hover:bg-muted',
+function getSpinnerClasses(variant: VariantType) {
+  const colors: Record<VariantType, string> = {
+    primary: 'bg-primary text-primary-foreground',
+    secondary: 'bg-secondary text-secondary-foreground',
+    success: 'bg-success text-success-foreground',
+    warning: 'bg-warning text-warning-foreground',
+    danger: 'bg-danger text-danger-foreground',
+    info: 'bg-info text-info-foreground',
+    light: 'bg-light text-light-foreground',
+    dark: 'bg-dark text-dark-foreground',
+    accent: 'bg-accent text-accent-foreground',
+    destructive: 'bg-destructive text-destructive-foreground',
+    muted: 'bg-muted text-muted-foreground',
     link: 'text-primary',
+    ghost: 'text-light-foreground',
   };
-
-  return colors[variant ?? 'primary'];
+  return colors[variant];
 }
 
-function getOutlineSpinnerClasses(variant: any) {
-  const colors: Record<string, string> = {
+function getOutlineSpinnerClasses(variant: VariantType) {
+  const colors: Record<VariantType, string> = {
     primary: 'text-primary',
     secondary: 'text-secondary',
     success: 'text-success',
@@ -156,80 +159,58 @@ function getOutlineSpinnerClasses(variant: any) {
     destructive: 'text-destructive',
     muted: 'text-muted-foreground',
     link: 'text-primary',
+    ghost: 'text-light-foreground',
   };
-
-  return colors[variant ?? 'primary'];
-}
-
-function getCompactClasses(size: any) {
-  const colors: Record<string, string> = {
-    default: 'h-8 px-2 py-1',
-    sm: 'h-7 px-2 py-1',
-    lg: 'h-9 px-2 py-1',
-    icon: 'h-8 w-8',
-  };
-
-  return colors[size ?? 'default'];
+  return colors[variant];
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, outline, outlineFilled, loading, compact, asChild = false, children, left, ...props },
+    { className, variant, size, appearance, loading, icon, iconPosition = 'left', asChild = false, children, ...props },
     ref,
   ) => {
     const Comp = asChild ? Slot : 'button';
 
-    let outlineClasses: string[] = [];
-    if (outline || outlineFilled) {
-      outlineClasses = ['bg-white border', getOutlineClasses(variant)];
-      if (outlineFilled) outlineClasses.push(getOutlineFilledClasses(variant));
+    const outlineClasses =
+      appearance === 'outline' || appearance === 'outlineFilled' ? [getOutlineClasses(variant as VariantType)] : [];
+
+    if (appearance === 'outlineFilled') {
+      outlineClasses.push(getOutlineFilledClasses(variant as VariantType));
     }
 
-    const compactClasses = compact ? getCompactClasses(size) : '';
-
-    if (loading) {
-      const { ...loaderProps } = props;
-      const spinnerClasses = outline || outlineFilled ? getOutlineSpinnerClasses(variant) : getSpinnerClasses(variant);
-      const loadingClasses = 'pointer-events-none';
-
-      return (
-        <Comp
-          type="button"
-          className={cn(
-            buttonVariants({ variant, size, outline, className }),
-            outlineClasses,
-            compactClasses,
-            spinnerClasses,
-            loadingClasses,
-          )}
-          ref={ref}
-          {...loaderProps}
-        >
-          <div className="relative inline-flex items-center">
-            <span className="invisible">{children}</span>
-            <span className="absolute inset-0 flex items-center justify-center">
-              <Spinner className={cn(spinnerClasses, loadingClasses)} />
-            </span>
-          </div>
-        </Comp>
-      );
-    }
+    const spinnerClasses =
+      appearance === 'outline' || appearance === 'outlineFilled'
+        ? getOutlineSpinnerClasses(variant as VariantType)
+        : getSpinnerClasses(variant as VariantType);
 
     return (
       <Comp
         type="button"
-        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, compactClasses)}
+        className={cn(buttonVariants({ variant, size, appearance, loading, className }), outlineClasses)}
         ref={ref}
+        aria-busy={loading || undefined}
+        disabled={loading || props.disabled}
         {...props}
       >
-        <div className="flex items-center gap-1">
-          {left}
-          {children}
-        </div>
+        {loading ? (
+          <div className="relative inline-flex items-center justify-center w-full">
+            <span className="invisible">{children}</span>
+            <span className="absolute inset-0 flex items-center justify-center">
+              <Spinner className={cn(spinnerClasses, 'animate-spin')} />
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1">
+            {icon && iconPosition === 'left' && <span className="flex-shrink-0">{icon}</span>}
+            {children}
+            {icon && iconPosition === 'right' && <span className="flex-shrink-0">{icon}</span>}
+          </div>
+        )}
       </Comp>
     );
   },
 );
+
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
