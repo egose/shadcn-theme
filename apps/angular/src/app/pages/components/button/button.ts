@@ -8,33 +8,35 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
   standalone: true,
   imports: [EgButton, NgIcon],
   template: `
-    <h1 class="font-bold text-2xl mt-4 mb-5">Button</h1>
+    <div class="tw:space-y-8 tw:p-6">
+      <h1 class="tw:text-2xl tw:font-bold">Button Showcase</h1>
 
-    <ng-template #iconTemplate>
-      <ng-icon [svg]="icon" />
-    </ng-template>
+      <ng-template #iconTemplate>
+        <ng-icon [svg]="icon" />
+      </ng-template>
 
-    @for (section of sections; track section.title) {
-      <div class="font-semibold mt-4">
-        <h3>{{ section.title }}</h3>
-        <div class="flex flex-wrap gap-2">
-          @for (v of variants; track v) {
-            <button
-              egBtn
-              [variant]="v"
-              [appearance]="section.appearance ?? 'solid'"
-              [size]="section.size ?? 'default'"
-              [disabled]="section.disabled || false"
-              [loading]="section.loading || false"
-              [icon]="section.icon ? iconTemplate : null"
-              [iconPosition]="section.iconPosition || 'left'"
-            >
-              {{ v }}
-            </button>
-          }
+      @for (section of sections; track section.title) {
+        <div class="tw:font-semibold tw:mt-4">
+          <h3>{{ section.title }}</h3>
+          <div class="tw:flex tw:flex-wrap tw:gap-2">
+            @for (v of variants; track v) {
+              <button
+                egButton
+                [variant]="v"
+                [appearance]="section.appearance ?? 'solid'"
+                [size]="section.size ?? 'default'"
+                [disabled]="section.disabled || false"
+                [loading]="section.loading || false"
+                [icon]="section.icon ? iconTemplate : null"
+                [iconPosition]="section.iconPosition || 'left'"
+              >
+                {{ v }}
+              </button>
+            }
+          </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   `,
 })
 export class ButtonPage {

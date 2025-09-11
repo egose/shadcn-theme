@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@egose/shadcn-theme-ng/spinner": ["../../packages/angular/projects/spinner/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/button": ["../../packages/angular/projects/button/src/public-api.ts"]
+      "@egose/shadcn-theme-ng/button": ["../../packages/angular/projects/button/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/badge": ["../../packages/angular/projects/badge/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {

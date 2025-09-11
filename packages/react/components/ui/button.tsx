@@ -76,9 +76,9 @@ const buttonVariants = cva(
 );
 
 // Type safety for variant and size
-type VariantType = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
-type SizeType = NonNullable<VariantProps<typeof buttonVariants>['size']>;
-type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['appearance']>;
+export type VariantType = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
+export type SizeType = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['appearance']>;
 
 export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
