@@ -24,213 +24,166 @@ export default function Page() {
     <>
       <h1 className="font-bold text-2xl mt-4 mb-5">Button</h1>
 
-      <div className="font-semibold">
-        <h3>Basic</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant}>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Basic */}
+      <Section title="Basic">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant}>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Basic - disabled</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} disabled>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Basic - disabled */}
+      <Section title="Basic - disabled">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} disabled>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Basic - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Basic - loading */}
+      <Section title="Basic - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Basic - disabled - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} disabled loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Basic - disabled + loading */}
+      <Section title="Basic - disabled - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} disabled loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Basic - thin</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} thin>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Compact (was thin) */}
+      <Section title="Compact">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} size="compact-default">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outline>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline */}
+      <Section title="Outline">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outline">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline - disabled</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outline disabled>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline - disabled */}
+      <Section title="Outline - disabled">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outline" disabled>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outline loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline - loading */}
+      <Section title="Outline - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outline" loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline - disabled - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outline disabled loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline - disabled + loading */}
+      <Section title="Outline - disabled - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outline" disabled loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline - thin</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outline thin>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline - compact */}
+      <Section title="Outline - compact">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outline" size="compact-default">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline filled</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outlineFilled>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline Filled */}
+      <Section title="Outline filled">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outlineFilled">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline filled - disabled</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outlineFilled disabled>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline Filled - disabled */}
+      <Section title="Outline filled - disabled">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outlineFilled" disabled>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline filled - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outlineFilled loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline Filled - loading */}
+      <Section title="Outline filled - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outlineFilled" loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline filled - disabled - loading</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outlineFilled disabled loading>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline Filled - disabled + loading */}
+      <Section title="Outline filled - disabled - loading">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outlineFilled" disabled loading>
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Outline filled - thin</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} outlineFilled thin>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Outline Filled - compact */}
+      <Section title="Outline filled - compact">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} appearance="outlineFilled" size="compact-default">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
 
-      <div className="font-semibold mt-4">
-        <h3>Icon</h3>
-        <div className="flex gap-2">
-          {variants.map((variant) => {
-            return (
-              <Button key={variant} variant={variant} left={<IconInbox />}>
-                {_startCase(variant)}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Icons */}
+      <Section title="Icon (left)">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} icon={<IconInbox />} iconPosition="left">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
+
+      <Section title="Icon (right)">
+        {variants.map((variant) => (
+          <Button key={variant} variant={variant} icon={<IconInbox />} iconPosition="right">
+            {_startCase(variant)}
+          </Button>
+        ))}
+      </Section>
     </>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="font-semibold mt-4">
+      <h3>{title}</h3>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </div>
   );
 }
