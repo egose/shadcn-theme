@@ -26,21 +26,45 @@ importers:
       '@angular/router':
         specifier: ^20.2.4
         version: 20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@egose/shadcn-theme-ng':
+        specifier: ^0.0.5
+        version: 0.0.5(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)
+      '@ng-icons/core':
+        specifier: ^32.1.0
+        version: 32.1.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@ng-icons/tabler-icons':
+        specifier: ^32.1.0
+        version: 32.1.0
+      '@spartan-ng/brain':
+        specifier: 0.0.1-alpha.510
+        version: 0.0.1-alpha.510(@angular/cdk@20.2.2(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(rxjs@7.8.2)(tailwind-merge@3.3.1)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.13
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
       rxjs:
         specifier: ~7.8.2
         version: 7.8.2
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
       tailwindcss:
         specifier: ^4.1.13
         version: 4.1.13
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
+      tw-animate-css:
+        specifier: ^1.3.8
+        version: 1.3.8
     devDependencies:
       '@angular/build':
         specifier: ^20.2.2
@@ -205,6 +229,20 @@ packages:
       vitest:
         optional: true
 
+  '@angular/cdk@18.0.0':
+    resolution: {integrity: sha512-V0i1SAiT2PTNyugBW0E4fev8G/4XP5FdyX2YD6oc5sNyt3GFcoDNHcz+oEne8+aYVnQ3Ax9Zutq/SQincDHIbw==}
+    peerDependencies:
+      '@angular/common': ^18.0.0 || ^19.0.0
+      '@angular/core': ^18.0.0 || ^19.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+
+  '@angular/cdk@20.2.2':
+    resolution: {integrity: sha512-jLvIMmFI8zoi6vAu1Aszua59GmhqBOtsVfkwLUGg5Hi86DI/inJr9BznNX2EKDtaulYMGZCmDgsltXQXeqP5Lg==}
+    peerDependencies:
+      '@angular/common': ^20.0.0 || ^21.0.0
+      '@angular/core': ^20.0.0 || ^21.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+
   '@angular/cli@20.2.2':
     resolution: {integrity: sha512-0K8cmuHzRTpPzy/w0+S5o3s0JPV++9/s2JhK4aw/+OnQRpUbodoqjm1ur5k5DUBQfIHi7aM73ZIW3G43lv4F0g==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
@@ -356,6 +394,13 @@ packages:
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
+
+  '@egose/shadcn-theme-ng@0.0.5':
+    resolution: {integrity: sha512-gZj28p81SoPkpyVgdV8OdOup92Zv1QlvKUF40aC2WODFkLr47G5GncCfPvdM9ozwouuciIz/3rKtUKMMm/7vnQ==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@angular/common': ^20.2.0
+      '@angular/core': ^20.2.0
 
   '@emnapi/core@1.5.0':
     resolution: {integrity: sha512-sbP8GzB1WDzacS8fgNPpHlp6C9VZe+SJP3F90W9rLemaQj2PzIuTEl1qDOYQf58YIpyjViI24y9aPWCjEzY2cg==}
@@ -882,6 +927,16 @@ packages:
   '@napi-rs/wasm-runtime@1.0.3':
     resolution: {integrity: sha512-rZxtMsLwjdXkMUGC3WwsPwLNVqVqnTJT6MNIB6e+5fhMcSCPP0AOsNWuMQ5mdCq6HNjs/ZeWAEchpqeprqBD2Q==}
 
+  '@ng-icons/core@32.1.0':
+    resolution: {integrity: sha512-QMZSJIZYFg6THQKL9cQDEf7IbBcALcM09wCBmlIf0slmozRWcNJR25T9huiXy9/15OH1APegaRW+606e9bsOIg==}
+    peerDependencies:
+      '@angular/common': '>=20.0.0'
+      '@angular/core': '>=20.0.0'
+      rxjs: ^6.5.3 || ^7.4.0
+
+  '@ng-icons/tabler-icons@32.1.0':
+    resolution: {integrity: sha512-zqUaJcpllT7kl2UYExoO6oTnLtaQweSKs2wBK4xRsPlhwaU8RjbmZFdYLfa/IAEvLveD5D1i0orIPepu55ESqQ==}
+
   '@npmcli/agent@3.0.0':
     resolution: {integrity: sha512-S79NdEgDQd/NGCay6TCoVzXSj74skRZIKJcpJjC5lOq34SZzyI6MqtiiWoiVWoVrTcGjNeC4ipbh1VIHlpfF5Q==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -1221,6 +1276,23 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
+  '@spartan-ng/brain@0.0.1-alpha.510':
+    resolution: {integrity: sha512-TWu1RPf4wT1J0I+s1y3iU5RFu2aWmoIxFtf0On8I23M+D3HbiEraegr6Oa8rRDrQEHQ6JxA4iRE7ugXI513kDA==}
+    peerDependencies:
+      '@angular/cdk': '>=19.0.0'
+      '@angular/common': '>=19.0.0'
+      '@angular/core': '>=19.0.0'
+      '@angular/forms': '>=19.0.0'
+      clsx: '>=2.0.0'
+      luxon: '>=3.0.0'
+      rxjs: '>=6.6.0'
+      tailwind-merge: '>=2.5.0'
+      tailwindcss: '>=3.3.0'
+      tailwindcss-animate: '>=1.0.7'
+    peerDependenciesMeta:
+      luxon:
+        optional: true
+
   '@tailwindcss/node@4.1.13':
     resolution: {integrity: sha512-eq3ouolC1oEFOAvOMOBAmfCIqZBJuvWvvYWh5h5iOYfe1HFC6+GZ6EIL0JdM3/niGRJmnrOc+8gl9/HGUaaptw==}
 
@@ -1493,6 +1565,9 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
+  class-variance-authority@0.7.1:
+    resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
+
   cli-cursor@5.0.0:
     resolution: {integrity: sha512-aCj4O5wKyszjMmDT4tZj93kxyydN/K5zPWSCe6/0AV/AA1pqe5ZBIw0a2ZfPQV7lL5/yb5HsUreJ6UFAF1tEQw==}
     engines: {node: '>=18'}
@@ -1515,6 +1590,10 @@ packages:
   cliui@9.0.1:
     resolution: {integrity: sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w==}
     engines: {node: '>=20'}
+
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
+    engines: {node: '>=6'}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -2500,6 +2579,9 @@ packages:
   parse5-sax-parser@8.0.0:
     resolution: {integrity: sha512-/dQ8UzHZwnrzs3EvDj6IkKrD/jIZyTlB+8XrHJvcjNgRdmWruNdN9i9RK/JtxakmlUdPwKubKPTCqvbTgzGhrw==}
 
+  parse5@7.3.0:
+    resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
+
   parse5@8.0.0:
     resolution: {integrity: sha512-9m4m5GSgXjL4AjumKzq1Fgfp3Z8rsvjRNbnkVwfu2ImRqE5D0LnY2QfDen18FSY9C573YU5XxSapdHZTZ2WolA==}
 
@@ -2830,6 +2912,17 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  tailwind-merge@2.6.0:
+    resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
+
+  tailwind-merge@3.3.1:
+    resolution: {integrity: sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==}
+
+  tailwindcss-animate@1.0.7:
+    resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || insiders'
+
   tailwindcss@4.1.13:
     resolution: {integrity: sha512-i+zidfmTqtwquj4hMEwdjshYYgMbOrPzb9a0M3ZgNa0JMoZeFC6bxZvO8yr8ozS6ix2SDz0+mvryPeBs2TFE+w==}
 
@@ -2871,6 +2964,9 @@ packages:
   tuf-js@3.1.0:
     resolution: {integrity: sha512-3T3T04WzowbwV2FDiGXBbr81t64g1MUGGJRgT4x5o97N+8ArdhVCAF9IxFrxuSJmM3E5Asn7nKHkao0ibcZXAg==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  tw-animate-css@1.3.8:
+    resolution: {integrity: sha512-Qrk3PZ7l7wUcGYhwZloqfkWCmaXZAoqjkdbIDvzfGshwGtexa/DAs9koXxIkrpEasyevandomzCBAV1Yyop5rw==}
 
   type-fest@0.21.3:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
@@ -3247,6 +3343,23 @@ snapshots:
       - tsx
       - yaml
 
+  '@angular/cdk@18.0.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      rxjs: 7.8.2
+      tslib: 2.8.1
+    optionalDependencies:
+      parse5: 7.3.0
+
+  '@angular/cdk@20.2.2(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      parse5: 8.0.0
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
   '@angular/cli@20.2.2(@types/node@24.3.1)(chokidar@4.0.3)':
     dependencies:
       '@angular-devkit/architect': 0.2002.2(chokidar@4.0.3)
@@ -3465,6 +3578,23 @@ snapshots:
       '@babel/helper-validator-identifier': 7.27.1
 
   '@colors/colors@1.5.0': {}
+
+  '@egose/shadcn-theme-ng@0.0.5(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)':
+    dependencies:
+      '@angular/cdk': 18.0.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      '@spartan-ng/brain': 0.0.1-alpha.510(@angular/cdk@18.0.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(rxjs@7.8.2)(tailwind-merge@2.6.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)
+      class-variance-authority: 0.7.1
+      clsx: 2.1.1
+      tailwind-merge: 2.6.0
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@angular/forms'
+      - luxon
+      - rxjs
+      - tailwindcss
+      - tailwindcss-animate
 
   '@emnapi/core@1.5.0':
     dependencies:
@@ -3873,6 +4003,17 @@ snapshots:
       '@tybys/wasm-util': 0.10.0
     optional: true
 
+  '@ng-icons/core@32.1.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
+  '@ng-icons/tabler-icons@32.1.0':
+    dependencies:
+      tslib: 2.8.1
+
   '@npmcli/agent@3.0.0':
     dependencies:
       agent-base: 7.1.4
@@ -4150,6 +4291,32 @@ snapshots:
       '@sigstore/protobuf-specs': 0.4.3
 
   '@socket.io/component-emitter@3.1.2': {}
+
+  '@spartan-ng/brain@0.0.1-alpha.510(@angular/cdk@18.0.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(rxjs@7.8.2)(tailwind-merge@2.6.0)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)':
+    dependencies:
+      '@angular/cdk': 18.0.0(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      '@angular/forms': 20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2)
+      clsx: 2.1.1
+      rxjs: 7.8.2
+      tailwind-merge: 2.6.0
+      tailwindcss: 4.1.13
+      tailwindcss-animate: 1.0.7(tailwindcss@4.1.13)
+      tslib: 2.8.1
+
+  '@spartan-ng/brain@0.0.1-alpha.510(@angular/cdk@20.2.2(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/forms@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(rxjs@7.8.2)(tailwind-merge@3.3.1)(tailwindcss-animate@1.0.7(tailwindcss@4.1.13))(tailwindcss@4.1.13)':
+    dependencies:
+      '@angular/cdk': 20.2.2(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/common': 20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@angular/core': 20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)
+      '@angular/forms': 20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(@angular/platform-browser@20.2.4(@angular/common@20.2.4(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.2.4(@angular/compiler@20.2.4)(rxjs@7.8.2)))(rxjs@7.8.2)
+      clsx: 2.1.1
+      rxjs: 7.8.2
+      tailwind-merge: 3.3.1
+      tailwindcss: 4.1.13
+      tailwindcss-animate: 1.0.7(tailwindcss@4.1.13)
+      tslib: 2.8.1
 
   '@tailwindcss/node@4.1.13':
     dependencies:
@@ -4452,6 +4619,10 @@ snapshots:
 
   chownr@3.0.0: {}
 
+  class-variance-authority@0.7.1:
+    dependencies:
+      clsx: 2.1.1
+
   cli-cursor@5.0.0:
     dependencies:
       restore-cursor: 5.1.0
@@ -4476,6 +4647,8 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.1.2
       wrap-ansi: 9.0.2
+
+  clsx@2.1.1: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -5549,6 +5722,11 @@ snapshots:
     dependencies:
       parse5: 8.0.0
 
+  parse5@7.3.0:
+    dependencies:
+      entities: 6.0.1
+    optional: true
+
   parse5@8.0.0:
     dependencies:
       entities: 6.0.1
@@ -5954,6 +6132,14 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
+  tailwind-merge@2.6.0: {}
+
+  tailwind-merge@3.3.1: {}
+
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.13):
+    dependencies:
+      tailwindcss: 4.1.13
+
   tailwindcss@4.1.13: {}
 
   tapable@2.2.3: {}
@@ -6003,6 +6189,8 @@ snapshots:
       make-fetch-happen: 14.0.3
     transitivePeerDependencies:
       - supports-color
+
+  tw-animate-css@1.3.8: {}
 
   type-fest@0.21.3: {}
 

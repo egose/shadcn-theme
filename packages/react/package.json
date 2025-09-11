@@ -4,6 +4,7 @@
   "description": "shadcn UI theme",
   "license": "MIT",
   "sideEffects": false,
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/egose/shadcn-theme"

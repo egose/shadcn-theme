@@ -28,6 +28,58 @@
           }
         }
       }
+    },
+    "badge": {
+      "projectType": "library",
+      "root": "projects/badge",
+      "sourceRoot": "projects/badge/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/badge/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/badge/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/badge/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "spinner": {
+      "projectType": "library",
+      "root": "projects/spinner",
+      "sourceRoot": "projects/spinner/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/spinner/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/spinner/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/spinner/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }
