@@ -59,24 +59,34 @@ export const buttonVariants = cva(
         sm: 'h-8 rounded-sm px-3 text-xs',
         lg: 'h-10 rounded-sm px-8',
         icon: 'h-9 w-9',
+        'compact-default': 'h-8 px-2 py-1',
+        'compact-sm': 'h-7 px-2 py-1',
+        'compact-lg': 'h-9 px-2 py-1',
+        'compact-icon': 'h-8 w-8',
       },
-      outline: { false: null, true: '' },
-      outlineFilled: { false: null, true: '' },
-      loading: { false: null, true: '' },
-      compact: { false: null, true: '' },
+      appearance: {
+        solid: '',
+        outline: 'bg-white border',
+        outlineFilled: 'bg-white border',
+      },
+      loading: {
+        true: 'pointer-events-none',
+        false: null,
+      },
     },
     defaultVariants: {
       variant: 'primary',
       size: 'default',
-      outline: false,
-      outlineFilled: false,
+      appearance: 'solid',
       loading: false,
-      compact: false,
     },
   },
 );
 
 export type ButtonVariants = VariantProps<typeof buttonVariants>;
+export type VariantType = NonNullable<ButtonVariants['variant']>;
+export type SizeType = NonNullable<ButtonVariants['size']>;
+export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
 
 @Component({
   selector: 'button[egBtn], a[egBtn]',
@@ -85,6 +95,8 @@ export type ButtonVariants = VariantProps<typeof buttonVariants>;
   hostDirectives: [{ directive: BrnButton, inputs: ['disabled'] }],
   host: {
     '[class]': '_computedClass()',
+    '[attr.aria-busy]': 'loading || null',
+    '[attr.disabled]': '(loading || disabled) ? true : null',
   },
   template: `
     <ng-template #projected>
@@ -102,67 +114,63 @@ export type ButtonVariants = VariantProps<typeof buttonVariants>;
       </div>
     } @else {
       <div class="flex items-center gap-1">
-        @if (left) {
-          <ng-container *ngTemplateOutlet="left" />
+        @if (icon && iconPosition === 'left') {
+          <ng-container *ngTemplateOutlet="icon" />
         }
         <ng-container *ngTemplateOutlet="projected" />
+        @if (icon && iconPosition === 'right') {
+          <ng-container *ngTemplateOutlet="icon" />
+        }
       </div>
     }
   `,
 })
 export class EgButton {
   /** Props */
-  @Input() variant: ButtonVariants['variant'] = 'primary';
-  @Input() size: ButtonVariants['size'] = 'default';
-  @Input() outline = false;
-  @Input() outlineFilled = false;
+  @Input() variant: VariantType = 'primary';
+  @Input() size: SizeType = 'default';
+  @Input() appearance: AppearanceType = 'solid';
   @Input() loading = false;
-  @Input() compact = false;
-  @Input() left?: any;
+  @Input() icon?: any;
+  @Input() iconPosition: 'left' | 'right' = 'left';
   @Input() userClass: ClassValue = '';
-  @Input() spinnerUserClass: ClassValue = ''; // NEW: matches React spinner `className`
+  @Input() spinnerUserClass: ClassValue = '';
+  @Input() disabled = false;
 
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed button class merging */
   protected readonly _computedClass = computed(() => {
     const outlineClasses =
-      this.outline || this.outlineFilled ? ['bg-white border', this.getOutlineClasses(this.variant)] : [];
+      this.appearance === 'outline' || this.appearance === 'outlineFilled'
+        ? [this.getOutlineClasses(this.variant)]
+        : [];
 
-    if (this.outlineFilled) {
+    if (this.appearance === 'outlineFilled') {
       outlineClasses.push(this.getOutlineFilledClasses(this.variant));
     }
-
-    const compactClasses = this.compact ? this.getCompactClasses(this.size) : '';
 
     return hlm(
       buttonVariants({
         variant: this.variant,
         size: this.size,
-        outline: this.outline,
-        outlineFilled: this.outlineFilled,
+        appearance: this.appearance,
         loading: this.loading,
-        compact: this.compact,
         className: this.userClass,
       }),
       outlineClasses,
-      compactClasses,
       this.loading ? 'pointer-events-none' : '',
       this._additionalClasses(),
     );
   });
 
-  /** Computed spinner classes (matches React logic) */
+  /** Computed spinner classes */
   protected readonly spinnerClass = computed(() => {
     const base =
-      this.outline || this.outlineFilled
+      this.appearance === 'outline' || this.appearance === 'outlineFilled'
         ? this.getOutlineSpinnerClasses(this.variant)
         : this.getSpinnerClasses(this.variant);
-
-    return hlm(
-      base,
-      this.spinnerUserClass, // allow passing in extra spinner styles
-    );
+    return hlm(base, this.spinnerUserClass);
   });
 
   setClass(classes: string): void {
@@ -170,8 +178,8 @@ export class EgButton {
   }
 
   /** Helper functions */
-  private getOutlineClasses(variant: any) {
-    const colors: Record<string, string> = {
+  private getOutlineClasses(variant: VariantType) {
+    const colors: Record<VariantType, string> = {
       primary: 'border-primary text-primary shadow-sm hover:bg-primary/10',
       secondary: 'border-secondary text-secondary shadow-sm hover:bg-secondary/10',
       success: 'border-success text-success shadow-sm hover:bg-success/10',
@@ -181,14 +189,16 @@ export class EgButton {
       light: 'border-light text-light-foreground shadow-sm hover:bg-light/10',
       dark: 'border-dark text-dark shadow-sm hover:bg-dark/10',
       accent: 'border-accent text-accent shadow-sm hover:bg-accent/10',
-      destructive: 'border-destructive text-destructive-foreground shadow-sm hover:bg-destructive/10',
+      destructive: 'border-destructive text-destructive shadow-sm hover:bg-destructive/10',
       muted: 'border-muted text-muted-foreground shadow-sm hover:bg-muted/10',
+      link: 'text-primary',
+      ghost: 'text-light-foreground',
     };
-    return colors[variant ?? 'primary'];
+    return colors[variant];
   }
 
-  private getOutlineFilledClasses(variant: any) {
-    const colors: Record<string, string> = {
+  private getOutlineFilledClasses(variant: VariantType) {
+    const colors: Record<VariantType, string> = {
       primary: 'hover:bg-primary hover:text-primary-foreground',
       secondary: 'hover:bg-secondary hover:text-secondary-foreground',
       success: 'hover:bg-success hover:text-success-foreground',
@@ -200,22 +210,14 @@ export class EgButton {
       accent: 'hover:bg-accent hover:text-accent-foreground',
       destructive: 'hover:bg-destructive hover:text-destructive-foreground',
       muted: 'hover:bg-muted hover:text-muted-foreground',
+      link: 'hover:underline',
+      ghost: 'hover:bg-light',
     };
-    return colors[variant ?? 'primary'];
+    return colors[variant];
   }
 
-  private getCompactClasses(size: any) {
-    const sizes: Record<string, string> = {
-      default: 'h-8 px-2 py-1',
-      sm: 'h-7 px-2 py-1',
-      lg: 'h-9 px-2 py-1',
-      icon: 'h-8 w-8',
-    };
-    return sizes[size ?? 'default'];
-  }
-
-  private getSpinnerClasses(variant: any) {
-    const colors: Record<string, string> = {
+  private getSpinnerClasses(variant: VariantType) {
+    const colors: Record<VariantType, string> = {
       primary: '[&>svg]:text-primary-foreground',
       secondary: '[&>svg]:text-secondary-foreground',
       success: '[&>svg]:text-success-foreground',
@@ -228,12 +230,13 @@ export class EgButton {
       destructive: '[&>svg]:text-destructive-foreground',
       muted: '[&>svg]:text-muted-foreground',
       link: '[&>svg]:text-primary',
+      ghost: '[&>svg]:text-light-foreground',
     };
-    return colors[variant ?? 'primary'];
+    return colors[variant];
   }
 
-  private getOutlineSpinnerClasses(variant: any) {
-    const colors: Record<string, string> = {
+  private getOutlineSpinnerClasses(variant: VariantType) {
+    const colors: Record<VariantType, string> = {
       primary: '[&>svg]:text-primary',
       secondary: '[&>svg]:text-secondary',
       success: '[&>svg]:text-success',
@@ -246,7 +249,8 @@ export class EgButton {
       destructive: '[&>svg]:text-destructive',
       muted: '[&>svg]:text-muted-foreground',
       link: '[&>svg]:text-primary',
+      ghost: '[&>svg]:text-light-foreground',
     };
-    return colors[variant ?? 'primary'];
+    return colors[variant];
   }
 }
