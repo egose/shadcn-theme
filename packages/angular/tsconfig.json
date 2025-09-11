@@ -1,5 +1,3 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -9,7 +7,11 @@
     "noImplicitReturns": true,
     "paths": {
       "badge": ["./dist/badge"],
-      "button": ["./dist/button"]
+      "button": ["./dist/button"],
+      "@egose/shadcn-theme-ng/badge": ["./dist/badge"],
+      "@egose/shadcn-theme-ng/button": ["./libs/ui/ui-button-helm/src/index.ts"],
+      "@egose/shadcn-theme-ng/utils": ["./libs/ui/ui-utils-helm/src/index.ts"],
+      "@egose/shadcn-theme-ng/spinner": ["./dist/spinner"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -39,6 +41,12 @@
     },
     {
       "path": "./projects/badge/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/spinner/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/spinner/tsconfig.spec.json"
     }
   ]
 }

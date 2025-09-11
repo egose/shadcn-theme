@@ -12,7 +12,7 @@ async function buildAll() {
   await rm('./dist', { recursive: true, force: true });
 
   const exports = {};
-  projects.forEach((name) => {
+  ['spinner', 'badge', 'button'].forEach((name) => {
     execSync(`pnpm ng build ${name}`);
     exports[`./${name}`] = {
       types: `./${name}/index.d.ts`,

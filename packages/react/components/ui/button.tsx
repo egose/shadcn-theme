@@ -64,7 +64,7 @@ const buttonVariants = cva(
         false: null,
         true: '',
       },
-      thin: {
+      compact: {
         false: null,
         true: '',
       },
@@ -75,7 +75,7 @@ const buttonVariants = cva(
       outline: false,
       outlineFilled: false,
       loading: false,
-      thin: false,
+      compact: false,
     },
   },
 );
@@ -161,7 +161,7 @@ function getOutlineSpinnerClasses(variant: any) {
   return colors[variant ?? 'primary'];
 }
 
-function getThinClasses(size: any) {
+function getCompactClasses(size: any) {
   const colors: Record<string, string> = {
     default: 'h-8 px-2 py-1',
     sm: 'h-7 px-2 py-1',
@@ -174,7 +174,7 @@ function getThinClasses(size: any) {
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, outline, outlineFilled, loading, thin, asChild = false, children, left, ...props },
+    { className, variant, size, outline, outlineFilled, loading, compact, asChild = false, children, left, ...props },
     ref,
   ) => {
     const Comp = asChild ? Slot : 'button';
@@ -185,7 +185,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       if (outlineFilled) outlineClasses.push(getOutlineFilledClasses(variant));
     }
 
-    const thinClasses = thin ? getThinClasses(size) : '';
+    const compactClasses = compact ? getCompactClasses(size) : '';
 
     if (loading) {
       const { ...loaderProps } = props;
@@ -198,7 +198,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(
             buttonVariants({ variant, size, outline, className }),
             outlineClasses,
-            thinClasses,
+            compactClasses,
             spinnerClasses,
             loadingClasses,
           )}
@@ -218,7 +218,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         type="button"
-        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, thinClasses)}
+        className={cn(buttonVariants({ variant, size, outline, className }), outlineClasses, compactClasses)}
         ref={ref}
         {...props}
       >

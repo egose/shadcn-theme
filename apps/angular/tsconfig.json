@@ -13,7 +13,12 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@egose/shadcn-theme-ng/spinner": ["../../packages/angular/projects/spinner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/button": ["../../packages/angular/projects/button/src/public-api.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
