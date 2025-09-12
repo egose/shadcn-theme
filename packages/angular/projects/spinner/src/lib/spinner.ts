@@ -1,12 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { twMerge } from 'tailwind-merge';
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue } from 'clsx';
 import { NgIcon } from '@ng-icons/core';
 import { tablerLoader2 } from '@ng-icons/tabler-icons';
-
-function hlm(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from '@egose/shadcn-theme-ng/utils';
 
 type SpinnerSize = 'small' | 'medium' | 'large';
 
@@ -41,7 +37,7 @@ export class EgSpinner {
 
   // Outer container class (visibility + layout)
   protected readonly _containerClass = computed(() =>
-    hlm(
+    cn(
       'tw:flex-col tw:items-center tw:justify-center', // base container styles
       this.show() ? 'tw:flex' : 'tw:hidden',
       this.wrapperClass(),
@@ -50,7 +46,7 @@ export class EgSpinner {
 
   // SVG spinner class (size + animation + color)
   protected readonly _iconClass = computed(() =>
-    hlm(
+    cn(
       'tw:[&>svg]:animate-spin tw:[&>svg]:text-primary', // base svg styles
       this.sizeClasses[this.size()],
       this.spinnerClass(),

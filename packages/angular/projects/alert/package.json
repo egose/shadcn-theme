@@ -1,0 +1,13 @@
+{
+  "name": "alert",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^20.2.0",
+    "@angular/core": "^20.2.0",
+    "@spartan-ng/brain": "^0.0.1-alpha.510"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

@@ -6,12 +6,51 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "paths": {
-      "badge": ["./dist/badge"],
-      "button": ["./dist/button"],
+      "@egose/shadcn-theme-ng/utils": ["./dist/utils"],
+      "@egose/shadcn-theme-ng/icon": ["./dist/icon"],
+      "@egose/shadcn-theme-ng/spinner": ["./dist/spinner"],
       "@egose/shadcn-theme-ng/badge": ["./dist/badge"],
-      "@egose/shadcn-theme-ng/button": ["./libs/ui/ui-button-helm/src/index.ts"],
-      "@egose/shadcn-theme-ng/utils": ["./libs/ui/ui-utils-helm/src/index.ts"],
-      "@egose/shadcn-theme-ng/spinner": ["./dist/spinner"]
+      "@egose/shadcn-theme-ng/input": ["./dist/input"],
+      "@egose/shadcn-theme-ng/select": ["./dist/select"],
+      "@egose/shadcn-theme-ng/button": ["./dist/button"],
+      "@egose/shadcn-theme-ng/accordion": ["./dist/accordion"],
+      "@egose/shadcn-theme-ng/alert": ["./dist/alert"],
+      "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
+      "@egose/shadcn-theme-ng/switch": ["./dist/switch"],
+      "@egose/shadcn-theme-ng/label": ["./dist/label"],
+      "@egose/shadcn-theme-ng/form-field": ["./dist/form-field"],
+      "@egose/shadcn-theme-ng/alert-dialog": ["./dist/alert-dialog"],
+      "@egose/shadcn-theme-ng/aspect-ratio": ["./dist/aspect-ratio"],
+      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
+      "@egose/shadcn-theme-ng/avatar": ["./dist/avatar"],
+      "@egose/shadcn-theme-ng/breadcrumb": ["./dist/breadcrumb"],
+      "@egose/shadcn-theme-ng/calendar": ["./dist/calendar"],
+      "@egose/shadcn-theme-ng/card": ["./dist/card"],
+      "@egose/shadcn-theme-ng/carousel": ["./dist/carousel"],
+      "@egose/shadcn-theme-ng/checkbox": ["./dist/checkbox"],
+      "@egose/shadcn-theme-ng/command": ["./dist/command"],
+      "@egose/shadcn-theme-ng/date-picker": ["./dist/date-picker"],
+      "@egose/shadcn-theme-ng/dialog": ["./dist/dialog"],
+      "@egose/shadcn-theme-ng/hover-card": ["./dist/hover-card"],
+      "@egose/shadcn-theme-ng/input-otp": ["./dist/input-otp"],
+      "@egose/shadcn-theme-ng/menu": ["./dist/menu"],
+      "@egose/shadcn-theme-ng/pagination": ["./dist/pagination"],
+      "@egose/shadcn-theme-ng/popover": ["./dist/popover"],
+      "@egose/shadcn-theme-ng/progress": ["./dist/progress"],
+      "@egose/shadcn-theme-ng/radio-group": ["./dist/radio-group"],
+      "@egose/shadcn-theme-ng/scroll-area": ["./dist/scroll-area"],
+      "@egose/shadcn-theme-ng/separator": ["./dist/separator"],
+      "@egose/shadcn-theme-ng/sheet": ["./dist/sheet"],
+      "@egose/shadcn-theme-ng/skeleton": ["./dist/skeleton"],
+      "@egose/shadcn-theme-ng/slider": ["./dist/slider"],
+      "@egose/shadcn-theme-ng/table": ["./dist/table"],
+      "@egose/shadcn-theme-ng/tabs": ["./dist/tabs"],
+      "@egose/shadcn-theme-ng/toggle": ["./dist/toggle"],
+      "@egose/shadcn-theme-ng/toggle-group": ["./dist/toggle-group"],
+      "@egose/shadcn-theme-ng/tooltip": ["./dist/tooltip"],
+      "@egose/shadcn-theme-ng/typography": ["./dist/typography"],
+      "tabs": ["./dist/tabs"],
+      "tooltip": ["./dist/tooltip"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -47,6 +86,84 @@
     },
     {
       "path": "./projects/spinner/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/icon/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/icon/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/accordion/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/accordion/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/utils/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/utils/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/alert/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/alert/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/input/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/input/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/select/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/select/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/sonner/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/sonner/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/switch/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/switch/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/label/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/label/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-field/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-field/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/radio-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/radio-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/tooltip/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/tooltip/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/tabs/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/tabs/tsconfig.spec.json"
     }
   ]
 }

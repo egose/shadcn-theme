@@ -53,5 +53,5 @@ export class Badgeage {
 
   sizes: BadgeSizeType[] = ['sm', 'default', 'lg'];
 
-  appearances: BadgeAppearanceType[] = ['solid', 'outline', 'outlineFilled'];
+  appearances: BadgeAppearanceType[] = ['solid', 'outline', 'outline-filled'];
 }

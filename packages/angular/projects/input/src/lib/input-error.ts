@@ -1,0 +1,21 @@
+import { Directive, computed, input } from '@angular/core';
+import { cn } from '@egose/shadcn-theme-ng/utils';
+import { type VariantProps, cva } from 'class-variance-authority';
+import type { ClassValue } from 'clsx';
+
+export const inputErrorVariants = cva('tw:text-destructive tw:text-sm tw:font-medium', {
+  variants: {},
+  defaultVariants: {},
+});
+export type InputErrorVariants = VariantProps<typeof inputErrorVariants>;
+
+@Directive({
+  selector: '[egInputError]',
+  host: {
+    '[class]': '_computedClass()',
+  },
+})
+export class EgInputError {
+  public readonly userClass = input<ClassValue>('', { alias: 'class' });
+  protected _computedClass = computed(() => cn(inputErrorVariants(), this.userClass()));
+}

@@ -1,12 +1,7 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-/* Utility for merging classes */
-function hlm(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { type ClassValue } from 'clsx';
+import { cn } from '@egose/shadcn-theme-ng/utils';
 
 /* Tailwind + CVA variant config */
 export const badgeVariants = cva(
@@ -46,7 +41,7 @@ export const badgeVariants = cva(
       appearance: {
         solid: '',
         outline: 'tw:bg-white tw:border',
-        outlineFilled: 'tw:bg-white tw:border',
+        'outline-filled': 'tw:bg-white tw:border',
       },
     },
     defaultVariants: {
@@ -83,13 +78,13 @@ export class EgBadge {
   /** Computed badge class merging */
   protected readonly _computedClass = computed(() => {
     const outlineClasses =
-      this.appearance === 'outline' || this.appearance === 'outlineFilled'
+      this.appearance === 'outline' || this.appearance === 'outline-filled'
         ? [this.getOutlineClasses(this.variant)]
         : [];
-    if (this.appearance === 'outlineFilled') {
+    if (this.appearance === 'outline-filled') {
       outlineClasses.push(this.getOutlineFilledClasses(this.variant));
     }
-    return hlm(
+    return cn(
       badgeVariants({
         variant: this.variant,
         size: this.size,

@@ -16,9 +16,22 @@
     "module": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@egose/shadcn-theme-ng/spinner": ["../../packages/angular/projects/spinner/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/button": ["../../packages/angular/projects/button/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/badge": ["../../packages/angular/projects/badge/src/public-api.ts"]
+      "@egose/shadcn-theme-ng/utils": ["../../packages/angular/dist/utils"],
+      "@egose/shadcn-theme-ng/icon": ["../../packages/angular/dist/icon"],
+      "@egose/shadcn-theme-ng/spinner": ["../../packages/angular/dist/spinner"],
+      "@egose/shadcn-theme-ng/button": ["../../packages/angular/dist/button"],
+      "@egose/shadcn-theme-ng/badge": ["../../packages/angular/dist/badge"],
+      "@egose/shadcn-theme-ng/accordion": ["../../packages/angular/dist/accordion"],
+      "@egose/shadcn-theme-ng/alert": ["../../packages/angular/dist/alert"],
+      "@egose/shadcn-theme-ng/label": ["../../packages/angular/dist/label"],
+      "@egose/shadcn-theme-ng/input": ["../../packages/angular/dist/input"],
+      "@egose/shadcn-theme-ng/select": ["../../packages/angular/dist/select"],
+      "@egose/shadcn-theme-ng/sonner": ["../../packages/angular/dist/sonner"],
+      "@egose/shadcn-theme-ng/switch": ["../../packages/angular/dist/switch"],
+      "@egose/shadcn-theme-ng/tabs": ["../../packages/angular/dist/tabs"],
+      "@egose/shadcn-theme-ng/tooltip": ["../../packages/angular/dist/tooltip"],
+      "@egose/shadcn-theme-ng/radio-group": ["../../packages/angular/dist/radio-group"],
+      "@egose/shadcn-theme-ng/form-field": ["../../packages/angular/dist/form-field"]
     }
   },
   "angularCompilerOptions": {

@@ -79,11 +79,11 @@ export class ButtonPage {
     { title: 'Outline - disabled - loading', appearance: 'outline', disabled: true, loading: true },
     { title: 'Outline - compact', appearance: 'outline', size: 'compact-default' },
 
-    { title: 'Outline filled', appearance: 'outlineFilled' },
-    { title: 'Outline filled - disabled', appearance: 'outlineFilled', disabled: true },
-    { title: 'Outline filled - loading', appearance: 'outlineFilled', loading: true },
-    { title: 'Outline filled - disabled - loading', appearance: 'outlineFilled', disabled: true, loading: true },
-    { title: 'Outline filled - compact', appearance: 'outlineFilled', size: 'compact-default' },
+    { title: 'Outline filled', appearance: 'outline-filled' },
+    { title: 'Outline filled - disabled', appearance: 'outline-filled', disabled: true },
+    { title: 'Outline filled - loading', appearance: 'outline-filled', loading: true },
+    { title: 'Outline filled - disabled - loading', appearance: 'outline-filled', disabled: true, loading: true },
+    { title: 'Outline filled - compact', appearance: 'outline-filled', size: 'compact-default' },
 
     { title: 'Icon (left)', icon: true, iconPosition: 'left' },
     { title: 'Icon (right)', icon: true, iconPosition: 'right' },

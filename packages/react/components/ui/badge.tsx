@@ -40,7 +40,7 @@ export const badgeVariants = cva(
       appearance: {
         solid: '',
         outline: 'bg-white border',
-        outlineFilled: 'bg-white border',
+        'outline-filled': 'bg-white border',
       },
     },
     defaultVariants: {
@@ -102,8 +102,8 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     const Comp = asChild ? Slot : 'span';
 
     const outlineClasses =
-      appearance === 'outline' || appearance === 'outlineFilled' ? [getOutlineClasses(variant as BadgeVariant)] : [];
-    if (appearance === 'outlineFilled') {
+      appearance === 'outline' || appearance === 'outline-filled' ? [getOutlineClasses(variant as BadgeVariant)] : [];
+    if (appearance === 'outline-filled') {
       outlineClasses.push(getOutlineFilledClasses(variant as BadgeVariant));
     }
 
