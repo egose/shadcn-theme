@@ -4,7 +4,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Component({
-  selector: 'eg-tabs',
+  selector: 'hlm-tabs',
   hostDirectives: [
     {
       directive: BrnTabs,
@@ -18,7 +18,7 @@ import { ClassValue } from 'clsx';
     '[class]': '_computedClass()',
   },
 })
-export class EgTabs {
+export class HlmTabs {
   public readonly tab = input.required<string>();
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });

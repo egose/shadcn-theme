@@ -1,7 +1,7 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { BrnButton } from '@spartan-ng/brain/button';
-import { EgSpinner } from '@egose/shadcn-theme-ng/spinner';
+import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { type ClassValue } from 'clsx';
 import { cn } from '@egose/shadcn-theme-ng/utils';
@@ -87,9 +87,9 @@ export type SizeType = NonNullable<ButtonVariants['size']>;
 export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
 
 @Component({
-  selector: 'button[egButton], a[egButton]',
+  selector: 'button[hlmButton], a[hlmButton]',
   standalone: true,
-  imports: [BrnButton, EgSpinner, NgTemplateOutlet],
+  imports: [BrnButton, HlmSpinner, NgTemplateOutlet],
   hostDirectives: [{ directive: BrnButton, inputs: ['disabled'] }],
   host: {
     '[class]': '_computedClass()',
@@ -108,7 +108,7 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
           <ng-container *ngTemplateOutlet="projected" />
         </span>
         <span class="tw:absolute tw:inset-0 tw:flex tw:items-center tw:justify-center">
-          <eg-spinner size="small" [spinnerClass]="spinnerClass()" />
+          <hlm-spinner size="small" [spinnerClass]="spinnerClass()" />
         </span>
       </div>
     } @else {
@@ -124,7 +124,7 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
     }
   `,
 })
-export class EgButton {
+export class HlmButton {
   /** Props */
   @Input() variant: VariantType = 'primary';
   @Input() size: SizeType = 'default';

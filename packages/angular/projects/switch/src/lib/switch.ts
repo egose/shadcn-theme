@@ -15,16 +15,16 @@ import { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
 import { BrnSwitch, BrnSwitchThumb } from '@spartan-ng/brain/switch';
 import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
-import { EgSwitchThumb } from './switch-thumb';
+import { HlmSwitchThumb } from './switch-thumb';
 export const EG_SWITCH_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => EgSwitch),
+  useExisting: forwardRef(() => HlmSwitch),
   multi: true,
 };
 
 @Component({
-  selector: 'eg-switch',
-  imports: [BrnSwitchThumb, BrnSwitch, EgSwitchThumb],
+  selector: 'hlm-switch',
+  imports: [BrnSwitchThumb, BrnSwitch, HlmSwitchThumb],
   host: {
     class: 'contents',
     '[attr.id]': 'null',
@@ -44,13 +44,13 @@ export const EG_SWITCH_VALUE_ACCESSOR = {
       [aria-labelledby]="ariaLabelledby()"
       [aria-describedby]="ariaDescribedby()"
     >
-      <brn-switch-thumb eg />
+      <brn-switch-thumb hlm />
     </brn-switch>
   `,
   providers: [EG_SWITCH_VALUE_ACCESSOR],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EgSwitch implements ControlValueAccessor {
+export class HlmSwitch implements ControlValueAccessor {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn(

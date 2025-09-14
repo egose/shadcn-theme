@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import { BrnTooltip } from '@spartan-ng/brain/tooltip';
 
 @Component({
-  selector: 'eg-tooltip',
+  selector: 'hlm-tooltip',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -11,4 +11,4 @@ import { BrnTooltip } from '@spartan-ng/brain/tooltip';
   hostDirectives: [BrnTooltip],
   template: ` <ng-content /> `,
 })
-export class EgTooltip {}
+export class HlmTooltip {}

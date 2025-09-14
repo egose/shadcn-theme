@@ -9,7 +9,7 @@ const DEFAULT_TOOLTIP_CONTENT_CLASSES =
   'tw:data-[side=left]:slide-in-from-right-2 tw:data-[side=right]:slide-in-from-left-2 ';
 
 @Directive({
-  selector: '[egTooltipTrigger]',
+  selector: '[hlmTooltipTrigger]',
   providers: [
     provideBrnTooltipDefaultOptions({
       showDelay: 150,
@@ -22,8 +22,8 @@ const DEFAULT_TOOLTIP_CONTENT_CLASSES =
     {
       directive: BrnTooltipTrigger,
       inputs: [
-        'brnTooltipDisabled: egTooltipDisabled',
-        'brnTooltipTrigger: egTooltipTrigger',
+        'brnTooltipDisabled: hlmTooltipDisabled',
+        'brnTooltipTrigger: hlmTooltipTrigger',
         'aria-describedby',
         'position',
         'positionAtOrigin',
@@ -35,4 +35,4 @@ const DEFAULT_TOOLTIP_CONTENT_CLASSES =
     },
   ],
 })
-export class EgTooltipTrigger {}
+export class HlmTooltipTrigger {}

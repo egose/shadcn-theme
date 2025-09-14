@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { EgButton, AppearanceType, VariantType, SizeType } from '@egose/shadcn-theme-ng/button';
+import { HlmButton, AppearanceType, VariantType, SizeType } from '@egose/shadcn-theme-ng/button';
 import { NgIcon } from '@ng-icons/core';
 import { tablerBrandAngular } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-button',
   standalone: true,
-  imports: [EgButton, NgIcon],
+  imports: [HlmButton, NgIcon],
   template: `
     <div class="tw:space-y-8 tw:p-6">
       <h1 class="tw:text-2xl tw:font-bold">Button Showcase</h1>
@@ -21,7 +21,7 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
           <div class="tw:flex tw:flex-wrap tw:gap-2">
             @for (v of variants; track v) {
               <button
-                egButton
+                hlmButton
                 [variant]="v"
                 [appearance]="section.appearance ?? 'solid'"
                 [size]="section.size ?? 'default'"

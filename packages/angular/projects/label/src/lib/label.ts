@@ -4,7 +4,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egLabel]',
+  selector: '[hlmLabel]',
   hostDirectives: [
     {
       directive: BrnLabel,
@@ -15,7 +15,7 @@ import type { ClassValue } from 'clsx';
     '[class]': '_computedClass()',
   },
 })
-export class EgLabel {
+export class HlmLabel {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
 
   protected readonly _computedClass = computed(() =>

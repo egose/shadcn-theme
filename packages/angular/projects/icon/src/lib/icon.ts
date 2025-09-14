@@ -1,16 +1,16 @@
 import { Directive, computed, input } from '@angular/core';
-import { injectEgIconConfig } from './icon.token';
+import { injectHlmIconConfig } from './icon.token';
 
 export type IconSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | 'none' | (Record<never, never> & string);
 
 @Directive({
-  selector: 'ng-icon[eg]',
+  selector: 'ng-icon[hlm]',
   host: {
     '[style.--ng-icon__size]': '_computedSize()',
   },
 })
-export class EgIcon {
-  private readonly _config = injectEgIconConfig();
+export class HlmIcon {
+  private readonly _config = injectHlmIconConfig();
   public readonly size = input<IconSize>(this._config.size);
 
   protected readonly _computedSize = computed(() => {

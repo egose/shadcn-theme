@@ -18,12 +18,12 @@ import { cva, VariantProps } from 'class-variance-authority';
 import type { ClassValue } from 'clsx';
 
 export const inputVariants = cva(
-  'tw:file:text-foreground tw:placeholder:text-muted-foreground tw:selection:bg-primary tw:selection:text-primary-foreground tw:dark:bg-input/30 tw:border-input tw:shadow-xs tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:flex tw:h-9 tw:w-full tw:min-w-0 tw:rounded-md tw:border tw:bg-transparent tw:px-3 tw:py-1 tw:text-base tw:outline-none tw:transition-[color,box-shadow] tw:file:inline-flex tw:file:h-7 tw:file:border-0 tw:file:bg-transparent tw:file:text-sm tw:file:font-medium tw:focus-visible:ring-[3px] tw:disabled:pointer-events-none tw:disabled:cursor-not-allowed tw:disabled:opacity-50 md:text-sm',
+  'tw:file:text-foreground tw:placeholder:text-muted-foreground tw:selection:bg-primary tw:selection:text-primary-foreground tw:dark:bg-input/10 tw:border-input tw:shadow-xs tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:flex tw:h-9 tw:w-full tw:min-w-0 tw:rounded-md tw:border tw:bg-transparent tw:px-3 tw:py-1 tw:text-base tw:outline-none tw:transition-[color,box-shadow] tw:file:inline-flex tw:file:h-7 tw:file:border-0 tw:file:bg-transparent tw:file:text-sm tw:file:font-medium tw:focus-visible:ring-[3px] tw:disabled:pointer-events-none tw:disabled:cursor-not-allowed tw:disabled:opacity-50 md:text-sm',
   {
     variants: {
       error: {
         auto: 'tw:[&.ng-invalid.ng-touched]:text-destructive/20 tw:dark:[&.ng-invalid.ng-touched]:text-destructive/40 tw:[&.ng-invalid.ng-touched]:border-destructive tw:[&.ng-invalid.ng-touched]:focus-visible:ring-destructive',
-        true: 'tw:text-destructive/20 dark:text-destructive/40 tw:border-destructive tw:focus-visible:ring-destructive',
+        true: 'tw:text-destructive/90 dark:text-destructive/60 tw:border-destructive tw:focus-visible:ring-destructive',
       },
     },
     defaultVariants: {
@@ -34,18 +34,18 @@ export const inputVariants = cva(
 type InputVariants = VariantProps<typeof inputVariants>;
 
 @Directive({
-  selector: '[egInput]',
+  selector: '[hlmInput]',
   host: {
     '[class]': '_computedClass()',
   },
   providers: [
     {
       provide: BrnFormFieldControl,
-      useExisting: forwardRef(() => EgInput),
+      useExisting: forwardRef(() => HlmInput),
     },
   ],
 })
-export class EgInput implements BrnFormFieldControl, DoCheck {
+export class HlmInput implements BrnFormFieldControl, DoCheck {
   public readonly error = input<InputVariants['error']>('auto');
 
   protected readonly _state = linkedSignal(() => ({ error: this.error() }));

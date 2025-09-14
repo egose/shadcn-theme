@@ -1,20 +1,20 @@
 import { InjectionToken, ValueProvider, inject } from '@angular/core';
 import type { IconSize } from './icon';
 
-export interface EgIconConfig {
+export interface HlmIconConfig {
   size: IconSize;
 }
 
-const defaultConfig: EgIconConfig = {
+const defaultConfig: HlmIconConfig = {
   size: 'base',
 };
 
-const EgIconConfigToken = new InjectionToken<EgIconConfig>('EgIconConfig');
+const HlmIconConfigToken = new InjectionToken<HlmIconConfig>('HlmIconConfig');
 
-export function provideEgIconConfig(config: Partial<EgIconConfig>): ValueProvider {
-  return { provide: EgIconConfigToken, useValue: { ...defaultConfig, ...config } };
+export function provideHlmIconConfig(config: Partial<HlmIconConfig>): ValueProvider {
+  return { provide: HlmIconConfigToken, useValue: { ...defaultConfig, ...config } };
 }
 
-export function injectEgIconConfig(): EgIconConfig {
-  return inject(EgIconConfigToken, { optional: true }) ?? defaultConfig;
+export function injectHlmIconConfig(): HlmIconConfig {
+  return inject(HlmIconConfigToken, { optional: true }) ?? defaultConfig;
 }

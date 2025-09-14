@@ -3,14 +3,14 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgInput } from './lib/input';
+import { HlmInput } from './lib/input';
 
 export * from './lib/input';
 
-export const EgInputImpots = [EgInput] as const;
+export const HlmInputImpots = [HlmInput] as const;
 
 @NgModule({
-  imports: [...EgInputImpots],
-  exports: [...EgInputImpots],
+  imports: [...HlmInputImpots],
+  exports: [...HlmInputImpots],
 })
-export class EgInputModule {}
+export class HlmInputModule {}

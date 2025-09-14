@@ -3,15 +3,15 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgIcon } from './lib/icon';
+import { HlmIcon } from './lib/icon';
 
 export * from './lib/icon';
 export * from './lib/icon.token';
 
-export const EgIconImports = [EgIcon] as const;
+export const HlmIconImports = [HlmIcon] as const;
 
 @NgModule({
-  imports: [...EgIconImports],
-  exports: [...EgIconImports],
+  imports: [...HlmIconImports],
+  exports: [...HlmIconImports],
 })
-export class EgIconModule {}
+export class HlmIconModule {}

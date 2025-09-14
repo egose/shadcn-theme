@@ -3,12 +3,12 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egAlertDesc],[egAlertDescription]',
+  selector: '[hlmAlertDesc],[hlmAlertDescription]',
   host: {
     '[class]': '_computedClass()',
   },
 })
-export class EgAlertDescription {
+export class HlmAlertDescription {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn(

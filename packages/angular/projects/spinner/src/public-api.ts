@@ -3,14 +3,14 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgSpinner } from './lib/spinner';
+import { HlmSpinner } from './lib/spinner';
 
 export * from './lib/spinner';
 
-export const EgSpinnerImports = [EgSpinner] as const;
+export const HlmSpinnerImports = [HlmSpinner] as const;
 
 @NgModule({
-  imports: [...EgSpinnerImports],
-  exports: [...EgSpinnerImports],
+  imports: [...HlmSpinnerImports],
+  exports: [...HlmSpinnerImports],
 })
-export class EgSpinnerModule {}
+export class HlmSpinnerModule {}

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EgBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '@egose/shadcn-theme-ng/badge';
+import { HlmBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '@egose/shadcn-theme-ng/badge';
 
 @Component({
   selector: 'app-badge-sample',
   standalone: true,
-  imports: [CommonModule, EgBadge],
+  imports: [CommonModule, HlmBadge],
   template: `
     <div class="tw:space-y-8 tw:p-6">
       <h1 class="tw:text-2xl tw:font-bold">Badge Showcase</h1>
@@ -22,7 +22,7 @@ import { EgBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '@
               <div class="tw:flex tw:flex-wrap tw:gap-2">
                 <!-- Loop through variants -->
                 @for (variant of variants; track variant) {
-                  <span egBadge [variant]="variant" [size]="size" [appearance]="appearance">
+                  <span hlmBadge [variant]="variant" [size]="size" [appearance]="appearance">
                     {{ variant }}
                   </span>
                 }

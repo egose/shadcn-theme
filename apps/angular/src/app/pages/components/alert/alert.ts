@@ -12,13 +12,19 @@ import {
   lucideLink,
   lucideGhost,
 } from '@ng-icons/lucide';
-import { EgAlert, EgAlertDescription, EgAlertIcon, EgAlertTitle, type VariantType } from '@egose/shadcn-theme-ng/alert';
-import { EgIcon } from '@egose/shadcn-theme-ng/icon';
+import {
+  HlmAlert,
+  HlmAlertDescription,
+  HlmAlertIcon,
+  HlmAlertTitle,
+  type VariantType,
+} from '@egose/shadcn-theme-ng/alert';
+import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 
 @Component({
   selector: 'spartan-alert-variants-showcase',
   standalone: true,
-  imports: [EgAlertDescription, EgAlert, EgAlertIcon, EgAlertTitle, NgIcon, EgIcon],
+  imports: [HlmAlertDescription, HlmAlert, HlmAlertIcon, HlmAlertTitle, NgIcon, HlmIcon],
   providers: [
     provideIcons({
       lucideCircleCheck,
@@ -36,10 +42,10 @@ import { EgIcon } from '@egose/shadcn-theme-ng/icon';
   template: `
     <div class="tw:grid tw:w-full tw:max-w-xl tw:gap-1">
       @for (variant of variants; track variant) {
-        <div egAlert [variant]="variant">
-          <ng-icon eg egAlertIcon [name]="getIconName(variant)" />
-          <h4 egAlertTitle class="tw:capitalize">{{ variant }} Alert Title</h4>
-          <p egAlertDescription>This is a sample {{ variant }} alert with an icon, title and description.</p>
+        <div hlmAlert [variant]="variant">
+          <ng-icon hlm hlmAlertIcon [name]="getIconName(variant)" />
+          <h4 hlmAlertTitle class="tw:capitalize">{{ variant }} Alert Title</h4>
+          <p hlmAlertDescription>This is a sample {{ variant }} alert with an icon, title and description.</p>
         </div>
       }
     </div>

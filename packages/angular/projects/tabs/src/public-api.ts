@@ -4,11 +4,11 @@
 
 import { NgModule } from '@angular/core';
 
-import { EgTabs } from './lib/tabs';
-import { EgTabsContent } from './lib/tabs-content';
-import { EgTabsList } from './lib/tabs-list';
-import { EgTabsPaginatedList } from './lib/tabs-paginated-list';
-import { EgTabsTrigger } from './lib/tabs-trigger';
+import { HlmTabs } from './lib/tabs';
+import { HlmTabsContent } from './lib/tabs-content';
+import { HlmTabsList } from './lib/tabs-list';
+import { HlmTabsPaginatedList } from './lib/tabs-paginated-list';
+import { HlmTabsTrigger } from './lib/tabs-trigger';
 
 export * from './lib/tabs';
 export * from './lib/tabs-content';
@@ -16,10 +16,10 @@ export * from './lib/tabs-list';
 export * from './lib/tabs-paginated-list';
 export * from './lib/tabs-trigger';
 
-export const EgTabsImports = [EgTabs, EgTabsList, EgTabsTrigger, EgTabsContent, EgTabsPaginatedList] as const;
+export const HlmTabsImports = [HlmTabs, HlmTabsList, HlmTabsTrigger, HlmTabsContent, HlmTabsPaginatedList] as const;
 
 @NgModule({
-  imports: [...EgTabsImports],
-  exports: [...EgTabsImports],
+  imports: [...HlmTabsImports],
+  exports: [...HlmTabsImports],
 })
-export class EgTabsModule {}
+export class HlmTabsModule {}

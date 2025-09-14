@@ -3,13 +3,13 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgButton } from './lib/button';
+import { HlmButton } from './lib/button';
 export * from './lib/button';
 
-export const EgButtonImports = [EgButton] as const;
+export const HlmButtonImports = [HlmButton] as const;
 
 @NgModule({
-  imports: [...EgButtonImports],
-  exports: [...EgButtonImports],
+  imports: [...HlmButtonImports],
+  exports: [...HlmButtonImports],
 })
-export class EgButtonModule {}
+export class HlmButtonModule {}

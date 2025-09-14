@@ -21,7 +21,7 @@ export const listVariants = cva(
 type ListVariants = VariantProps<typeof listVariants>;
 
 @Component({
-  selector: 'eg-tabs-list',
+  selector: 'hlm-tabs-list',
   hostDirectives: [BrnTabsList],
   template: '<ng-content/>',
   host: {
@@ -29,7 +29,7 @@ type ListVariants = VariantProps<typeof listVariants>;
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EgTabsList {
+export class HlmTabsList {
   public readonly orientation = input<ListVariants['orientation']>('horizontal');
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });

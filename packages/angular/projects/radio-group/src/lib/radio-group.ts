@@ -4,7 +4,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Component({
-  selector: 'eg-radio-group',
+  selector: 'hlm-radio-group',
   hostDirectives: [
     {
       directive: BrnRadioGroup,
@@ -18,7 +18,7 @@ import type { ClassValue } from 'clsx';
   template: '<ng-content />',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EgRadioGroup {
+export class HlmRadioGroup {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => cn('tw:grid tw:gap-3', this.userClass()));
 }

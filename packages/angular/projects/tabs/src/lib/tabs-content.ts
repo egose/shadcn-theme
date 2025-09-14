@@ -4,14 +4,14 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egTabsContent]',
-  hostDirectives: [{ directive: BrnTabsContent, inputs: ['brnTabsContent: egTabsContent'] }],
+  selector: '[hlmTabsContent]',
+  hostDirectives: [{ directive: BrnTabsContent, inputs: ['brnTabsContent: hlmTabsContent'] }],
   host: {
     '[class]': '_computedClass()',
   },
 })
-export class EgTabsContent {
-  public readonly contentFor = input.required<string>({ alias: 'egTabsContent' });
+export class HlmTabsContent {
+  public readonly contentFor = input.required<string>({ alias: 'hlmTabsContent' });
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>

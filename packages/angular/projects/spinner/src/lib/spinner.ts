@@ -7,7 +7,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 type SpinnerSize = 'small' | 'medium' | 'large';
 
 @Component({
-  selector: 'eg-spinner',
+  selector: 'hlm-spinner',
   imports: [NgIcon],
   host: {
     '[class]': '_containerClass()',
@@ -17,7 +17,7 @@ type SpinnerSize = 'small' | 'medium' | 'large';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class EgSpinner {
+export class HlmSpinner {
   icon = tablerLoader2;
 
   // Variants

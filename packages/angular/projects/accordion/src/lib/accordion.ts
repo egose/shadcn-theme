@@ -4,13 +4,13 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egAccordion], eg-accordion',
+  selector: '[hlmAccordion], hlm-accordion',
   host: {
     '[class]': '_computedClass()',
   },
   hostDirectives: [{ directive: BrnAccordion, inputs: ['type', 'dir', 'orientation'] }],
 })
-export class EgAccordion {
+export class HlmAccordion {
   private readonly _brn = inject(BrnAccordion);
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });

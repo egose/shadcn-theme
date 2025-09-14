@@ -3,12 +3,12 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: 'eg-select-value,[egSelectValue], brn-select-value[eg]',
+  selector: 'hlm-select-value,[hlmSelectValue], brn-select-value[hlm]',
   host: {
     '[class]': '_computedClass()',
   },
 })
-export class EgSelectValue {
+export class HlmSelectValue {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn(

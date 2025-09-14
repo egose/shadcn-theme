@@ -6,14 +6,14 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egSelectContent], eg-select-content',
+  selector: '[hlmSelectContent], hlm-select-content',
   host: {
     '[class]': '_computedClass()',
     '[attr.data-state]': '_stateProvider?.state() ?? "open"',
     '[attr.data-side]': '_sideProvider?.side() ?? "bottom"',
   },
 })
-export class EgSelectContent {
+export class HlmSelectContent {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   public readonly stickyLabels = input<boolean, BooleanInput>(false, {
     transform: booleanAttribute,

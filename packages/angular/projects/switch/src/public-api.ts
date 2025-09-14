@@ -4,15 +4,15 @@
 
 import { NgModule } from '@angular/core';
 
-import { EgSwitch } from './lib/switch';
-import { EgSwitchThumb } from './lib/switch-thumb';
+import { HlmSwitch } from './lib/switch';
+import { HlmSwitchThumb } from './lib/switch-thumb';
 
 export * from './lib/switch';
 export * from './lib/switch-thumb';
 
-export const EgSwitchImports = [EgSwitch, EgSwitchThumb] as const;
+export const HlmSwitchImports = [HlmSwitch, HlmSwitchThumb] as const;
 @NgModule({
-  imports: [...EgSwitchImports],
-  exports: [...EgSwitchImports],
+  imports: [...HlmSwitchImports],
+  exports: [...HlmSwitchImports],
 })
-export class EgSwitchModule {}
+export class HlmSwitchModule {}

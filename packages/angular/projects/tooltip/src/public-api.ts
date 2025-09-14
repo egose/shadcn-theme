@@ -3,16 +3,16 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgTooltip } from './lib/tooltip';
-import { EgTooltipTrigger } from './lib/tooltip-trigger';
+import { HlmTooltip } from './lib/tooltip';
+import { HlmTooltipTrigger } from './lib/tooltip-trigger';
 
 export * from './lib/tooltip';
 export * from './lib/tooltip-trigger';
 
-export const EgTooltipImports = [EgTooltip, EgTooltipTrigger] as const;
+export const HlmTooltipImports = [HlmTooltip, HlmTooltipTrigger] as const;
 
 @NgModule({
-  imports: [...EgTooltipImports],
-  exports: [...EgTooltipImports],
+  imports: [...HlmTooltipImports],
+  exports: [...HlmTooltipImports],
 })
-export class EgTooltipModule {}
+export class HlmTooltipModule {}

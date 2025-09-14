@@ -4,14 +4,14 @@
 
 import { NgModule } from '@angular/core';
 
-import { EgToaster } from './lib/toaster';
+import { HlmToaster } from './lib/toaster';
 
 export * from './lib/toaster';
 
-export const EgToasterImports = [EgToaster] as const;
+export const HlmToasterImports = [HlmToaster] as const;
 
 @NgModule({
-  imports: [...EgToasterImports],
-  exports: [...EgToasterImports],
+  imports: [...HlmToasterImports],
+  exports: [...HlmToasterImports],
 })
-export class EgToasterModule {}
+export class HlmToasterModule {}

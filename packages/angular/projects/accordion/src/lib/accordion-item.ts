@@ -4,7 +4,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egAccordionItem],brn-accordion-item[eg],eg-accordion-item',
+  selector: '[hlmAccordionItem],brn-accordion-item[hlm],hlm-accordion-item',
   host: {
     '[class]': '_computedClass()',
   },
@@ -15,7 +15,7 @@ import type { ClassValue } from 'clsx';
     },
   ],
 })
-export class EgAccordionItem {
+export class HlmAccordionItem {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn('tw:border-border tw:flex tw:flex-1 tw:flex-col tw:border-b', this.userClass()),

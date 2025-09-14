@@ -34,6 +34,7 @@ async function buildAll() {
 
       fse.writeFileSync('./dist/exports.json', Buffer.from(JSON.stringify(exports), 'utf-8'));
     } catch (error) {
+      console.error(error);
       console.error(`Failed to build ${name}`);
     }
   });

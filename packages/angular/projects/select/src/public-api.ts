@@ -3,15 +3,15 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgSelect } from './lib/select';
-import { EgSelectContent } from './lib/select-content';
-import { EgSelectGroup } from './lib/select-group';
-import { EgSelectLabel } from './lib/select-label';
-import { EgSelectOption } from './lib/select-option';
-import { EgSelectScrollDown } from './lib/select-scroll-down';
-import { EgSelectScrollUp } from './lib/select-scroll-up';
-import { EgSelectTrigger } from './lib/select-trigger';
-import { EgSelectValue } from './lib/select-value';
+import { HlmSelect } from './lib/select';
+import { HlmSelectContent } from './lib/select-content';
+import { HlmSelectGroup } from './lib/select-group';
+import { HlmSelectLabel } from './lib/select-label';
+import { HlmSelectOption } from './lib/select-option';
+import { HlmSelectScrollDown } from './lib/select-scroll-down';
+import { HlmSelectScrollUp } from './lib/select-scroll-up';
+import { HlmSelectTrigger } from './lib/select-trigger';
+import { HlmSelectValue } from './lib/select-value';
 
 export * from './lib/select';
 export * from './lib/select-content';
@@ -23,20 +23,20 @@ export * from './lib/select-scroll-up';
 export * from './lib/select-trigger';
 export * from './lib/select-value';
 
-export const EgSelectImports = [
-  EgSelectContent,
-  EgSelectTrigger,
-  EgSelectOption,
-  EgSelectValue,
-  EgSelect,
-  EgSelectScrollUp,
-  EgSelectScrollDown,
-  EgSelectLabel,
-  EgSelectGroup,
+export const HlmSelectImports = [
+  HlmSelectContent,
+  HlmSelectTrigger,
+  HlmSelectOption,
+  HlmSelectValue,
+  HlmSelect,
+  HlmSelectScrollUp,
+  HlmSelectScrollDown,
+  HlmSelectLabel,
+  HlmSelectGroup,
 ] as const;
 
 @NgModule({
-  imports: [...EgSelectImports],
-  exports: [...EgSelectImports],
+  imports: [...HlmSelectImports],
+  exports: [...HlmSelectImports],
 })
-export class EgSelectModule {}
+export class HlmSelectModule {}

@@ -49,8 +49,9 @@
       "@egose/shadcn-theme-ng/toggle-group": ["./dist/toggle-group"],
       "@egose/shadcn-theme-ng/tooltip": ["./dist/tooltip"],
       "@egose/shadcn-theme-ng/typography": ["./dist/typography"],
-      "tabs": ["./dist/tabs"],
-      "tooltip": ["./dist/tooltip"]
+      "@egose/shadcn-theme-ng/form-select": ["./dist/form-select"],
+      "@egose/shadcn-theme-ng/form-text-input": ["./dist/form-text-input"],
+      "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -164,6 +165,24 @@
     },
     {
       "path": "./projects/tabs/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-text-input/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-text-input/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-select/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-select/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-textarea/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-textarea/tsconfig.spec.json"
     }
   ]
 }

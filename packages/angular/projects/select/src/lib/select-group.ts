@@ -4,13 +4,13 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egSelectGroup], eg-select-group',
+  selector: '[hlmSelectGroup], hlm-select-group',
   hostDirectives: [BrnSelectGroup],
   host: {
     '[class]': '_computedClass()',
   },
 })
-export class EgSelectGroup {
+export class HlmSelectGroup {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => cn(this.userClass()));
 }

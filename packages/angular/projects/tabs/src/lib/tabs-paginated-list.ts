@@ -13,15 +13,15 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { type BrnPaginatedTabHeaderItem, BrnTabsPaginatedList, BrnTabsTrigger } from '@spartan-ng/brain/tabs';
 import { buttonVariants } from '@egose/shadcn-theme-ng/button';
-import { EgIcon } from '@egose/shadcn-theme-ng/icon';
+import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 import type { Observable } from 'rxjs';
 import { listVariants } from './tabs-list';
 
 @Component({
-  selector: 'eg-paginated-tabs-list',
-  imports: [CdkObserveContent, NgIcon, EgIcon],
+  selector: 'hlm-paginated-tabs-list',
+  imports: [CdkObserveContent, NgIcon, HlmIcon],
   providers: [provideIcons({ lucideChevronRight, lucideChevronLeft })],
   template: `
     <button
@@ -38,7 +38,7 @@ import { listVariants } from './tabs-list';
       (mousedown)="_handlePaginatorPress('before', $event)"
       (touchend)="_stopInterval()"
     >
-      <ng-icon eg size="base" name="lucideChevronLeft" />
+      <ng-icon hlm size="base" name="lucideChevronLeft" />
     </button>
 
     <div #tabListContainer class="tw:z-[1] tw:flex tw:grow tw:overflow-hidden" (keydown)="_handleKeydown($event)">
@@ -68,7 +68,7 @@ import { listVariants } from './tabs-list';
       (mousedown)="_handlePaginatorPress('after', $event)"
       (touchend)="_stopInterval()"
     >
-      <ng-icon eg size="base" name="lucideChevronRight" />
+      <ng-icon hlm size="base" name="lucideChevronRight" />
     </button>
   `,
   host: {
@@ -76,7 +76,7 @@ import { listVariants } from './tabs-list';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EgTabsPaginatedList extends BrnTabsPaginatedList {
+export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
   public readonly items = contentChildren(BrnTabsTrigger, { descendants: false });
   /** Explicitly annotating type to avoid non-portable inferred type */
   public readonly itemsChanges: Observable<ReadonlyArray<BrnPaginatedTabHeaderItem>> = toObservable(this.items);

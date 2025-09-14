@@ -1,8 +1,8 @@
 import { Directive } from '@angular/core';
-import { provideEgIconConfig } from '@egose/shadcn-theme-ng/icon';
+import { provideHlmIconConfig } from '@egose/shadcn-theme-ng/icon';
 
 @Directive({
-  selector: '[egAlertIcon]',
-  providers: [provideEgIconConfig({ size: 'sm' })],
+  selector: '[hlmAlertIcon]',
+  providers: [provideHlmIconConfig({ size: 'sm' })],
 })
-export class EgAlertIcon {}
+export class HlmAlertIcon {}

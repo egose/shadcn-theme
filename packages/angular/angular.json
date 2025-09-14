@@ -418,6 +418,84 @@
           }
         }
       }
+    },
+    "form-text-input": {
+      "projectType": "library",
+      "root": "projects/form-text-input",
+      "sourceRoot": "projects/form-text-input/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-text-input/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-text-input/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-text-input/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-select": {
+      "projectType": "library",
+      "root": "projects/form-select",
+      "sourceRoot": "projects/form-select/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-select/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-select/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-select/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-textarea": {
+      "projectType": "library",
+      "root": "projects/form-textarea",
+      "sourceRoot": "projects/form-textarea/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-textarea/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-textarea/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-textarea/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

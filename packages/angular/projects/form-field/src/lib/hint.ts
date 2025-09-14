@@ -3,12 +3,12 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Directive({
-  selector: 'eg-hint',
+  selector: 'hlm-hint',
   host: {
     '[class]': '_computedClass()',
   },
 })
-export class EgHint {
+export class HlmHint {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn('tw:text-muted-foreground tw:block tw:text-sm', this.userClass()),

@@ -1,25 +1,33 @@
 import { Component } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import {
-  EgAccordion,
-  EgAccordionContent,
-  EgAccordionIcon,
-  EgAccordionItem,
-  EgAccordionTrigger,
+  HlmAccordion,
+  HlmAccordionContent,
+  HlmAccordionIcon,
+  HlmAccordionItem,
+  HlmAccordionTrigger,
 } from '@egose/shadcn-theme-ng/accordion';
-import { EgIcon } from '@egose/shadcn-theme-ng/icon';
+import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 
 @Component({
   selector: 'app-accordion',
-  imports: [EgAccordion, EgAccordionItem, EgAccordionTrigger, EgAccordionIcon, EgAccordionContent, NgIcon, EgIcon],
+  imports: [
+    HlmAccordion,
+    HlmAccordionItem,
+    HlmAccordionTrigger,
+    HlmAccordionIcon,
+    HlmAccordionContent,
+    NgIcon,
+    HlmIcon,
+  ],
   template: `
-    <div egAccordion>
-      <div egAccordionItem>
-        <button egAccordionTrigger>
+    <div hlmAccordion>
+      <div hlmAccordionItem>
+        <button hlmAccordionTrigger>
           Product Information
-          <ng-icon name="lucideChevronDown" eg egAccIcon />
+          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
         </button>
-        <eg-accordion-content>
+        <hlm-accordion-content>
           <p>
             Our flagship product combines cutting-edge technology with sleek design. Built with premium materials, it
             offers unparalleled performance and reliability.
@@ -29,15 +37,15 @@ import { EgIcon } from '@egose/shadcn-theme-ng/icon';
             Key features include advanced processing capabilities, and an intuitive user interface designed for both
             beginners and experts.
           </p>
-        </eg-accordion-content>
+        </hlm-accordion-content>
       </div>
 
-      <div egAccordionItem>
-        <button egAccordionTrigger>
+      <div hlmAccordionItem>
+        <button hlmAccordionTrigger>
           Shipping Details
-          <ng-icon name="lucideChevronDown" eg egAccIcon />
+          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
         </button>
-        <eg-accordion-content>
+        <hlm-accordion-content>
           <p>
             We offer worldwide shipping through trusted courier partners. Standard delivery takes 3-5 business days,
             while express shipping ensures delivery within 1-2 business days.
@@ -47,15 +55,15 @@ import { EgIcon } from '@egose/shadcn-theme-ng/icon';
             All orders are carefully packaged and fully insured. Track your shipment in real-time through our dedicated
             tracking portal.
           </p>
-        </eg-accordion-content>
+        </hlm-accordion-content>
       </div>
 
-      <div egAccordionItem>
-        <button egAccordionTrigger>
+      <div hlmAccordionItem>
+        <button hlmAccordionTrigger>
           Return Policy
-          <ng-icon name="lucideChevronDown" eg egAccIcon />
+          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
         </button>
-        <eg-accordion-content>
+        <hlm-accordion-content>
           <p>
             We stand behind our products with a comprehensive 30-day return policy. If you're not completely satisfied,
             simply return the item in its original condition.
@@ -65,7 +73,7 @@ import { EgIcon } from '@egose/shadcn-theme-ng/icon';
             Our hassle-free return process includes free return shipping and full refunds processed within 48 hours of
             receiving the returned item.
           </p>
-        </eg-accordion-content>
+        </hlm-accordion-content>
       </div>
     </div>
   `,

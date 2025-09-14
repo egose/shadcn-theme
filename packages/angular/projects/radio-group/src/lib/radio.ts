@@ -18,7 +18,7 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Component({
-  selector: 'eg-radio',
+  selector: 'hlm-radio',
   imports: [BrnRadio],
   template: `
     <brn-radio
@@ -32,7 +32,7 @@ import { ClassValue } from 'clsx';
       [aria-describedby]="ariaDescribedby()"
       (change)="change.emit($event)"
     >
-      <ng-content select="[target],[indicator],eg-radio-indicator" indicator />
+      <ng-content select="[target],[indicator],hlm-radio-indicator" indicator />
       <ng-content />
     </brn-radio>
   `,
@@ -45,7 +45,7 @@ import { ClassValue } from 'clsx';
     '[attr.data-disabled]': '_state().disabled() ? "" : null',
   },
 })
-export class EgRadio<T = unknown> {
+export class HlmRadio<T = unknown> {
   private readonly _document = inject(DOCUMENT);
   private readonly _renderer = inject(Renderer2);
   private readonly _elementRef = inject(ElementRef);

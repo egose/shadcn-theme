@@ -58,7 +58,7 @@ export type BadgeSizeType = NonNullable<BadgeVariants['size']>;
 export type BadgeAppearanceType = NonNullable<BadgeVariants['appearance']>;
 
 @Component({
-  selector: 'span[egBadge], a[egBadge]',
+  selector: 'span[hlmBadge], a[hlmBadge]',
   standalone: true,
   imports: [],
   host: {
@@ -66,7 +66,7 @@ export type BadgeAppearanceType = NonNullable<BadgeVariants['appearance']>;
   },
   template: ` <ng-content></ng-content> `,
 })
-export class EgBadge {
+export class HlmBadge {
   /** Props */
   @Input() variant: BadgeVariantType = 'primary';
   @Input() size: BadgeSizeType = 'default';

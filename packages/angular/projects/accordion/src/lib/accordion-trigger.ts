@@ -4,14 +4,14 @@ import { cn } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
-  selector: '[egAccordionTrigger]',
+  selector: '[hlmAccordionTrigger]',
   host: {
     '[style.--tw-ring-offset-shadow]': '"0 0 #000"',
     '[class]': '_computedClass()',
   },
   hostDirectives: [BrnAccordionTrigger],
 })
-export class EgAccordionTrigger {
+export class HlmAccordionTrigger {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     cn(

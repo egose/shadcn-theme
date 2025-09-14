@@ -3,14 +3,14 @@
  */
 
 import { NgModule } from '@angular/core';
-import { EgLabel } from './lib/label';
+import { HlmLabel } from './lib/label';
 
 export * from './lib/label';
 
-export const EgLabelImports = [EgLabel] as const;
+export const HlmLabelImports = [HlmLabel] as const;
 
 @NgModule({
-  imports: [...EgLabelImports],
-  exports: [...EgLabelImports],
+  imports: [...HlmLabelImports],
+  exports: [...HlmLabelImports],
 })
-export class EgLabelModule {}
+export class HlmLabelModule {}
