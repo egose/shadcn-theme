@@ -1,17 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { twMerge } from 'tailwind-merge';
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue } from 'clsx';
 import { NgIcon } from '@ng-icons/core';
 import { tablerLoader2 } from '@ng-icons/tabler-icons';
-
-function hlm(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 
 type SpinnerSize = 'small' | 'medium' | 'large';
 
 @Component({
-  selector: 'eg-spinner',
+  selector: 'hlm-spinner',
   imports: [NgIcon],
   host: {
     '[class]': '_containerClass()',
@@ -21,7 +17,7 @@ type SpinnerSize = 'small' | 'medium' | 'large';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class EgSpinner {
+export class HlmSpinner {
   icon = tablerLoader2;
 
   // Variants

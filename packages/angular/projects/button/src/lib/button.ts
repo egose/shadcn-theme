@@ -1,14 +1,10 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { BrnButton } from '@spartan-ng/brain/button';
-import { EgSpinner } from '@egose/shadcn-theme-ng/spinner';
+import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function hlm(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+import { type ClassValue } from 'clsx';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 
 export const buttonVariants = cva(
   [
@@ -69,7 +65,7 @@ export const buttonVariants = cva(
       appearance: {
         solid: '',
         outline: 'tw:bg-white tw:border',
-        outlineFilled: 'tw:bg-white tw:border',
+        'outline-filled': 'tw:bg-white tw:border',
       },
       loading: {
         true: 'tw:pointer-events-none',
@@ -91,14 +87,15 @@ export type SizeType = NonNullable<ButtonVariants['size']>;
 export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
 
 @Component({
-  selector: 'button[egButton], a[egButton]',
+  selector: 'button[hlmButton], a[hlmButton]',
   standalone: true,
-  imports: [BrnButton, EgSpinner, NgTemplateOutlet],
+  imports: [BrnButton, HlmSpinner, NgTemplateOutlet],
   hostDirectives: [{ directive: BrnButton, inputs: ['disabled'] }],
   host: {
     '[class]': '_computedClass()',
     '[attr.aria-busy]': 'loading || null',
     '[attr.disabled]': '(loading || disabled) ? true : null',
+    '[attr.type]': 'type',
   },
   template: `
     <ng-template #projected>
@@ -111,7 +108,7 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
           <ng-container *ngTemplateOutlet="projected" />
         </span>
         <span class="tw:absolute tw:inset-0 tw:flex tw:items-center tw:justify-center">
-          <eg-spinner size="small" [spinnerClass]="spinnerClass()" />
+          <hlm-spinner size="small" [spinnerClass]="spinnerClass()" />
         </span>
       </div>
     } @else {
@@ -127,7 +124,7 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
     }
   `,
 })
-export class EgButton {
+export class HlmButton {
   /** Props */
   @Input() variant: VariantType = 'primary';
   @Input() size: SizeType = 'default';
@@ -138,16 +135,17 @@ export class EgButton {
   @Input() userClass: ClassValue = '';
   @Input() spinnerUserClass: ClassValue = '';
   @Input() disabled = false;
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
 
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed button class merging */
   protected readonly _computedClass = computed(() => {
     const outlineClasses =
-      this.appearance === 'outline' || this.appearance === 'outlineFilled'
+      this.appearance === 'outline' || this.appearance === 'outline-filled'
         ? [this.getOutlineClasses(this.variant)]
         : [];
-    if (this.appearance === 'outlineFilled') {
+    if (this.appearance === 'outline-filled') {
       outlineClasses.push(this.getOutlineFilledClasses(this.variant));
     }
     return hlm(
@@ -167,7 +165,7 @@ export class EgButton {
   /** Computed spinner classes */
   protected readonly spinnerClass = computed(() => {
     const base =
-      this.appearance === 'outline' || this.appearance === 'outlineFilled'
+      this.appearance === 'outline' || this.appearance === 'outline-filled'
         ? this.getOutlineSpinnerClasses(this.variant)
         : this.getSpinnerClasses(this.variant);
     return hlm(base, this.spinnerUserClass);

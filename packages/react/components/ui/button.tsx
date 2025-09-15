@@ -59,7 +59,7 @@ const buttonVariants = cva(
       appearance: {
         solid: '',
         outline: 'bg-white border',
-        outlineFilled: 'bg-white border',
+        'outline-filled': 'bg-white border',
       },
       loading: {
         true: 'pointer-events-none',
@@ -172,14 +172,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
 
     const outlineClasses =
-      appearance === 'outline' || appearance === 'outlineFilled' ? [getOutlineClasses(variant as VariantType)] : [];
+      appearance === 'outline' || appearance === 'outline-filled' ? [getOutlineClasses(variant as VariantType)] : [];
 
-    if (appearance === 'outlineFilled') {
+    if (appearance === 'outline-filled') {
       outlineClasses.push(getOutlineFilledClasses(variant as VariantType));
     }
 
     const spinnerClasses =
-      appearance === 'outline' || appearance === 'outlineFilled'
+      appearance === 'outline' || appearance === 'outline-filled'
         ? getOutlineSpinnerClasses(variant as VariantType)
         : getSpinnerClasses(variant as VariantType);
 

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Spinner } from './spinner';
+import { FormTextarea } from './form-textarea';
 
-describe('Spinner', () => {
-  let component: Spinner;
-  let fixture: ComponentFixture<Spinner>;
+describe('FormTextarea', () => {
+  let component: FormTextarea;
+  let fixture: ComponentFixture<FormTextarea>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Spinner],
+      imports: [FormTextarea],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Spinner);
+    fixture = TestBed.createComponent(FormTextarea);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

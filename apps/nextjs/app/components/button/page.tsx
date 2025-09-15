@@ -117,7 +117,7 @@ export default function Page() {
       {/* Outline Filled */}
       <Section title="Outline filled">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outlineFilled">
+          <Button key={variant} variant={variant} appearance="outline-filled">
             {_startCase(variant)}
           </Button>
         ))}
@@ -126,7 +126,7 @@ export default function Page() {
       {/* Outline Filled - disabled */}
       <Section title="Outline filled - disabled">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outlineFilled" disabled>
+          <Button key={variant} variant={variant} appearance="outline-filled" disabled>
             {_startCase(variant)}
           </Button>
         ))}
@@ -135,7 +135,7 @@ export default function Page() {
       {/* Outline Filled - loading */}
       <Section title="Outline filled - loading">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outlineFilled" loading>
+          <Button key={variant} variant={variant} appearance="outline-filled" loading>
             {_startCase(variant)}
           </Button>
         ))}
@@ -144,7 +144,7 @@ export default function Page() {
       {/* Outline Filled - disabled + loading */}
       <Section title="Outline filled - disabled - loading">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outlineFilled" disabled loading>
+          <Button key={variant} variant={variant} appearance="outline-filled" disabled loading>
             {_startCase(variant)}
           </Button>
         ))}
@@ -153,7 +153,7 @@ export default function Page() {
       {/* Outline Filled - compact */}
       <Section title="Outline filled - compact">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outlineFilled" size="compact-default">
+          <Button key={variant} variant={variant} appearance="outline-filled" size="compact-default">
             {_startCase(variant)}
           </Button>
         ))}
