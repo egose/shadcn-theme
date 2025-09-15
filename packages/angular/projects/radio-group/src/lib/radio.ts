@@ -14,7 +14,7 @@ import {
   signal,
 } from '@angular/core';
 import { BrnRadio, BrnRadioChange } from '@spartan-ng/brain/radio-group';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Component({
@@ -53,7 +53,7 @@ export class HlmRadio<T = unknown> {
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(
+    hlm(
       'tw:group tw:flex tw:items-center tw:gap-x-3',
       this.userClass(),
       this._state().disabled() ? 'tw:cursor-not-allowed tw:opacity-50' : '',

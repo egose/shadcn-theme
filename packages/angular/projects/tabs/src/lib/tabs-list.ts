@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BrnTabsList } from '@spartan-ng/brain/tabs';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { type VariantProps, cva } from 'class-variance-authority';
 import type { ClassValue } from 'clsx';
 
@@ -34,6 +34,6 @@ export class HlmTabsList {
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(listVariants({ orientation: this.orientation() }), this.userClass()),
+    hlm(listVariants({ orientation: this.orientation() }), this.userClass()),
   );
 }

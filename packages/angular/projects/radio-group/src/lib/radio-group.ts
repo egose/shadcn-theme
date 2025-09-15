@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BrnRadioGroup } from '@spartan-ng/brain/radio-group';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Component({
@@ -20,5 +20,5 @@ import type { ClassValue } from 'clsx';
 })
 export class HlmRadioGroup {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
-  protected readonly _computedClass = computed(() => cn('tw:grid tw:gap-3', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('tw:grid tw:gap-3', this.userClass()));
 }

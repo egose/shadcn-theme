@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck } from '@ng-icons/lucide';
 import { BrnSelectOption } from '@spartan-ng/brain/select';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Component({
@@ -29,8 +29,8 @@ export class HlmSelectOption {
   protected readonly _brnSelectOption = inject(BrnSelectOption, { host: true });
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(
-      'tw:data-[active]:bg-secondary tw:data-[active]:text-secondary-foreground tw:[&>ng-icon]:text-muted-foreground tw:*:[span]:last:flex tw:*:[span]:last:items-center tw:*:[span]:last:gap-2 tw:relative tw:flex tw:w-full tw:cursor-default tw:select-none tw:items-center tw:gap-2 tw:rounded-sm tw:py-1.5 tw:pl-2 tw:pr-8 tw:text-sm tw:outline-none tw:data-[disabled]:pointer-events-none tw:data-[disabled]:opacity-50 tw:[&>ng-icon]:pointer-events-none tw:[&>ng-icon]:size-4 tw:[&>ng-icon]:shrink-0',
+    hlm(
+      'tw:data-[active]:bg-accent tw:data-[active]:text-accent-foreground tw:[&>ng-icon]:text-muted-foreground tw:*:[span]:last:flex tw:*:[span]:last:items-center tw:*:[span]:last:gap-2 tw:relative tw:flex tw:w-full tw:cursor-default tw:select-none tw:items-center tw:gap-2 tw:rounded-sm tw:py-1.5 tw:pl-2 tw:pr-8 tw:text-sm tw:outline-none tw:data-[disabled]:pointer-events-none tw:data-[disabled]:opacity-50 tw:[&>ng-icon]:pointer-events-none tw:[&>ng-icon]:size-4 tw:[&>ng-icon]:shrink-0',
       this.userClass(),
     ),
   );

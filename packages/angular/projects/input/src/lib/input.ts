@@ -13,7 +13,7 @@ import {
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms';
 import { BrnFormFieldControl } from '@spartan-ng/brain/form-field';
 import { ErrorStateMatcher, ErrorStateTracker } from '@spartan-ng/brain/forms';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 import type { ClassValue } from 'clsx';
 
@@ -52,7 +52,7 @@ export class HlmInput implements BrnFormFieldControl, DoCheck {
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(inputVariants({ error: this._state().error }), this.userClass()),
+    hlm(inputVariants({ error: this._state().error }), this.userClass()),
   );
 
   private readonly _injector = inject(Injector);

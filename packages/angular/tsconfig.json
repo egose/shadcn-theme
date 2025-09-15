@@ -24,18 +24,18 @@
       "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
       "@egose/shadcn-theme-ng/avatar": ["./dist/avatar"],
       "@egose/shadcn-theme-ng/breadcrumb": ["./dist/breadcrumb"],
-      "@egose/shadcn-theme-ng/calendar": ["./dist/calendar"],
       "@egose/shadcn-theme-ng/card": ["./dist/card"],
       "@egose/shadcn-theme-ng/carousel": ["./dist/carousel"],
       "@egose/shadcn-theme-ng/checkbox": ["./dist/checkbox"],
       "@egose/shadcn-theme-ng/command": ["./dist/command"],
+      "@egose/shadcn-theme-ng/popover": ["./dist/popover"],
+      "@egose/shadcn-theme-ng/calendar": ["./dist/calendar"],
       "@egose/shadcn-theme-ng/date-picker": ["./dist/date-picker"],
       "@egose/shadcn-theme-ng/dialog": ["./dist/dialog"],
       "@egose/shadcn-theme-ng/hover-card": ["./dist/hover-card"],
       "@egose/shadcn-theme-ng/input-otp": ["./dist/input-otp"],
       "@egose/shadcn-theme-ng/menu": ["./dist/menu"],
       "@egose/shadcn-theme-ng/pagination": ["./dist/pagination"],
-      "@egose/shadcn-theme-ng/popover": ["./dist/popover"],
       "@egose/shadcn-theme-ng/progress": ["./dist/progress"],
       "@egose/shadcn-theme-ng/radio-group": ["./dist/radio-group"],
       "@egose/shadcn-theme-ng/scroll-area": ["./dist/scroll-area"],
@@ -51,7 +51,8 @@
       "@egose/shadcn-theme-ng/typography": ["./dist/typography"],
       "@egose/shadcn-theme-ng/form-select": ["./dist/form-select"],
       "@egose/shadcn-theme-ng/form-text-input": ["./dist/form-text-input"],
-      "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"]
+      "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"],
+      "@egose/shadcn-theme-ng/form-date-picker": ["./dist/form-date-picker"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -183,6 +184,30 @@
     },
     {
       "path": "./projects/form-textarea/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/calendar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/calendar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/date-picker/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/date-picker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/popover/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/popover/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-date-picker/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-date-picker/tsconfig.spec.json"
     }
   ]
 }

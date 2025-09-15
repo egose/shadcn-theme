@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { BrnAccordionContent } from '@spartan-ng/brain/accordion';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Component({
@@ -22,6 +22,6 @@ export class HlmAccordionContent extends BrnAccordionContent {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => {
     const gridRows = this.state() === 'open' ? 'tw:grid-rows-[1fr]' : 'tw:hidden';
-    return cn('tw:grid tw:text-sm tw:transition-all', gridRows, this.userClass());
+    return hlm('tw:grid tw:text-sm tw:transition-all', gridRows, this.userClass());
   });
 }

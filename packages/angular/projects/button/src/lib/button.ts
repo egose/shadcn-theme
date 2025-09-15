@@ -4,7 +4,7 @@ import { BrnButton } from '@spartan-ng/brain/button';
 import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { type ClassValue } from 'clsx';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 
 export const buttonVariants = cva(
   [
@@ -148,7 +148,7 @@ export class HlmButton {
     if (this.appearance === 'outline-filled') {
       outlineClasses.push(this.getOutlineFilledClasses(this.variant));
     }
-    return cn(
+    return hlm(
       buttonVariants({
         variant: this.variant,
         size: this.size,
@@ -168,7 +168,7 @@ export class HlmButton {
       this.appearance === 'outline' || this.appearance === 'outline-filled'
         ? this.getOutlineSpinnerClasses(this.variant)
         : this.getSpinnerClasses(this.variant);
-    return cn(base, this.spinnerUserClass);
+    return hlm(base, this.spinnerUserClass);
   });
 
   setClass(classes: string): void {

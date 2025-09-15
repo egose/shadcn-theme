@@ -14,7 +14,7 @@ import { lucideChevronLeft, lucideChevronRight } from '@ng-icons/lucide';
 import { type BrnPaginatedTabHeaderItem, BrnTabsPaginatedList, BrnTabsTrigger } from '@spartan-ng/brain/tabs';
 import { buttonVariants } from '@egose/shadcn-theme-ng/button';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 import type { Observable } from 'rxjs';
 import { listVariants } from './tabs-list';
@@ -89,15 +89,15 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn('tw:relative tw:flex tw:flex-shrink-0 tw:gap-1 tw:overflow-hidden', this.userClass()),
+    hlm('tw:relative tw:flex tw:flex-shrink-0 tw:gap-1 tw:overflow-hidden', this.userClass()),
   );
 
   public readonly tabListClass = input<ClassValue>('', { alias: 'tabListClass' });
-  protected readonly _tabListClass = computed(() => cn(listVariants(), this.tabListClass()));
+  protected readonly _tabListClass = computed(() => hlm(listVariants(), this.tabListClass()));
 
   public readonly paginationButtonClass = input<ClassValue>('', { alias: 'paginationButtonClass' });
   protected readonly _paginationButtonClass = computed(() =>
-    cn(
+    hlm(
       'tw:relative tw:z-[2] tw:select-none tw:disabled:cursor-default',
       buttonVariants({ variant: 'ghost', size: 'icon' }),
       this.paginationButtonClass(),

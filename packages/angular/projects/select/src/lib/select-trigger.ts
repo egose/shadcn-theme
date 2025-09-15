@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown } from '@ng-icons/lucide';
 import { BrnSelect, BrnSelectTrigger } from '@spartan-ng/brain/select';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { cva } from 'class-variance-authority';
 import type { ClassValue } from 'clsx';
 
@@ -48,6 +48,6 @@ export class HlmSelectTrigger {
   public readonly size = input<'default' | 'sm'>('default');
 
   protected readonly _computedClass = computed(() =>
-    cn(selectTriggerVariants({ error: this._brnSelect?.errorState() }), this.userClass()),
+    hlm(selectTriggerVariants({ error: this._brnSelect?.errorState() }), this.userClass()),
   );
 }

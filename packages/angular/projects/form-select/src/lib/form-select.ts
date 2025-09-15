@@ -2,7 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
 import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
@@ -92,9 +92,9 @@ export class EgFormSelect {
   hintClass = input<string>('');
 
   // Computed classes
-  $userClass = computed(() => cn('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => cn('tw:mb-1', this.labelClass()));
-  $selectClass = computed(() => cn('tw:w-full', this.selectClass()));
-  $errorClass = computed(() => cn('tw:mt-0', this.errorClass()));
-  $hintClass = computed(() => cn('tw:mt-0', this.hintClass()));
+  $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
+  $selectClass = computed(() => hlm('tw:w-full', this.selectClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
 }

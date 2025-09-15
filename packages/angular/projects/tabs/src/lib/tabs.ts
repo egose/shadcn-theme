@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { BrnTabs } from '@spartan-ng/brain/tabs';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Component({
@@ -22,5 +22,5 @@ export class HlmTabs {
   public readonly tab = input.required<string>();
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
-  protected readonly _computedClass = computed(() => cn('tw:flex tw:flex-col tw:gap-2', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('tw:flex tw:flex-col tw:gap-2', this.userClass()));
 }

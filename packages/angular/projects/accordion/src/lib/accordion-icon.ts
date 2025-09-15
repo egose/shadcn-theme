@@ -2,7 +2,7 @@ import { Directive, computed, input } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { lucideChevronDown } from '@ng-icons/lucide';
 import { provideHlmIconConfig } from '@egose/shadcn-theme-ng/icon';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
@@ -15,7 +15,7 @@ import type { ClassValue } from 'clsx';
 export class HlmAccordionIcon {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(
+    hlm(
       'tw:text-muted-foreground tw:pointer-events-none tw:size-4 tw:shrink-0 tw:translate-y-0.5 tw:transition-transform tw:duration-200',
       this.userClass(),
     ),

@@ -5,11 +5,20 @@ import { HlmButtonModule } from '@egose/shadcn-theme-ng/button';
 import { EgFormTextInput } from '@egose/shadcn-theme-ng/form-text-input';
 import { EgFormTextarea } from '@egose/shadcn-theme-ng/form-textarea';
 import { EgFormSelect } from '@egose/shadcn-theme-ng/form-select';
+import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HlmButtonModule, EgFormTextInput, EgFormTextarea, EgFormSelect],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    HlmButtonModule,
+    EgFormTextInput,
+    EgFormTextarea,
+    EgFormSelect,
+    EgFormDatePicker,
+  ],
   template: `
     <div class="tw:p-4">
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tw:space-y-6">
@@ -51,6 +60,17 @@ import { EgFormSelect } from '@egose/shadcn-theme-ng/form-select';
             max="100"
             hint="Age must be between 1 and 120"
           ></eg-form-text-input>
+
+          <eg-form-date-picker
+            label="Date of Birth"
+            controlName="birthday"
+            pickerClass="tw:w-[280px]"
+            [min]="minDate"
+            [max]="maxDate"
+            placeholder="Pick a date"
+            [error]="getError('birthday')"
+            hint="Your date of birth is used to calculate your age."
+          ></eg-form-date-picker>
 
           <eg-form-select
             [label]="'Gender'"
@@ -113,6 +133,9 @@ import { EgFormSelect } from '@egose/shadcn-theme-ng/form-select';
   `,
 })
 export class FormFieldPage {
+  public minDate = new Date(2023, 0, 1);
+  public maxDate = new Date(2030, 11, 31);
+
   private fb = inject(FormBuilder);
 
   form = this.fb.group({
@@ -120,6 +143,7 @@ export class FormFieldPage {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
+    birthday: [null, Validators.required], // ✅ Added date picker control
     about: ['', [Validators.required, Validators.minLength(20)]],
     gender: ['', Validators.required],
     country: ['ca', Validators.required],

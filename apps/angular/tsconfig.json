@@ -31,10 +31,14 @@
       "@egose/shadcn-theme-ng/tabs": ["../../packages/angular/projects/tabs/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tooltip": ["../../packages/angular/projects/tooltip/src/public-api.ts"],
       "@egose/shadcn-theme-ng/radio-group": ["../../packages/angular/projects/radio-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/calendar": ["../../packages/angular/projects/calendar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/popover": ["../../packages/angular/projects/popover/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/date-picker": ["../../packages/angular/projects/date-picker/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-field": ["../../packages/angular/projects/form-field/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-text-input": ["../../packages/angular/projects/form-text-input/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-textarea": ["../../packages/angular/projects/form-textarea/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/form-select": ["../../packages/angular/projects/form-select/src/public-api.ts"]
+      "@egose/shadcn-theme-ng/form-select": ["../../packages/angular/projects/form-select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-date-picker": ["../../packages/angular/projects/form-date-picker/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {

@@ -1,6 +1,6 @@
 import { Directive, computed, input } from '@angular/core';
 import { BrnAccordionItem } from '@spartan-ng/brain/accordion';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
@@ -18,6 +18,6 @@ import type { ClassValue } from 'clsx';
 export class HlmAccordionItem {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn('tw:border-border tw:flex tw:flex-1 tw:flex-col tw:border-b', this.userClass()),
+    hlm('tw:border-border tw:flex tw:flex-1 tw:flex-col tw:border-b', this.userClass()),
   );
 }

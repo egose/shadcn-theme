@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronUp } from '@ng-icons/lucide';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 @Component({
@@ -18,6 +18,6 @@ import { ClassValue } from 'clsx';
 export class HlmSelectScrollUp {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn('tw:flex tw:cursor-default tw:items-center tw:justify-center tw:py-1', this.userClass()),
+    hlm('tw:flex tw:cursor-default tw:items-center tw:justify-center tw:py-1', this.userClass()),
   );
 }

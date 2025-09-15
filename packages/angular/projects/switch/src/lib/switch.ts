@@ -13,7 +13,7 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
 import { BrnSwitch, BrnSwitchThumb } from '@spartan-ng/brain/switch';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 import { HlmSwitchThumb } from './switch-thumb';
 export const EG_SWITCH_VALUE_ACCESSOR = {
@@ -53,7 +53,7 @@ export const EG_SWITCH_VALUE_ACCESSOR = {
 export class HlmSwitch implements ControlValueAccessor {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    cn(
+    hlm(
       'tw:data-[state=checked]:bg-primary tw:data-[state=unchecked]:bg-input tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:dark:data-[state=unchecked]:bg-input/80 tw:shadow-xs tw:group tw:inline-flex tw:h-[1.15rem] tw:w-8 tw:shrink-0 tw:items-center tw:rounded-full tw:border tw:border-transparent tw:outline-none tw:transition-all tw:focus-visible:ring-[3px] tw:data-[disabled=true]:cursor-not-allowed tw:data-[disabled=true]:opacity-50',
       this.userClass(),
     ),

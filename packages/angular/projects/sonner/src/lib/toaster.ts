@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, numberAttribute } from '@angular/core';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 import { NgxSonnerToaster, type ToasterProps } from 'ngx-sonner';
 
@@ -62,5 +62,5 @@ export class HlmToaster {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   public readonly userStyle = input<Record<string, string>>({}, { alias: 'style' });
 
-  protected readonly _computedClass = computed(() => cn('toaster group', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('toaster group', this.userClass()));
 }

@@ -1,7 +1,7 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { type ClassValue } from 'clsx';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 
 /* Tailwind + CVA variant config */
 export const badgeVariants = cva(
@@ -84,7 +84,7 @@ export class HlmBadge {
     if (this.appearance === 'outline-filled') {
       outlineClasses.push(this.getOutlineFilledClasses(this.variant));
     }
-    return cn(
+    return hlm(
       badgeVariants({
         variant: this.variant,
         size: this.size,

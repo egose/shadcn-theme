@@ -496,6 +496,110 @@
           }
         }
       }
+    },
+    "calendar": {
+      "projectType": "library",
+      "root": "projects/calendar",
+      "sourceRoot": "projects/calendar/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/calendar/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/calendar/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/calendar/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "date-picker": {
+      "projectType": "library",
+      "root": "projects/date-picker",
+      "sourceRoot": "projects/date-picker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/date-picker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/date-picker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/date-picker/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "popover": {
+      "projectType": "library",
+      "root": "projects/popover",
+      "sourceRoot": "projects/popover/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/popover/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/popover/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/popover/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-date-picker": {
+      "projectType": "library",
+      "root": "projects/form-date-picker",
+      "sourceRoot": "projects/form-date-picker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-date-picker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-date-picker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-date-picker/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

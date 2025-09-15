@@ -1,6 +1,6 @@
 import { Directive, computed, input } from '@angular/core';
 import { BrnSelectGroup } from '@spartan-ng/brain/select';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
 @Directive({
@@ -12,5 +12,5 @@ import type { ClassValue } from 'clsx';
 })
 export class HlmSelectGroup {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
-  protected readonly _computedClass = computed(() => cn(this.userClass()));
+  protected readonly _computedClass = computed(() => hlm(this.userClass()));
 }

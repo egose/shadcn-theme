@@ -3,7 +3,7 @@ import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angu
 import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
 // NOT USED
@@ -30,6 +30,8 @@ export class SpreadAttrsDirective implements OnChanges {
     }
   }
 }
+
+let nextId = 0;
 
 @Component({
   selector: 'eg-form-text-input',
@@ -93,6 +95,8 @@ export class EgFormTextInput {
 
   // HTML/input attributes
   id = input<string>(crypto.randomUUID());
+  // id = input<string>(`eg-form-text-input-${nextId++}`);
+
   name = input<string | undefined>(undefined);
   type = input<string>('text');
   placeholder = input<string>('');
@@ -115,9 +119,9 @@ export class EgFormTextInput {
   hintClass = input<string>('');
 
   // Computed class bindings
-  $userClass = computed(() => cn('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => cn('tw:mb-1', this.labelClass()));
-  $inputClass = computed(() => cn('tw:mb-1', this.inputClass()));
-  $errorClass = computed(() => cn('tw:mt-0', this.errorClass()));
-  $hintClass = computed(() => cn('tw:mt-0', this.hintClass()));
+  $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
+  $inputClass = computed(() => hlm('tw:mb-1', this.inputClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
 }

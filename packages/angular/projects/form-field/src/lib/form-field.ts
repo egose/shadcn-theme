@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
 import { BrnFormFieldControl } from '@spartan-ng/brain/form-field';
-import { cn } from '@egose/shadcn-theme-ng/utils';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { HlmError } from './error';
 
@@ -35,7 +35,7 @@ import { HlmError } from './error';
 })
 export class HlmFormField {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
-  protected readonly _computedClass = computed(() => cn('tw:block tw:space-y-2', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('tw:block tw:space-y-2', this.userClass()));
   public readonly control = contentChild(BrnFormFieldControl);
 
   public readonly errorChildren = contentChildren(HlmError);
