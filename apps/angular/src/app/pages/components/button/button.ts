@@ -71,6 +71,8 @@ export class ButtonPage {
     { title: 'Basic - disabled', disabled: true },
     { title: 'Basic - loading', loading: true },
     { title: 'Basic - disabled - loading', disabled: true, loading: true },
+    { title: 'Basic - sm', size: 'sm' },
+    { title: 'Basic - lg', size: 'lg' },
     { title: 'Basic - compact', size: 'compact-default' },
 
     { title: 'Outline', appearance: 'outline' },

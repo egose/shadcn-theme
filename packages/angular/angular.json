@@ -600,6 +600,84 @@
           }
         }
       }
+    },
+    "basic-alert": {
+      "projectType": "library",
+      "root": "projects/basic-alert",
+      "sourceRoot": "projects/basic-alert/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/basic-alert/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/basic-alert/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/basic-alert/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "dialog": {
+      "projectType": "library",
+      "root": "projects/dialog",
+      "sourceRoot": "projects/dialog/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dialog/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/dialog/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/dialog/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "confirmation-dialog": {
+      "projectType": "library",
+      "root": "projects/confirmation-dialog",
+      "sourceRoot": "projects/confirmation-dialog/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/confirmation-dialog/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/confirmation-dialog/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/confirmation-dialog/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

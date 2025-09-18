@@ -47,10 +47,15 @@ let nextId = 0;
     @let nm = controlName();
     @let err = error();
     @let hnt = hint();
+    @let rqrd = required();
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">{{ lbl }}</span>
+        <span hlmLabel [class]="$labelClass()">{{ lbl }}
+        @if (rqrd) {
+          <span class="tw:text-red-500">*</span>
+        }
+        </span>
       }
 
       <input
@@ -70,7 +75,7 @@ let nextId = 0;
         [pattern]="pattern()"
         [autocomplete]="autocomplete()"
         [autofocus]="autofocus()"
-        [required]="required()"
+        [required]="rqrd"
       />
 
       @if (err) {
@@ -120,7 +125,7 @@ export class EgFormTextInput {
 
   // Computed class bindings
   $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
+  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this.labelClass()));
   $inputClass = computed(() => hlm('tw:mb-1', this.inputClass()));
   $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
   $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));

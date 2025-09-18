@@ -22,10 +22,15 @@ let nextId = 0;
     @let nm = controlName();
     @let err = error();
     @let hnt = hint();
+    @let rqrd = required();
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">{{ lbl }}</span>
+        <span hlmLabel [class]="$labelClass()">{{ lbl }}
+        @if (rqrd) {
+          <span class="tw:text-red-500">*</span>
+        }
+        </span>
       }
 
       <hlm-date-picker
@@ -34,7 +39,7 @@ let nextId = 0;
         [max]="max()"
         [formControlName]="nm"
         [autoCloseOnSelect]="autoCloseOnSelect()"
-        [required]="required()"
+        [required]="rqrd"
         [class]="$pickerClass()"
       >
         <span>{{ placeholder() }}</span>
