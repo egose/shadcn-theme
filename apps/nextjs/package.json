@@ -14,7 +14,7 @@
     "@tailwindcss/postcss": "^4.1.7",
     "date-fns": "^4.1.0",
     "lodash-es": "^4.17.21",
-    "lucide-react": "^0.522.0",
+    "lucide-react": "^0.544.0",
     "postcss": "^8.5.3",
     "next": "15.4.7",
     "react": "^19.0.0",
