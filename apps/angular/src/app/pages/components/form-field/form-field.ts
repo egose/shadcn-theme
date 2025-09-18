@@ -1,11 +1,67 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { HlmButtonModule } from '@egose/shadcn-theme-ng/button';
+import { HlmButtonModule, HlmButton } from '@egose/shadcn-theme-ng/button';
+import { HlmLabel } from '@egose/shadcn-theme-ng/label';
+import { HlmInput } from '@egose/shadcn-theme-ng/input';
+import {
+  HlmAlertModule,
+  HlmAlert,
+  HlmAlertIcon,
+  HlmAlertTitle,
+  HlmAlertDescription,
+} from '@egose/shadcn-theme-ng/alert';
 import { EgFormTextInput } from '@egose/shadcn-theme-ng/form-text-input';
 import { EgFormTextarea } from '@egose/shadcn-theme-ng/form-textarea';
 import { EgFormSelect } from '@egose/shadcn-theme-ng/form-select';
 import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
+import {
+  HlmDialog,
+  HlmDialogDescription,
+  HlmDialogHeader,
+  HlmDialogFooter,
+  HlmDialogService,
+  HlmDialogTitle,
+} from '@egose/shadcn-theme-ng/dialog';
+import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
+import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck, lucideInfo } from '@ng-icons/lucide';
+import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
+
+@Component({
+  imports: [CommonModule, HlmButton, HlmDialogDescription, HlmDialogHeader, HlmDialogFooter, HlmDialogTitle],
+  standalone: true,
+  providers: [provideIcons({ lucideCheck })],
+  template: `
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Form data</h3>
+      <p hlmDialogDescription>Preview form data to submit</p>
+    </hlm-dialog-header>
+
+    <div class="tw:mt-6 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
+      <pre>{{ _formData | json }}</pre>
+    </div>
+
+    <hlm-dialog-footer>
+      <button hlmButton variant="primary" (click)="close(true)">Cancel</button>
+      <button hlmButton>Save changes</button>
+    </hlm-dialog-footer>
+  `,
+  host: {
+    class: 'tw:flex tw:flex-col tw:gap-4',
+  },
+})
+class ConfirmationDiaglog {
+  private readonly _dialogRef = inject<BrnDialogRef<boolean>>(BrnDialogRef);
+  private readonly _dialogContext = injectBrnDialogContext<{ formData: Record<string, any> }>();
+
+  protected readonly _formData = this._dialogContext.formData;
+
+  public close(confirm: boolean) {
+    this._dialogRef.close(confirm);
+  }
+}
 
 @Component({
   selector: 'app-user-form',
@@ -14,13 +70,29 @@ import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
     CommonModule,
     ReactiveFormsModule,
     HlmButtonModule,
+    HlmAlertModule,
+    HlmAlert,
+    HlmAlertIcon,
+    HlmAlertTitle,
+    HlmAlertDescription,
     EgFormTextInput,
     EgFormTextarea,
     EgFormSelect,
     EgFormDatePicker,
+    NgIcon,
+    HlmIcon,
   ],
+  providers: [provideIcons({ lucideInfo })],
   template: `
     <div class="tw:p-4">
+      <!-- Info Alert above the form -->
+      <div hlmAlert variant="info" class="tw:mb-4">
+        <ng-icon hlm hlmAlertIcon name="lucideInfo" />
+        <h4 hlmAlertTitle>Form Information</h4>
+        <p hlmAlertDescription>
+          Please fill out all required fields before submitting. Fields marked with * are mandatory.
+        </p>
+      </div>
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tw:space-y-6">
         <!-- Grid container -->
         <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-6">
@@ -28,6 +100,7 @@ import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
             label="Full Name"
             placeholder="Enter your full name"
             controlName="name"
+            [required]="true"
             [error]="getError('name')"
             hint="First and last name required"
           ></eg-form-text-input>
@@ -114,7 +187,7 @@ import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
         </div>
 
         <!-- Actions -->
-        <div class="tw:flex tw:gap-4 tw:pt-4">
+        <div class="tw:flex tw:gap-2 tw:pt-4">
           <button type="submit" hlmButton [disabled]="form.invalid || loading">
             {{ loading ? 'Submitting...' : 'Submit' }}
           </button>
@@ -123,19 +196,21 @@ import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
       </form>
 
       <!-- Submitted Data -->
-      @if (submitted) {
-        <div class="tw:mt-6 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
-          <h3 class="tw:font-semibold tw:mb-2">Form Submitted:</h3>
-          <pre>{{ form.value | json }}</pre>
-        </div>
-      }
+      <!-- @if (submitted) {
+      <div class="tw:mt-6 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
+        <h3 class="tw:font-semibold tw:mb-2">Form Submitted:</h3>
+        <pre>{{ form.value | json }}</pre>
+      </div>
+      } -->
     </div>
   `,
 })
 export class FormFieldPage {
+  private readonly _hlmDialogService = inject(HlmDialogService);
+  private readonly _egConfirmationDialogService = inject(EgConfirmationDialogService);
+
   public minDate = new Date(2023, 0, 1);
   public maxDate = new Date(2030, 11, 31);
-
   private fb = inject(FormBuilder);
 
   form = this.fb.group({
@@ -143,7 +218,7 @@ export class FormFieldPage {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
-    birthday: [null, Validators.required], // ✅ Added date picker control
+    birthday: [null, Validators.required],
     about: ['', [Validators.required, Validators.minLength(20)]],
     gender: ['', Validators.required],
     country: ['ca', Validators.required],
@@ -201,14 +276,30 @@ export class FormFieldPage {
   onSubmit() {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
-
     this.loading = true;
     this.loading = false;
     this.submitted = true;
-    console.log('Form submitted:', this.form.value);
+
+    const dialogRef = this._hlmDialogService.open(ConfirmationDiaglog, {
+      context: {
+        formData: this.form.value,
+      },
+      contentClass: 'tw:w-full',
+    });
+
+    dialogRef.closed$.subscribe((confirm) => {
+      console.log('Confirmation:', confirm);
+    });
   }
 
-  onReset() {
+  async onReset() {
+    const confirmed = await this._egConfirmationDialogService.showConfirmationDialog({
+      title: 'Confirm reset',
+      description: 'Do you really want to reset the form?',
+    });
+
+    console.log('confirmed', confirmed);
+
     this.form.reset();
     this.submitted = false;
   }

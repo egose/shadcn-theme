@@ -18,13 +18,15 @@ import {
   HlmAlertIcon,
   HlmAlertTitle,
   type VariantType,
+  type AppearanceType,
 } from '@egose/shadcn-theme-ng/alert';
+import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 
 @Component({
   selector: 'spartan-alert-variants-showcase',
   standalone: true,
-  imports: [HlmAlertDescription, HlmAlert, HlmAlertIcon, HlmAlertTitle, NgIcon, HlmIcon],
+  imports: [HlmAlertDescription, HlmAlert, HlmAlertIcon, HlmAlertTitle, NgIcon, HlmIcon, EgBasicAlert],
   providers: [
     provideIcons({
       lucideCircleCheck,
@@ -40,14 +42,62 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
     }),
   ],
   template: `
-    <div class="tw:grid tw:w-full tw:max-w-xl tw:gap-1">
-      @for (variant of variants; track variant) {
-        <div hlmAlert [variant]="variant">
-          <ng-icon hlm hlmAlertIcon [name]="getIconName(variant)" />
-          <h4 hlmAlertTitle class="tw:capitalize">{{ variant }} Alert Title</h4>
-          <p hlmAlertDescription>This is a sample {{ variant }} alert with an icon, title and description.</p>
+    <div class="tw:flex tw:gap-2">
+      <!-- Solid Appearance -->
+      <div class="tw:space-y-6 tw:max-w-xl">
+        <h3 class="tw:font-semibold tw:mb-2">Solid Appearance</h3>
+        <div class="tw:grid tw:gap-1">
+          @for (variant of variants; track variant) {
+            <div hlmAlert [variant]="variant" appearance="solid">
+              <ng-icon hlm hlmAlertIcon [name]="getIconName(variant)" />
+              <h4 hlmAlertTitle class="tw:capitalize">{{ variant }} Alert Title</h4>
+              <p hlmAlertDescription>This is a solid {{ variant }} alert with an icon, title and description.</p>
+            </div>
+          }
         </div>
-      }
+      </div>
+
+      <!-- Light Appearance -->
+      <div class="tw:space-y-6 tw:max-w-xl">
+        <h3 class="tw:font-semibold tw:mb-2">Light Appearance</h3>
+        <div class="tw:grid tw:gap-1">
+          @for (variant of variants; track variant) {
+            <div hlmAlert [variant]="variant" appearance="light">
+              <ng-icon hlm hlmAlertIcon [name]="getIconName(variant)" />
+              <h4 hlmAlertTitle class="tw:capitalize">{{ variant }} Alert Title</h4>
+              <p hlmAlertDescription>This is a light {{ variant }} alert with an icon, title and description.</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="tw:space-y-6 tw:max-w-xl">
+        <h3 class="tw:font-semibold tw:mb-2">Basic Solid Appearance</h3>
+        <div class="tw:grid tw:gap-1">
+          @for (variant of variants; track variant) {
+            <eg-basic-alert
+              [variant]="variant"
+              appearance="solid"
+              [title]="'Basic ' + variant + ' Alert'"
+              [description]="'This is a basic solid ' + variant + ' alert.'"
+            />
+          }
+        </div>
+      </div>
+
+      <div class="tw:space-y-6 tw:max-w-xl">
+        <h3 class="tw:font-semibold tw:mb-2">Basic Light Appearance</h3>
+        <div class="tw:grid tw:gap-1">
+          @for (variant of variants; track variant) {
+            <eg-basic-alert
+              [variant]="variant"
+              appearance="light"
+              [title]="'Basic ' + variant + ' Alert'"
+              [description]="'This is a basic light ' + variant + ' alert.'"
+            />
+          }
+        </div>
+      </div>
     </div>
   `,
 })
@@ -68,7 +118,6 @@ export class AlertPage {
     'ghost',
   ];
 
-  // Map each variant to an icon
   getIconName(variant: string): string {
     switch (variant) {
       case 'success':

@@ -54,12 +54,12 @@ export const buttonVariants = cva(
       },
       size: {
         default: 'tw:h-9 tw:px-4 tw:py-2',
-        sm: 'tw:h-8 tw:rounded-sm tw:px-3 tw:text-xs',
-        lg: 'tw:h-10 tw:rounded-sm tw:px-8',
+        sm: 'tw:h-8 tw:rounded-sm tw:px-3',
+        lg: 'tw:h-10 tw:rounded-sm tw:px-7 tw:text-base',
         icon: 'tw:h-9 tw:w-9',
         'compact-default': 'tw:h-8 tw:px-2 tw:py-1',
         'compact-sm': 'tw:h-7 tw:px-2 tw:py-1',
-        'compact-lg': 'tw:h-9 tw:px-2 tw:py-1',
+        'compact-lg': 'tw:h-9 tw:px-2 tw:py-1 tw:text-base',
         'compact-icon': 'tw:h-8 tw:w-8',
       },
       appearance: {

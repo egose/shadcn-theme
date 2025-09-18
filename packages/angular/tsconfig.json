@@ -52,7 +52,9 @@
       "@egose/shadcn-theme-ng/form-select": ["./dist/form-select"],
       "@egose/shadcn-theme-ng/form-text-input": ["./dist/form-text-input"],
       "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"],
-      "@egose/shadcn-theme-ng/form-date-picker": ["./dist/form-date-picker"]
+      "@egose/shadcn-theme-ng/form-date-picker": ["./dist/form-date-picker"],
+      "@egose/shadcn-theme-ng/basic-alert": ["./dist/basic-alert"],
+      "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -208,6 +210,24 @@
     },
     {
       "path": "./projects/form-date-picker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/basic-alert/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/basic-alert/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dialog/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/dialog/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/confirmation-dialog/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/confirmation-dialog/tsconfig.spec.json"
     }
   ]
 }

@@ -22,10 +22,15 @@ let nextId = 0;
     @let nm = controlName();
     @let err = error();
     @let hnt = hint();
+    @let rqrd = required();
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">{{ lbl }}</span>
+        <span hlmLabel [class]="$labelClass()">{{ lbl }}
+        @if (rqrd) {
+          <span class="tw:text-red-500">*</span>
+        }
+        </span>
       }
 
       <textarea
@@ -39,7 +44,7 @@ let nextId = 0;
         [readonly]="readonly()"
         [maxlength]="maxlength()"
         [minlength]="minlength()"
-        [required]="required()"
+        [required]="rqrd"
         [rows]="rows()"
         [cols]="cols()"
       ></textarea>
@@ -88,7 +93,7 @@ export class EgFormTextarea {
 
   // Computed class bindings
   $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
+  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this.labelClass()));
   $textareaClass = computed(() => hlm('tw:mb-1', this.textareaClass()));
   $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
   $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));

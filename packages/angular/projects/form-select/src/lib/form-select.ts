@@ -26,17 +26,22 @@ interface SelectOption {
     @let nm = controlName();
     @let err = error();
     @let hnt = hint();
+    @let rqrd = required();
 
     <hlm-form-field>
       @if (lbl) {
-      <span hlmLabel [class]="$labelClass()">{{ lbl }}</span>
+        <span hlmLabel [class]="$labelClass()">{{ lbl }}
+        @if (rqrd) {
+          <span class="tw:text-red-500">*</span>
+        }
+        </span>
       }
 
       <brn-select
         [multiple]="multiple()"
         [placeholder]="placeholder()"
         [formControlName]="nm"
-        [required]="required()"
+        [required]="rqrd"
       >
         <hlm-select-trigger [class]="$selectClass()">
           <hlm-select-value />
@@ -93,7 +98,7 @@ export class EgFormSelect {
 
   // Computed classes
   $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
+  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this.labelClass()));
   $selectClass = computed(() => hlm('tw:w-full', this.selectClass()));
   $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
   $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
