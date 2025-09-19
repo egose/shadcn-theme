@@ -24,28 +24,39 @@ import {
   HlmDialogTitle,
 } from '@egose/shadcn-theme-ng/dialog';
 import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
+import { HlmToaster } from '@egose/shadcn-theme-ng/sonner';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideInfo } from '@ng-icons/lucide';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
+import { toast } from 'ngx-sonner';
 
 @Component({
-  imports: [CommonModule, HlmButton, HlmDialogDescription, HlmDialogHeader, HlmDialogFooter, HlmDialogTitle],
+  imports: [
+    CommonModule,
+    HlmButton,
+    HlmDialogDescription,
+    HlmDialogHeader,
+    HlmDialogFooter,
+    HlmDialogTitle,
+    HlmToaster,
+  ],
   standalone: true,
   providers: [provideIcons({ lucideCheck })],
   template: `
+    <hlm-toaster position="top-right" [closeButton]="true" />
     <hlm-dialog-header>
       <h3 hlmDialogTitle>Form data</h3>
       <p hlmDialogDescription>Preview form data to submit</p>
     </hlm-dialog-header>
 
-    <div class="tw:mt-6 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
+    <div class="tw:mt-2 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
       <pre>{{ _formData | json }}</pre>
     </div>
 
     <hlm-dialog-footer>
-      <button hlmButton variant="primary" (click)="close(true)">Cancel</button>
-      <button hlmButton>Save changes</button>
+      <button hlmButton variant="secondary" appearance="outline" (click)="close(true)">Cancel</button>
+      <button hlmButton variant="primary" (click)="save()">Save changes</button>
     </hlm-dialog-footer>
   `,
   host: {
@@ -60,6 +71,16 @@ class ConfirmationDiaglog {
 
   public close(confirm: boolean) {
     this._dialogRef.close(confirm);
+  }
+
+  public save() {
+    toast('Form saved', {
+      description: 'The form data is successfully saved!',
+      action: {
+        label: 'Undo',
+        onClick: () => console.log('Undo'),
+      },
+    });
   }
 }
 
