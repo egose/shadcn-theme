@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCircleAlert,
@@ -41,18 +41,18 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
     }),
   ],
   template: `
-    <div hlmAlert [variant]="variant" [appearance]="appearance" class="">
-      <ng-icon hlm hlmAlertIcon [name]="getIconName(variant)" />
-      <h4 hlmAlertTitle class="tw:capitalize">{{ title }}</h4>
-      <p hlmAlertDescription>{{ description }}</p>
+    <div hlmAlert [variant]="variant()" [appearance]="appearance()" class="">
+      <ng-icon hlm hlmAlertIcon [name]="getIconName(variant())" />
+      <h4 hlmAlertTitle class="tw:capitalize">{{ title() }}</h4>
+      <p hlmAlertDescription>{{ description() }}</p>
     </div>
   `,
 })
 export class EgBasicAlert {
-  @Input() variant: VariantType = 'info';
-  @Input() appearance: AppearanceType = 'solid';
-  @Input() title = '';
-  @Input() description = '';
+  variant = input<VariantType>('info');
+  appearance = input<AppearanceType>('solid');
+  title = input<string>('');
+  description = input<string>('');
 
   getIconName(variant: VariantType): string {
     switch (variant) {

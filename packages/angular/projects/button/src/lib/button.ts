@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, computed, signal, input } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { BrnButton } from '@spartan-ng/brain/button';
 import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
@@ -53,12 +53,14 @@ export const buttonVariants = cva(
         ghost: 'tw:hover:bg-light tw:hover:text-light-foreground',
       },
       size: {
-        default: 'tw:h-9 tw:px-4 tw:py-2',
+        xs: 'tw:h-7 tw:rounded-xs tw:px-2 tw:text-xs',
         sm: 'tw:h-8 tw:rounded-sm tw:px-3',
+        default: 'tw:h-9 tw:px-4 tw:py-2',
         lg: 'tw:h-10 tw:rounded-sm tw:px-7 tw:text-base',
         icon: 'tw:h-9 tw:w-9',
-        'compact-default': 'tw:h-8 tw:px-2 tw:py-1',
+        'compact-xs': 'tw:h-6 tw:px-2 tw:py-1 tw:text-xs',
         'compact-sm': 'tw:h-7 tw:px-2 tw:py-1',
+        'compact-default': 'tw:h-8 tw:px-2 tw:py-1',
         'compact-lg': 'tw:h-9 tw:px-2 tw:py-1 tw:text-base',
         'compact-icon': 'tw:h-8 tw:w-8',
       },
@@ -93,16 +95,16 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
   hostDirectives: [{ directive: BrnButton, inputs: ['disabled'] }],
   host: {
     '[class]': '_computedClass()',
-    '[attr.aria-busy]': 'loading || null',
-    '[attr.disabled]': '(loading || disabled) ? true : null',
-    '[attr.type]': 'type',
+    '[attr.aria-busy]': 'loading() || null',
+    '[attr.disabled]': '(loading() || disabled()) ? true : null',
+    '[attr.type]': 'type()',
   },
   template: `
     <ng-template #projected>
       <ng-content></ng-content>
     </ng-template>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="tw:relative tw:inline-flex tw:items-center">
         <span class="tw:invisible">
           <ng-container *ngTemplateOutlet="projected" />
@@ -113,51 +115,53 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
       </div>
     } @else {
       <div class="tw:flex tw:items-center tw:gap-1">
-        @if (icon && iconPosition === 'left') {
-          <ng-container *ngTemplateOutlet="icon" />
+        @if (icon() && iconPosition() === 'left') {
+          <ng-container *ngTemplateOutlet="icon()" />
         }
         <ng-container *ngTemplateOutlet="projected" />
-        @if (icon && iconPosition === 'right') {
-          <ng-container *ngTemplateOutlet="icon" />
+        @if (icon() && iconPosition() === 'right') {
+          <ng-container *ngTemplateOutlet="icon()" />
         }
       </div>
     }
   `,
 })
 export class HlmButton {
-  /** Props */
-  @Input() variant: VariantType = 'primary';
-  @Input() size: SizeType = 'default';
-  @Input() appearance: AppearanceType = 'solid';
-  @Input() loading = false;
-  @Input() icon?: any;
-  @Input() iconPosition: 'left' | 'right' = 'left';
-  @Input() userClass: ClassValue = '';
-  @Input() spinnerUserClass: ClassValue = '';
-  @Input() disabled = false;
-  @Input() type: 'button' | 'submit' | 'reset' = 'button';
+  /** Props as signal-based inputs */
+  variant = input<VariantType>('primary');
+  size = input<SizeType>('default');
+  appearance = input<AppearanceType>('solid');
+  loading = input<boolean>(false);
+  icon = input<any | undefined>(undefined);
+  iconPosition = input<'left' | 'right'>('left');
+  userClass = input<ClassValue>('');
+  spinnerUserClass = input<ClassValue>('');
+  disabled = input<boolean>(false);
+  type = input<'button' | 'submit' | 'reset'>('button');
 
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed button class merging */
   protected readonly _computedClass = computed(() => {
     const outlineClasses =
-      this.appearance === 'outline' || this.appearance === 'outline-filled'
-        ? [this.getOutlineClasses(this.variant)]
+      this.appearance() === 'outline' || this.appearance() === 'outline-filled'
+        ? [this.getOutlineClasses(this.variant())]
         : [];
-    if (this.appearance === 'outline-filled') {
-      outlineClasses.push(this.getOutlineFilledClasses(this.variant));
+
+    if (this.appearance() === 'outline-filled') {
+      outlineClasses.push(this.getOutlineFilledClasses(this.variant()));
     }
+
     return hlm(
       buttonVariants({
-        variant: this.variant,
-        size: this.size,
-        appearance: this.appearance,
-        loading: this.loading,
-        className: this.userClass,
+        variant: this.variant(),
+        size: this.size(),
+        appearance: this.appearance(),
+        loading: this.loading(),
+        className: this.userClass(),
       }),
       outlineClasses,
-      this.loading ? 'tw:pointer-events-none' : '',
+      this.loading() ? 'tw:pointer-events-none' : '',
       this._additionalClasses(),
     );
   });
@@ -165,10 +169,11 @@ export class HlmButton {
   /** Computed spinner classes */
   protected readonly spinnerClass = computed(() => {
     const base =
-      this.appearance === 'outline' || this.appearance === 'outline-filled'
-        ? this.getOutlineSpinnerClasses(this.variant)
-        : this.getSpinnerClasses(this.variant);
-    return hlm(base, this.spinnerUserClass);
+      this.appearance() === 'outline' || this.appearance() === 'outline-filled'
+        ? this.getOutlineSpinnerClasses(this.variant())
+        : this.getSpinnerClasses(this.variant());
+
+    return hlm(base, this.spinnerUserClass());
   });
 
   setClass(classes: string): void {

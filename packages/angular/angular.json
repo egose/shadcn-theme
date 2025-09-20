@@ -678,6 +678,110 @@
           }
         }
       }
+    },
+    "autocomplete": {
+      "projectType": "library",
+      "root": "projects/autocomplete",
+      "sourceRoot": "projects/autocomplete/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/autocomplete/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/autocomplete/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/autocomplete/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "separator": {
+      "projectType": "library",
+      "root": "projects/separator",
+      "sourceRoot": "projects/separator/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/separator/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/separator/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/separator/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "searchable-multiselect": {
+      "projectType": "library",
+      "root": "projects/searchable-multiselect",
+      "sourceRoot": "projects/searchable-multiselect/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/searchable-multiselect/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/searchable-multiselect/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/searchable-multiselect/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-searchable-multiselect": {
+      "projectType": "library",
+      "root": "projects/form-searchable-multiselect",
+      "sourceRoot": "projects/form-searchable-multiselect/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-searchable-multiselect/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-searchable-multiselect/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-searchable-multiselect/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

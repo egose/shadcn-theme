@@ -15,13 +15,11 @@
       "@egose/shadcn-theme-ng/button": ["./dist/button"],
       "@egose/shadcn-theme-ng/accordion": ["./dist/accordion"],
       "@egose/shadcn-theme-ng/alert": ["./dist/alert"],
-      "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
       "@egose/shadcn-theme-ng/switch": ["./dist/switch"],
       "@egose/shadcn-theme-ng/label": ["./dist/label"],
       "@egose/shadcn-theme-ng/form-field": ["./dist/form-field"],
       "@egose/shadcn-theme-ng/alert-dialog": ["./dist/alert-dialog"],
       "@egose/shadcn-theme-ng/aspect-ratio": ["./dist/aspect-ratio"],
-      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
       "@egose/shadcn-theme-ng/avatar": ["./dist/avatar"],
       "@egose/shadcn-theme-ng/breadcrumb": ["./dist/breadcrumb"],
       "@egose/shadcn-theme-ng/card": ["./dist/card"],
@@ -54,7 +52,11 @@
       "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"],
       "@egose/shadcn-theme-ng/form-date-picker": ["./dist/form-date-picker"],
       "@egose/shadcn-theme-ng/basic-alert": ["./dist/basic-alert"],
-      "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"]
+      "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"],
+      "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
+      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
+      "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
+      "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -228,6 +230,30 @@
     },
     {
       "path": "./projects/confirmation-dialog/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/autocomplete/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/autocomplete/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/separator/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/separator/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/searchable-multiselect/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/searchable-multiselect/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-searchable-multiselect/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-searchable-multiselect/tsconfig.spec.json"
     }
   ]
 }

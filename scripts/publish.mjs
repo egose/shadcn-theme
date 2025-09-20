@@ -84,69 +84,75 @@ async function main() {
   const targetVersion = await determineTargetVersion(packageData.name, { version, major, minor, patch });
   console.log(`target version ${targetVersion}`);
 
-  execSync(`cd ${PACKAGE_DIR} && pnpm bundle`);
-
-  ['version', 'dependencies', 'peerDependencies'].forEach((type) => {
-    if (!packageData[type]) return;
-
-    if (_.isString(packageData[type])) {
-      if (packageData[type] === VER_PLACEHOLDER) packageData[type] = targetVersion;
-    } else if (_.isPlainObject(packageData[type])) {
-      _.each(packageData[type], (val, key) => {
-        if (val === VER_PLACEHOLDER) packageData[type][key] = targetVersion;
-      });
-    }
-  });
-
   const names = [packageData.name];
   if (_.isArray(packageData.additionalNames)) names.push(...packageData.additionalNames);
 
-  packageData = _.pick(packageData, [
-    'version',
-    'description',
-    'keywords',
-    'homepage',
-    'bugs',
-    'license',
-    'author',
-    'sideEffects',
-    'repository',
-    'dependencies',
-    'peerDependencies',
-    'publishConfig',
-    'release',
-    'engines',
-    'main',
-    'module',
-    'types',
-    'exports',
-  ]);
+  const bundles = [''];
+  if (_.isArray(packageData.bundles)) bundles.push(...packageData.bundles);
 
-  ['LICENSE', 'README.md'].forEach((file) => {
-    const src = `${PACKAGE_DIR}/${file}`;
-    const dest = `${publishDir}/${file}`;
+  _.forEach(bundles, (bundle) => {
+    execSync(`cd ${PACKAGE_DIR} && pnpm bundle ${bundle}`);
 
-    try {
-      execSync(`test -f "${src}" && cp "${src}" "${dest}"`, { stdio: 'inherit' });
-    } catch (error) {
-      // Ignore errors if the file does not exist
-    }
-  });
+    ['version', 'dependencies', 'peerDependencies'].forEach((type) => {
+      if (!packageData[type]) return;
 
-  _.forEach(names, (name) => {
-    const packageJSON = {
-      ...packageData,
-      name,
-    };
+      if (_.isString(packageData[type])) {
+        if (packageData[type] === VER_PLACEHOLDER) packageData[type] = targetVersion;
+      } else if (_.isPlainObject(packageData[type])) {
+        _.each(packageData[type], (val, key) => {
+          if (val === VER_PLACEHOLDER) packageData[type][key] = targetVersion;
+        });
+      }
+    });
 
-    if (context === 'angular') {
-      packageJSON.exports = parseJson(`${publishDir}/exports.json`);
-    }
+    packageData = _.pick(packageData, [
+      'version',
+      'description',
+      'keywords',
+      'homepage',
+      'bugs',
+      'license',
+      'author',
+      'sideEffects',
+      'repository',
+      'dependencies',
+      'peerDependencies',
+      'publishConfig',
+      'release',
+      'engines',
+      'main',
+      'module',
+      'types',
+      'exports',
+    ]);
 
-    console.log(packageJSON);
+    ['LICENSE', 'README.md'].forEach((file) => {
+      const src = `${PACKAGE_DIR}/${file}`;
+      const dest = `${publishDir}/${file}`;
 
-    writeJson(targetPackageJSON, packageJSON);
-    execSync(`cd ${publishDir} && npm publish --access public`);
+      try {
+        execSync(`test -f "${src}" && cp "${src}" "${dest}"`, { stdio: 'inherit' });
+      } catch (error) {
+        // Ignore errors if the file does not exist
+      }
+    });
+
+    _.forEach(names, (nm) => {
+      const name = bundle ? `${nm}-${bundle}` : nm;
+      const packageJSON = {
+        ...packageData,
+        name,
+      };
+
+      if (context === 'angular') {
+        packageJSON.exports = parseJson(`${publishDir}/exports.json`);
+      }
+
+      console.log(packageJSON);
+
+      writeJson(targetPackageJSON, packageJSON);
+      execSync(`cd ${publishDir} && npm publish --access public`);
+    });
   });
 }
 
