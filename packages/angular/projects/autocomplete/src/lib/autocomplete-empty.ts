@@ -10,5 +10,5 @@ import type { ClassValue } from 'clsx';
 })
 export class HlmAutocompleteEmpty {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
-  protected readonly _computedClass = computed(() => hlm('tw:py-6 tw:text-center tw:text-sm', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('tw:py-2 tw:text-center tw:text-sm', this.userClass()));
 }

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HlmButtonModule, HlmButton } from '@egose/shadcn-theme-ng/button';
+import { ChangeDetectionStrategy, Component, computed, signal, inject, ViewChild } from '@angular/core';
+import { HlmAutocomplete } from '@egose/shadcn-theme-ng/autocomplete';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import {
@@ -24,6 +25,7 @@ import {
   HlmDialogTitle,
 } from '@egose/shadcn-theme-ng/dialog';
 import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
+import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng/searchable-multiselect';
 import { HlmToaster } from '@egose/shadcn-theme-ng/sonner';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -44,7 +46,7 @@ import { toast } from 'ngx-sonner';
   standalone: true,
   providers: [provideIcons({ lucideCheck })],
   template: `
-    <hlm-toaster position="top-right" [closeButton]="true" />
+    <hlm-toaster position="top-right" [closeButton]="true" [richColors]="true" />
     <hlm-dialog-header>
       <h3 hlmDialogTitle>Form data</h3>
       <p hlmDialogDescription>Preview form data to submit</p>
@@ -74,7 +76,7 @@ class ConfirmationDiaglog {
   }
 
   public save() {
-    toast('Form saved', {
+    toast.success('Form saved', {
       description: 'The form data is successfully saved!',
       action: {
         label: 'Undo',
@@ -102,6 +104,8 @@ class ConfirmationDiaglog {
     EgFormDatePicker,
     NgIcon,
     HlmIcon,
+    HlmAutocomplete,
+    EgSearchableMultiselect,
   ],
   providers: [provideIcons({ lucideInfo })],
   template: `
@@ -205,6 +209,8 @@ class ConfirmationDiaglog {
             [error]="getError('about')"
             hint="Minimum 20 characters"
           ></eg-form-textarea>
+
+          <eg-searchable-multiselect [options]="memberOptions" formControlName="members" />
         </div>
 
         <!-- Actions -->
@@ -234,18 +240,6 @@ export class FormFieldPage {
   public maxDate = new Date(2030, 11, 31);
   private fb = inject(FormBuilder);
 
-  form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
-    birthday: [null, Validators.required],
-    about: ['', [Validators.required, Validators.minLength(20)]],
-    gender: ['', Validators.required],
-    country: ['ca', Validators.required],
-    hobbies: [[], Validators.required],
-  });
-
   genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
@@ -267,6 +261,35 @@ export class FormFieldPage {
     { value: 'music', label: 'Music' },
     { value: 'cooking', label: 'Cooking' },
   ];
+
+  memberOptions = [
+    { label: 'Marty McFly', value: 'marty-mcfly' },
+    { label: 'Doc Brown', value: 'doc-brown' },
+    { label: 'Biff Tannen', value: 'biff-tannen' },
+    { label: 'George McFly', value: 'george-mcfly' },
+    { label: 'Jennifer Parker', value: 'jennifer-parker' },
+    { label: 'Emmett Brown', value: 'emmett-brown' },
+    { label: 'Einstein', value: 'einstein' },
+    { label: 'Clara Clayton', value: 'clara-clayton' },
+    { label: 'Needles', value: 'needles' },
+    { label: 'Goldie Wilson', value: 'goldie-wilson' },
+    { label: 'Marvin Berry', value: 'marvin-berry' },
+    { label: 'Lorraine Baines', value: 'lorraine-baines' },
+    { label: 'Strickland', value: 'strickland' },
+  ];
+
+  form = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
+    birthday: [null, Validators.required],
+    about: ['', [Validators.required, Validators.minLength(20)]],
+    gender: ['', Validators.required],
+    country: ['ca', Validators.required],
+    hobbies: [[], Validators.required],
+    members: [[this.memberOptions[0].value, this.memberOptions[1].value], Validators.required],
+  });
 
   submitted = false;
   loading = false;

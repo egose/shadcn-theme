@@ -43,8 +43,14 @@
       "@egose/shadcn-theme-ng/form-textarea": ["../../packages/angular/projects/form-textarea/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-select": ["../../packages/angular/projects/form-select/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-date-picker": ["../../packages/angular/projects/form-date-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-searchable-multiselect": [
+        "../../packages/angular/projects/form-searchable-multiselect/src/public-api.ts"
+      ],
       "@egose/shadcn-theme-ng/basic-alert": ["../../packages/angular/projects/basic-alert/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/autocomplete": ["../../packages/angular/projects/autocomplete/src/public-api.ts"]
+      "@egose/shadcn-theme-ng/autocomplete": ["../../packages/angular/projects/autocomplete/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/searchable-multiselect": [
+        "../../packages/angular/projects/searchable-multiselect/src/public-api.ts"
+      ]
     }
   },
   "angularCompilerOptions": {

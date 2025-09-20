@@ -85,6 +85,7 @@ export const HLM_AUTOCOMPLETE_VALUE_ACCESSOR = {
             [value]="_search()"
             (input)="_onSearchChanged($event)"
             (keydown.arrowDown)="_openPopover()"
+            (click)="_click()"
           />
 
           <button
@@ -146,6 +147,8 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
   private readonly _inputRef = viewChild.required('input', { read: ElementRef });
 
   protected readonly _elementRef = inject(ElementRef<HTMLElement>);
+
+  public readonly onSelect = input<(option: string) => void>();
 
   /** The user defined class  */
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
@@ -215,6 +218,10 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
     }
   }
 
+  protected _click() {
+    this._toggleOptions();
+  }
+
   protected _openPopover() {
     if (this._search() || this.filteredOptions().length > 0) {
       // only open if there's a search term or options to show
@@ -257,10 +264,24 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
 
     const searchValue = this.transformValueToSearch()(option);
 
-    this._search.set(searchValue);
-    this.searchChange.emit(searchValue);
+    if (this.onSelect()) {
+      this.onSelect()?.(searchValue);
+    } else {
+      this._search.set(searchValue);
+      this.searchChange.emit(searchValue);
 
-    this._setPopoverState('closed');
+      this._setPopoverState('closed');
+    }
+  }
+
+  public clearText(): void {
+    this._inputRef().nativeElement.value = '';
+    this._search.set('');
+    this.searchChange.emit('');
+  }
+
+  public setPopoverState(state: 'open' | 'closed') {
+    this._setPopoverState(state);
   }
 
   /** CONTROL VALUE ACCESSOR */

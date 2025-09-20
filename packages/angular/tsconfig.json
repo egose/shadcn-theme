@@ -54,7 +54,9 @@
       "@egose/shadcn-theme-ng/basic-alert": ["./dist/basic-alert"],
       "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"],
       "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
-      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"]
+      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
+      "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
+      "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -240,6 +242,18 @@
     },
     {
       "path": "./projects/separator/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/searchable-multiselect/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/searchable-multiselect/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-searchable-multiselect/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-searchable-multiselect/tsconfig.spec.json"
     }
   ]
 }
