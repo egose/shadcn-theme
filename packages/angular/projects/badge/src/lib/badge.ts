@@ -63,9 +63,10 @@ export type BadgeAppearanceType = NonNullable<BadgeVariants['appearance']>;
   host: {
     '[class]': '_computedClass()',
   },
-  template: ` <ng-content></ng-content> `,
+  template: `<ng-content></ng-content>`,
 })
 export class HlmBadge {
+  /** Props as signal-based inputs */
   variant = input<BadgeVariantType>('primary');
   size = input<BadgeSizeType>('default');
   appearance = input<BadgeAppearanceType>('solid');

@@ -1,5 +1,8 @@
 {
   "name": "@egose/shadcn-theme-ng",
+  "bundles": [
+    "tw"
+  ],
   "version": "0.0.0-PLACEHOLDER",
   "description": "Angular shadcn UI theme",
   "license": "MIT",
