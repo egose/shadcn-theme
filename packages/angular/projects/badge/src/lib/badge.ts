@@ -1,9 +1,8 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, computed, signal, input } from '@angular/core';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { type ClassValue } from 'clsx';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 
-/* Tailwind + CVA variant config */
 export const badgeVariants = cva(
   [
     'tw:inline-flex',
@@ -67,29 +66,30 @@ export type BadgeAppearanceType = NonNullable<BadgeVariants['appearance']>;
   template: ` <ng-content></ng-content> `,
 })
 export class HlmBadge {
-  /** Props */
-  @Input() variant: BadgeVariantType = 'primary';
-  @Input() size: BadgeSizeType = 'default';
-  @Input() appearance: BadgeAppearanceType = 'solid';
-  @Input() userClass: ClassValue = '';
+  variant = input<BadgeVariantType>('primary');
+  size = input<BadgeSizeType>('default');
+  appearance = input<BadgeAppearanceType>('solid');
+  userClass = input<ClassValue>('');
 
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed badge class merging */
   protected readonly _computedClass = computed(() => {
     const outlineClasses =
-      this.appearance === 'outline' || this.appearance === 'outline-filled'
-        ? [this.getOutlineClasses(this.variant)]
+      this.appearance() === 'outline' || this.appearance() === 'outline-filled'
+        ? [this.getOutlineClasses(this.variant())]
         : [];
-    if (this.appearance === 'outline-filled') {
-      outlineClasses.push(this.getOutlineFilledClasses(this.variant));
+
+    if (this.appearance() === 'outline-filled') {
+      outlineClasses.push(this.getOutlineFilledClasses(this.variant()));
     }
+
     return hlm(
       badgeVariants({
-        variant: this.variant,
-        size: this.size,
-        appearance: this.appearance,
-        className: this.userClass,
+        variant: this.variant(),
+        size: this.size(),
+        appearance: this.appearance(),
+        className: this.userClass(),
       }),
       outlineClasses,
       this._additionalClasses(),
