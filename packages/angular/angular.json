@@ -782,6 +782,84 @@
           }
         }
       }
+    },
+    "checkbox": {
+      "projectType": "library",
+      "root": "projects/checkbox",
+      "sourceRoot": "projects/checkbox/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/checkbox/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/checkbox/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/checkbox/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-checkbox": {
+      "projectType": "library",
+      "root": "projects/form-checkbox",
+      "sourceRoot": "projects/form-checkbox/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-checkbox/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-checkbox/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-checkbox/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-field-simple": {
+      "projectType": "library",
+      "root": "projects/form-field-simple",
+      "sourceRoot": "projects/form-field-simple/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-field-simple/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-field-simple/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-field-simple/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

@@ -16,6 +16,7 @@ import { EgFormTextInput } from '@egose/shadcn-theme-ng/form-text-input';
 import { EgFormTextarea } from '@egose/shadcn-theme-ng/form-textarea';
 import { EgFormSelect } from '@egose/shadcn-theme-ng/form-select';
 import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
+import { EgFormCheckbox } from '@egose/shadcn-theme-ng/form-checkbox';
 import {
   HlmDialog,
   HlmDialogDescription,
@@ -25,8 +26,9 @@ import {
   HlmDialogTitle,
 } from '@egose/shadcn-theme-ng/dialog';
 import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
-import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng/searchable-multiselect';
+import { EgFormSearchableMultiselect } from '@egose/shadcn-theme-ng/form-searchable-multiselect';
 import { HlmToaster } from '@egose/shadcn-theme-ng/sonner';
+import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
 import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideInfo } from '@ng-icons/lucide';
@@ -102,10 +104,10 @@ class ConfirmationDiaglog {
     EgFormTextarea,
     EgFormSelect,
     EgFormDatePicker,
+    EgFormCheckbox,
     NgIcon,
     HlmIcon,
-    HlmAutocomplete,
-    EgSearchableMultiselect,
+    EgFormSearchableMultiselect,
   ],
   providers: [provideIcons({ lucideInfo })],
   template: `
@@ -210,7 +212,20 @@ class ConfirmationDiaglog {
             hint="Minimum 20 characters"
           ></eg-form-textarea>
 
-          <eg-searchable-multiselect [options]="memberOptions" formControlName="members" />
+          <eg-form-searchable-multiselect
+            [options]="memberOptions"
+            controlName="members"
+            label="Members"
+            [error]="getError('members')"
+            hint="Members"
+          />
+
+          <eg-form-checkbox
+            controlName="agreed"
+            label="Agreed"
+            [error]="getError('agreed')"
+            hint="We'll never share your email"
+          />
         </div>
 
         <!-- Actions -->
@@ -289,6 +304,7 @@ export class FormFieldPage {
     country: ['ca', Validators.required],
     hobbies: [[], Validators.required],
     members: [[this.memberOptions[0].value, this.memberOptions[1].value], Validators.required],
+    agreed: [false, Validators.requiredTrue],
   });
 
   submitted = false;
