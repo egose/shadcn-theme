@@ -18,6 +18,7 @@
       "@egose/shadcn-theme-ng/switch": ["./dist/switch"],
       "@egose/shadcn-theme-ng/label": ["./dist/label"],
       "@egose/shadcn-theme-ng/form-field": ["./dist/form-field"],
+      "@egose/shadcn-theme-ng/form-field-simple": ["./dist/form-field-simple"],
       "@egose/shadcn-theme-ng/alert-dialog": ["./dist/alert-dialog"],
       "@egose/shadcn-theme-ng/aspect-ratio": ["./dist/aspect-ratio"],
       "@egose/shadcn-theme-ng/avatar": ["./dist/avatar"],
@@ -56,7 +57,8 @@
       "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
       "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
       "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
-      "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"]
+      "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"],
+      "@egose/shadcn-theme-ng/form-checkbox": ["./dist/form-checkbox"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -254,6 +256,24 @@
     },
     {
       "path": "./projects/form-searchable-multiselect/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/checkbox/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/checkbox/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-checkbox/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-checkbox/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-field-simple/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-field-simple/tsconfig.spec.json"
     }
   ]
 }

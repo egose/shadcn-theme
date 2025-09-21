@@ -1,7 +1,8 @@
 import { Component, computed, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
+import { EgFormField } from '@egose/shadcn-theme-ng/form-field-simple';
+import { HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
@@ -12,12 +13,16 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
   host: {
     class: 'tw:w-full',
   },
-  imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, EgSearchableMultiselect],
+  imports: [ReactiveFormsModule, EgFormField, HlmError, HlmHint, HlmLabel, EgSearchableMultiselect],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
-    @let lbl = label(); @let nm = controlName(); @let err = error(); @let hnt = hint(); @let rqrd = required();
+    @let lbl = label();
+    @let nm = controlName();
+    @let err = error();
+    @let hnt = hint();
+    @let rqrd = required();
 
-    <hlm-form-field>
+    <eg-form-field>
       @if (lbl) {
       <span hlmLabel [class]="$labelClass()">
         {{ lbl }}
@@ -31,7 +36,6 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
         [options]="options()"
         [placeholder]="placeholder()"
         [formControlName]="nm"
-        [disabled]="disabled()"
         [required]="rqrd"
         [class]="$controlClass()"
       ></eg-searchable-multiselect>
@@ -45,7 +49,7 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
         {{ hnt }}
       </hlm-hint>
       }
-    </hlm-form-field>
+    </eg-form-field>
   `,
 })
 export class EgFormSearchableMultiselect {

@@ -29,6 +29,7 @@
       "@egose/shadcn-theme-ng/sonner": ["../../packages/angular/projects/sonner/src/public-api.ts"],
       "@egose/shadcn-theme-ng/switch": ["../../packages/angular/projects/switch/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tabs": ["../../packages/angular/projects/tabs/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/checkbox": ["../../packages/angular/projects/checkbox/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tooltip": ["../../packages/angular/projects/tooltip/src/public-api.ts"],
       "@egose/shadcn-theme-ng/radio-group": ["../../packages/angular/projects/radio-group/src/public-api.ts"],
       "@egose/shadcn-theme-ng/calendar": ["../../packages/angular/projects/calendar/src/public-api.ts"],
@@ -39,6 +40,9 @@
         "../../packages/angular/projects/confirmation-dialog/src/public-api.ts"
       ],
       "@egose/shadcn-theme-ng/form-field": ["../../packages/angular/projects/form-field/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-field-simple": [
+        "../../packages/angular/projects/form-field-simple/src/public-api.ts"
+      ],
       "@egose/shadcn-theme-ng/form-text-input": ["../../packages/angular/projects/form-text-input/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-textarea": ["../../packages/angular/projects/form-textarea/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-select": ["../../packages/angular/projects/form-select/src/public-api.ts"],
@@ -46,6 +50,7 @@
       "@egose/shadcn-theme-ng/form-searchable-multiselect": [
         "../../packages/angular/projects/form-searchable-multiselect/src/public-api.ts"
       ],
+      "@egose/shadcn-theme-ng/form-checkbox": ["../../packages/angular/projects/form-checkbox/src/public-api.ts"],
       "@egose/shadcn-theme-ng/basic-alert": ["../../packages/angular/projects/basic-alert/src/public-api.ts"],
       "@egose/shadcn-theme-ng/autocomplete": ["../../packages/angular/projects/autocomplete/src/public-api.ts"],
       "@egose/shadcn-theme-ng/searchable-multiselect": [
