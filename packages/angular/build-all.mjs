@@ -64,9 +64,9 @@ async function buildAll() {
 
   const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf8'));
   const paths = tsconfig.compilerOptions?.paths || {};
-  const prefix = '@egose/shadcn-theme-ng';
-  const matchingKeys = Object.keys(paths).filter((key) => key.startsWith(prefix));
-  const namesWithoutPrefix = matchingKeys.map((key) => key.replace(`${prefix}/`, ''));
+  const pkgName = '@egose/shadcn-theme-ng';
+  const matchingKeys = Object.keys(paths).filter((key) => key.startsWith(pkgName));
+  const namesWithoutPrefix = matchingKeys.map((key) => key.replace(`${pkgName}/`, ''));
 
   const exports = {};
   namesWithoutPrefix.forEach((name) => {
@@ -89,10 +89,14 @@ async function buildAll() {
   const allFiles = await getAllFiles('./dist');
 
   const tsFiles = allFiles.filter((f) => f.endsWith('.mjs'));
-  const to = bundle ? `${bundle}:` : '';
+  const twPrefix = bundle ? `${bundle}:` : '';
+  const newPkgName = bundle ? `${pkgName}-${bundle}` : pkgName;
 
   for (const file of tsFiles) {
-    await replaceInFile(file, [['tw:', to]]);
+    await replaceInFile(file, [
+      ['tw:', twPrefix],
+      [`'${pkgName}/`, `'${newPkgName}/`],
+    ]);
   }
 }
 

@@ -36,6 +36,25 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
           </div>
         </div>
       }
+
+      <div class="tw:font-semibold tw:mt-4">
+        <h3>Link A tags</h3>
+        <div class="tw:flex tw:flex-wrap tw:gap-2">
+          @for (v of variants; track v) {
+            <a
+              hlmButton
+              [variant]="v"
+              appearance="solid"
+              size="default"
+              [disabled]="false"
+              [loading]="false"
+              [icon]="null"
+            >
+              {{ v }}
+            </a>
+          }
+        </div>
+      </div>
     </div>
   `,
 })

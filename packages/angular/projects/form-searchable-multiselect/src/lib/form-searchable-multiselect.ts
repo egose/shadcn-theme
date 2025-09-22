@@ -17,7 +17,8 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let nm = controlName();
+    @let cid = controlId();
+    @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
     @let rqrd = required();
@@ -33,9 +34,10 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
       }
 
       <eg-searchable-multiselect
+        [id]="cid || id()"
         [options]="options()"
         [placeholder]="placeholder()"
-        [formControlName]="nm"
+        [formControlName]="cnm"
         [required]="rqrd"
         [class]="$controlClass()"
       ></eg-searchable-multiselect>
@@ -55,11 +57,13 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
 export class EgFormSearchableMultiselect {
   // Form field inputs
   label = input<string | undefined>(undefined);
+  controlId = input<string | undefined>(undefined);
   controlName = input<string>(''); // required for form binding
   error = input<string | undefined>(undefined);
   hint = input<string | undefined>(undefined);
 
   // HTML/control attributes
+  id = input<string>(crypto.randomUUID());
   placeholder = input<string>('Start typing to add…');
   disabled = input<boolean>(false);
   required = input<boolean>(false);

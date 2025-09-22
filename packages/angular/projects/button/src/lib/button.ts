@@ -29,6 +29,7 @@ export const buttonVariants = cva(
     'tw:[&_svg]:pointer-events-none',
     'tw:[&_svg]:shrink-0',
     'tw:[&_svg]:size-4',
+    'tw:no-underline',
   ],
   {
     variants: {
