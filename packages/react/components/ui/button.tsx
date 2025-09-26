@@ -47,13 +47,15 @@ const buttonVariants = cva(
         ghost: 'hover:bg-light hover:text-light-foreground',
       },
       size: {
+        xs: 'h-7 rounded-xs px-2 text-xs',
+        sm: 'h-8 rounded-sm px-3',
         default: 'h-9 px-4 py-2',
-        sm: 'h-8 rounded-sm px-3 text-xs',
-        lg: 'h-10 rounded-sm px-8',
+        lg: 'h-10 rounded-sm px-7 text-base',
         icon: 'h-9 w-9',
-        'compact-default': 'h-8 px-2 py-1',
+        'compact-xs': 'h-6 px-2 py-1 text-xs',
         'compact-sm': 'h-7 px-2 py-1',
-        'compact-lg': 'h-9 px-2 py-1',
+        'compact-default': 'h-8 px-2 py-1',
+        'compact-lg': 'h-9 px-2 py-1 text-base',
         'compact-icon': 'h-8 w-8',
       },
       appearance: {
@@ -196,7 +198,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <div className="relative inline-flex items-center justify-center w-full">
             <span className="invisible">{children}</span>
             <span className="absolute inset-0 flex items-center justify-center">
-              <Spinner className={cn(spinnerClasses, 'animate-spin')} />
+              <Spinner size="medium" className={cn(spinnerClasses, 'animate-spin')} />
             </span>
           </div>
         ) : (

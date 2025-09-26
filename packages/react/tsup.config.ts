@@ -52,6 +52,6 @@ export const tsup: Options = {
   sourcemap: true,
   clean: true,
   minify: false,
-  external: ['react', 'react-dom', 'react-hook-form'],
+  external: ['react', 'react-dom', 'react-hook-form', 'sonner'],
   esbuildPlugins: [prependUseClient()],
 };

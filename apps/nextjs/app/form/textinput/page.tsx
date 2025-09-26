@@ -8,11 +8,10 @@ import { Button } from '../../../../../packages/react/components/ui/button';
 import { HookFormTextInput } from '../../../../../packages/react/components/form/hook-text-input';
 import { FormTimeInput } from '../../../../../packages/react/components/form/time-input';
 import { HookFormTimeInput } from '../../../../../packages/react/components/form/hook-time-input';
-import { useToast } from '../../../../../packages/react/hooks/use-toast';
-import { ToastAction } from '../../../../../packages/react/components/ui/toast';
 import { FormCheckbox } from '../../../../../packages/react/components/form/checkbox';
 import { HookFormCheckbox } from '../../../../../packages/react/components/form/hook-checkbox';
 import { CopyableButton } from '../../../../../packages/react/components/ui/copy-button';
+import { toast } from 'sonner';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -27,7 +26,6 @@ const validationSchema = z.object({
 });
 
 export default function Page() {
-  const { toast } = useToast();
   const methods = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: {},
@@ -41,10 +39,12 @@ export default function Page() {
         <form
           onSubmit={methods.handleSubmit((formData) => {
             console.log('Form submitted:', formData);
-            toast({
-              title: 'Submitted',
+            toast('Submitted', {
               description: 'Successfully submitted the form.',
-              action: <ToastAction altText="undo">Undo</ToastAction>,
+              action: {
+                label: 'Undo',
+                onClick: () => console.log('Undo'),
+              },
             });
           })}
           autoComplete="off"
@@ -117,6 +117,19 @@ export default function Page() {
         }}
       />
       <CopyableButton>{new Date().toISOString()}</CopyableButton>
+      <Button
+        onClick={() => {
+          toast.success('Test', {
+            description: 'Test Toast',
+            action: {
+              label: 'Undo',
+              onClick: () => console.log('Undo'),
+            },
+          });
+        }}
+      >
+        Test
+      </Button>
     </>
   );
 }

@@ -26,7 +26,7 @@ const alertVariants = cva(
       },
       appearance: {
         solid: '',
-        light: 'tw:text-semibold',
+        light: 'tw:font-semibold',
       },
     },
     compoundVariants: [

@@ -18,7 +18,8 @@ import { ClassValue } from 'clsx';
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let nm = controlName();
+    @let cid = controlId();
+    @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
     @let rqrd = required();
@@ -26,9 +27,9 @@ import { ClassValue } from 'clsx';
     <eg-form-field>
       <div class="tw:flex tw:items-center tw:gap-1">
         <hlm-checkbox
-          [id]="id()"
-          [name]="nm || name() || null"
-          [formControlName]="nm"
+          [id]="cid || id()"
+          [name]="cnm || name() || null"
+          [formControlName]="cnm"
           [class]="$checkboxClass()"
           [checked]="checked()"
           [required]="rqrd"
@@ -62,7 +63,8 @@ export class EgFormCheckbox {
 
   // Inputs
   label = input<string>('');
-  controlName = input<string>(''); // must be provided
+  controlId = input<string | undefined>(undefined);
+  controlName = input<string>('');
   error = input<string | undefined>(undefined);
   hint = input<string | undefined>(undefined);
 

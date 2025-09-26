@@ -19,7 +19,8 @@ let nextId = 0;
   // prettier-ignore
   template: `
     @let lbl = label();
-    @let nm = controlName();
+    @let cid = controlId();
+    @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
     @let rqrd = required();
@@ -34,10 +35,10 @@ let nextId = 0;
       }
 
       <hlm-date-picker
-        [buttonId]="id()"
+        [buttonId]="cid || id()"
         [min]="min()"
         [max]="max()"
-        [formControlName]="nm"
+        [formControlName]="cnm"
         [autoCloseOnSelect]="autoCloseOnSelect()"
         [required]="rqrd"
         [class]="$pickerClass()"
@@ -62,12 +63,13 @@ let nextId = 0;
 export class EgFormDatePicker {
   // Inputs
   label = input<string | undefined>(undefined);
+  controlId = input<string | undefined>(undefined);
   controlName = input<string>('');
   error = input<string | undefined>(undefined);
   hint = input<string | undefined>(undefined);
 
   // HTML attributes
-  id = input<string>(`eg-form-date-picker-${nextId++}`);
+  id = input<string>(crypto.randomUUID());
   name = input<string | undefined>(undefined);
   placeholder = input<string>('Pick a date');
   readonly = input<boolean>(false);

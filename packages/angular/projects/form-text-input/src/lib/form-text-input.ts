@@ -44,7 +44,8 @@ let nextId = 0;
   // prettier-ignore
   template: `
     @let lbl = label();
-    @let nm = controlName();
+    @let cid = controlId();
+    @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
     @let rqrd = required();
@@ -61,9 +62,9 @@ let nextId = 0;
       <input
         hlmInput
         [attr.aria-label]="lbl"
-        [id]="id()"
-        [name]="nm || name()"
-        [formControlName]="nm"
+        [id]="cid || id()"
+        [name]="cnm || name()"
+        [formControlName]="cnm"
         [class]="$inputClass()"
         [type]="type()"
         [placeholder]="placeholder()"
@@ -94,6 +95,7 @@ let nextId = 0;
 })
 export class EgFormTextInput {
   label = input<string | undefined>(undefined);
+  controlId = input<string | undefined>(undefined);
   controlName = input<string>('');
   error = input<string | undefined>(undefined);
   hint = input<string | undefined>(undefined);

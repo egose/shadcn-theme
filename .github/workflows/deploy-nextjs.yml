@@ -1,4 +1,4 @@
-name: Publish Devapp in GitHub Pages
+name: Publish Nextjs in GitHub Pages
 
 on:
   push:
@@ -36,3 +36,6 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4.7.3
       with:
         folder: apps/nextjs/out
+        branch: pages-nextjs
+        clean: true
+        force: true
