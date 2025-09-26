@@ -23,7 +23,7 @@ import {
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../../packages/react/layouts/sidebar1';
 import { DialogManagerProvider } from '../../../packages/react/components/widgets/dialog-manager';
-import { Toaster } from '../../../packages/react/components/ui/toaster';
+import { Toaster } from '../../../packages/react/components/ui/sonner';
 import { useEffect, useState } from 'react';
 
 const geistSans = Geist({
@@ -103,6 +103,14 @@ export default function RootLayout({
               {
                 title: 'Button',
                 url: '/components/button',
+              },
+              {
+                title: 'Badge',
+                url: '/components/badge',
+              },
+              {
+                title: 'Alert',
+                url: '/components/alert',
               },
               {
                 title: 'Dialog',
@@ -200,8 +208,8 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarLayout aslink={Link} data={data}>
           <DialogManagerProvider>{children}</DialogManagerProvider>
-          <Toaster />
         </SidebarLayout>
+        <Toaster theme="light" position="top-right" closeButton richColors />
       </body>
     </html>
   );

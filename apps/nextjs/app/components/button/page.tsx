@@ -4,6 +4,7 @@ import { IconInbox } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../../packages/react/components/ui/button';
 
+// All possible values from your buttonVariants definition
 const variants = [
   'primary',
   'secondary',
@@ -19,158 +20,93 @@ const variants = [
   'muted',
 ] as const;
 
+const sizes = [
+  'xs',
+  'sm',
+  'default',
+  'lg',
+  'icon',
+  'compact-xs',
+  'compact-sm',
+  'compact-default',
+  'compact-lg',
+] as const;
+
+const appearances = ['solid', 'outline', 'outline-filled'] as const;
+
 export default function Page() {
   return (
     <>
-      <h1 className="font-bold text-2xl mt-4 mb-5">Button</h1>
+      <h1 className="font-bold text-2xl mt-4 mb-5">Button Showcase</h1>
 
-      {/* Basic */}
-      <Section title="Basic">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant}>
-            {_startCase(variant)}
+      {/* Variants x Appearance x Loading */}
+      {appearances.map((appearance) => (
+        <Section key={appearance} title={`Appearance: ${_startCase(appearance)}`}>
+          {variants.map((variant) => (
+            <Button key={variant} variant={variant} appearance={appearance}>
+              {_startCase(variant)}
+            </Button>
+          ))}
+        </Section>
+      ))}
+
+      {/* Sizes */}
+      <Section title="Sizes">
+        {sizes.map((size) => (
+          <Button key={size} size={size}>
+            {_startCase(size)}
           </Button>
         ))}
       </Section>
 
-      {/* Basic - disabled */}
-      <Section title="Basic - disabled">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} disabled>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
+      {/* Loading States */}
+      {appearances.map((appearance) => (
+        <Section key={appearance + '-loading'} title={`Appearance: ${_startCase(appearance)} - Loading`}>
+          {variants.map((variant) => (
+            <Button key={variant} variant={variant} appearance={appearance} loading>
+              {_startCase(variant)}
+            </Button>
+          ))}
+        </Section>
+      ))}
 
-      {/* Basic - loading */}
-      <Section title="Basic - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
+      {/* Disabled States */}
+      {appearances.map((appearance) => (
+        <Section key={appearance + '-disabled'} title={`Appearance: ${_startCase(appearance)} - Disabled`}>
+          {variants.map((variant) => (
+            <Button key={variant} variant={variant} appearance={appearance} disabled>
+              {_startCase(variant)}
+            </Button>
+          ))}
+        </Section>
+      ))}
 
-      {/* Basic - disabled + loading */}
-      <Section title="Basic - disabled - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} disabled loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Compact (was thin) */}
-      <Section title="Compact">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} size="compact-default">
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline */}
-      <Section title="Outline">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline">
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline - disabled */}
-      <Section title="Outline - disabled">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline" disabled>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline - loading */}
-      <Section title="Outline - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline" loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline - disabled + loading */}
-      <Section title="Outline - disabled - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline" disabled loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline - compact */}
-      <Section title="Outline - compact">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline" size="compact-default">
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline Filled */}
-      <Section title="Outline filled">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline-filled">
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline Filled - disabled */}
-      <Section title="Outline filled - disabled">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline-filled" disabled>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline Filled - loading */}
-      <Section title="Outline filled - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline-filled" loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline Filled - disabled + loading */}
-      <Section title="Outline filled - disabled - loading">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline-filled" disabled loading>
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
-
-      {/* Outline Filled - compact */}
-      <Section title="Outline filled - compact">
-        {variants.map((variant) => (
-          <Button key={variant} variant={variant} appearance="outline-filled" size="compact-default">
-            {_startCase(variant)}
-          </Button>
-        ))}
-      </Section>
+      {/* Loading + Disabled */}
+      {appearances.map((appearance) => (
+        <Section
+          key={appearance + '-loading-disabled'}
+          title={`Appearance: ${_startCase(appearance)} - Loading + Disabled`}
+        >
+          {variants.map((variant) => (
+            <Button key={variant} variant={variant} appearance={appearance} disabled loading>
+              {_startCase(variant)}
+            </Button>
+          ))}
+        </Section>
+      ))}
 
       {/* Icons */}
-      <Section title="Icon (left)">
+      <Section title="Icons (Left)">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} icon={<IconInbox />} iconPosition="left">
+          <Button key={variant + '-icon-left'} variant={variant} icon={<IconInbox />} iconPosition="left">
             {_startCase(variant)}
           </Button>
         ))}
       </Section>
 
-      <Section title="Icon (right)">
+      <Section title="Icons (Right)">
         {variants.map((variant) => (
-          <Button key={variant} variant={variant} icon={<IconInbox />} iconPosition="right">
+          <Button key={variant + '-icon-right'} variant={variant} icon={<IconInbox />} iconPosition="right">
             {_startCase(variant)}
           </Button>
         ))}
@@ -181,8 +117,8 @@ export default function Page() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="font-semibold mt-4">
-      <h3>{title}</h3>
+    <div className="font-semibold mt-6">
+      <h3 className="mb-2">{title}</h3>
       <div className="flex flex-wrap gap-2">{children}</div>
     </div>
   );
