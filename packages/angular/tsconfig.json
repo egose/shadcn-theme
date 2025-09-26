@@ -58,7 +58,8 @@
       "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
       "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
       "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"],
-      "@egose/shadcn-theme-ng/form-checkbox": ["./dist/form-checkbox"]
+      "@egose/shadcn-theme-ng/form-checkbox": ["./dist/form-checkbox"],
+      "sheet": ["./dist/sheet"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -274,6 +275,12 @@
     },
     {
       "path": "./projects/form-field-simple/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/sheet/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/sheet/tsconfig.spec.json"
     }
   ]
 }
