@@ -29,7 +29,7 @@ jobs:
     - name: Angular Build 📦
       run: |
         pnpm build
-        touch out/.nojekyll
+        touch apps/angular/dist/angular/browser/.nojekyll
       working-directory: apps/angular
 
     - name: Angular Deploy 🚀
