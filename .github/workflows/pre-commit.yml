@@ -21,4 +21,6 @@ jobs:
       uses: ./.github/actions/setup-npm
 
     - name: Run Pre-commit Hooks on CI
-      run: pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+      run: |
+        chmod +x .bin/prettier.sh
+        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
