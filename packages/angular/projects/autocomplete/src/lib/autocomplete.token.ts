@@ -1,6 +1,6 @@
 import { inject, InjectionToken, ValueProvider } from '@angular/core';
 
-export type TransformValueToString<T> = (value: T) => string;
+export type TransformValueToString<T> = (value: T, inputId: string) => string;
 
 export interface HlmAutocompleteConfig<T> {
   transformValueToSearch: TransformValueToString<T>;

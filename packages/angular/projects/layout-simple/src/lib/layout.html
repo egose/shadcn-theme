@@ -26,6 +26,17 @@
 
     <!-- Right menus (desktop) -->
     <nav [class]="_computedRightClass()">
+      @if (searchEnabled()) {
+        <eg-generic-autocomplete
+          [optionTemplate]="searchOptionTemplate()"
+          [loaderFn]="searchLoaderFn()"
+          [transformValueToSearch]="searchTransformValueToSearch()"
+          [placeholderText]="searchPlaceholderText()"
+          [emptyText]="searchEmptyText()"
+          (optionChange)="onSearchOptionChange($event)"
+        ></eg-generic-autocomplete>
+      }
+
       @for (item of rightMenus(); track item.label) {
         @if (item.link) {
           <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>

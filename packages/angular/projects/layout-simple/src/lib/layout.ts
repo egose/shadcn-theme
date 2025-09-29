@@ -1,9 +1,11 @@
-import { Component, input, computed, signal } from '@angular/core';
+import { Component, input, output, computed, signal, viewChild, TemplateRef } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClassValue } from 'clsx';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
+import { HlmAutocompleteOption } from '@egose/shadcn-theme-ng/autocomplete';
 import { EgLayoutSimpleUserMenu, type UserMenuSection } from './user-menu';
+import { EgGenericAutocomplete } from './search';
 
 // Updated interface for left/right menu items
 export interface MenuItem {
@@ -16,10 +18,10 @@ export interface MenuItem {
 @Component({
   selector: 'eg-layout-simple',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, EgLayoutSimpleUserMenu],
+  imports: [RouterOutlet, RouterLink, EgLayoutSimpleUserMenu, EgGenericAutocomplete],
   templateUrl: './layout.html',
 })
-export class EgLayoutSimple {
+export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
   rightMenus = input<MenuItem[]>([]);
@@ -35,6 +37,15 @@ export class EgLayoutSimple {
   /** Link/button base class inputs */
   leftLinkClass = input<ClassValue>('', { alias: 'leftLinkClass' });
   rightLinkClass = input<ClassValue>('', { alias: 'rightLinkClass' });
+
+  searchEnabled = input<boolean>(false);
+  searchPlaceholderText = input<string>('Select an page');
+  searchEmptyText = input<string>('No pages found');
+  searchOptionTemplate = input<TemplateRef<HlmAutocompleteOption<TItem>>>();
+  searchLoaderFn = input<(params: TParams) => Promise<TItem[]>>();
+  searchTransformValueToSearch = input<(value: TItem) => string>();
+
+  public readonly searchOptionChange = output<TItem>();
 
   /** Computed merged classes for containers */
   protected readonly _computedLeftClass = computed(() =>
@@ -64,5 +75,9 @@ export class EgLayoutSimple {
 
   toggleMobileMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  onSearchOptionChange(value: TItem) {
+    this.searchOptionChange.emit(value);
   }
 }
