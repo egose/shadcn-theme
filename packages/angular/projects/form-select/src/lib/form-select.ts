@@ -20,7 +20,6 @@ interface SelectOption {
   },
   imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, BrnSelectImports, HlmSelectImports],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
-  // prettier-ignore
   template: `
     @let lbl = label();
     @let cid = controlId();
@@ -31,10 +30,11 @@ interface SelectOption {
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">{{ lbl }}
-        @if (rqrd) {
-          <span class="tw:text-red-500">*</span>
-        }
+        <span hlmLabel [class]="$labelClass()"
+          >{{ lbl }}
+          @if (rqrd) {
+            <span class="tw:text-red-500">*</span>
+          }
         </span>
       }
 
@@ -52,25 +52,25 @@ interface SelectOption {
         <hlm-select-content>
           @if (options().length) {
             @if (optionsLabel()) {
-            <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
+              <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
             }
             @for (option of options(); track option.value) {
-            <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
+              <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
             }
           }
         </hlm-select-content>
       </brn-select>
 
       @if (err) {
-      <hlm-error [class]="$errorClass()">
-        {{ err }}
-      </hlm-error>
+        <hlm-error [class]="$errorClass()">
+          {{ err }}
+        </hlm-error>
       }
 
       @if (hnt) {
-      <hlm-hint [class]="$hintClass()">
-        {{ hnt }}
-      </hlm-hint>
+        <hlm-hint [class]="$hintClass()">
+          {{ hnt }}
+        </hlm-hint>
       }
     </hlm-form-field>
   `,

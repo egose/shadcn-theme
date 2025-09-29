@@ -37,7 +37,7 @@ import { ClassValue } from 'clsx';
         <label hlmLabel [for]="id()" [class]="$labelClass()">
           {{ lbl }}
           @if (rqrd) {
-          <span class="tw:text-red-500">*</span>
+            <span class="tw:text-red-500">*</span>
           }
         </label>
       </div>

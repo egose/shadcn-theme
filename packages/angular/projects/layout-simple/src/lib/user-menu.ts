@@ -41,7 +41,6 @@ export interface UserMenuSection {
       lucideUser,
     }),
   ],
-  // prettier-ignore
   template: `
     <ng-template #iconTemplate>
       <ng-icon [svg]="lucideUser" size="1.5em" />
@@ -69,22 +68,14 @@ export interface UserMenuSection {
             <hlm-menu-group>
               @for (item of section.items; track item) {
                 @if (item.link) {
-                  <a
-                    hlmMenuItem
-                    [routerLink]="item.link"
-                    [class]="item.class || ''"
-                  >
+                  <a hlmMenuItem [routerLink]="item.link" [class]="item.class || ''">
                     @if (item.icon) {
                       <ng-icon [svg]="item.icon" size="1em" class="tw:mr-2" />
                     }
                     <span>{{ item.label }}</span>
                   </a>
                 } @else {
-                  <button
-                    hlmMenuItem
-                    (click)="item.action?.()"
-                    [class]="item.class || ''"
-                  >
+                  <button hlmMenuItem (click)="item.action?.()" [class]="item.class || ''">
                     @if (item.icon) {
                       <ng-icon [svg]="item.icon" size="1em" class="tw:mr-2" />
                     }

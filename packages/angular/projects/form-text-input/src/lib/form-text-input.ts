@@ -41,7 +41,6 @@ let nextId = 0;
   },
   imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, HlmInput],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
-  // prettier-ignore
   template: `
     @let lbl = label();
     @let cid = controlId();
@@ -52,10 +51,11 @@ let nextId = 0;
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">{{ lbl }}
-        @if (rqrd) {
-          <span class="tw:text-red-500">*</span>
-        }
+        <span hlmLabel [class]="$labelClass()"
+          >{{ lbl }}
+          @if (rqrd) {
+            <span class="tw:text-red-500">*</span>
+          }
         </span>
       }
 

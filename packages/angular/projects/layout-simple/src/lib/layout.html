@@ -12,26 +12,34 @@
       </div>
       <!-- Left menus (desktop) -->
       <nav [class]="_computedLeftClass()">
-        @for (item of leftMenus(); track item.label) { @if (item.link) {
-        <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
-        } @else {
-        <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
-          {{ item.label }}
-        </button>
-        } }
+        @for (item of leftMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
+          } @else {
+            <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
+              {{ item.label }}
+            </button>
+          }
+        }
       </nav>
     </div>
 
     <!-- Right menus (desktop) -->
     <nav [class]="_computedRightClass()">
-      @for (item of rightMenus(); track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
-      } @else {
-      <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
-        {{ item.label }}
-      </button>
-      } }
-      <eg-layout-simple-user-menu [menus]="userMenus()"></eg-layout-simple-user-menu>
+      @for (item of rightMenus(); track item.label) {
+        @if (item.link) {
+          <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
+        } @else {
+          <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
+            {{ item.label }}
+          </button>
+        }
+      }
+
+      @let uMenus = userMenus();
+      @if (uMenus && uMenus.length > 0) {
+        <eg-layout-simple-user-menu [menus]="uMenus"></eg-layout-simple-user-menu>
+      }
     </nav>
 
     <!-- Mobile menu button -->
@@ -53,58 +61,73 @@
 
   <!-- Mobile menu -->
   @if (isMobile() && mobileMenuOpen) {
-  <div class="tw:bg-gray-100 tw:border-b tw:border-gray-300 tw:px-4 tw:py-2">
-    <nav class="tw:flex tw:flex-col tw:space-y-2">
-      <!-- Left menus -->
-      @for (item of leftMenus(); track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
-        {{ item.label }}
-      </a>
-      } @else {
-      <button
-        type="button"
-        (click)="item.action?.()"
-        class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
-      >
-        {{ item.label }}
-      </button>
-      } }
+    <div class="tw:bg-gray-100 tw:border-b tw:border-gray-300 tw:px-4 tw:py-2">
+      <nav class="tw:flex tw:flex-col tw:space-y-2">
+        <!-- Left menus -->
+        @for (item of leftMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
+              {{ item.label }}
+            </a>
+          } @else {
+            <button
+              type="button"
+              (click)="item.action?.()"
+              class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+            >
+              {{ item.label }}
+            </button>
+          }
+        }
 
-      <!-- Right menus -->
-      @for (item of rightMenus(); track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
-        {{ item.label }}
-      </a>
-      } @else {
-      <button
-        type="button"
-        (click)="item.action?.()"
-        class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
-      >
-        {{ item.label }}
-      </button>
-      } }
+        <!-- Right menus -->
+        @for (item of rightMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
+              {{ item.label }}
+            </a>
+          } @else {
+            <button
+              type="button"
+              (click)="item.action?.()"
+              class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+            >
+              {{ item.label }}
+            </button>
+          }
+        }
 
-      <!-- User menus (flattened for mobile) -->
-      @for (section of userMenus(); track section.label) { @if (section.label) {
-      <div class="tw:font-bold tw:mt-2">{{ section.label }}</div>
-      } @if (section.items?.length) { @for (item of section.items; track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
-        {{ item.label }}
-      </a>
-      } @else {
-      <button
-        type="button"
-        (click)="item.action?.()"
-        class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
-      >
-        {{ item.label }}
-      </button>
-      } } } @if (section.separator) {
-      <hr class="tw:border-gray-300 tw:my-2" />
-      } }
-    </nav>
-  </div>
+        <!-- User menus (flattened for mobile) -->
+        @for (section of userMenus(); track section.label) {
+          @if (section.label) {
+            <div class="tw:font-bold tw:mt-2">{{ section.label }}</div>
+          }
+          @if (section.items?.length) {
+            @for (item of section.items; track item.label) {
+              @if (item.link) {
+                <a
+                  [routerLink]="item.link"
+                  class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+                >
+                  {{ item.label }}
+                </a>
+              } @else {
+                <button
+                  type="button"
+                  (click)="item.action?.()"
+                  class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+                >
+                  {{ item.label }}
+                </button>
+              }
+            }
+          }
+          @if (section.separator) {
+            <hr class="tw:border-gray-300 tw:my-2" />
+          }
+        }
+      </nav>
+    </div>
   }
 
   <!-- Main content -->

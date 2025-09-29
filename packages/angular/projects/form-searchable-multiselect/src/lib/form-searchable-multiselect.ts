@@ -25,12 +25,12 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
 
     <eg-form-field>
       @if (lbl) {
-      <span hlmLabel [class]="$labelClass()">
-        {{ lbl }}
-        @if (rqrd) {
-        <span class="tw:text-red-500">*</span>
-        }
-      </span>
+        <span hlmLabel [class]="$labelClass()">
+          {{ lbl }}
+          @if (rqrd) {
+            <span class="tw:text-red-500">*</span>
+          }
+        </span>
       }
 
       <eg-searchable-multiselect
@@ -43,13 +43,14 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
       ></eg-searchable-multiselect>
 
       @if (err) {
-      <hlm-error [class]="$errorClass()">
-        {{ err }}
-      </hlm-error>
-      } @if (hnt) {
-      <hlm-hint [class]="$hintClass()">
-        {{ hnt }}
-      </hlm-hint>
+        <hlm-error [class]="$errorClass()">
+          {{ err }}
+        </hlm-error>
+      }
+      @if (hnt) {
+        <hlm-hint [class]="$hintClass()">
+          {{ hnt }}
+        </hlm-hint>
       }
     </eg-form-field>
   `,
