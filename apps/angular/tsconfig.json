@@ -56,7 +56,9 @@
       "@egose/shadcn-theme-ng/switch": ["../../packages/angular/projects/switch/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tabs": ["../../packages/angular/projects/tabs/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tooltip": ["../../packages/angular/projects/tooltip/src/public-api.ts"],
-      "@egose/shadcn-theme-ng/utils": ["../../packages/angular/projects/utils/src/public-api.ts"]
+      "@egose/shadcn-theme-ng/utils": ["../../packages/angular/projects/utils/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/menu": ["../../packages/angular/projects/menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/layout-simple": ["../../packages/angular/projects/layout-simple/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {

@@ -32,10 +32,12 @@ export const EG_SWITCH_VALUE_ACCESSOR = {
     '[attr.aria-labelledby]': 'null',
     '[attr.aria-describedby]': 'null',
   },
+  // @ts-ignore
   template: `
     <brn-switch
       [class]="_computedClass()"
       [checked]="checked()"
+      @ts-ignore
       (changed)="handleChange($event)"
       (touched)="_onTouched?.()"
       [disabled]="_disabled()"
@@ -87,10 +89,11 @@ export class HlmSwitch implements ControlValueAccessor {
   protected _onChange?: ChangeFn<boolean>;
   protected _onTouched?: TouchFn;
 
-  protected handleChange(value: boolean): void {
-    this.checked.set(value);
-    this._onChange?.(value);
-    this.changed.emit(value);
+  protected handleChange(value: unknown): void {
+    const checked = value as boolean;
+    this.checked.set(checked);
+    this._onChange?.(checked);
+    this.changed.emit(checked);
   }
 
   /** CONROL VALUE ACCESSOR */

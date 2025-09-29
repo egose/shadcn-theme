@@ -174,7 +174,9 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
   protected readonly _search = linkedSignal(() => this.search() || '');
 
   /** Function to transform an option value to a search string. Defaults to identity function for strings. */
-  public readonly transformValueToSearch = input<(value: T) => string>(this._config.transformValueToSearch);
+  public readonly transformValueToSearch = input<(value: T, inputId: string) => string>(
+    this._config.transformValueToSearch,
+  );
 
   /** Optional template for rendering each option. */
   public readonly optionTemplate = input<TemplateRef<HlmAutocompleteOption<T>>>();
@@ -262,7 +264,7 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
     this._onChange?.(option);
     this.valueChange.emit(option);
 
-    const searchValue = this.transformValueToSearch()(option);
+    const searchValue = this.transformValueToSearch()(option, this.inputId());
 
     if (this.onSelect()) {
       this.onSelect()?.(searchValue);
@@ -302,6 +304,6 @@ export class HlmAutocomplete<T> implements ControlValueAccessor {
   }
 }
 
-interface HlmAutocompleteOption<T> {
+export interface HlmAutocompleteOption<T> {
   $implicit: T;
 }

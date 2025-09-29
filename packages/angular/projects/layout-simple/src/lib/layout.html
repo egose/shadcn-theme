@@ -1,0 +1,148 @@
+<div class="tw:flex tw:flex-col tw:min-h-screen">
+  <!-- Header -->
+  <header
+    class="tw:flex tw:items-center tw:justify-between tw:bg-gray-100 tw:px-4 tw:py-2 tw:border-b tw:border-gray-300"
+  >
+    <!-- Left side: Logo + Left menus -->
+    <div class="tw:flex tw:items-center tw:space-x-6">
+      <div class="logo">
+        <a [routerLink]="logoLink()">
+          <img [src]="logo()" alt="Logo" class="tw:h-10" />
+        </a>
+      </div>
+      <!-- Left menus (desktop) -->
+      <nav [class]="_computedLeftClass()">
+        @for (item of leftMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
+          } @else {
+            <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
+              {{ item.label }}
+            </button>
+          }
+        }
+      </nav>
+    </div>
+
+    <!-- Right menus (desktop) -->
+    <nav [class]="_computedRightClass()">
+      @if (searchEnabled()) {
+        <eg-generic-autocomplete
+          [optionTemplate]="searchOptionTemplate()"
+          [loaderFn]="searchLoaderFn()"
+          [transformValueToSearch]="searchTransformValueToSearch()"
+          [placeholderText]="searchPlaceholderText()"
+          [emptyText]="searchEmptyText()"
+          (optionChange)="onSearchOptionChange($event)"
+        ></eg-generic-autocomplete>
+      }
+
+      @for (item of rightMenus(); track item.label) {
+        @if (item.link) {
+          <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
+        } @else {
+          <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
+            {{ item.label }}
+          </button>
+        }
+      }
+
+      @let uMenus = userMenus();
+      @if (uMenus && uMenus.length > 0) {
+        <eg-layout-simple-user-menu [menus]="uMenus"></eg-layout-simple-user-menu>
+      }
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button
+      (click)="toggleMobileMenu()"
+      class="tw:md:hidden tw:p-2 tw:text-gray-700 tw:hover:text-blue-500 tw:focus:outline-none"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="tw:h-6 tw:w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+
+  <!-- Mobile menu -->
+  @if (isMobile() && mobileMenuOpen) {
+    <div class="tw:bg-gray-100 tw:border-b tw:border-gray-300 tw:px-4 tw:py-2">
+      <nav class="tw:flex tw:flex-col tw:space-y-2">
+        <!-- Left menus -->
+        @for (item of leftMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
+              {{ item.label }}
+            </a>
+          } @else {
+            <button
+              type="button"
+              (click)="item.action?.()"
+              class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+            >
+              {{ item.label }}
+            </button>
+          }
+        }
+
+        <!-- Right menus -->
+        @for (item of rightMenus(); track item.label) {
+          @if (item.link) {
+            <a [routerLink]="item.link" class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500">
+              {{ item.label }}
+            </a>
+          } @else {
+            <button
+              type="button"
+              (click)="item.action?.()"
+              class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+            >
+              {{ item.label }}
+            </button>
+          }
+        }
+
+        <!-- User menus (flattened for mobile) -->
+        @for (section of userMenus(); track section.label) {
+          @if (section.label) {
+            <div class="tw:font-bold tw:mt-2">{{ section.label }}</div>
+          }
+          @if (section.items?.length) {
+            @for (item of section.items; track item.label) {
+              @if (item.link) {
+                <a
+                  [routerLink]="item.link"
+                  class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+                >
+                  {{ item.label }}
+                </a>
+              } @else {
+                <button
+                  type="button"
+                  (click)="item.action?.()"
+                  class="tw:text-left tw:cursor-pointer tw:text-gray-700 tw:hover:text-blue-500"
+                >
+                  {{ item.label }}
+                </button>
+              }
+            }
+          }
+          @if (section.separator) {
+            <hr class="tw:border-gray-300 tw:my-2" />
+          }
+        }
+      </nav>
+    </div>
+  }
+
+  <!-- Main content -->
+  <main class="tw:flex-1 tw:p-4">
+    <router-outlet></router-outlet>
+  </main>
+</div>

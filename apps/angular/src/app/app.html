@@ -1,7 +1,21 @@
 <main class="main">
-  <div class="content">
+  <eg-layout-simple
+    [leftMenus]="leftMenus"
+    [rightMenus]="rightMenus"
+    [userMenus]="menus"
+    [logo]="iconPath"
+    [searchEnabled]="true"
+    [searchOptionTemplate]="option"
+    [searchLoaderFn]="loadCountries"
+    [searchTransformValueToSearch]="countryToSearch"
+    [searchPlaceholderText]="'Select a country'"
+    [searchEmptyText]="'No countries found'"
+    (searchOptionChange)="onSearchOptionChange($event)"
+  >
     <div>App Top Nav</div>
     <router-outlet />
     <div>App Bottom Footer</div>
-  </div>
+  </eg-layout-simple>
 </main>
+
+<ng-template #option let-option>{{ option.flag }} {{ option.name }}</ng-template>

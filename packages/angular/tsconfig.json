@@ -59,7 +59,7 @@
       "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
       "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"],
       "@egose/shadcn-theme-ng/form-checkbox": ["./dist/form-checkbox"],
-      "sheet": ["./dist/sheet"]
+      "@egose/shadcn-theme-ng/layout-simple": ["./dist/layout-simple"]
     },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -281,6 +281,18 @@
     },
     {
       "path": "./projects/sheet/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/layout-simple/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/layout-simple/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/menu/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/menu/tsconfig.spec.json"
     }
   ]
 }
