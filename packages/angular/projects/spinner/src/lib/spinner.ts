@@ -4,8 +4,6 @@ import { NgIcon } from '@ng-icons/core';
 import { tablerLoader2 } from '@ng-icons/tabler-icons';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 
-type SpinnerSize = 'small' | 'medium' | 'large';
-
 @Component({
   selector: 'hlm-spinner',
   imports: [NgIcon],
@@ -13,7 +11,7 @@ type SpinnerSize = 'small' | 'medium' | 'large';
     '[class]': '_containerClass()',
     role: 'status',
   },
-  template: `<ng-icon [svg]="icon" [class]="_iconClass()" />`,
+  template: `<ng-icon [svg]="icon" [size]="size()" [class]="_iconClass()" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
@@ -21,19 +19,12 @@ export class HlmSpinner {
   icon = tablerLoader2;
 
   // Variants
-  public readonly size = input<SpinnerSize>('medium');
+  public readonly size = input<string>('1.5rem');
   public readonly show = input<boolean>(true);
 
   // Optional extra classes from user
   public readonly wrapperClass = input<ClassValue>('', { alias: 'class' });
   public readonly spinnerClass = input<ClassValue>('', { alias: 'spinnerClass' });
-
-  // Map sizes to Tailwind classes
-  private readonly sizeClasses: Record<SpinnerSize, string> = {
-    small: 'tw:size-6!',
-    medium: 'tw:size-8!',
-    large: 'tw:size-12!',
-  };
 
   // Outer container class (visibility + layout)
   protected readonly _containerClass = computed(() =>
@@ -48,7 +39,6 @@ export class HlmSpinner {
   protected readonly _iconClass = computed(() =>
     hlm(
       'tw:[&>svg]:animate-spin tw:[&>svg]:text-primary', // base svg styles
-      this.sizeClasses[this.size()],
       this.spinnerClass(),
     ),
   );

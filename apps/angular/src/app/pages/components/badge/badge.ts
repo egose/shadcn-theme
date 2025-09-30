@@ -7,18 +7,18 @@ import { HlmBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '
   standalone: true,
   imports: [CommonModule, HlmBadge],
   template: `
-    <div class="tw:space-y-8 tw:p-6">
-      <h1 class="tw:text-2xl tw:font-bold">Badge Showcase</h1>
+    <div class="">
+      <h3 class="tw:text-2xl tw:font-bold">Badge</h3>
 
       <!-- Loop through appearances -->
       @for (appearance of appearances; track appearance) {
-        <div class="tw:space-y-4">
+        <div class="tw:space-y-4 tw:mt-4">
           <h2 class="tw:text-xl tw:font-semibold">Appearance: {{ appearance }}</h2>
 
           <!-- Loop through sizes -->
           @for (size of sizes; track size) {
             <div>
-              <h3 class="tw:font-medium tw:mb-2">Size: {{ size }}</h3>
+              <h3 class="tw:font-medium tw:mb-1">Size: {{ size }}</h3>
               <div class="tw:flex tw:flex-wrap tw:gap-2">
                 <!-- Loop through variants -->
                 @for (variant of variants; track variant) {

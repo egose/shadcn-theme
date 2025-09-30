@@ -1,5 +1,5 @@
 import { Component, input, output, computed, signal, viewChild, TemplateRef } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClassValue } from 'clsx';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
@@ -15,10 +15,14 @@ export interface MenuItem {
   class?: string; // optional per-item CSS/Tailwind classes
 }
 
+const commonLinkGroupClasses = 'tw:hidden tw:md:flex tw:space-x-4 tw:items-center';
+const commonLinkClasses =
+  'tw:text-left tw:text-secondary tw:visited:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline';
+
 @Component({
   selector: 'eg-layout-simple',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, EgLayoutSimpleUserMenu, EgGenericAutocomplete],
+  imports: [RouterLink, EgLayoutSimpleUserMenu, EgGenericAutocomplete],
   templateUrl: './layout.html',
 })
 export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
@@ -29,6 +33,8 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   logo = input<string>('assets/logo.png');
   logoLink = input<string>('/');
   hlm = hlm;
+
+  headerClass = input<ClassValue>('', { alias: 'headerClass' });
 
   /** Container class inputs */
   leftMenuClass = input<ClassValue>('', { alias: 'leftClass' });
@@ -47,20 +53,43 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
 
   public readonly searchOptionChange = output<TItem>();
 
-  /** Computed merged classes for containers */
-  protected readonly _computedLeftClass = computed(() =>
-    hlm('tw:hidden tw:md:flex tw:space-x-4 tw:items-center', this.leftMenuClass()),
-  );
-  protected readonly _computedRightClass = computed(() =>
-    hlm('tw:hidden tw:md:flex tw:space-x-4 tw:items-center', this.rightMenuClass()),
+  protected readonly _headerClass = computed(() =>
+    hlm(
+      'tw:px-4 tw:py-2 tw:flex tw:items-center tw:justify-between tw:bg-gray-100 tw:border-b tw:border-gray-300',
+      this.headerClass(),
+    ),
   );
 
+  /** Computed merged classes for containers */
+  protected readonly _computedLeftClass = computed(() => hlm(commonLinkGroupClasses, this.leftMenuClass()));
+  protected readonly _computedRightClass = computed(() => hlm(commonLinkGroupClasses, this.rightMenuClass()));
+
   /** Computed merged classes for link/button elements */
-  protected readonly _computedLeftLinkClass = computed(() =>
-    hlm('tw:text-gray-700 tw:hover:text-blue-500', this.leftLinkClass()),
+  protected readonly _computedLeftLinkClass = computed(() => hlm(commonLinkClasses, this.leftLinkClass()));
+  protected readonly _computedRightLinkClass = computed(() => hlm(commonLinkClasses, this.rightLinkClass()));
+
+  mobileMenuItemClass = commonLinkClasses;
+
+  footerEnabled = input<boolean>(false);
+  footerMenus = input<MenuItem[]>([]);
+  footerMenuClass = input<ClassValue>('', { alias: 'footerMenuClass' });
+  footerLinkClass = input<ClassValue>('', { alias: 'footerLinkClass' });
+  footerContent = input<string>('© 2024 My Company');
+  footerClass = input<ClassValue>('', { alias: 'footerClass' });
+
+  protected readonly _footerClass = computed(() =>
+    hlm(
+      'tw:px-4 tw:py-4 tw:bg-gray-100 tw:border-t tw:border-gray-300 tw:text-sm tw:text-gray-600',
+      this.footerClass(),
+    ),
   );
-  protected readonly _computedRightLinkClass = computed(() =>
-    hlm('tw:text-gray-700 tw:hover:text-blue-500', this.rightLinkClass()),
+
+  protected readonly _computedFooterMenuClass = computed(() =>
+    hlm('tw:flex tw:flex-wrap tw:justify-center tw:space-x-4', this.footerMenuClass()),
+  );
+
+  protected readonly _computedFooterLinkClass = computed(() =>
+    hlm('tw:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline', this.footerLinkClass()),
   );
 
   /** Mobile menu state */

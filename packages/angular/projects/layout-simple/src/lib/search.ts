@@ -35,7 +35,7 @@ const transformValueToSearchMap: Record<string, any> = {};
         formControlName="option"
         class="tw:bg-white"
       >
-        <hlm-spinner loading class="size-6" />
+        <hlm-spinner loading />
       </hlm-autocomplete>
     </form>
     <ng-template #defaultOption let-option>

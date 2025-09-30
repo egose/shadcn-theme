@@ -21,12 +21,15 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
     HlmIcon,
   ],
   template: `
+    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Accordion</h3>
     <div hlmAccordion>
       <div hlmAccordionItem>
-        <button hlmAccordionTrigger>
-          Product Information
-          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
-        </button>
+        <h3 class="contents">
+          <button hlmAccordionTrigger>
+            Product Information
+            <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
+          </button>
+        </h3>
         <hlm-accordion-content>
           <p>
             Our flagship product combines cutting-edge technology with sleek design. Built with premium materials, it
@@ -41,10 +44,12 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
       </div>
 
       <div hlmAccordionItem>
-        <button hlmAccordionTrigger>
-          Shipping Details
-          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
-        </button>
+        <h3 class="contents">
+          <button hlmAccordionTrigger>
+            Shipping Details
+            <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
+          </button>
+        </h3>
         <hlm-accordion-content>
           <p>
             We offer worldwide shipping through trusted courier partners. Standard delivery takes 3-5 business days,
@@ -59,10 +64,12 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
       </div>
 
       <div hlmAccordionItem>
-        <button hlmAccordionTrigger>
-          Return Policy
-          <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
-        </button>
+        <h3 class="contents">
+          <button hlmAccordionTrigger>
+            Return Policy
+            <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
+          </button>
+        </h3>
         <hlm-accordion-content>
           <p>
             We stand behind our products with a comprehensive 30-day return policy. If you're not completely satisfied,

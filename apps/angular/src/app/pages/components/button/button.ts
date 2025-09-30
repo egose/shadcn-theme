@@ -8,11 +8,11 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
   standalone: true,
   imports: [HlmButton, NgIcon],
   template: `
-    <div class="tw:space-y-8 tw:p-6">
-      <h1 class="tw:text-2xl tw:font-bold">Button Showcase</h1>
+    <div class="">
+      <h3 class="tw:text-2xl tw:font-bold">Button</h3>
 
       <ng-template #iconTemplate>
-        <ng-icon [svg]="icon" />
+        <ng-icon [svg]="icon" size="20px" />
       </ng-template>
 
       @for (section of sections; track section.title) {

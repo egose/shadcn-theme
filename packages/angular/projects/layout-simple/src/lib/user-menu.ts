@@ -3,6 +3,7 @@ import { provideIcons } from '@ng-icons/core';
 import { lucideUser } from '@ng-icons/lucide';
 import { RouterLink } from '@angular/router';
 import { BrnMenuTrigger } from '@spartan-ng/brain/menu';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 import { HlmMenu, HlmMenuGroup, HlmMenuItem, HlmMenuLabel, HlmMenuSeparator } from '@egose/shadcn-theme-ng/menu';
 import { NgIcon } from '@ng-icons/core';
@@ -43,7 +44,7 @@ export interface UserMenuSection {
   ],
   template: `
     <ng-template #iconTemplate>
-      <ng-icon [svg]="lucideUser" size="1.5em" />
+      <ng-icon [svg]="lucideUser" size="1.5rem" />
     </ng-template>
 
     <div class="tw:flex tw:w-full tw:items-center tw:justify-center tw:pt-[20%]">
@@ -54,7 +55,7 @@ export interface UserMenuSection {
         align="end"
         [brnMenuTriggerFor]="menu"
         [icon]="iconTemplate"
-        class="tw:rounded-full! tw:border! tw:border-gray-400!"
+        class="tw:rounded-full tw:border tw:border-gray-400"
       ></button>
     </div>
 
@@ -68,16 +69,16 @@ export interface UserMenuSection {
             <hlm-menu-group>
               @for (item of section.items; track item) {
                 @if (item.link) {
-                  <a hlmMenuItem [routerLink]="item.link" [class]="item.class || ''">
+                  <a hlmMenuItem [routerLink]="item.link" [class]="hlm(item.class, 'tw:cursor-pointer')">
                     @if (item.icon) {
-                      <ng-icon [svg]="item.icon" size="1em" class="tw:mr-2" />
+                      <ng-icon [svg]="item.icon" size="1rem" [class]="hlm(item.class, 'tw:cursor-pointer tw:mr-2')" />
                     }
                     <span>{{ item.label }}</span>
                   </a>
                 } @else {
-                  <button hlmMenuItem (click)="item.action?.()" [class]="item.class || ''">
+                  <button hlmMenuItem (click)="item.action?.()" [class]="hlm(item.class, 'tw:cursor-pointer')">
                     @if (item.icon) {
-                      <ng-icon [svg]="item.icon" size="1em" class="tw:mr-2" />
+                      <ng-icon [svg]="item.icon" size="1rem" [class]="hlm(item.class, 'tw:cursor-pointer tw:mr-2')" />
                     }
                     <span>{{ item.label }}</span>
                   </button>
@@ -96,5 +97,6 @@ export interface UserMenuSection {
 export class EgLayoutSimpleUserMenu {
   menus = input<UserMenuSection[]>([]);
 
+  hlm = hlm;
   lucideUser = lucideUser;
 }
