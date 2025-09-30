@@ -21,8 +21,8 @@
     "bundle": "node build-all.mjs"
   },
   "devDependencies": {
-    "@angular/build": "20.3.2",
-    "@angular/cli": "20.3.2",
+    "@angular/build": "20.3.3",
+    "@angular/cli": "20.3.3",
     "@angular/compiler-cli": "20.3.2",
     "@types/jasmine": "~5.1.0",
     "class-variance-authority": "^0.7.0",
