@@ -111,7 +111,7 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
           <ng-container *ngTemplateOutlet="projected" />
         </span>
         <span class="tw:absolute tw:inset-0 tw:flex tw:items-center tw:justify-center">
-          <hlm-spinner size="small" [spinnerClass]="spinnerClass()" />
+          <hlm-spinner [spinnerClass]="spinnerClass()" />
         </span>
       </div>
     } @else {
@@ -129,17 +129,16 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
 })
 export class HlmButton {
   /** Props as signal-based inputs */
-  variant = input<VariantType>('primary');
-  size = input<SizeType>('default');
-  appearance = input<AppearanceType>('solid');
-  loading = input<boolean>(false);
-  icon = input<any | undefined>(undefined);
-  iconPosition = input<'left' | 'right'>('left');
-  userClass = input<ClassValue>('');
-  spinnerUserClass = input<ClassValue>('');
-  disabled = input<boolean>(false);
-  type = input<'button' | 'submit' | 'reset'>('button');
-
+  public readonly variant = input<VariantType>('primary');
+  public readonly size = input<SizeType>('default');
+  public readonly appearance = input<AppearanceType>('solid');
+  public readonly loading = input<boolean>(false);
+  public readonly icon = input<any | undefined>(undefined);
+  public readonly iconPosition = input<'left' | 'right'>('left');
+  public readonly userClass = input<ClassValue>('', { alias: 'class' });
+  public readonly spinnerUserClass = input<ClassValue>('');
+  public readonly disabled = input<boolean>(false);
+  public readonly type = input<'button' | 'submit' | 'reset'>('button');
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed button class merging */

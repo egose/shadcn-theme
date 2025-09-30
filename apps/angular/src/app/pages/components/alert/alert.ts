@@ -42,6 +42,7 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
     }),
   ],
   template: `
+    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Alert</h3>
     <div class="tw:flex tw:gap-2">
       <!-- Solid Appearance -->
       <div class="tw:space-y-6 tw:max-w-xl">

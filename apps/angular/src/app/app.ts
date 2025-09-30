@@ -32,14 +32,15 @@ export class App {
   iconPath = 'assets/logo.png';
 
   leftMenus = [
-    { label: 'Home', link: '/', class: 'tw:font-bold' },
-    { label: 'Reload', action: () => location.reload(), class: 'tw:text-red-600' },
+    { label: 'Button', link: '/components/button', class: 'tw:font-bold' },
+    { label: 'Badge', link: '/components/badge', class: 'tw:font-bold' },
+    { label: 'Alert', link: '/components/alert', class: 'tw:font-bold' },
+    { label: 'Accordion', link: '/components/accordion', class: 'tw:font-bold' },
+    { label: 'Spinner', link: '/components/spinner', class: 'tw:font-bold' },
+    { label: 'Form Field', link: '/components/form-field', class: 'tw:font-bold' },
   ];
 
-  rightMenus = [
-    { label: 'About', link: '/about', class: 'tw:text-blue-500' },
-    { label: 'Sign Out', action: () => alert('Signed out'), class: 'tw:bg-yellow-200' },
-  ];
+  rightMenus = [{ label: 'Sign Out', action: () => alert('Signed out'), class: 'tw:bg-yellow-200' }];
 
   menus = [
     {
@@ -71,6 +72,12 @@ export class App {
     {
       items: [{ label: 'Log out', icon: lucideLogOut, action: () => this.logout() }],
     },
+  ];
+
+  footerMenus = [
+    { label: 'Privacy Policy', link: '/privacy' },
+    { label: 'Terms of Service', link: '/terms' },
+    { label: 'Contact', action: () => {} },
   ];
 
   onBilling() {

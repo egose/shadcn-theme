@@ -113,7 +113,8 @@ class ConfirmationDiaglog {
   ],
   providers: [provideIcons({ lucideInfo })],
   template: `
-    <div class="tw:p-4">
+    <div class="">
+      <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Field</h3>
       <sheet-example />
       <!-- Info Alert above the form -->
       <div hlmAlert variant="info" class="tw:mb-4">
