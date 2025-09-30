@@ -17,7 +17,7 @@
     "@ng-icons/core": "^32.1.0",
     "@ng-icons/lucide": ">=29.0.0",
     "@ng-icons/tabler-icons": "^32.1.0",
-    "@spartan-ng/brain": "0.0.1-alpha.516",
+    "@spartan-ng/brain": "0.0.1-alpha.519",
     "@spartan-ng/cli": "0.0.1-alpha.519",
     "fs-extra": "^11.3.0",
     "lodash": "^4.17.21",
