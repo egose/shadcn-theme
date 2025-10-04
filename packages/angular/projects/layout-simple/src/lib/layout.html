@@ -5,7 +5,7 @@
     <div class="tw:flex tw:items-center tw:space-x-6">
       <div class="logo">
         <a [routerLink]="logoLink()">
-          <img [src]="logo()" alt="Logo" class="tw:h-10" />
+          <img [src]="logo()" alt="Logo" [class]="_logoClass()" />
         </a>
       </div>
       <!-- Left menus (desktop) -->
@@ -125,7 +125,7 @@
   }
 
   <!-- Main content -->
-  <main class="tw:flex-1 tw:p-4">
+  <main [class]="_contentClass()">
     <ng-content />
   </main>
 
