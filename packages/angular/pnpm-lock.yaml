@@ -14,7 +14,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: 20.3.4
-        version: 20.3.4(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(@angular/compiler@20.3.1)(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@types/node@24.5.2)(chokidar@4.0.3)(jiti@1.21.7)(karma@6.4.4)(less@4.4.1)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
+        version: 20.3.4(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(@angular/compiler@20.3.1)(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@types/node@24.5.2)(chokidar@4.0.3)(jiti@1.21.7)(karma@6.4.4)(less@4.4.1)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
       '@angular/cli':
         specifier: 20.3.4
         version: 20.3.4(@types/node@24.5.2)(chokidar@4.0.3)
@@ -53,7 +53,7 @@ importers:
         version: 2.1.0(jasmine-core@5.11.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
       ng-packagr:
         specifier: ^20.2.0
-        version: 20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3)
+        version: 20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3)
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -62,10 +62,10 @@ importers:
         version: 3.3.1
       tailwindcss:
         specifier: ^4.0.0
-        version: 4.1.13
+        version: 4.1.14
       tailwindcss-animate:
         specifier: ^1.0.6
-        version: 1.0.7(tailwindcss@4.1.13)
+        version: 1.0.7(tailwindcss@4.1.14)
       typescript:
         specifier: ~5.9.0
         version: 5.9.3
@@ -2969,8 +2969,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss@4.1.13:
-    resolution: {integrity: sha512-i+zidfmTqtwquj4hMEwdjshYYgMbOrPzb9a0M3ZgNa0JMoZeFC6bxZvO8yr8ozS6ix2SDz0+mvryPeBs2TFE+w==}
+  tailwindcss@4.1.14:
+    resolution: {integrity: sha512-b7pCxjGO98LnxVkKjaZSDeNuljC4ueKUddjENJOADtubtdo8llTaJy7HwBMeLNSSo2N5QIAgklslK1+Ir8r6CA==}
 
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
@@ -3329,7 +3329,7 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular/build@20.3.4(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(@angular/compiler@20.3.1)(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@types/node@24.5.2)(chokidar@4.0.3)(jiti@1.21.7)(karma@6.4.4)(less@4.4.1)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)':
+  '@angular/build@20.3.4(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(@angular/compiler@20.3.1)(@angular/core@20.3.1(@angular/compiler@20.3.1)(rxjs@7.8.2))(@types/node@24.5.2)(chokidar@4.0.3)(jiti@1.21.7)(karma@6.4.4)(less@4.4.1)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2003.4(chokidar@4.0.3)
@@ -3366,9 +3366,9 @@ snapshots:
       karma: 6.4.4
       less: 4.4.1
       lmdb: 3.4.2
-      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3)
+      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3)
       postcss: 8.5.6
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
     transitivePeerDependencies:
       - '@types/node'
       - chokidar
@@ -5581,7 +5581,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.13)(tslib@2.8.1)(typescript@5.9.3):
+  ng-packagr@20.3.0(@angular/compiler-cli@20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3))(tailwindcss@4.1.14)(tslib@2.8.1)(typescript@5.9.3):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular/compiler-cli': 20.3.3(@angular/compiler@20.3.1)(typescript@5.9.3)
@@ -5609,7 +5609,7 @@ snapshots:
       typescript: 5.9.3
     optionalDependencies:
       rollup: 4.50.2
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
 
   node-addon-api@6.1.0:
     optional: true
@@ -6216,11 +6216,11 @@ snapshots:
 
   tailwind-merge@3.3.1: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.13):
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.14):
     dependencies:
-      tailwindcss: 4.1.13
+      tailwindcss: 4.1.14
 
-  tailwindcss@4.1.13: {}
+  tailwindcss@4.1.14: {}
 
   tar@6.2.1:
     dependencies:
