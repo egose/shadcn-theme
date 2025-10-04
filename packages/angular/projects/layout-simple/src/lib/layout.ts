@@ -26,15 +26,18 @@ const commonLinkClasses =
   templateUrl: './layout.html',
 })
 export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
+  hlm = hlm;
+
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
   rightMenus = input<MenuItem[]>([]);
   userMenus = input<UserMenuSection[]>([]);
   logo = input<string>('assets/logo.png');
   logoLink = input<string>('/');
-  hlm = hlm;
 
+  logoClass = input<ClassValue>('', { alias: 'logoClass' });
   headerClass = input<ClassValue>('', { alias: 'headerClass' });
+  contentClass = input<ClassValue>('', { alias: 'contentClass' });
 
   /** Container class inputs */
   leftMenuClass = input<ClassValue>('', { alias: 'leftClass' });
@@ -53,12 +56,16 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
 
   public readonly searchOptionChange = output<TItem>();
 
+  protected readonly _logoClass = computed(() => hlm('tw:h-10', this.logoClass()));
+
   protected readonly _headerClass = computed(() =>
     hlm(
       'tw:px-4 tw:py-2 tw:flex tw:items-center tw:justify-between tw:bg-gray-100 tw:border-b tw:border-gray-300',
       this.headerClass(),
     ),
   );
+
+  protected readonly _contentClass = computed(() => hlm('tw:p-4', this.contentClass()));
 
   /** Computed merged classes for containers */
   protected readonly _computedLeftClass = computed(() => hlm(commonLinkGroupClasses, this.leftMenuClass()));

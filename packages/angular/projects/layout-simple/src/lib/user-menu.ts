@@ -44,7 +44,7 @@ export interface UserMenuSection {
   ],
   template: `
     <ng-template #iconTemplate>
-      <ng-icon [svg]="lucideUser" size="1.5rem" />
+      <ng-icon [svg]="lucideUser" size="1.5rem" class="tw:[&_svg]:w-[inherit]! tw:[&_svg]:h-[inherit]!" />
     </ng-template>
 
     <div class="tw:flex tw:w-full tw:items-center tw:justify-center tw:pt-[20%]">
@@ -69,16 +69,28 @@ export interface UserMenuSection {
             <hlm-menu-group>
               @for (item of section.items; track item) {
                 @if (item.link) {
-                  <a hlmMenuItem [routerLink]="item.link" [class]="hlm(item.class, 'tw:cursor-pointer')">
+                  <a hlmMenuItem [routerLink]="item.link" [class]="hlm('tw:cursor-pointer', item.class)">
                     @if (item.icon) {
-                      <ng-icon [svg]="item.icon" size="1rem" [class]="hlm(item.class, 'tw:cursor-pointer tw:mr-2')" />
+                      <ng-icon
+                        [svg]="item.icon"
+                        size="1rem"
+                        [class]="
+                          hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2', item.class)
+                        "
+                      />
                     }
                     <span>{{ item.label }}</span>
                   </a>
                 } @else {
-                  <button hlmMenuItem (click)="item.action?.()" [class]="hlm(item.class, 'tw:cursor-pointer')">
+                  <button hlmMenuItem (click)="item.action?.()" [class]="hlm('tw:cursor-pointer', item.class)">
                     @if (item.icon) {
-                      <ng-icon [svg]="item.icon" size="1rem" [class]="hlm(item.class, 'tw:cursor-pointer tw:mr-2')" />
+                      <ng-icon
+                        [svg]="item.icon"
+                        size="1rem"
+                        [class]="
+                          hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2', item.class)
+                        "
+                      />
                     }
                     <span>{{ item.label }}</span>
                   </button>

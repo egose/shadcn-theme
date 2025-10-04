@@ -38,7 +38,7 @@ export class HlmSpinner {
   // SVG spinner class (size + animation + color)
   protected readonly _iconClass = computed(() =>
     hlm(
-      'tw:[&>svg]:animate-spin tw:[&>svg]:text-primary', // base svg styles
+      'tw:[&>svg]:animate-spin tw:[&>svg]:text-primary tw:[&>svg]:w-[inherit]! tw:[&>svg]:h-[inherit]!', // base svg styles
       this.spinnerClass(),
     ),
   );
