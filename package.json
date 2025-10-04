@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@angular/cdk": "20.2.5",
+    "@angular/cdk": "20.2.7",
     "@angular/common": "20.3.3",
     "@angular/compiler": "20.3.3",
     "@angular/compiler-cli": "20.3.3",
