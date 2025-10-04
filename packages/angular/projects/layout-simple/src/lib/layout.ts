@@ -38,6 +38,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   logoClass = input<ClassValue>('', { alias: 'logoClass' });
   headerClass = input<ClassValue>('', { alias: 'headerClass' });
   contentClass = input<ClassValue>('', { alias: 'contentClass' });
+  contentBottomClass = input<ClassValue>('', { alias: 'contentBottomClass' });
 
   /** Container class inputs */
   leftMenuClass = input<ClassValue>('', { alias: 'leftClass' });
@@ -48,6 +49,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   rightLinkClass = input<ClassValue>('', { alias: 'rightLinkClass' });
 
   searchEnabled = input<boolean>(false);
+  loading = input<boolean>(false);
   searchPlaceholderText = input<string>('Select an page');
   searchEmptyText = input<string>('No pages found');
   searchOptionTemplate = input<TemplateRef<HlmAutocompleteOption<TItem>>>();
@@ -65,7 +67,8 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
     ),
   );
 
-  protected readonly _contentClass = computed(() => hlm('tw:p-4', this.contentClass()));
+  protected readonly _contentClass = computed(() => hlm('tw:p-4 tw:flex tw:flex-col tw:flex-1', this.contentClass()));
+  protected readonly _contentBottomClass = computed(() => hlm('tw:flex-1', this.contentBottomClass()));
 
   /** Computed merged classes for containers */
   protected readonly _computedLeftClass = computed(() => hlm(commonLinkGroupClasses, this.leftMenuClass()));

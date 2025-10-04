@@ -126,7 +126,12 @@
 
   <!-- Main content -->
   <main [class]="_contentClass()">
-    <ng-content />
+    @if (!loading()) {
+      <div class="tw:flex tw:items-center tw:justify-center tw:h-full">
+        <ng-content />
+      </div>
+    }
+    <div [class]="_contentBottomClass()"></div>
   </main>
 
   @if (footerEnabled()) {
