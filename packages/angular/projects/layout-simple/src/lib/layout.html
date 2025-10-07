@@ -96,7 +96,7 @@
   <!-- Mobile menu -->
   @if (isMobile() && mobileMenuOpen) {
     <hlm-menu class="tw:w-full tw:border-none">
-      <eg-layout-simple-mobile-menu-group [items]="_topMenus"></eg-layout-simple-mobile-menu-group>
+      <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
 
       @if (_topMenus.length > 0 && _userMenus.length > 0) {
         <hr class="tw:border-gray-300 tw:my-2" />
@@ -106,6 +106,7 @@
         <eg-layout-simple-mobile-menu-group
           [items]="section.items"
           [label]="section.label"
+          (itemClick)="toggleMobileMenu()"
         ></eg-layout-simple-mobile-menu-group>
 
         @if (section.separator) {

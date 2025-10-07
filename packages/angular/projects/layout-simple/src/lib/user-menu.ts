@@ -69,7 +69,11 @@ export interface UserMenuSection {
             <hlm-menu-group>
               @for (item of section.items; track item) {
                 @if (item.link) {
-                  <a hlmMenuItem [routerLink]="item.link" [class]="hlm('tw:cursor-pointer', item.class)">
+                  <a
+                    hlmMenuItem
+                    [routerLink]="item.link"
+                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                  >
                     @if (item.icon) {
                       <ng-icon
                         [svg]="item.icon"
@@ -82,7 +86,11 @@ export interface UserMenuSection {
                     <span>{{ item.label }}</span>
                   </a>
                 } @else {
-                  <button hlmMenuItem (click)="item.action?.()" [class]="hlm('tw:cursor-pointer', item.class)">
+                  <button
+                    hlmMenuItem
+                    (click)="item.action?.()"
+                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                  >
                     @if (item.icon) {
                       <ng-icon
                         [svg]="item.icon"
