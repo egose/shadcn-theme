@@ -24,7 +24,7 @@ import { HlmSheetImports } from '@egose/shadcn-theme-ng/sheet';
         }
 
         @if (_content) {
-          <ng-container *ngTemplateOutlet="_content"></ng-container>
+          <ng-container *ngTemplateOutlet="_content; context: contentContext()"></ng-container>
         }
 
         <hlm-sheet-footer>
@@ -39,6 +39,7 @@ export class EgLayoutSimpleSidebar {
   side = input<'top' | 'bottom' | 'left' | 'right' | undefined>('left');
   title = input<string | undefined>('');
   content = input<TemplateRef<any> | undefined>();
+  contentContext = input<any>();
 
   constructor() {
     effect(() => {});

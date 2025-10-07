@@ -2,7 +2,11 @@
   <ng-icon [svg]="menuIcon" size="20px" class="tw:[&_svg]:w-[inherit]! tw:[&_svg]:h-[inherit]!" />
 </ng-template>
 
-<eg-layout-simple-sidebar [title]="sidebarTitle()" [content]="sidebarContent()" />
+<eg-layout-simple-sidebar
+  [title]="sidebarTitle()"
+  [content]="sidebarContent()"
+  [contentContext]="{ close: closeSidebar.bind(this) }"
+/>
 
 <div class="tw:flex tw:flex-col tw:min-h-screen">
   <!-- Header -->
