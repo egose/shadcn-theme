@@ -1,5 +1,8 @@
 <main class="main">
   <eg-layout-simple
+    [sidebarEnabled]="true"
+    [sidebarTitle]="'Egose Menu'"
+    [sidebarContent]="sidebarContent"
     [leftMenus]="leftMenus"
     [rightMenus]="rightMenus"
     [userMenus]="menus"
@@ -19,3 +22,9 @@
 </main>
 
 <ng-template #option let-option>{{ option.flag }} {{ option.name }}</ng-template>
+<ng-template #sidebarContent>
+  <div class="tw-p-4">
+    <p>This is custom sidebar content</p>
+    <a routerLink="/profile">Profile</a>
+  </div>
+</ng-template>

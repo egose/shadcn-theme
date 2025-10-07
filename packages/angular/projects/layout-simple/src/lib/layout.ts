@@ -2,14 +2,21 @@ import { Component, input, output, computed, signal, viewChild, TemplateRef } fr
 import { RouterLink } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClassValue } from 'clsx';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMenu } from '@ng-icons/lucide';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { HlmAutocompleteOption } from '@egose/shadcn-theme-ng/autocomplete';
+import { HlmButton } from '@egose/shadcn-theme-ng/button';
+import { HlmMenu } from '@egose/shadcn-theme-ng/menu';
 import { EgLayoutSimpleUserMenu, type UserMenuSection } from './user-menu';
 import { EgGenericAutocomplete } from './search';
+import { EgLayoutSimpleSidebar } from './sidebar';
+import { EgLayoutSimpleMobileMenuGroup } from './mobile-menu-group';
 
 // Updated interface for left/right menu items
 export interface MenuItem {
   label: string;
+  icon?: any;
   link?: string; // optional router link
   action?: () => void; // optional click handler
   class?: string; // optional per-item CSS/Tailwind classes
@@ -22,11 +29,30 @@ const commonLinkClasses =
 @Component({
   selector: 'eg-layout-simple',
   standalone: true,
-  imports: [RouterLink, EgLayoutSimpleUserMenu, EgGenericAutocomplete],
+  imports: [
+    RouterLink,
+    EgLayoutSimpleUserMenu,
+    EgLayoutSimpleSidebar,
+    EgLayoutSimpleMobileMenuGroup,
+    EgGenericAutocomplete,
+    HlmButton,
+    HlmMenu,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      lucideMenu,
+    }),
+  ],
   templateUrl: './layout.html',
 })
 export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
   hlm = hlm;
+  menuIcon = lucideMenu;
+
+  sidebarEnabled = input<boolean>(false);
+  sidebarTitle = input<string>('Menu');
+  sidebarContent = input<TemplateRef<any> | undefined>();
 
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
@@ -118,5 +144,11 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
 
   onSearchOptionChange(value: TItem) {
     this.searchOptionChange.emit(value);
+  }
+
+  public readonly viewchildSheetRef = viewChild(EgLayoutSimpleSidebar);
+
+  openSidebar() {
+    this.viewchildSheetRef()?.openSheet();
   }
 }
