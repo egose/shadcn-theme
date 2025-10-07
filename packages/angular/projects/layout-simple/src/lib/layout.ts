@@ -151,4 +151,8 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   openSidebar() {
     this.viewchildSheetRef()?.openSheet();
   }
+
+  closeSidebar() {
+    this.viewchildSheetRef()?.closeSheet();
+  }
 }

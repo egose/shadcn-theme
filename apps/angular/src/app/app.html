@@ -22,9 +22,10 @@
 </main>
 
 <ng-template #option let-option>{{ option.flag }} {{ option.name }}</ng-template>
-<ng-template #sidebarContent>
+<ng-template #sidebarContent let-close="close">
   <div class="tw-p-4">
     <p>This is custom sidebar content</p>
     <a routerLink="/profile">Profile</a>
+    <button type="button" (click)="close()">Click</button>
   </div>
 </ng-template>
