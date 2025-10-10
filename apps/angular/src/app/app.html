@@ -6,6 +6,7 @@
     [leftMenus]="leftMenus"
     [rightMenus]="rightMenus"
     [userMenus]="menus"
+    [userMenuTrigger]="userMenuTrigger"
     [footerEnabled]="true"
     [footerMenus]="footerMenus"
     [logo]="iconPath"
@@ -28,4 +29,7 @@
     <a routerLink="/profile">Profile</a>
     <button type="button" (click)="close()">Click</button>
   </div>
+</ng-template>
+<ng-template #userMenuTrigger>
+  <span class="tw:cursor-pointer tw:select-none">Egose Angular</span>
 </ng-template>

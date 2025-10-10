@@ -69,7 +69,7 @@
 
       @let uMenus = userMenus();
       @if (uMenus && uMenus.length > 0) {
-        <eg-layout-simple-user-menu [menus]="uMenus"></eg-layout-simple-user-menu>
+        <eg-layout-simple-user-menu [menus]="uMenus" [menuTrigger]="userMenuTrigger()" />
       }
     </nav>
 
