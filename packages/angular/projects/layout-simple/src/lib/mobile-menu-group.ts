@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { HlmMenuLabel, HlmMenuGroup, HlmMenuItem } from '@egose/shadcn-theme-ng/menu';
@@ -19,7 +19,12 @@ import { NgIcon } from '@ng-icons/core';
       <hlm-menu-group>
         @for (item of _items; track item.label) {
           @if (item.link) {
-            <a hlmMenuItem [routerLink]="item.link" [class]="hlm('tw:cursor-pointer')">
+            <a
+              hlmMenuItem
+              [routerLink]="item.link"
+              [class]="hlm('tw:cursor-pointer tw:no-underline')"
+              (click)="handleClick(item)"
+            >
               @if (item.icon) {
                 <ng-icon
                   [svg]="item.icon"
@@ -31,7 +36,7 @@ import { NgIcon } from '@ng-icons/core';
               <span>{{ item.label }}</span>
             </a>
           } @else {
-            <button hlmMenuItem (click)="item.action?.()" [class]="hlm('tw:cursor-pointer')">
+            <button hlmMenuItem (click)="handleClick(item)" [class]="hlm('tw:cursor-pointer tw:no-underline')">
               @if (item.icon) {
                 <ng-icon
                   [svg]="item.icon"
@@ -49,6 +54,8 @@ import { NgIcon } from '@ng-icons/core';
   `,
 })
 export class EgLayoutSimpleMobileMenuGroup {
+  hlm = hlm;
+
   label = input<string | undefined>('');
   items = input<
     {
@@ -59,5 +66,10 @@ export class EgLayoutSimpleMobileMenuGroup {
     }[]
   >();
 
-  hlm = hlm;
+  itemClick = output<any>();
+
+  handleClick(item: any) {
+    item.action?.();
+    this.itemClick.emit(item);
+  }
 }

@@ -1,4 +1,5 @@
-import { Component, input } from '@angular/core';
+import { Component, input, TemplateRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { provideIcons } from '@ng-icons/core';
 import { lucideUser } from '@ng-icons/lucide';
 import { RouterLink } from '@angular/router';
@@ -27,6 +28,7 @@ export interface UserMenuSection {
 @Component({
   selector: 'eg-layout-simple-user-menu',
   imports: [
+    CommonModule,
     BrnMenuTrigger,
     HlmMenu,
     HlmMenuItem,
@@ -47,16 +49,22 @@ export interface UserMenuSection {
       <ng-icon [svg]="lucideUser" size="1.5rem" class="tw:[&_svg]:w-[inherit]! tw:[&_svg]:h-[inherit]!" />
     </ng-template>
 
-    <div class="tw:flex tw:w-full tw:items-center tw:justify-center tw:pt-[20%]">
-      <button
-        hlmButton
-        variant="primary"
-        size="icon"
-        align="end"
-        [brnMenuTriggerFor]="menu"
-        [icon]="iconTemplate"
-        class="tw:rounded-full tw:border tw:border-gray-400"
-      ></button>
+    @let _menuTrigger = menuTrigger();
+
+    <div class="tw:flex tw:w-full tw:items-center tw:justify-center">
+      @if (_menuTrigger) {
+        <div [brnMenuTriggerFor]="menu"><ng-container *ngTemplateOutlet="_menuTrigger"></ng-container></div>
+      } @else {
+        <button
+          hlmButton
+          variant="primary"
+          size="icon"
+          align="end"
+          [brnMenuTriggerFor]="menu"
+          [icon]="iconTemplate"
+          class="tw:rounded-full tw:border tw:border-gray-400"
+        ></button>
+      }
     </div>
 
     <ng-template #menu>
@@ -69,7 +77,11 @@ export interface UserMenuSection {
             <hlm-menu-group>
               @for (item of section.items; track item) {
                 @if (item.link) {
-                  <a hlmMenuItem [routerLink]="item.link" [class]="hlm('tw:cursor-pointer', item.class)">
+                  <a
+                    hlmMenuItem
+                    [routerLink]="item.link"
+                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                  >
                     @if (item.icon) {
                       <ng-icon
                         [svg]="item.icon"
@@ -82,7 +94,11 @@ export interface UserMenuSection {
                     <span>{{ item.label }}</span>
                   </a>
                 } @else {
-                  <button hlmMenuItem (click)="item.action?.()" [class]="hlm('tw:cursor-pointer', item.class)">
+                  <button
+                    hlmMenuItem
+                    (click)="item.action?.()"
+                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                  >
                     @if (item.icon) {
                       <ng-icon
                         [svg]="item.icon"
@@ -107,8 +123,9 @@ export interface UserMenuSection {
   `,
 })
 export class EgLayoutSimpleUserMenu {
-  menus = input<UserMenuSection[]>([]);
-
   hlm = hlm;
   lucideUser = lucideUser;
+
+  menus = input<UserMenuSection[]>([]);
+  menuTrigger = input<TemplateRef<any> | undefined>();
 }

@@ -53,6 +53,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   sidebarEnabled = input<boolean>(false);
   sidebarTitle = input<string>('Menu');
   sidebarContent = input<TemplateRef<any> | undefined>();
+  userMenuTrigger = input<TemplateRef<any> | undefined>();
 
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
