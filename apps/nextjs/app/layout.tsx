@@ -23,6 +23,7 @@ import {
 import './globals.css';
 import SimpleLayout from '../../../packages/react/layouts/simple';
 import { DialogManagerProvider } from '../../../packages/react/components/widgets/dialog-manager';
+import { TooltipProvider } from '../../../packages/react/components/ui/tooltip';
 import { Toaster } from '../../../packages/react/components/ui/sonner';
 import { useEffect, useState } from 'react';
 
@@ -112,7 +113,9 @@ export default function RootLayout({
           user={{ menuSections: userMenus, trigger: <span>James Web</span> }}
           footer={{ content: 'Sample App', menus: footerMenus }}
         >
-          <DialogManagerProvider>{children}</DialogManagerProvider>
+          <TooltipProvider>
+            <DialogManagerProvider>{children}</DialogManagerProvider>
+          </TooltipProvider>
         </SimpleLayout>
         <Toaster theme="light" position="top-right" closeButton richColors />
       </body>
