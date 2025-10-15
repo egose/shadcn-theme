@@ -21,7 +21,7 @@ import {
   CreditCard,
 } from 'lucide-react';
 import './globals.css';
-import SidebarLayout, { ISidebarData } from '../../../packages/react/layouts/sidebar1';
+import SimpleLayout from '../../../packages/react/layouts/simple';
 import { DialogManagerProvider } from '../../../packages/react/components/widgets/dialog-manager';
 import { Toaster } from '../../../packages/react/components/ui/sonner';
 import { useEffect, useState } from 'react';
@@ -49,156 +49,54 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const [count, setCount] = useState(0);
+  const leftMenus = [
+    { label: 'Button', link: '/components/button', className: 'font-bold', title: true },
+    { label: 'Badge', link: '/components/badge', className: 'font-bold' },
+    { label: 'Alert', link: '/components/alert', className: 'font-bold' },
+    { label: 'Accordion', link: '/components/accordion', className: 'font-bold' },
+    { label: 'Spinner', link: '/components/spinner', className: 'font-bold' },
+    { label: 'Form Field', link: '/components/form-field', className: 'font-bold' },
+  ];
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCount((prev) => prev + 1);
-  //   }, 1000);
+  const rightMenus = [{ label: 'Sign Out', action: () => alert('Signed out'), className: 'bg-yellow-200' }];
 
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  const data: ISidebarData = {
-    user: {
-      name: 'shadcn',
-      email: 'm@example.com',
-      avatar: '/avatars/shadcn.jpg',
+  const userMenus = [
+    {
+      label: 'My Account',
+      items: [
+        { label: 'Profile', icon: <GalleryVerticalEnd />, link: '/profile' },
+        { label: 'Billing', icon: <GalleryVerticalEnd />, action: () => alert('Billing') },
+        { label: 'Settings', icon: <GalleryVerticalEnd />, className: 'text-blue-500' },
+        { label: 'Keyboard shortcuts', icon: <GalleryVerticalEnd /> },
+      ],
+      separator: true,
     },
-    contexts: [
-      {
-        name: 'Egose Inc',
-        text: `Enterprise - ${count}`,
-        logo: GalleryVerticalEnd,
-        className: 'bg-purple-500 text-white',
-      },
-    ],
-    menus: [
-      {
-        title: 'Platform',
-        items: [
-          {
-            title: 'GitHub',
-            url: '/github',
-            icon: SquareTerminal,
-            isActive: false,
-          },
-          {
-            title: 'GitLab',
-            url: '/gitlab',
-            icon: CircleDollarSign,
-            isActive: false,
-          },
-        ],
-      },
-      {
-        title: 'Theme',
-        items: [
-          {
-            title: 'Components',
-            url: '/components',
-            icon: Component,
-            isActive: false,
-            subItems: [
-              {
-                title: 'Button',
-                url: '/components/button',
-              },
-              {
-                title: 'Badge',
-                url: '/components/badge',
-              },
-              {
-                title: 'Alert',
-                url: '/components/alert',
-              },
-              {
-                title: 'Dialog',
-                url: '/components/dialog',
-              },
-            ],
-          },
-          {
-            title: 'Form',
-            url: '/form',
-            icon: Component,
-            isActive: false,
-            subItems: [
-              {
-                title: 'Text Input',
-                url: '/form/textinput',
-              },
-              {
-                title: 'Textarea',
-                url: '/form/textarea',
-              },
-              {
-                title: 'Date Picker',
-                url: '/form/date-picker',
-              },
-              {
-                title: 'Native Select',
-                url: '/form/native-select',
-              },
-              {
-                title: 'Select',
-                url: '/form/select',
-              },
-            ],
-          },
-          {
-            title: 'Widgets',
-            url: '/widgets',
-            icon: Component,
-            isActive: false,
-            subItems: [
-              {
-                title: 'Dialog Manager',
-                url: '/widgets/dialog-manager',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    userMenus: [
-      {
-        title: 'Account',
-        icon: BadgeCheck,
-        onClick: console.log,
-      },
-      {
-        title: 'Billing',
-        icon: CreditCard,
-        onClick: console.log,
-      },
-      {
-        title: 'Notifications',
-        icon: Bell,
-        onClick: console.log,
-      },
-    ],
-    events: {
-      login: () => {
-        console.log('Sign in clicked');
-      },
+    {
+      label: 'Team',
+      items: [
+        { label: 'Team', icon: <GalleryVerticalEnd />, link: '/team' },
+        { label: 'New Team', icon: <GalleryVerticalEnd /> },
+      ],
+      separator: true,
     },
-  };
+    {
+      label: 'Links',
+      items: [
+        { label: 'GitHub', icon: <GalleryVerticalEnd />, link: '/github' },
+        { label: 'Support', icon: <GalleryVerticalEnd />, action: () => alert('Support') },
+      ],
+      separator: true,
+    },
+    {
+      items: [{ label: 'Log out', icon: <GalleryVerticalEnd />, action: () => alert('Log out') }],
+    },
+  ];
 
-  data.menus.forEach((menu) => {
-    menu.items.forEach((item) => {
-      if (item.subItems) {
-        item.subItems.forEach((subItem) => {
-          subItem.isActive = isPathMatch(pathname, subItem.url ?? '');
-          if (subItem.isActive) item.isActive = true;
-        });
-      } else {
-        item.isActive = isPathMatch(pathname, item.url ?? '');
-      }
-    });
-  });
-
-  console.log(count);
+  const footerMenus = [
+    { label: 'Privacy Policy', link: '/privacy' },
+    { label: 'Terms of Service', link: '/terms' },
+    { label: 'Contact', action: () => {} },
+  ];
 
   return (
     <html lang="en">
@@ -206,9 +104,16 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SidebarLayout aslink={Link} data={data}>
+        <SimpleLayout
+          aslink={Link}
+          logo={{ src: 'favicon.ico' }}
+          left={{ menus: leftMenus }}
+          right={{ menus: rightMenus }}
+          user={{ menuSections: userMenus, trigger: <span>James Web</span> }}
+          footer={{ content: 'Sample App', menus: footerMenus }}
+        >
           <DialogManagerProvider>{children}</DialogManagerProvider>
-        </SidebarLayout>
+        </SimpleLayout>
         <Toaster theme="light" position="top-right" closeButton richColors />
       </body>
     </html>
