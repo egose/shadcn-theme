@@ -1,5 +1,3 @@
-'use client';
-
 import React, { SelectHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';

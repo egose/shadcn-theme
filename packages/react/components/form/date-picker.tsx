@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { addDays, format, isEqual } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -93,6 +91,7 @@ export function FormDatePicker({
           {label}
         </Label>
       )}
+
       <div className={cn('grid gap-2')}>
         <Popover>
           <PopoverTrigger asChild>
@@ -105,6 +104,7 @@ export function FormDatePicker({
               {display}
             </Button>
           </PopoverTrigger>
+
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"

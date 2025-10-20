@@ -1,5 +1,3 @@
-'use client';
-
 import React, { TextareaHTMLAttributes, useRef } from 'react';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
@@ -44,6 +42,7 @@ export function FormTextarea({
           {label}
         </Label>
       )}
+
       <Textarea
         id={id}
         name={name}

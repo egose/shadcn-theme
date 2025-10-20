@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import { useState, useCallback } from 'react';
 import { DialogContext } from './context';
@@ -35,6 +33,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
   return (
     <DialogContext.Provider value={{ openDialog }}>
       {children}
+
       {dialogs.map(({ id, Component, args }) => (
         <Component key={id} open={true} args={args} onClose={(result: any) => handleClose(id, result)} />
       ))}

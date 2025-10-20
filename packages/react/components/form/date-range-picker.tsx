@@ -1,5 +1,3 @@
-'use client';
-
 import React, { HTMLAttributes, useEffect, useState } from 'react';
 import { addDays, format, isEqual } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -74,6 +72,7 @@ export function FormDateRangePicker({
           {label}
         </Label>
       )}
+
       <div className={cn('grid gap-2')}>
         <Popover>
           <PopoverTrigger asChild>
@@ -83,6 +82,7 @@ export function FormDateRangePicker({
               className={cn('min-w-[240px] justify-start text-left font-normal', classNames?.button)}
             >
               <CalendarIcon />
+
               {value?.from ? (
                 value.to ? (
                   <>
@@ -96,6 +96,7 @@ export function FormDateRangePicker({
               )}
             </Button>
           </PopoverTrigger>
+
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="range"

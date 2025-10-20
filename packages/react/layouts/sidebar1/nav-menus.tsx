@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../components/ui/collapsible';
@@ -59,9 +57,11 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
           <SidebarMenuButton tooltip={item.title}>
             {item.icon && <item.icon />}
             <span>{item.title}</span>
+
             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
           </SidebarMenuButton>
         </CollapsibleTrigger>
+
         <CollapsibleContent>
           <SidebarMenuSub>
             {item.subItems.map((subItem) => {
@@ -95,6 +95,7 @@ export function NavMenus({ menus, aslink }: { menus: INavMenu[]; aslink: React.E
     return (
       <SidebarGroup key={menu.title}>
         <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>
+
         <SidebarMenu>
           {menu.items.map((item) =>
             item.subItems && item.subItems.length > 0 ? (

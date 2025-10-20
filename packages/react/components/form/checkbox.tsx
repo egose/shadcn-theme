@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import { cn } from '../../lib/utils';
@@ -44,6 +42,7 @@ export function FormCheckbox({
         onCheckedChange={onCheckedChange}
         className={cn(classNames?.checkbox)}
       />
+
       {label && (
         <Label htmlFor={checkboxId} className={classNames?.label} required={required}>
           {label}

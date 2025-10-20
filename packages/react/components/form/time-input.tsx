@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FormTextInput } from './text-input';
 import type { FormTextInputProps } from './text-input';
