@@ -1,5 +1,3 @@
-'use client';
-
 import React, { InputHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import { cn } from '../../lib/utils';
@@ -42,6 +40,7 @@ export function FormTextInput({
           {label}
         </Label>
       )}
+
       <Input
         type={type}
         id={id}

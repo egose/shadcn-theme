@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import {
@@ -58,13 +56,16 @@ export function ContextSwitcher({
               >
                 <activeContext.logo className="size-4" />
               </div>
+
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{activeContext.name}</span>
                 <span className="truncate text-xs">{activeContext.text}</span>
               </div>
+
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-white"
             align="start"
@@ -72,6 +73,7 @@ export function ContextSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">{title}</DropdownMenuLabel>
+
             {items.map((item, index) => (
               <DropdownMenuItem key={item.name} onClick={() => setActiveContext(item)} className="gap-2 p-2">
                 <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -81,7 +83,9 @@ export function ContextSwitcher({
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />

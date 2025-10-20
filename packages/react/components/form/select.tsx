@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';
@@ -73,6 +71,7 @@ export function FormSelect({
         <SelectTrigger className="">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
+
         <SelectContent className={cn(classNames?.input)}>
           {_options.map((option, index) => {
             return (

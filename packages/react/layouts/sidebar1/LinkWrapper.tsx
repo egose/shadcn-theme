@@ -1,5 +1,3 @@
-'use client';
-
 interface LinkPlaceholderProps {
   children: React.ReactNode;
   to?: string;

@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import { NavMenus } from './nav-menus';
 import { NavUser, INavUser, INavUserMenuItem } from './nav-user';
@@ -33,9 +31,11 @@ export function AppSidebar({
       <SidebarHeader>
         <ContextSwitcher items={data.contexts} />
       </SidebarHeader>
+
       <SidebarContent>
         <NavMenus menus={data.menus} aslink={aslink} />
       </SidebarContent>
+
       <SidebarFooter>
         {data.user ? (
           <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={data.events?.logout} />
@@ -52,6 +52,7 @@ export function AppSidebar({
           </Button>
         )}
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

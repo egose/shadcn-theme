@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 import _kebabCase from 'lodash-es/kebabCase';
@@ -50,6 +48,7 @@ export function HookFormDatePicker<T extends FieldValues>({
           );
         }}
       />
+
       <FormError field={name} className="mt-1" message={error} />
     </div>
   );
