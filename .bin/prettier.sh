@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pnpm prettier --write "$@"
+pnpm prettier --write --config-path .prettierrc "$@"

@@ -1,54 +1,30 @@
 @if (isMobile() && mobileMenuOpen) {
-  <div class="tw:bg-gray-100 tw:border-b tw:border-gray-300 tw:px-4 tw:py-2">
-    <nav class="tw:flex tw:flex-col tw:space-y-2">
-      <!-- Left menus -->
-      @for (item of leftMenus(); track item.label) {
-        @if (item.link) {
-          <a [routerLink]="item.link" [class]="mobileMenuItemClass">
-            {{ item.label }}
-          </a>
-        } @else {
-          <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">
-            {{ item.label }}
-          </button>
-        }
-      }
+<div class="tw:bg-gray-100 tw:border-b tw:border-gray-300 tw:px-4 tw:py-2">
+  <nav class="tw:flex tw:flex-col tw:space-y-2">
+    <!-- Left menus -->
+    @for (item of leftMenus(); track item.label) { @if (item.link) {
+    <a [routerLink]="item.link" [class]="mobileMenuItemClass"> {{ item.label }} </a>
+    } @else {
+    <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">{{ item.label }}</button>
+    } }
 
-      <!-- Right menus -->
-      @for (item of rightMenus(); track item.label) {
-        @if (item.link) {
-          <a [routerLink]="item.link" [class]="mobileMenuItemClass">
-            {{ item.label }}
-          </a>
-        } @else {
-          <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">
-            {{ item.label }}
-          </button>
-        }
-      }
+    <!-- Right menus -->
+    @for (item of rightMenus(); track item.label) { @if (item.link) {
+    <a [routerLink]="item.link" [class]="mobileMenuItemClass"> {{ item.label }} </a>
+    } @else {
+    <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">{{ item.label }}</button>
+    } }
 
-      <!-- User menus (flattened for mobile) -->
-      @for (section of userMenus(); track section.label) {
-        @if (section.label) {
-          <div class="tw:font-bold tw:mt-2">{{ section.label }}</div>
-        }
-        @if (section.items?.length) {
-          @for (item of section.items; track item.label) {
-            @if (item.link) {
-              <a [routerLink]="item.link" [class]="mobileMenuItemClass">
-                {{ item.label }}
-              </a>
-            } @else {
-              <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">
-                {{ item.label }}
-              </button>
-            }
-          }
-        }
-        @if (section.separator) {
-          <hr class="tw:border-gray-300 tw:my-2" />
-        }
-      }
-    </nav>
-  </div>
+    <!-- User menus (flattened for mobile) -->
+    @for (section of userMenus(); track section.label) { @if (section.label) {
+    <div class="tw:font-bold tw:mt-2">{{ section.label }}</div>
+    } @if (section.items?.length) { @for (item of section.items; track item.label) { @if (item.link) {
+    <a [routerLink]="item.link" [class]="mobileMenuItemClass"> {{ item.label }} </a>
+    } @else {
+    <button type="button" (click)="item.action?.()" [class]="mobileMenuItemClass">{{ item.label }}</button>
+    } } } @if (section.separator) {
+    <hr class="tw:border-gray-300 tw:my-2" />
+    } }
+  </nav>
+</div>
 }

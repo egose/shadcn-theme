@@ -13,16 +13,16 @@
   <header [class]="_headerClass()">
     <div class="tw:flex tw:items-center tw:space-x-4">
       @if (sidebarEnabled()) {
-        <button
-          hlmButton
-          variant="secondary"
-          appearance="outline"
-          size="icon"
-          [icon]="menuIconTemplate"
-          iconPosition="left"
-          class="tw:bg-transparent! tw:border-gray-400! tw:hover:border-gray-500!"
-          (click)="openSidebar()"
-        ></button>
+      <button
+        hlmButton
+        variant="secondary"
+        appearance="outline"
+        size="icon"
+        [icon]="menuIconTemplate"
+        iconPosition="left"
+        class="tw:bg-transparent! tw:border-gray-400! tw:hover:border-gray-500!"
+        (click)="openSidebar()"
+      ></button>
       }
 
       <div class="logo">
@@ -32,44 +32,35 @@
       </div>
       <!-- Left menus (desktop) -->
       <nav [class]="_computedLeftClass()">
-        @for (item of leftMenus(); track item.label) {
-          @if (item.link) {
-            <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
-          } @else {
-            <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
-              {{ item.label }}
-            </button>
-          }
-        }
+        @for (item of leftMenus(); track item.label) { @if (item.link) {
+        <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
+        } @else {
+        <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
+          {{ item.label }}
+        </button>
+        } }
       </nav>
     </div>
 
     <!-- Right menus (desktop) -->
     <nav [class]="_computedRightClass()">
       @if (searchEnabled()) {
-        <eg-generic-autocomplete
-          [optionTemplate]="searchOptionTemplate()"
-          [loaderFn]="searchLoaderFn()"
-          [transformValueToSearch]="searchTransformValueToSearch()"
-          [placeholderText]="searchPlaceholderText()"
-          [emptyText]="searchEmptyText()"
-          (optionChange)="onSearchOptionChange($event)"
-        ></eg-generic-autocomplete>
-      }
-
-      @for (item of rightMenus(); track item.label) {
-        @if (item.link) {
-          <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
-        } @else {
-          <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
-            {{ item.label }}
-          </button>
-        }
-      }
-
-      @let uMenus = userMenus();
-      @if (uMenus && uMenus.length > 0) {
-        <eg-layout-simple-user-menu [menus]="uMenus" [menuTrigger]="userMenuTrigger()" />
+      <eg-generic-autocomplete
+        [optionTemplate]="searchOptionTemplate()"
+        [loaderFn]="searchLoaderFn()"
+        [transformValueToSearch]="searchTransformValueToSearch()"
+        [placeholderText]="searchPlaceholderText()"
+        [emptyText]="searchEmptyText()"
+        (optionChange)="onSearchOptionChange($event)"
+      ></eg-generic-autocomplete>
+      } @for (item of rightMenus(); track item.label) { @if (item.link) {
+      <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
+      } @else {
+      <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
+        {{ item.label }}
+      </button>
+      } } @let uMenus = userMenus(); @if (uMenus && uMenus.length > 0) {
+      <eg-layout-simple-user-menu [menus]="uMenus" [menuTrigger]="userMenuTrigger()" />
       }
     </nav>
 
@@ -90,61 +81,51 @@
     </button>
   </header>
 
-  @let _topMenus = leftMenus().concat(rightMenus());
-  @let _userMenus = userMenus();
+  @let _topMenus = leftMenus().concat(rightMenus()); @let _userMenus = userMenus();
 
   <!-- Mobile menu -->
   @if (isMobile() && mobileMenuOpen) {
-    <hlm-menu class="tw:w-full tw:border-none">
-      <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
+  <hlm-menu class="tw:w-full tw:border-none">
+    <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
 
-      @if (_topMenus.length > 0 && _userMenus.length > 0) {
-        <hr class="tw:border-gray-300 tw:my-2" />
-      }
+    @if (_topMenus.length > 0 && _userMenus.length > 0) {
+    <hr class="tw:border-gray-300 tw:my-2" />
+    } @for (section of userMenus(); track section.label) {
+    <eg-layout-simple-mobile-menu-group
+      [items]="section.items"
+      [label]="section.label"
+      (itemClick)="toggleMobileMenu()"
+    ></eg-layout-simple-mobile-menu-group>
 
-      @for (section of userMenus(); track section.label) {
-        <eg-layout-simple-mobile-menu-group
-          [items]="section.items"
-          [label]="section.label"
-          (itemClick)="toggleMobileMenu()"
-        ></eg-layout-simple-mobile-menu-group>
-
-        @if (section.separator) {
-          <hr class="tw:border-gray-300 tw:my-2" />
-        }
-      }
-    </hlm-menu>
+    @if (section.separator) {
+    <hr class="tw:border-gray-300 tw:my-2" />
+    } }
+  </hlm-menu>
   }
 
   <!-- Main content -->
   <main [class]="_contentClass()">
     @if (!loading()) {
-      <div class="tw:flex tw:items-center tw:justify-center tw:h-full">
-        <ng-content />
-      </div>
+    <div class="tw:flex tw:items-center tw:justify-center tw:h-full">
+      <ng-content />
+    </div>
     }
     <div [class]="_contentBottomClass()"></div>
   </main>
 
   @if (footerEnabled()) {
-    <footer [class]="_footerClass()">
-      <nav [class]="_computedFooterMenuClass()">
-        @for (item of footerMenus(); track item.label) {
-          @if (item.link) {
-            <a [routerLink]="item.link" [class]="hlm(_computedFooterLinkClass(), item.class || '')">
-              {{ item.label }}
-            </a>
-          } @else {
-            <button type="button" (click)="item.action?.()" [class]="hlm(_computedFooterLinkClass(), item.class || '')">
-              {{ item.label }}
-            </button>
-          }
-        }
-      </nav>
+  <footer [class]="_footerClass()">
+    <nav [class]="_computedFooterMenuClass()">
+      @for (item of footerMenus(); track item.label) { @if (item.link) {
+      <a [routerLink]="item.link" [class]="hlm(_computedFooterLinkClass(), item.class || '')"> {{ item.label }} </a>
+      } @else {
+      <button type="button" (click)="item.action?.()" [class]="hlm(_computedFooterLinkClass(), item.class || '')">
+        {{ item.label }}
+      </button>
+      } }
+    </nav>
 
-      <div class="tw:mt-2 tw:text-center">
-        {{ footerContent() }}
-      </div>
-    </footer>
+    <div class="tw:mt-2 tw:text-center">{{ footerContent() }}</div>
+  </footer>
   }
 </div>
