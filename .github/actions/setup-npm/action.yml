@@ -31,7 +31,7 @@ runs:
   - name: Install Nextjs app NPM packages
     run: pnpm install --no-frozen-lockfile
     shell: bash
-    working-directory: apps/nextjs
+    working-directory: packages/react/@examples/nextjs
 
   - name: Install Angular app NPM packages
     run: pnpm install --no-frozen-lockfile

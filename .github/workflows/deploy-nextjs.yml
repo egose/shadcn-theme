@@ -30,12 +30,12 @@ jobs:
       run: |
         pnpm build
         touch out/.nojekyll
-      working-directory: apps/nextjs
+      working-directory: packages/react/@examples/nextjs
 
     - name: Nextjs Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4.7.3
       with:
-        folder: apps/nextjs/out
+        folder: packages/react/@examples/nextjs/out
         branch: pages-nextjs
         clean: true
         force: true
