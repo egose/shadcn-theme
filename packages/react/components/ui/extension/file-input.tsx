@@ -1,5 +1,5 @@
-import { Button } from '@egose/shadcn-theme/components/ui/button';
-import { Input } from '@egose/shadcn-theme/components/ui/input';
+import { Button } from '../button';
+import { Input } from '../input';
 import { forwardRef } from 'react';
 
 export interface FileInputAsButtonProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {

@@ -1,10 +1,10 @@
-import { Badge } from '@egose/shadcn-theme/components/ui/badge';
-import { Command, CommandItem, CommandEmpty, CommandList } from '@egose/shadcn-theme/components/ui/command';
+import { Badge } from '../badge';
+import { Command, CommandItem, CommandEmpty, CommandList } from '../command';
 import { IconX, IconCheck } from '@tabler/icons-react';
 import { Command as CommandPrimitive } from 'cmdk';
 import React, { type KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from 'react';
 
-import { cn } from '@/utils/tw';
+import { cn } from '../../../lib/utils';
 
 export type MultiSelectValue = {
   value: string;
