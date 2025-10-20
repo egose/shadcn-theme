@@ -27,4 +27,4 @@ jobs:
       run: |
         pnpm lint
         pnpm build
-      working-directory: apps/nextjs
+      working-directory: packages/react/@examples/nextjs
