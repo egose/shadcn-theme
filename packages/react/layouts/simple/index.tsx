@@ -9,7 +9,6 @@ interface LayoutProps {
   logo?: {
     src?: string;
     link?: string;
-    className?: string;
   };
   user?: {
     menuSections: UserMenuSection[];
@@ -17,17 +16,9 @@ interface LayoutProps {
   };
   left?: {
     menus: MenuItem[];
-    classNames?: {
-      nav?: string;
-      link?: string;
-    };
   };
   right?: {
     menus: MenuItem[];
-    classNames?: {
-      nav?: string;
-      link?: string;
-    };
   };
   sidebar?: {
     title: string;
@@ -36,16 +27,29 @@ interface LayoutProps {
   footer?: {
     menus: MenuItem[];
     content?: string;
-    classNames?: {
+  };
+  classNames?: {
+    header?: {
+      wrapper: string;
+      logo?: string;
+      left?: {
+        nav?: string;
+        link?: string;
+      };
+      right?: {
+        nav?: string;
+        link?: string;
+      };
+    };
+    content?: {
+      wrapper?: string;
+      bottom?: string;
+    };
+    footer?: {
       wrapper?: string;
       nav?: string;
       link?: string;
     };
-  };
-  classNames?: {
-    header?: string;
-    content?: string;
-    contentBottom?: string;
   };
   loading?: boolean;
   children?: React.ReactNode;
@@ -100,13 +104,13 @@ export default function SimpleLayout(props: LayoutProps) {
           {logo && (
             <div className={cn('_logo')}>
               <LinkComponent to={logo.link ?? '/'} href={logo.link ?? '/'}>
-                <img src={logo.src} alt="Logo" className={cn('h-10', logo?.className)} />
+                <img src={logo.src} alt="Logo" className={cn('h-10', classNames?.header?.logo)} />
               </LinkComponent>
             </div>
           )}
 
           {/* Left Menus */}
-          <nav className={cn('flex space-x-4 items-center', left?.classNames?.nav)}>
+          <nav className={cn('flex space-x-4 items-center', classNames?.header?.left?.nav)}>
             {leftMenus.map((item) =>
               item.link ? (
                 <LinkComponent
@@ -115,7 +119,7 @@ export default function SimpleLayout(props: LayoutProps) {
                   href={item.link}
                   className={cn(
                     'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
-                    left?.classNames?.nav,
+                    classNames?.header?.left?.link,
                     item.className,
                     item.title || !isMobile ? 'inline-block' : 'hidden',
                   )}
@@ -128,7 +132,7 @@ export default function SimpleLayout(props: LayoutProps) {
                   onClick={item.action}
                   className={cn(
                     'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
-                    left?.classNames?.nav,
+                    classNames?.header?.left?.link,
                     item.className,
                     item.title || !isMobile ? 'inline-block' : 'hidden',
                   )}
@@ -141,7 +145,7 @@ export default function SimpleLayout(props: LayoutProps) {
         </div>
 
         {/* Right menus */}
-        <nav className={cn('hidden md:flex space-x-4 items-center', right?.classNames?.nav)}>
+        <nav className={cn('hidden md:flex space-x-4 items-center', classNames?.header?.right?.nav)}>
           {rightMenus.map((item) =>
             item.link ? (
               <LinkComponent
@@ -150,7 +154,7 @@ export default function SimpleLayout(props: LayoutProps) {
                 href={item.link}
                 className={cn(
                   'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
-                  right?.classNames?.nav,
+                  classNames?.header?.right?.link,
                   item.className,
                 )}
               >
@@ -162,7 +166,7 @@ export default function SimpleLayout(props: LayoutProps) {
                 onClick={item.action}
                 className={cn(
                   'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
-                  right?.classNames?.nav,
+                  classNames?.header?.right?.link,
                   item.className,
                 )}
               >
@@ -191,7 +195,7 @@ export default function SimpleLayout(props: LayoutProps) {
       {/* Main content */}
       <main className={cn('p-4 flex flex-col flex-1', classNames?.content)}>
         {!loading && <div className="flex items-center justify-center h-full">{children}</div>}
-        <div className={cn('flex-1', classNames?.contentBottom)}></div>
+        <div className={cn('flex-1', classNames?.content?.bottom)}></div>
       </main>
 
       {/* Footer */}
@@ -199,10 +203,10 @@ export default function SimpleLayout(props: LayoutProps) {
         <footer
           className={cn(
             'px-4 py-4 bg-gray-100 border-t border-gray-300 text-sm text-gray-600',
-            footer?.classNames?.wrapper,
+            classNames?.footer?.wrapper,
           )}
         >
-          <nav className={cn('flex flex-wrap justify-center space-x-4', footer?.classNames?.nav)}>
+          <nav className={cn('flex flex-wrap justify-center space-x-4', classNames?.footer?.nav)}>
             {footerMenus.map((item) =>
               item.link ? (
                 <LinkComponent
@@ -211,7 +215,7 @@ export default function SimpleLayout(props: LayoutProps) {
                   href={item.link}
                   className={cn(
                     'text-secondary hover:text-primary cursor-pointer no-underline',
-                    footer?.classNames?.link,
+                    classNames?.footer?.link,
                     item.className,
                   )}
                 >
@@ -223,7 +227,7 @@ export default function SimpleLayout(props: LayoutProps) {
                   onClick={item.action}
                   className={cn(
                     'text-secondary hover:text-primary cursor-pointer no-underline',
-                    footer?.classNames?.link,
+                    classNames?.footer?.link,
                     item.className,
                   )}
                 >
