@@ -1,0 +1,74 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "@egose/shadcn-theme-ng/accordion": ["../../projects/accordion/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/alert": ["../../projects/alert/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/autocomplete": ["../../projects/autocomplete/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/badge": ["../../projects/badge/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/basic-alert": ["../../projects/basic-alert/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/button": ["../../projects/button/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/calendar": ["../../projects/calendar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/checkbox": ["../../projects/checkbox/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/confirmation-dialog": ["../../projects/confirmation-dialog/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/date-picker": ["../../projects/date-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/dialog": ["../../projects/dialog/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-checkbox": ["../../projects/form-checkbox/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-date-picker": ["../../projects/form-date-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-field": ["../../projects/form-field/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-field-simple": ["../../projects/form-field-simple/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-searchable-multiselect": [
+        "../../projects/form-searchable-multiselect/src/public-api.ts"
+      ],
+      "@egose/shadcn-theme-ng/form-select": ["../../projects/form-select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-text-input": ["../../projects/form-text-input/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-textarea": ["../../projects/form-textarea/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/icon": ["../../projects/icon/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/input": ["../../projects/input/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/label": ["../../projects/label/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/popover": ["../../projects/popover/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/radio-group": ["../../projects/radio-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/searchable-multiselect": ["../../projects/searchable-multiselect/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/select": ["../../projects/select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/sheet": ["../../projects/sheet/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/sonner": ["../../projects/sonner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/spinner": ["../../projects/spinner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/switch": ["../../projects/switch/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/tabs": ["../../projects/tabs/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/tooltip": ["../../projects/tooltip/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/utils": ["../../projects/utils/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/menu": ["../../projects/menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/layout-simple": ["../../projects/layout-simple/src/public-api.ts"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

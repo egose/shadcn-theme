@@ -15,8 +15,8 @@ install:
 	pnpm install
 	pnpm --dir packages/react install
 	pnpm --dir packages/angular install
-	pnpm --dir apps/nextjs install
-	pnpm --dir apps/angular install
+	pnpm --dir packages/react/@examples/nextjs install
+	pnpm --dir packages/angular/@examples/standard install
 
 .PHONY: detect-secret
 detect-secret:
@@ -24,4 +24,4 @@ detect-secret:
 
 .PHONY: nextjs
 nextjs:
-	pnpm --dir apps/nextjs dev
+	pnpm --dir packages/react/@examples/nextjs dev

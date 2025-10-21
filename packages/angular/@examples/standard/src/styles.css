@@ -1,7 +1,7 @@
 @import 'tailwindcss' prefix(tw);
 @import 'tw-animate-css' prefix(tw);
 @source "../node_modules/@egose/shadcn-theme-ng";
-@source "../../../packages/angular/projects";
+@source "../../../projects";
 
 @theme {
   --color-background: hsl(var(--background));

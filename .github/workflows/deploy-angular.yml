@@ -30,12 +30,12 @@ jobs:
       run: |
         pnpm build
         touch dist/angular/browser/.nojekyll
-      working-directory: apps/angular
+      working-directory: packages/angular/@examples/standard
 
     - name: Angular Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@v4.7.3
       with:
-        folder: apps/angular/dist/angular/browser
+        folder: packages/angular/@examples/standard/dist/angular/browser
         branch: pages-angular
         clean: true
         force: true

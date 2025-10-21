@@ -36,4 +36,4 @@ runs:
   - name: Install Angular app NPM packages
     run: pnpm install --no-frozen-lockfile
     shell: bash
-    working-directory: apps/angular
+    working-directory: packages/angular/@examples/standard
