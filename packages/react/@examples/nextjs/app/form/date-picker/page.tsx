@@ -35,8 +35,11 @@ export default function Page() {
               onChange={(dateRange) => {
                 console.log('onChange', dateRange);
               }}
+              disabled={{ before: new Date() }}
             />
-            <HookFormDatePicker name="date2" label="Select Date2" required disabled />
+
+            <HookFormDatePicker name="date2" label="Select Date2" required />
+
             <FormDateRangePicker
               name="dates"
               label="Select Date Range"
