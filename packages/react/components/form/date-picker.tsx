@@ -12,6 +12,7 @@ import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Matcher } from 'react-day-picker';
 
 function formatDate(date: Date) {
   return format(date, 'LLL dd, y');
@@ -27,7 +28,7 @@ export interface FormDatePickerProps {
   name: string;
   label?: string;
   required?: boolean;
-  disabled?: boolean;
+  disabled?: Matcher | Matcher[];
   initialValue?: Date | string;
   value?: Date | string;
   onChange: (value?: Date) => void;
@@ -43,7 +44,7 @@ export function FormDatePicker({
   name,
   label,
   required = false,
-  disabled = false,
+  disabled,
   initialValue,
   value,
   onChange,
@@ -115,6 +116,7 @@ export function FormDatePicker({
                   setDate(newdate);
                 }
               }}
+              disabled={disabled}
             />
           </PopoverContent>
         </Popover>

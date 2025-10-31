@@ -16,7 +16,7 @@ export function HookFormDatePicker<T extends FieldValues>({
   error,
   rules,
   classNames,
-  disabled = false,
+  disabled,
   ...rest
 }: Omit<FormDatePickerProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;

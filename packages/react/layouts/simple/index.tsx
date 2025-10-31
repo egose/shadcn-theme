@@ -87,7 +87,7 @@ export default function SimpleLayout(props: LayoutProps) {
       <header
         className={cn(
           'px-4 py-2 flex items-center justify-between bg-gray-100 border-b border-gray-300',
-          classNames?.header,
+          classNames?.header?.wrapper,
         )}
       >
         <div className="flex items-center space-x-4">
