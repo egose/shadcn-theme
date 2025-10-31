@@ -10,7 +10,7 @@ importers:
     devDependencies:
       '@angular/build':
         specifier: 20.3.4
-        version: 20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.15)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
+        version: 20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.16)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
       '@angular/cdk':
         specifier: 20.2.10
         version: 20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -49,10 +49,10 @@ importers:
         version: 32.2.0
       '@spartan-ng/brain':
         specifier: 0.0.1-alpha.523
-        version: 0.0.1-alpha.523(@angular/cdk@20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.15))(tailwindcss@4.1.15)
+        version: 0.0.1-alpha.523(@angular/cdk@20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.16))(tailwindcss@4.1.16)
       '@spartan-ng/cli':
         specifier: 0.0.1-alpha.541
-        version: 0.0.1-alpha.541(ca71e4d37e5421b7d36a5602dddab216)
+        version: 0.0.1-alpha.541(d1bd59040beaed7824b8644b800c68ea)
       '@types/jasmine':
         specifier: ~5.1.0
         version: 5.1.12
@@ -85,7 +85,7 @@ importers:
         version: 2.1.0(jasmine-core@5.12.1)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
       ng-packagr:
         specifier: ^20.2.0
-        version: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3)
+        version: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3)
       ngx-sonner:
         specifier: ^3.1.0
         version: 3.1.0(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))
@@ -100,10 +100,10 @@ importers:
         version: 3.3.1
       tailwindcss:
         specifier: ^4.0.0
-        version: 4.1.15
+        version: 4.1.16
       tailwindcss-animate:
         specifier: ^1.0.6
-        version: 1.0.7(tailwindcss@4.1.15)
+        version: 1.0.7(tailwindcss@4.1.16)
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -6303,8 +6303,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss@4.1.15:
-    resolution: {integrity: sha512-k2WLnWkYFkdpRv+Oby3EBXIyQC8/s1HOFMBUViwtAh6Z5uAozeUSMQlIsn/c6Q2iJzqG6aJT3wdPaRNj70iYxQ==}
+  tailwindcss@4.1.16:
+    resolution: {integrity: sha512-pONL5awpaQX4LN5eiv7moSiSPd/DLDzKVRJz8Q9PgzmAdd1R4307GQS2ZpfiN7ZmekdQrfhZZiSE5jkLR4WNaA==}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
@@ -6960,7 +6960,7 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular/build@20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.15)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)':
+  '@angular/build@20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.16)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2003.4(chokidar@4.0.3)
@@ -6998,9 +6998,9 @@ snapshots:
       karma: 6.4.4
       less: 4.4.2
       lmdb: 3.4.2
-      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3)
+      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3)
       postcss: 8.5.6
-      tailwindcss: 4.1.15
+      tailwindcss: 4.1.16
     transitivePeerDependencies:
       - '@types/node'
       - chokidar
@@ -9000,7 +9000,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nx/angular@21.6.5(8997bceb133cbd17396247f7fa2bdd71)':
+  '@nx/angular@21.6.5(c2840a57def3f41333126fd22ffe2353)':
     dependencies:
       '@angular-devkit/core': 20.3.6(chokidar@4.0.3)
       '@angular-devkit/schematics': 20.3.6(chokidar@4.0.3)
@@ -9024,8 +9024,8 @@ snapshots:
       tslib: 2.8.1
       webpack-merge: 5.10.0
     optionalDependencies:
-      '@angular/build': 20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.15)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
-      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3)
+      '@angular/build': 20.3.4(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(@angular/compiler@20.3.9)(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(@types/node@24.9.1)(chokidar@4.0.3)(jiti@2.6.1)(karma@6.4.4)(less@4.4.2)(ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3))(postcss@8.5.6)(sass-embedded@1.93.2)(tailwindcss@4.1.16)(terser@5.44.0)(tslib@2.8.1)(typescript@5.9.3)(yaml@2.8.1)
+      ng-packagr: 20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@module-federation/enhanced'
@@ -9710,7 +9710,7 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@spartan-ng/brain@0.0.1-alpha.523(@angular/cdk@20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.15))(tailwindcss@4.1.15)':
+  '@spartan-ng/brain@0.0.1-alpha.523(@angular/cdk@20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.16))(tailwindcss@4.1.16)':
     dependencies:
       '@angular/cdk': 20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -9718,15 +9718,15 @@ snapshots:
       '@angular/forms': 20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2)
       clsx: 2.1.1
       rxjs: 7.8.2
-      tailwindcss: 4.1.15
-      tailwindcss-animate: 1.0.7(tailwindcss@4.1.15)
+      tailwindcss: 4.1.16
+      tailwindcss-animate: 1.0.7(tailwindcss@4.1.16)
       tslib: 2.8.1
     optionalDependencies:
       luxon: 3.7.2
 
-  '@spartan-ng/cli@0.0.1-alpha.541(ca71e4d37e5421b7d36a5602dddab216)':
+  '@spartan-ng/cli@0.0.1-alpha.541(d1bd59040beaed7824b8644b800c68ea)':
     dependencies:
-      '@nx/angular': 21.6.5(8997bceb133cbd17396247f7fa2bdd71)
+      '@nx/angular': 21.6.5(c2840a57def3f41333126fd22ffe2353)
       '@nx/devkit': 21.6.5(nx@21.6.5)
       '@nx/js': 21.6.5(@babel/traverse@7.28.4)(nx@21.6.5)
       '@nx/workspace': 21.6.5
@@ -12448,7 +12448,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.15)(tslib@2.8.1)(typescript@5.9.3):
+  ng-packagr@20.3.0(@angular/compiler-cli@20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular/compiler-cli': 20.3.9(@angular/compiler@20.3.9)(typescript@5.9.3)
@@ -12476,7 +12476,7 @@ snapshots:
       typescript: 5.9.3
     optionalDependencies:
       rollup: 4.52.5
-      tailwindcss: 4.1.15
+      tailwindcss: 4.1.16
 
   ngx-sonner@3.1.0(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)):
     dependencies:
@@ -13878,11 +13878,11 @@ snapshots:
 
   tailwind-merge@3.3.1: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.15):
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.16):
     dependencies:
-      tailwindcss: 4.1.15
+      tailwindcss: 4.1.16
 
-  tailwindcss@4.1.15: {}
+  tailwindcss@4.1.16: {}
 
   tapable@2.3.0: {}
 
