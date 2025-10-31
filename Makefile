@@ -11,7 +11,6 @@ asdf-install:
 
 .PHONY: install
 install: asdf-install
-install:
 	pnpm install
 	pnpm --dir packages/react install
 	pnpm --dir packages/angular install
