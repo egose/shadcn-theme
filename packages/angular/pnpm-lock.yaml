@@ -51,8 +51,8 @@ importers:
         specifier: 0.0.1-alpha.523
         version: 0.0.1-alpha.523(@angular/cdk@20.2.10(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.16))(tailwindcss@4.1.16)
       '@spartan-ng/cli':
-        specifier: 0.0.1-alpha.541
-        version: 0.0.1-alpha.541(d1bd59040beaed7824b8644b800c68ea)
+        specifier: 0.0.1-alpha.542
+        version: 0.0.1-alpha.542(d1bd59040beaed7824b8644b800c68ea)
       '@types/jasmine':
         specifier: ~5.1.0
         version: 5.1.12
@@ -2684,8 +2684,8 @@ packages:
       luxon:
         optional: true
 
-  '@spartan-ng/cli@0.0.1-alpha.541':
-    resolution: {integrity: sha512-IKot+OLrJfXV+9Zde66NSs8p89hP5iRE64Etfeu2G7kIM10yV+XFNOS/iGb+9z6+hcXeZ3N66XkvJ45WR+7qjg==}
+  '@spartan-ng/cli@0.0.1-alpha.542':
+    resolution: {integrity: sha512-uZ/qLy0dAJUeB5YMBQmKJpabonKM/9qYEgmXmaG/Q01/oiinizjZrYRzh5A9Zeto4wABnxZVjNgf6v5eoeF0Eg==}
     peerDependencies:
       tslib: ^2.3.0
 
@@ -9724,7 +9724,7 @@ snapshots:
     optionalDependencies:
       luxon: 3.7.2
 
-  '@spartan-ng/cli@0.0.1-alpha.541(d1bd59040beaed7824b8644b800c68ea)':
+  '@spartan-ng/cli@0.0.1-alpha.542(d1bd59040beaed7824b8644b800c68ea)':
     dependencies:
       '@nx/angular': 21.6.5(c2840a57def3f41333126fd22ffe2353)
       '@nx/devkit': 21.6.5(nx@21.6.5)
