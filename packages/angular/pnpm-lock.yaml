@@ -48,8 +48,8 @@ importers:
         specifier: ^32.1.0
         version: 32.2.0
       '@spartan-ng/brain':
-        specifier: 0.0.1-alpha.523
-        version: 0.0.1-alpha.523(@angular/cdk@20.2.11(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.16))(tailwindcss@4.1.16)
+        specifier: 0.0.1-alpha.544
+        version: 0.0.1-alpha.544(@angular/cdk@20.2.11(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.16)
       '@spartan-ng/cli':
         specifier: 0.0.1-alpha.544
         version: 0.0.1-alpha.544(17ebb012645402e6f7658d1427810018)
@@ -2668,8 +2668,8 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@spartan-ng/brain@0.0.1-alpha.523':
-    resolution: {integrity: sha512-ffW5mxK2k/wicwu3t8aIMRLV7odBnEwN3FVALAf4hFiMDIu+ccQZS6RwJ23hwh3JJo/gblhdXVKgPx8yDdPKmw==}
+  '@spartan-ng/brain@0.0.1-alpha.544':
+    resolution: {integrity: sha512-4Tow0IfEXzmOwnFGIwcZ+If3mqg0uAVJ2Ga2iqwdyrEEgGO5KD9Kx0M+Y+WIYw1PUp470NJPo1d8TRO+q/hugQ==}
     peerDependencies:
       '@angular/cdk': '>=19.0.0'
       '@angular/common': '>=19.0.0'
@@ -2679,7 +2679,6 @@ packages:
       luxon: '>=3.0.0'
       rxjs: '>=6.6.0'
       tailwindcss: '>=3.3.0'
-      tailwindcss-animate: '>=1.0.7'
     peerDependenciesMeta:
       luxon:
         optional: true
@@ -9710,7 +9709,7 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@spartan-ng/brain@0.0.1-alpha.523(@angular/cdk@20.2.11(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss-animate@1.0.7(tailwindcss@4.1.16))(tailwindcss@4.1.16)':
+  '@spartan-ng/brain@0.0.1-alpha.544(@angular/cdk@20.2.11(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/forms@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(@angular/platform-browser@20.3.9(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.16)':
     dependencies:
       '@angular/cdk': 20.2.11(@angular/common@20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/common': 20.3.9(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -9719,7 +9718,6 @@ snapshots:
       clsx: 2.1.1
       rxjs: 7.8.2
       tailwindcss: 4.1.16
-      tailwindcss-animate: 1.0.7(tailwindcss@4.1.16)
       tslib: 2.8.1
     optionalDependencies:
       luxon: 3.7.2
