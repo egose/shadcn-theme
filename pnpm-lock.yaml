@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       fs-extra:
-        specifier: ^11.3.0
+        specifier: ^11.3.2
         version: 11.3.2
       lodash:
         specifier: ^4.17.21
@@ -18,7 +18,7 @@ importers:
         specifier: 4.0.0-alpha.12
         version: 4.0.0-alpha.12
       semver:
-        specifier: ^7.7.2
+        specifier: ^7.7.3
         version: 7.7.3
       yargs:
         specifier: ^18.0.0
@@ -198,8 +198,8 @@ packages:
   stubborn-fs@2.0.0:
     resolution: {integrity: sha512-Y0AvSwDw8y+nlSNFXMm2g6L51rBGdAQT20J3YSOqxC53Lo3bjWRtr2BKcfYoAf352WYpsZSTURrA0tqhfgudPA==}
 
-  stubborn-utils@1.0.1:
-    resolution: {integrity: sha512-bwtct4FpoH1eYdSMFc84fxnYynWwsy2u0joj94K+6caiPnjZIpwTLHT2u7CFAS0GumaBZVB5Y2GkJ46mJS76qg==}
+  stubborn-utils@1.0.2:
+    resolution: {integrity: sha512-zOh9jPYI+xrNOyisSelgym4tolKTJCQd5GBhK0+0xJvcYDcwlOoxF/rnFKQ2KRZknXSG9jWAp66fwP6AxN9STg==}
 
   tiny-bin@1.11.3:
     resolution: {integrity: sha512-CrBbiKsvJN4bHSDA0cPau4t5KWdGUUAcTXQ8bB14XNqNY+68UZF4Zo7WRVdHLq0j0GYZjIRbNDg+zJbJXDEXeg==}
@@ -457,9 +457,9 @@ snapshots:
 
   stubborn-fs@2.0.0:
     dependencies:
-      stubborn-utils: 1.0.1
+      stubborn-utils: 1.0.2
 
-  stubborn-utils@1.0.1: {}
+  stubborn-utils@1.0.2: {}
 
   tiny-bin@1.11.3:
     dependencies:
