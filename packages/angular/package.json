@@ -21,7 +21,7 @@
     "bundle": "node build-all.mjs"
   },
   "devDependencies": {
-    "@angular/cdk": "20.2.11",
+    "@angular/cdk": "20.2.14",
     "@angular/common": "20.3.10",
     "@angular/compiler": "20.3.10",
     "@angular/compiler-cli": "20.3.10",
