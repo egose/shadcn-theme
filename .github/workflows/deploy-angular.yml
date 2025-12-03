@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 5
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -33,7 +33,7 @@ jobs:
       working-directory: packages/angular/@examples/standard
 
     - name: Angular Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         folder: packages/angular/@examples/standard/dist/angular/browser
         branch: pages-angular
