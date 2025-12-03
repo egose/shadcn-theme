@@ -66,8 +66,8 @@ importers:
         specifier: '>=19.0.0'
         version: 20.0.0(@angular/common@20.3.10(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))
       jasmine-core:
-        specifier: ~5.12.0
-        version: 5.12.1
+        specifier: ~5.13.0
+        version: 5.13.0
       karma:
         specifier: ~6.4.0
         version: 6.4.4
@@ -82,7 +82,7 @@ importers:
         version: 5.1.0(karma@6.4.4)
       karma-jasmine-html-reporter:
         specifier: ~2.1.0
-        version: 2.1.0(jasmine-core@5.12.1)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
+        version: 2.1.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
       ng-packagr:
         specifier: ^20.2.0
         version: 20.3.0(@angular/compiler-cli@20.3.14(@angular/compiler@20.3.15)(typescript@5.9.3))(tailwindcss@4.1.16)(tslib@2.8.1)(typescript@5.9.3)
@@ -4554,8 +4554,8 @@ packages:
   jasmine-core@4.6.1:
     resolution: {integrity: sha512-VYz/BjjmC3klLJlLwA4Kw8ytk0zDSmbbDLNs794VnWmkcCB7I9aAL/D48VNQtmITyPvea2C3jdUMfc3kAoy0PQ==}
 
-  jasmine-core@5.12.1:
-    resolution: {integrity: sha512-P/UbRZ0LKwXe7wEpwDheuhunPwITn4oPALhrJEQJo6756EwNGnsK/TSQrWojBB4cQDQ+VaxWYws9tFNDuiMh2Q==}
+  jasmine-core@5.13.0:
+    resolution: {integrity: sha512-vsYjfh7lyqvZX5QgqKc4YH8phs7g96Z8bsdIFNEU3VqXhlHaq+vov/Fgn/sr6MiUczdZkyXRC3TX369Ll4Nzbw==}
 
   jest-diff@30.2.0:
     resolution: {integrity: sha512-dQHFo3Pt4/NLlG5z4PxZ/3yZTZ1C7s9hveiOj+GCN+uT109NC2QgsoVZsVOAvbJ3RgKkvyLGXZV9+piDpWbm6A==}
@@ -11926,7 +11926,7 @@ snapshots:
 
   jasmine-core@4.6.1: {}
 
-  jasmine-core@5.12.1: {}
+  jasmine-core@5.13.0: {}
 
   jest-diff@30.2.0:
     dependencies:
@@ -12028,9 +12028,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  karma-jasmine-html-reporter@2.1.0(jasmine-core@5.12.1)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4):
+  karma-jasmine-html-reporter@2.1.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4):
     dependencies:
-      jasmine-core: 5.12.1
+      jasmine-core: 5.13.0
       karma: 6.4.4
       karma-jasmine: 5.1.0(karma@6.4.4)
 
