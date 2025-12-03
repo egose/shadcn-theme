@@ -167,3 +167,19 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+/* 1. Reset the counter on the <code> element */
+code[data-line-numbers] {
+  counter-reset: line;
+}
+
+/* 2. Increment the counter and display the value for each line span */
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line; /* Increment the line counter for each line */
+  content: counter(line); /* Display the current counter value */
+  display: inline-block;
+  width: 1rem; /* Adjust width as needed */
+  margin-right: 2rem; /* Adjust margin as needed */
+  text-align: right;
+  color: gray; /* Adjust color as needed */
+}
