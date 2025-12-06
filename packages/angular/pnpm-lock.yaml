@@ -51,8 +51,8 @@ importers:
         specifier: 0.0.1-alpha.550
         version: 0.0.1-alpha.550(@angular/cdk@20.2.14(@angular/common@20.3.10(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/common@20.3.10(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/forms@20.3.14(@angular/common@20.3.10(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(@angular/platform-browser@20.3.14(@angular/common@20.3.10(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)))(rxjs@7.8.2))(clsx@2.1.1)(luxon@3.7.2)(rxjs@7.8.2)(tailwindcss@4.1.16)
       '@spartan-ng/cli':
-        specifier: 0.0.1-alpha.567
-        version: 0.0.1-alpha.567(b58f92bacce9040f4641e88076256d29)
+        specifier: 0.0.1-alpha.576
+        version: 0.0.1-alpha.576(b58f92bacce9040f4641e88076256d29)
       '@types/jasmine':
         specifier: ~5.1.0
         version: 5.1.13
@@ -2689,8 +2689,8 @@ packages:
       luxon:
         optional: true
 
-  '@spartan-ng/cli@0.0.1-alpha.567':
-    resolution: {integrity: sha512-3WgYPSp781vVy8s4Bo7TAY9TNvoTlTxhObDRHLkPrPiahr5k0bP+qgd3VpEkG3gOE9y8Rxg1PAEUXBdHfA+3Kw==}
+  '@spartan-ng/cli@0.0.1-alpha.576':
+    resolution: {integrity: sha512-f6ZnWvJfBCUx0VvTd48qRKpXZVFehRg2SKnie9Dww8Rz+iF9y5ZtGmu1mjK/TgdFdLyvcNW7zv/Cy5PZI5UkCw==}
     peerDependencies:
       tslib: ^2.3.0
 
@@ -4591,10 +4591,6 @@ packages:
 
   js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
-    hasBin: true
-
-  js-yaml@4.1.0:
-    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
 
   js-yaml@4.1.1:
@@ -9742,7 +9738,7 @@ snapshots:
     optionalDependencies:
       luxon: 3.7.2
 
-  '@spartan-ng/cli@0.0.1-alpha.567(b58f92bacce9040f4641e88076256d29)':
+  '@spartan-ng/cli@0.0.1-alpha.576(b58f92bacce9040f4641e88076256d29)':
     dependencies:
       '@angular/core': 20.3.14(@angular/compiler@20.3.15)(rxjs@7.8.2)
       '@nx/angular': 21.6.5(7af1b390eb2ccea8084b2ea5fa15092d)
@@ -10669,7 +10665,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.3
@@ -11979,10 +11975,6 @@ snapshots:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
-
-  js-yaml@4.1.0:
-    dependencies:
-      argparse: 2.0.1
 
   js-yaml@4.1.1:
     dependencies:
