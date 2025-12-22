@@ -30,6 +30,7 @@ export interface FormDatePickerProps {
   required?: boolean;
   disabled?: Matcher | Matcher[];
   initialValue?: Date | string;
+  closeOnSelect?: boolean;
   value?: Date | string;
   onChange: (value?: Date) => void;
   classNames?: {
@@ -44,6 +45,7 @@ export function FormDatePicker({
   name,
   label,
   required = false,
+  closeOnSelect = true,
   disabled,
   initialValue,
   value,
@@ -52,6 +54,7 @@ export function FormDatePicker({
 }: FormDatePickerProps) {
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [initialized, setInitialized] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!initialized) {
@@ -94,7 +97,7 @@ export function FormDatePicker({
       )}
 
       <div className={cn('grid gap-2')}>
-        <Popover>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <Button
               variant={date ? 'secondary' : 'muted'}
@@ -115,6 +118,7 @@ export function FormDatePicker({
                 if (!isEqualDate(date, newdate)) {
                   setDate(newdate);
                 }
+                if (closeOnSelect) setIsOpen(false);
               }}
               disabled={disabled}
             />
