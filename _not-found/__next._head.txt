@@ -1,8 +1,6 @@
 1:"$Sreact.fragment"
-2:I[28585,["/_next/static/chunks/ed4283adb1403193.js","/_next/static/chunks/bc2bf598669d3895.js"],"ViewportBoundary"]
-4:I[28585,["/_next/static/chunks/ed4283adb1403193.js","/_next/static/chunks/bc2bf598669d3895.js"],"MetadataBoundary"]
-5:"$Sreact.suspense"
-7:I[98547,["/_next/static/chunks/ed4283adb1403193.js","/_next/static/chunks/bc2bf598669d3895.js"],"IconMark"]
-0:{"buildId":"7_Nk0M8b46vl7VSWXGQ27","rsc":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L2",null,{"children":"$@3"}],["$","div",null,{"hidden":true,"children":["$","$L4",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":"$@6"}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"loading":null,"isPartial":false}
-3:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-6:[["$","link","0",{"rel":"manifest","href":"/manifest.json"}],["$","link","1",{"rel":"icon","href":"/favicon.ico?favicon.fbf03abd.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L7","2",{}]]
+2:I[12199,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"ViewportBoundary"]
+3:I[12199,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+5:I[31791,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"IconMark"]
+0:{"buildId":"ZgabyJELqLoZBL175WZzt","rsc":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","link","0",{"rel":"manifest","href":"/manifest.json"}],["$","link","1",{"rel":"icon","href":"/favicon.ico?favicon.fbf03abd.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","2",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"loading":null,"isPartial":false}
