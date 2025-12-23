@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[12199,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"ViewportBoundary"]
-3:I[12199,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"MetadataBoundary"]
+2:I[95871,["/_next/static/chunks/5141e8ee6b1cbe3d.js","/_next/static/chunks/ee2da39d1563a7e7.js"],"ViewportBoundary"]
+3:I[95871,["/_next/static/chunks/5141e8ee6b1cbe3d.js","/_next/static/chunks/ee2da39d1563a7e7.js"],"MetadataBoundary"]
 4:"$Sreact.suspense"
-5:I[31791,["/_next/static/chunks/e88310f82c6351a9.js","/_next/static/chunks/160464df843b969f.js"],"IconMark"]
-0:{"buildId":"ZgabyJELqLoZBL175WZzt","rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","link","0",{"rel":"manifest","href":"/manifest.json"}],["$","link","1",{"rel":"icon","href":"/favicon.ico?favicon.fbf03abd.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","2",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"loading":null,"isPartial":false}
+5:I[33704,["/_next/static/chunks/5141e8ee6b1cbe3d.js","/_next/static/chunks/ee2da39d1563a7e7.js"],"IconMark"]
+0:{"buildId":"8rM02YJ9xsWBEkdbV4mj_","rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","link","0",{"rel":"manifest","href":"/manifest.json"}],["$","link","1",{"rel":"icon","href":"/favicon.ico?favicon.fbf03abd.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","2",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"loading":null,"isPartial":false}
