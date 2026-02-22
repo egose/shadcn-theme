@@ -15,7 +15,7 @@ const validationSchema = z.object({
 export default function Page() {
   const methods = useForm({
     resolver: zodResolver(validationSchema),
-    defaultValues: { name: 'jane' },
+    defaultValues: { name: '2' },
   });
 
   return (
@@ -38,9 +38,9 @@ export default function Page() {
               label="Name"
               name="name"
               data={[
-                { label: 'John', value: 'john' },
-                { label: 'Jane', value: 'jane' },
-                { label: 'Doe', value: 'doe' },
+                { label: 'John', value: '1' },
+                { label: 'Jane', value: '2' },
+                { label: 'Doe', value: '3' },
               ]}
               required
               classNames={{ wrapper: 'col-span-1 mt-2' }}
