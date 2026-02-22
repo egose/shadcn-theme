@@ -12,6 +12,7 @@ import { FormCheckbox } from '../../../../../components/form/checkbox';
 import { HookFormCheckbox } from '../../../../../components/form/hook-checkbox';
 import { CopyableButton } from '../../../../../components/ui/copy-button';
 import { toast } from 'sonner';
+import { DrawerScrollableContent } from './drawer';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),
@@ -130,6 +131,7 @@ export default function Page() {
       >
         Test
       </Button>
+      <DrawerScrollableContent />
     </>
   );
 }
