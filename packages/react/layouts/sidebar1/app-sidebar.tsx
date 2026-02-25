@@ -6,14 +6,23 @@ import { INavMenu } from './nav-menus';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '../../components/ui/sidebar';
 import { Button } from '../../components/ui/button';
 
+export interface ISidebarContext {
+  title?: string;
+  addText?: string;
+  items: INavContext[];
+  canAdd?: boolean;
+}
+
 export interface ISidebarData {
   user?: INavUser;
-  contexts: INavContext[];
+  context: ISidebarContext;
   menus: INavMenu[];
   userMenus: INavUserMenuItem[];
   events?: {
     login?: () => void;
     logout?: (user: INavUser) => void;
+    newContext?: () => void;
+    contextSelect?: (context: INavContext) => void;
   };
 }
 
@@ -24,11 +33,27 @@ export function AppSidebar({
   aslink: React.ElementType;
 }) {
   const { data, aslink, ...rest } = props;
+  const { context } = data;
 
   return (
     <Sidebar collapsible="icon" {...rest}>
       <SidebarHeader>
-        <ContextSwitcher items={data.contexts} />
+        <ContextSwitcher
+          items={context.items}
+          title={context.title}
+          newContextText={context.addText}
+          canAdd={context.canAdd}
+          onContextAdd={() => {
+            if (data.events?.newContext) {
+              data.events.newContext();
+            }
+          }}
+          onContextSelected={(context: INavContext) => {
+            if (data.events?.contextSelect) {
+              data.events.contextSelect(context);
+            }
+          }}
+        />
       </SidebarHeader>
 
       <SidebarContent>

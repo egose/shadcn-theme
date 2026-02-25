@@ -14,7 +14,8 @@ import { cn } from '../../utils/ui';
 
 export interface INavContext {
   name: string;
-  logo: React.ElementType;
+  logo?: React.ElementType;
+  logoUrl?: string;
   text: string;
   className?: string;
 }
@@ -23,10 +24,16 @@ export function ContextSwitcher({
   items,
   title = 'Contexts',
   newContextText = 'Add context',
+  canAdd = false,
+  onContextAdd,
+  onContextSelected,
 }: {
   items: INavContext[];
   title?: string;
   newContextText?: string;
+  canAdd?: boolean;
+  onContextAdd?: () => void;
+  onContextSelected?: (context: INavContext) => void;
 }) {
   const { isMobile } = useSidebar();
   const [activeContext, setActiveContext] = React.useState(items[0]);
@@ -54,7 +61,11 @@ export function ContextSwitcher({
                   activeContext.className,
                 )}
               >
-                <activeContext.logo className="size-4" />
+                {activeContext.logo ? (
+                  <activeContext.logo className="size-4" />
+                ) : (
+                  <img src={activeContext.logoUrl} alt={activeContext.name} className="size-4 rounded-sm" />
+                )}
               </div>
 
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -75,23 +86,47 @@ export function ContextSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">{title}</DropdownMenuLabel>
 
             {items.map((item, index) => (
-              <DropdownMenuItem key={item.name} onClick={() => setActiveContext(item)} className="gap-2 p-2">
+              <DropdownMenuItem
+                key={item.name}
+                onClick={() => {
+                  setActiveContext(item);
+                  if (onContextSelected) {
+                    onContextSelected(item);
+                  }
+                }}
+                className="gap-2 p-2"
+              >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <item.logo className="size-4 shrink-0" />
+                  {item.logo ? (
+                    <item.logo className="size-4 shrink-0" />
+                  ) : (
+                    <img src={item.logoUrl} alt={item.name} className="size-4 shrink-0 rounded-sm" />
+                  )}
                 </div>
                 {item.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
 
-            <DropdownMenuSeparator />
+            {canAdd && (
+              <>
+                <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">{newContextText}</div>
-            </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="gap-2 p-2"
+                  onClick={() => {
+                    if (onContextAdd) {
+                      onContextAdd();
+                    }
+                  }}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                    <Plus className="size-4" />
+                  </div>
+                  <div className="font-medium text-muted-foreground">{newContextText}</div>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

@@ -65,14 +65,19 @@ export default function RootLayout({
       email: 'm@example.com',
       avatar: '/avatars/shadcn.jpg',
     },
-    contexts: [
-      {
-        name: 'Egose Inc',
-        text: `Enterprise - ${count}`,
-        logo: GalleryVerticalEnd,
-        className: 'bg-purple-500 text-white',
-      },
-    ],
+    context: {
+      title: 'Projects',
+      canAdd: false,
+      items: [
+        {
+          name: 'Egose Inc',
+          text: `Enterprise - ${count}`,
+          // logo: GalleryVerticalEnd,
+          logoUrl: 'https://avatars.githubusercontent.com/u/36021827?v=4&size=64',
+          className: 'bg-purple-500 text-white',
+        },
+      ],
+    },
     menus: [
       {
         title: 'Platform',
@@ -186,6 +191,9 @@ export default function RootLayout({
     events: {
       login: () => {
         console.log('Sign in clicked');
+      },
+      newContext: () => {
+        console.log('New context clicked');
       },
     },
   };
