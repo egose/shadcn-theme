@@ -1,7 +1,7 @@
 import React from 'react';
 import _get from 'lodash-es/get';
 import { Controller, FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { FormError } from './error';
 import { FormCheckbox } from './checkbox';
 import type { FormCheckboxProps } from './checkbox';

@@ -2,7 +2,7 @@ import React from 'react';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 
 export function FormError({
   field,

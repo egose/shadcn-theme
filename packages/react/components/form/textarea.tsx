@@ -1,7 +1,7 @@
 import React, { TextareaHTMLAttributes, useRef } from 'react';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 

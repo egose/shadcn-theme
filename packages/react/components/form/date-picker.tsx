@@ -6,8 +6,8 @@ import _isNil from 'lodash-es/isNil';
 import _isUndefined from 'lodash-es/isUndefined';
 import _isString from 'lodash-es/isString';
 
-import { isEqualDate } from '../../lib/date';
-import { cn } from '../../lib/utils';
+import { isEqualDate } from '../../utils/date';
+import { cn } from '../../utils/ui';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';

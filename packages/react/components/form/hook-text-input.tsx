@@ -1,7 +1,7 @@
 import React from 'react';
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { FormError } from './error';
 import { FormTextInput } from './text-input';
 import type { FormTextInputProps } from './text-input';

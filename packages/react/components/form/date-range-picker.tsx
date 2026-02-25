@@ -5,8 +5,8 @@ import { DateRange } from 'react-day-picker';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isNil from 'lodash-es/isNil';
 
-import { isEqualDates } from '../../lib/date';
-import { cn } from '../../lib/utils';
+import { isEqualDates } from '../../utils/date';
+import { cn } from '../../utils/ui';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';

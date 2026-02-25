@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../../components/ui/sidebar';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 
 export interface INavContext {
   name: string;

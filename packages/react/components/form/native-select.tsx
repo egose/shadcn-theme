@@ -1,7 +1,7 @@
 import React, { SelectHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 
 type NativeSelectProps = SelectHTMLAttributes<HTMLSelectElement>;

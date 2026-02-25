@@ -93,6 +93,7 @@ export default function RootLayout({
       },
       {
         title: 'Theme',
+        hideTitle: true,
         items: [
           {
             title: 'Components',

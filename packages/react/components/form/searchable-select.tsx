@@ -1,7 +1,7 @@
 import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';

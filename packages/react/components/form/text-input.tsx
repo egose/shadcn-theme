@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 

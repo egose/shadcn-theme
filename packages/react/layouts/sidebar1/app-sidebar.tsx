@@ -5,7 +5,6 @@ import { ContextSwitcher, INavContext } from './context-switcher';
 import { INavMenu } from './nav-menus';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '../../components/ui/sidebar';
 import { Button } from '../../components/ui/button';
-import { cn } from '../../lib/utils';
 
 export interface ISidebarData {
   user?: INavUser;
