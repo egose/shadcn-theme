@@ -13,7 +13,7 @@ importers:
         version: 11.3.2
       lodash:
         specifier: ^4.17.21
-        version: 4.17.21
+        version: 4.17.23
       prettier:
         specifier: 4.0.0-alpha.12
         version: 4.0.0-alpha.12
@@ -143,8 +143,8 @@ packages:
   kasi@1.1.1:
     resolution: {integrity: sha512-pzBwGWFIjf84T/8aD0XzMli1T3Ckr/jVLh6v0Jskwiv5ehmcgDM+vpYFSk8WzGn4ed4HqgaifTgQUHzzZHa+Qw==}
 
-  lodash@4.17.21:
-    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+  lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
 
   lomemo@1.0.1:
     resolution: {integrity: sha512-g8CnVp7UYypeQKpXpMzyrJoDzhOoqVQYSJApoq/cFI3vGxXoHQ+6lH5cApW9XwzVy5SL9/Owil7/JxbKckw0Lg==}
@@ -407,7 +407,7 @@ snapshots:
 
   kasi@1.1.1: {}
 
-  lodash@4.17.21: {}
+  lodash@4.17.23: {}
 
   lomemo@1.0.1: {}
 
