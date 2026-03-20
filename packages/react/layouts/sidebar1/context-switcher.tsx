@@ -17,6 +17,7 @@ export interface INavContext {
   logo?: React.ElementType;
   logoUrl?: string;
   text: string;
+  active?: boolean;
   className?: string;
 }
 
@@ -36,7 +37,7 @@ export function ContextSwitcher({
   onContextSelected?: (context: INavContext) => void;
 }) {
   const { isMobile } = useSidebar();
-  const [activeContext, setActiveContext] = React.useState(items[0]);
+  const [activeContext, setActiveContext] = React.useState(items.find((item) => item.active) || items[0]);
 
   React.useEffect(() => {
     if (!items || items.length === 0) return;

@@ -9,13 +9,13 @@ import { Button } from '../../components/ui/button';
 export interface ISidebarContext {
   title?: string;
   addText?: string;
-  items: INavContext[];
+  items?: INavContext[];
   canAdd?: boolean;
 }
 
 export interface ISidebarData {
   user?: INavUser;
-  context: ISidebarContext;
+  context?: ISidebarContext;
   menus: INavMenu[];
   userMenus: INavUserMenuItem[];
   events?: {
@@ -37,24 +37,26 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible="icon" {...rest}>
-      <SidebarHeader>
-        <ContextSwitcher
-          items={context.items}
-          title={context.title}
-          newContextText={context.addText}
-          canAdd={context.canAdd}
-          onContextAdd={() => {
-            if (data.events?.newContext) {
-              data.events.newContext();
-            }
-          }}
-          onContextSelected={(context: INavContext) => {
-            if (data.events?.contextSelect) {
-              data.events.contextSelect(context);
-            }
-          }}
-        />
-      </SidebarHeader>
+      {context?.items && context.items.length > 0 && (
+        <SidebarHeader>
+          <ContextSwitcher
+            items={context.items}
+            title={context.title}
+            newContextText={context.addText}
+            canAdd={context.canAdd}
+            onContextAdd={() => {
+              if (data.events?.newContext) {
+                data.events.newContext();
+              }
+            }}
+            onContextSelected={(context: INavContext) => {
+              if (data.events?.contextSelect) {
+                data.events.contextSelect(context);
+              }
+            }}
+          />
+        </SidebarHeader>
+      )}
 
       <SidebarContent>
         <NavMenus menus={data.menus} aslink={aslink} />
