@@ -7,6 +7,7 @@ import { Badge } from '../../../../../components/ui/badge';
 const variants = [
   'primary',
   'secondary',
+  'action',
   'success',
   'warning',
   'danger',

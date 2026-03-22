@@ -8,6 +8,7 @@ import { Button } from '../../../../../components/ui/button';
 const variants = [
   'primary',
   'secondary',
+  'action',
   'success',
   'warning',
   'danger',

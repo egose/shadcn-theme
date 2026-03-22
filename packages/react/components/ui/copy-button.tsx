@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import _isString from 'lodash-es/isString';
 import { useClipboard } from '../../hooks/use-clipboard';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { UnstyledButton } from './unstyled-button';
 import { cn } from '../../utils/ui';
 

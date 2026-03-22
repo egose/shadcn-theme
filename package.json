@@ -6,10 +6,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "fs-extra": "^11.3.2",
-    "lodash": "^4.17.21",
+    "fs-extra": "^11.3.4",
+    "lodash": "^4.17.23",
     "prettier": "4.0.0-alpha.12",
-    "semver": "^7.7.3",
+    "semver": "^7.7.4",
     "yargs": "^18.0.0"
   }
 }

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../../layouts/sidebar1';
+import { TooltipProvider } from '../../../components/ui/tooltip';
 import { DialogManagerProvider } from '../../../components/widgets/dialog-manager';
 import { Toaster } from '../../../components/ui/sonner';
 import { useEffect, useState } from 'react';
@@ -111,6 +112,10 @@ export default function RootLayout({
                 url: '/components/button',
               },
               {
+                title: 'Button Group',
+                url: '/components/button-group',
+              },
+              {
                 title: 'Badge',
                 url: '/components/badge',
               },
@@ -119,8 +124,81 @@ export default function RootLayout({
                 url: '/components/alert',
               },
               {
+                title: 'Alert Dialog',
+                url: '/components/alert-dialog',
+              },
+              { title: 'Accordion', url: '/components/accordion' },
+              {
                 title: 'Dialog',
                 url: '/components/dialog',
+              },
+              {
+                title: 'Card',
+                url: '/components/card',
+              },
+              {
+                title: 'Carousel',
+                url: '/components/carousel',
+              },
+              {
+                title: 'Checkbox',
+                url: '/components/checkbox',
+              },
+              {
+                title: 'Collapsible',
+                url: '/components/collapsible',
+              },
+              {
+                title: 'Combobox',
+                url: '/components/combobox',
+              },
+              {
+                title: 'Command',
+                url: '/components/command',
+              },
+              {
+                title: 'Context Menu',
+                url: '/components/context-menu',
+              },
+              {
+                title: 'Hover Card',
+                url: '/components/hover-card',
+              },
+              {
+                title: 'Native Select',
+                url: '/components/native-select',
+              },
+              {
+                title: 'Navigation Menu',
+                url: '/components/navigation-menu',
+              },
+              {
+                title: 'Popover',
+                url: '/components/popover',
+              },
+              {
+                title: 'Radio Group',
+                url: '/components/radio-group',
+              },
+              {
+                title: 'Resizable',
+                url: '/components/resizable',
+              },
+              {
+                title: 'Slider',
+                url: '/components/slider',
+              },
+              {
+                title: 'Switch',
+                url: '/components/switch',
+              },
+              {
+                title: 'Tabs',
+                url: '/components/tabs',
+              },
+              {
+                title: 'Toggle Group',
+                url: '/components/toggle-group',
               },
             ],
           },
@@ -219,9 +297,11 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SidebarLayout aslink={Link} data={data}>
-          <DialogManagerProvider>{children}</DialogManagerProvider>
-        </SidebarLayout>
+        <TooltipProvider>
+          <SidebarLayout aslink={Link} data={data}>
+            <DialogManagerProvider>{children}</DialogManagerProvider>
+          </SidebarLayout>
+        </TooltipProvider>
         <Toaster theme="light" position="top-right" closeButton richColors />
       </body>
     </html>
