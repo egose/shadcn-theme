@@ -66,7 +66,7 @@ export function FormDateRangePicker({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('date-range-picker', classNames?.wrapper)}>
+    <div className={cn('form-date-range-picker space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

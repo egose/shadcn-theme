@@ -3,17 +3,21 @@ import { Label as LabelPrimitive } from 'radix-ui';
 
 import { cn } from '../../utils/ui';
 
-function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  return (
-    <LabelPrimitive.Root
-      data-slot="label"
-      className={cn(
-        'gap-2 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 flex items-center select-none group-data-[disabled=true]:pointer-events-none peer-disabled:cursor-not-allowed',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
+const Label = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & { required?: boolean }
+>(({ required = false, children, className, ...props }, ref) => (
+  <LabelPrimitive.Root
+    ref={ref}
+    className={cn(
+      'gap-1 text-sm leading-none font-medium group-data-[disabled=true]:opacity-50 peer-disabled:opacity-50 flex items-center select-none group-data-[disabled=true]:pointer-events-none peer-disabled:cursor-not-allowed',
+      className,
+    )}
+    {...props}
+  >
+    {children}
+    {required && <span className="text-danger">*</span>}
+  </LabelPrimitive.Root>
+));
 
 export { Label };

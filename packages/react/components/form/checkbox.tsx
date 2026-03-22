@@ -32,7 +32,7 @@ export function FormCheckbox({
   const checkboxId = id || _kebabCase(name);
 
   return (
-    <div className={cn('flex items-center gap-3', classNames?.wrapper)}>
+    <div className={cn('form-checkbox flex items-center gap-3', classNames?.wrapper)}>
       <Checkbox
         id={checkboxId}
         name={name}

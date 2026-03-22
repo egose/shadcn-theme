@@ -36,7 +36,7 @@ export function FormTextarea({
   const _ref = useRef<HTMLTextAreaElement>(null);
 
   return (
-    <div className={cn('textarea', classNames?.wrapper)}>
+    <div className={cn('form-textarea space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

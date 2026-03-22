@@ -72,7 +72,11 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-sm px-3',
         default: 'h-9 px-4 py-2',
         lg: 'h-10 rounded-sm px-7 text-base',
-        icon: 'h-9 w-9',
+        icon: 'size-8',
+        'icon-xs':
+          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+        'icon-sm': 'size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg',
+        'icon-lg': 'size-9',
         'compact-xs': 'h-6 px-2 py-1 text-xs',
         'compact-sm': 'h-7 px-2 py-1',
         'compact-default': 'h-8 px-2 py-1',

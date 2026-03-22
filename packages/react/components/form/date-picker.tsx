@@ -89,7 +89,7 @@ export function FormDatePicker({
   const display = !initialized ? <span></span> : date ? <>{formatDate(date)}</> : <span>Pick a date</span>;
 
   return (
-    <div className={cn('date-picker', classNames?.wrapper)}>
+    <div className={cn('form-date-picker space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="action">Open</Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -38,7 +38,7 @@ export default function Page() {
         <SheetFooter>
           <Button type="submit">Save changes</Button>
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="secondary">Close</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
