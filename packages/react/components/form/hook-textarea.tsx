@@ -33,7 +33,7 @@ export function HookFormTextarea<T extends FieldValues>({
   const showError = !!fieldError && !disabled;
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('$hook-form-textarea', classNames?.wrapper)}>
       <FormTextarea
         id={id}
         name={name}

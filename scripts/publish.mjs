@@ -14,6 +14,7 @@ const argv = yargs(hideBin(process.argv))
   .option('major', { type: 'boolean', default: false })
   .option('minor', { type: 'boolean', default: false })
   .option('patch', { type: 'boolean', default: false })
+  .option('otp', { type: 'string', describe: '2FA code for npm publish' })
   .option('context', {
     type: 'string',
     choices: ['react', 'angular'],
@@ -21,7 +22,7 @@ const argv = yargs(hideBin(process.argv))
     describe: 'Specify the framework context',
   }).argv;
 
-const { version, major, minor, patch, context } = argv;
+const { version, major, minor, patch, context, otp } = argv;
 
 const VER_PLACEHOLDER = '0.0.0-PLACEHOLDER';
 const PACKAGE_DIR = `packages/${context}`;
@@ -117,7 +118,6 @@ async function main() {
       'repository',
       'dependencies',
       'peerDependencies',
-      'publishConfig',
       'release',
       'engines',
       'main',
@@ -142,6 +142,9 @@ async function main() {
       const packageJSON = {
         ...packageData,
         name,
+        publishConfig: {
+          access: 'public',
+        },
       };
 
       if (context === 'angular') {
@@ -151,7 +154,13 @@ async function main() {
       console.log(packageJSON);
 
       writeJson(targetPackageJSON, packageJSON);
-      execSync(`cd ${publishDir} && npm publish --access public`);
+      let publishCmd = `cd ${publishDir} && npm publish --access public`;
+      if (otp) {
+        publishCmd += ` --otp ${otp}`;
+      }
+
+      console.log(`Executing: ${publishCmd}`);
+      execSync(publishCmd, { stdio: 'inherit' });
     });
   });
 }

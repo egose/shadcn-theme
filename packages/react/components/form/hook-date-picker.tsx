@@ -27,7 +27,7 @@ export function HookFormDatePicker<T extends FieldValues>({
   const { wrapper, ...restClassnames } = classNames ?? {};
 
   return (
-    <div className={cn('hook-date-picker', wrapper)}>
+    <div className={cn('$hook-date-picker', wrapper)}>
       <Controller
         control={control}
         name={name}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FormTextInput } from './text-input';
 import type { FormTextInputProps } from './text-input';
+import { cn } from '../../utils/ui';
 import { convertToHours, convertFromHours, convertToWholeFromHours } from '../../utils/time';
 
 export interface FormTimeInputProps extends Omit<FormTextInputProps, 'onChange' | 'value'> {
@@ -8,7 +9,7 @@ export interface FormTimeInputProps extends Omit<FormTextInputProps, 'onChange' 
   onChange?: (value: number) => void;
 }
 
-export function FormTimeInput({ value: parentValue = 0, onChange, ...rest }: FormTimeInputProps) {
+export function FormTimeInput({ value: parentValue = 0, onChange, className, ...rest }: FormTimeInputProps) {
   const [value, setValue] = useState<string>(String(parentValue));
 
   useEffect(() => {
@@ -31,5 +32,14 @@ export function FormTimeInput({ value: parentValue = 0, onChange, ...rest }: For
   const displayWhole = convertToWholeFromHours(value);
   const title = displayText !== displayWhole ? `${displayText} (${displayWhole})` : displayText;
 
-  return <FormTextInput {...rest} value={value} onChange={handleChange} onBlur={handleBlur} title={title} />;
+  return (
+    <FormTextInput
+      {...rest}
+      className={cn('$form-time-input', className)}
+      value={value}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      title={title}
+    />
+  );
 }

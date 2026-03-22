@@ -27,7 +27,7 @@ export function HookFormSelect<T extends FieldValues>({
   const { wrapper, ...restClassnames } = classNames ?? {};
 
   return (
-    <div className={cn('_hook-select', wrapper)}>
+    <div className={cn('$hook-form-select', wrapper)}>
       <Controller
         control={control}
         name={name}
