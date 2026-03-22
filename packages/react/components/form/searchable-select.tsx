@@ -1,7 +1,7 @@
 import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
@@ -77,7 +77,7 @@ export function FormSearchableSelect({
   };
 
   return (
-    <div className={cn('_searchable-select', classNames?.wrapper)}>
+    <div className={cn('form-searchable-select space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

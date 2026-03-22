@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -34,7 +34,7 @@ export function FormTextInput({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('_text-input', classNames?.wrapper)}>
+    <div className={cn('form-text-input space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import _isString from 'lodash-es/isString';
 import { useClipboard } from '../../hooks/use-clipboard';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../../components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { UnstyledButton } from './unstyled-button';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 
 // See https://tabler.io/icons/icon/clipboard-copy
 function CopyClipboardIcon(props: React.SVGProps<SVGSVGElement>) {

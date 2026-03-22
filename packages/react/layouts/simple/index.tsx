@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Menu } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { UserMenus } from './user-menu';
 import { MobileMenu } from './mobile-menu';
 import type { MenuItem, UserMenuSection } from './types';

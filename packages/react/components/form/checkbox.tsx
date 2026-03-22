@@ -1,6 +1,6 @@
 import React from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
 
@@ -32,7 +32,7 @@ export function FormCheckbox({
   const checkboxId = id || _kebabCase(name);
 
   return (
-    <div className={cn('flex items-center gap-3', classNames?.wrapper)}>
+    <div className={cn('form-checkbox flex items-center gap-3', classNames?.wrapper)}>
       <Checkbox
         id={checkboxId}
         name={name}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { FormTextInput } from './text-input';
 import type { FormTextInputProps } from './text-input';
-import { convertToHours, convertFromHours, convertToWholeFromHours } from '../../lib/number';
+import { convertToHours, convertFromHours, convertToWholeFromHours } from '../../utils/time';
 
 export interface FormTimeInputProps extends Omit<FormTextInputProps, 'onChange' | 'value'> {
   value?: number;

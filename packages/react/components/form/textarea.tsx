@@ -1,7 +1,7 @@
 import React, { TextareaHTMLAttributes, useRef } from 'react';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
@@ -36,7 +36,7 @@ export function FormTextarea({
   const _ref = useRef<HTMLTextAreaElement>(null);
 
   return (
-    <div className={cn('textarea', classNames?.wrapper)}>
+    <div className={cn('form-textarea space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

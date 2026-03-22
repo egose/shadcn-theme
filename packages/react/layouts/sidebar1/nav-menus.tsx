@@ -12,6 +12,7 @@ import {
   SidebarMenuSubItem,
 } from '../../components/ui/sidebar';
 import { useSidebar } from '../../components/ui/sidebar';
+import { cn } from '../../utils/ui';
 
 export interface IMenuSubItem {
   title: string;
@@ -28,6 +29,8 @@ export interface IMenuItem extends IMenuSubItem {
 export interface INavMenu {
   title: string;
   items: IMenuItem[];
+  hideTitle?: boolean;
+  className?: string;
 }
 
 function SidebarMenuLink({ item, as: LinkComponent }: { item: IMenuSubItem; as: React.ElementType }) {
@@ -93,8 +96,8 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
 export function NavMenus({ menus, aslink }: { menus: INavMenu[]; aslink: React.ElementType }) {
   return menus.map((menu) => {
     return (
-      <SidebarGroup key={menu.title}>
-        <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>
+      <SidebarGroup key={menu.title} className={cn(menu.className)}>
+        {!menu.hideTitle && <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>}
 
         <SidebarMenu>
           {menu.items.map((item) =>

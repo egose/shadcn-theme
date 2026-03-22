@@ -4,7 +4,7 @@ import { IconX, IconCheck } from '@tabler/icons-react';
 import { Command as CommandPrimitive } from 'cmdk';
 import React, { type KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from 'react';
 
-import { cn } from '../../../lib/utils';
+import { cn } from '../../../utils/ui';
 
 export type MultiSelectValue = {
   value: string;

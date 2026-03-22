@@ -1,7 +1,7 @@
 import React, { SelectHTMLAttributes } from 'react';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isString from 'lodash-es/isString';
-import { cn } from '../../lib/utils';
+import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 
 type NativeSelectProps = SelectHTMLAttributes<HTMLSelectElement>;
@@ -55,7 +55,7 @@ export function FormNativeSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('_native-select', classNames?.wrapper)}>
+    <div className={cn('form-native-select space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

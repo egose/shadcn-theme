@@ -1,25 +1,41 @@
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../lib/utils';
+import { Slot } from 'radix-ui';
+import { cn } from '../../utils/ui';
 
-export const badgeVariants = cva(
+const badgeVariants = cva(
   [
+    '[&>svg]:pointer-events-none [&>svg]:size-3',
+    'aria-invalid:border-destructive',
+    'aria-invalid:ring-destructive/20',
+    'border',
+    'border-transparent',
+    'dark:aria-invalid:ring-destructive/40',
+    'focus-visible:border-ring',
+    'focus-visible:ring-[3px]',
+    'focus-visible:ring-ring/50',
+    'font-medium',
+    'gap-1',
     'inline-flex',
     'items-center',
+    'justify-center',
+    'overflow-hidden',
+    'px-2',
+    'py-0.5',
     'rounded-sm',
-    'font-medium',
+    'shrink-0',
+    'text-xs',
+    'transition-[color,box-shadow]',
+    'w-fit',
     'whitespace-nowrap',
     'transition-colors',
-    'focus-visible:outline-none',
-    'focus-visible:ring-1',
-    'focus-visible:ring-ring',
   ],
   {
     variants: {
       variant: {
         primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/90',
+        action: 'bg-action text-action-foreground hover:bg-action/90',
         success: 'bg-success text-success-foreground hover:bg-success/90',
         warning: 'bg-warning text-warning-foreground hover:bg-warning/90',
         danger: 'bg-danger text-danger-foreground hover:bg-danger/90',
@@ -39,8 +55,8 @@ export const badgeVariants = cva(
       },
       appearance: {
         solid: '',
-        outline: 'bg-white border',
-        'outline-filled': 'bg-white border',
+        outline: 'bg-background border',
+        'outline-filled': 'bg-background border',
       },
     },
     defaultVariants: {
@@ -63,6 +79,7 @@ function getOutlineClasses(variant: BadgeVariant) {
   const colors: Record<BadgeVariant, string> = {
     primary: 'border-primary text-primary hover:bg-primary/10',
     secondary: 'border-secondary text-secondary hover:bg-secondary/10',
+    action: 'border-action text-action hover:bg-action/10',
     success: 'border-success text-success hover:bg-success/10',
     warning: 'border-warning text-warning hover:bg-warning/10',
     danger: 'border-danger text-danger hover:bg-danger/10',
@@ -82,6 +99,7 @@ function getOutlineFilledClasses(variant: BadgeVariant) {
   const colors: Record<BadgeVariant, string> = {
     primary: 'hover:bg-primary hover:text-primary-foreground',
     secondary: 'hover:bg-secondary hover:text-secondary-foreground',
+    action: 'hover:bg-action hover:text-action-foreground',
     success: 'hover:bg-success hover:text-success-foreground',
     warning: 'hover:bg-warning hover:text-warning-foreground',
     danger: 'hover:bg-danger hover:text-danger-foreground',
@@ -97,28 +115,29 @@ function getOutlineFilledClasses(variant: BadgeVariant) {
   return colors[variant];
 }
 
-const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant, size, appearance, asChild = false, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'span';
+function Badge({
+  className,
+  variant,
+  size,
+  appearance,
+  asChild = false,
+  ...props
+}: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot.Root : 'span';
 
-    const outlineClasses =
-      appearance === 'outline' || appearance === 'outline-filled' ? [getOutlineClasses(variant as BadgeVariant)] : [];
-    if (appearance === 'outline-filled') {
-      outlineClasses.push(getOutlineFilledClasses(variant as BadgeVariant));
-    }
+  const outlineClasses =
+    appearance === 'outline' || appearance === 'outline-filled' ? [getOutlineClasses(variant as BadgeVariant)] : [];
+  if (appearance === 'outline-filled') {
+    outlineClasses.push(getOutlineFilledClasses(variant as BadgeVariant));
+  }
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(badgeVariants({ variant, size, appearance, className }), outlineClasses)}
-        {...props}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
-
-Badge.displayName = 'Badge';
-
-export { Badge };
+  return (
+    <Comp
+      data-slot="badge"
+      data-variant={variant}
+      className={cn(badgeVariants({ variant, size, appearance }), className, outlineClasses)}
+      {...props}
+    />
+  );
+}
+export { Badge, badgeVariants };

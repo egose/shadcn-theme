@@ -5,8 +5,8 @@ import { DateRange } from 'react-day-picker';
 import _kebabCase from 'lodash-es/kebabCase';
 import _isNil from 'lodash-es/isNil';
 
-import { isEqualDates } from '../../lib/date';
-import { cn } from '../../lib/utils';
+import { isEqualDates } from '../../utils/date';
+import { cn } from '../../utils/ui';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';
@@ -66,7 +66,7 @@ export function FormDateRangePicker({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('date-range-picker', classNames?.wrapper)}>
+    <div className={cn('form-date-range-picker space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}
