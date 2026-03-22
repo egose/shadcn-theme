@@ -33,7 +33,7 @@ jobs:
       working-directory: packages/react/@examples/nextjs
 
     - name: Nextjs Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@v4.7.4
+      uses: JamesIves/github-pages-deploy-action@v4.8.0
       with:
         folder: packages/react/@examples/nextjs/out
         branch: pages-nextjs
