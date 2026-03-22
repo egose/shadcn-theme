@@ -60,7 +60,7 @@ export function FormSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={cn('form-select space-y-1', classNames?.wrapper)}>
+    <div className={cn('$form-select space-y-1', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
           {label}

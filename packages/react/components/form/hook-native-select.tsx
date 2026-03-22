@@ -33,7 +33,7 @@ export function HookFormNativeSelect<T extends FieldValues>({
   const showError = !!fieldError && !disabled;
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('$hook-form-native-select', classNames?.wrapper)}>
       <FormNativeSelect
         id={id}
         name={name}

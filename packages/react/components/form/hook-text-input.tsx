@@ -33,7 +33,7 @@ export function HookFormTextInput<T extends FieldValues>({
   const showError = !!fieldError && !disabled;
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('$hook-form-text-input', classNames?.wrapper)}>
       <FormTextInput
         id={id}
         name={name}

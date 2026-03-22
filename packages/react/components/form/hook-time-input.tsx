@@ -35,7 +35,7 @@ export function HookFormTimeInput<T extends FieldValues>({
   const showError = !!fieldError && !disabled;
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('$hook-form-time-input', classNames?.wrapper)}>
       <Controller
         name={name}
         control={control}
