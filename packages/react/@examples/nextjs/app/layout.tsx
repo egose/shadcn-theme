@@ -26,6 +26,7 @@ import { TooltipProvider } from '../../../components/ui/tooltip';
 import { DialogManagerProvider } from '../../../components/widgets/dialog-manager';
 import { Toaster } from '../../../components/ui/sonner';
 import { useEffect, useState } from 'react';
+import { componentExamples, formExamples, widgetExamples } from '../lib/example-registry';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -42,6 +43,13 @@ function isPathMatch(pathname: string, url: string) {
 
   if (pathname === url) return true;
   return pathname.startsWith(url + '/');
+}
+
+function toSubItems(examples: Array<{ title: string; url: string }>) {
+  return examples.map((example) => ({
+    title: example.title,
+    url: example.url,
+  }));
 }
 
 export default function RootLayout({
@@ -64,7 +72,7 @@ export default function RootLayout({
     user: {
       name: 'shadcn',
       email: 'm@example.com',
-      avatar: '/avatars/shadcn.jpg',
+      avatar: 'https://avatars.githubusercontent.com/u/36021827?v=4&size=64',
     },
     context: {
       title: 'Projects',
@@ -106,145 +114,21 @@ export default function RootLayout({
             url: '/components',
             icon: Component,
             isActive: false,
-            subItems: [
-              {
-                title: 'Button',
-                url: '/components/button',
-              },
-              {
-                title: 'Button Group',
-                url: '/components/button-group',
-              },
-              {
-                title: 'Badge',
-                url: '/components/badge',
-              },
-              {
-                title: 'Alert',
-                url: '/components/alert',
-              },
-              {
-                title: 'Alert Dialog',
-                url: '/components/alert-dialog',
-              },
-              { title: 'Accordion', url: '/components/accordion' },
-              {
-                title: 'Dialog',
-                url: '/components/dialog',
-              },
-              {
-                title: 'Card',
-                url: '/components/card',
-              },
-              {
-                title: 'Carousel',
-                url: '/components/carousel',
-              },
-              {
-                title: 'Checkbox',
-                url: '/components/checkbox',
-              },
-              {
-                title: 'Collapsible',
-                url: '/components/collapsible',
-              },
-              {
-                title: 'Combobox',
-                url: '/components/combobox',
-              },
-              {
-                title: 'Command',
-                url: '/components/command',
-              },
-              {
-                title: 'Context Menu',
-                url: '/components/context-menu',
-              },
-              {
-                title: 'Hover Card',
-                url: '/components/hover-card',
-              },
-              {
-                title: 'Native Select',
-                url: '/components/native-select',
-              },
-              {
-                title: 'Navigation Menu',
-                url: '/components/navigation-menu',
-              },
-              {
-                title: 'Popover',
-                url: '/components/popover',
-              },
-              {
-                title: 'Radio Group',
-                url: '/components/radio-group',
-              },
-              {
-                title: 'Resizable',
-                url: '/components/resizable',
-              },
-              {
-                title: 'Slider',
-                url: '/components/slider',
-              },
-              {
-                title: 'Switch',
-                url: '/components/switch',
-              },
-              {
-                title: 'Tabs',
-                url: '/components/tabs',
-              },
-              {
-                title: 'Toggle Group',
-                url: '/components/toggle-group',
-              },
-            ],
+            subItems: toSubItems(componentExamples),
           },
           {
             title: 'Form',
             url: '/form',
             icon: Component,
             isActive: false,
-            subItems: [
-              {
-                title: 'Text Input',
-                url: '/form/textinput',
-              },
-              {
-                title: 'Textarea',
-                url: '/form/textarea',
-              },
-              {
-                title: 'Date Picker',
-                url: '/form/date-picker',
-              },
-              {
-                title: 'Native Select',
-                url: '/form/native-select',
-              },
-              {
-                title: 'Select',
-                url: '/form/select',
-              },
-              {
-                title: 'Searchable Select',
-                url: '/form/searchable-select',
-              },
-            ],
+            subItems: toSubItems(formExamples),
           },
           {
             title: 'Widgets',
             url: '/widgets',
             icon: Component,
             isActive: false,
-            subItems: [
-              {
-                title: 'Dialog Manager',
-                url: '/widgets/dialog-manager',
-              },
-            ],
+            subItems: toSubItems(widgetExamples),
           },
         ],
       },

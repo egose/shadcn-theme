@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import _isString from 'lodash-es/isString';
 import { useClipboard } from '../../hooks/use-clipboard';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
@@ -39,7 +39,7 @@ export function CopyableButton({
   className?: string;
 }) {
   const clipboard = useClipboard({ timeout: 1000 });
-  const [showCopied, setShowCopied] = useState(false);
+  const [showCopied, setShowCopied] = React.useState(false);
 
   const isText = _isString(children);
   const copyValue = value ?? (isText ? children : '');

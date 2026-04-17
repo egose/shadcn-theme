@@ -3,6 +3,8 @@
 import { IconInbox } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import { Button } from '../../../../../components/ui/button';
+import { setLayoutHeader } from '../../../../../layouts/sidebar1';
+import { useEffect } from 'react';
 
 // All possible values from your buttonVariants definition
 const variants = [
@@ -36,6 +38,17 @@ const sizes = [
 const appearances = ['solid', 'outline', 'outline-filled'] as const;
 
 export default function Page() {
+  useEffect(() => {
+    setLayoutHeader(
+      <div className="flex items-center gap-2">
+        <span className="badge">Active</span>
+        <h1 className="font-bold">Project Alpha</h1>
+      </div>,
+    );
+
+    return () => setLayoutHeader(null);
+  }, []);
+
   return (
     <>
       <h1 className="font-bold text-2xl mt-4 mb-5">Button Showcase</h1>
