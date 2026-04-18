@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Command as CommandPrimitive } from 'cmdk';
-import React, { type KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from 'react';
+import { type KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from 'react';
 
 import { cn } from '../../utils/ui';
 import { Badge } from './badge';

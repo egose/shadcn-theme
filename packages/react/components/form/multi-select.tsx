@@ -1,6 +1,6 @@
+import React from 'react';
 import _isString from 'lodash-es/isString';
 import _kebabCase from 'lodash-es/kebabCase';
-import React from 'react';
 
 import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';

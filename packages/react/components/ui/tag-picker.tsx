@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { IconPlus, IconX } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 
