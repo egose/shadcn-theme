@@ -259,6 +259,12 @@ const multiSelectOptions = [
 
 const tagSuggestions = ['Bug', 'Design System', 'Docs', 'Performance', 'Research', 'UX'];
 
+const releaseAudienceOptions = [
+  { label: 'Internal only', value: 'internal' },
+  { label: 'Private beta', value: 'beta' },
+  { label: 'Public launch', value: 'public' },
+];
+
 const orders = [
   { customer: 'Northwind', plan: 'Growth', amount: '$1,240', status: 'Paid' },
   { customer: 'Argon Labs', plan: 'Starter', amount: '$420', status: 'Pending' },
@@ -277,6 +283,16 @@ export function ComponentShowcase({ slug }: { slug: string }) {
 
 export function FormShowcase({ slug }: { slug: string }) {
   const Showcase = formShowcases[slug];
+
+  if (!Showcase) {
+    return null;
+  }
+
+  return <Showcase />;
+}
+
+export function RealExampleShowcase({ slug }: { slug: string }) {
+  const Showcase = realExampleShowcases[slug];
 
   if (!Showcase) {
     return null;
@@ -1765,6 +1781,147 @@ function HookTimeInputFormShowcase() {
   );
 }
 
+function RealExampleHookFormShowcase() {
+  const methods = useForm<{
+    projectName: string;
+    ownerEmail: string;
+    plan: string;
+    city: string;
+    audience: string;
+    launchDate?: Date;
+    estimate: number;
+    teams: string[];
+    tags: string[];
+    notes: string;
+    approved: boolean;
+  }>({
+    defaultValues: {
+      projectName: 'Insights Hub',
+      ownerEmail: 'ava@company.com',
+      plan: 'growth',
+      city: 'lisbon',
+      audience: 'beta',
+      launchDate: new Date(),
+      estimate: 6,
+      teams: ['product', 'design'],
+      tags: ['Docs', 'Research'],
+      notes: 'Coordinate launch copy, QA sign-off, and customer success enablement before rollout.',
+      approved: true,
+    },
+  });
+
+  const values = methods.watch();
+
+  return (
+    <ExamplePage
+      title="Real Example Form"
+      description="A realistic launch request flow showing how every hook-form field works together inside one form."
+    >
+      <ExampleSection title="Launch request">
+        <FormProvider {...methods}>
+          <form
+            className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]"
+            onSubmit={methods.handleSubmit((data) =>
+              toast.success('Launch request saved', {
+                description: `${data.projectName} is set for ${data.launchDate?.toLocaleDateString() ?? 'TBD'}.`,
+              }),
+            )}
+          >
+            <div className="grid gap-4 md:grid-cols-2">
+              <HookFormTextInput
+                name="projectName"
+                label="Project name"
+                rules={{ required: 'Project name is required.' }}
+              />
+              <HookFormTextInput
+                name="ownerEmail"
+                label="Owner email"
+                rules={{ required: 'Owner email is required.' }}
+              />
+              <HookFormNativeSelect name="plan" label="Plan" data={selectOptions} />
+              <HookFormSearchableSelect
+                name="city"
+                label="Launch city"
+                data={searchableOptions}
+                placeholder="Select a city"
+              />
+              <HookFormSelect
+                name="audience"
+                label="Audience"
+                data={releaseAudienceOptions}
+                placeholder="Select audience"
+              />
+              <HookFormDatePicker
+                name="launchDate"
+                label="Launch date"
+                rules={{ required: 'Launch date is required.' }}
+              />
+              <div className="md:col-span-2">
+                <HookFormTimeInput
+                  name="estimate"
+                  label="Estimated rollout time"
+                  rules={{ required: 'Estimated rollout time is required.' }}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <HookFormMultiSelect
+                  name="teams"
+                  label="Owning teams"
+                  data={multiSelectOptions}
+                  placeholder="Add a team"
+                  rules={{ validate: (value) => value.length > 0 || 'Select at least one team.' }}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <HookFormTagPicker
+                  name="tags"
+                  label="Tags"
+                  suggestions={tagSuggestions}
+                  placeholder="Add a tag"
+                  rules={{ validate: (value) => value.length > 0 || 'Add at least one tag.' }}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <HookFormTextarea
+                  name="notes"
+                  label="Launch notes"
+                  rows={5}
+                  rules={{ required: 'Launch notes are required.' }}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <HookFormCheckbox
+                  name="approved"
+                  label="I confirm the rollout checklist has been reviewed with stakeholders"
+                  rules={{ validate: (value) => value || 'Approval is required before submitting.' }}
+                />
+              </div>
+              <div className="flex flex-wrap gap-3 md:col-span-2">
+                <Button type="submit">Save launch request</Button>
+                <Button type="button" variant="secondary" onClick={() => methods.reset()}>
+                  Reset
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-muted/20 p-4">
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium">Live payload</h3>
+                <p className="text-sm text-muted-foreground">
+                  This preview updates as each hook-based field writes into the shared form state.
+                </p>
+              </div>
+              <pre className="mt-4 overflow-x-auto rounded-lg bg-background p-3 text-xs leading-5">
+                {JSON.stringify(values, null, 2)}
+              </pre>
+            </div>
+          </form>
+        </FormProvider>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
 function TextInputFormShowcase() {
   const [duration, setDuration] = React.useState(1.5);
 
@@ -1890,6 +2047,7 @@ const formShowcases: Record<string, React.ComponentType> = {
   'hook-date-picker': HookDatePickerFormShowcase,
   'hook-multi-select': HookMultiSelectFormShowcase,
   'hook-native-select': HookNativeSelectFormShowcase,
+  'real-example-form': RealExampleHookFormShowcase,
   'hook-searchable-select': HookSearchableSelectFormShowcase,
   'hook-select': HookSelectFormShowcase,
   'hook-tag-picker': HookTagPickerFormShowcase,
@@ -1900,4 +2058,8 @@ const formShowcases: Record<string, React.ComponentType> = {
   'tag-picker': TagPickerFormShowcase,
   'text-input': TextInputFormShowcase,
   'time-input': TimeInputFormShowcase,
+};
+
+const realExampleShowcases: Record<string, React.ComponentType> = {
+  'real-example-form': RealExampleHookFormShowcase,
 };

@@ -247,6 +247,14 @@ export const widgetExamples: ExampleLink[] = [
   },
 ];
 
+export const realExampleExamples: ExampleLink[] = [
+  {
+    title: 'Real Example Form',
+    url: '/real-examples/real-example-form',
+    description: 'A realistic launch request form combining every hook-based field in one flow.',
+  },
+];
+
 export const componentDynamicSlugs = new Set([
   'aspect-ratio',
   'avatar',
@@ -303,3 +311,5 @@ export const formDynamicSlugs = new Set([
   'text-input',
   'time-input',
 ]);
+
+export const realExampleDynamicSlugs = new Set(['real-example-form']);

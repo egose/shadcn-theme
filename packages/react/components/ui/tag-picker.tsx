@@ -82,23 +82,23 @@ export function TagPicker({
       <div className="relative">
         <div
           className={cn(
-            'flex min-h-10 flex-wrap items-center gap-1 rounded-lg border bg-background px-2 py-1.5 text-sm',
+            'flex min-h-8 flex-wrap items-center gap-1 rounded-lg border bg-background px-2 py-1 text-sm',
             'focus-within:ring-1 focus-within:ring-ring',
             disabled && 'cursor-not-allowed opacity-60',
           )}
         >
           {value.map((tagName) => (
-            <Badge key={tagName} variant="secondary" className="flex items-center gap-1 px-2 py-1">
-              <span>{tagName}</span>
+            <Badge key={tagName} variant="secondary" className="flex items-center gap-1 rounded-md px-1.5">
+              <span className="text-xs">{tagName}</span>
               {!disabled && (
                 <button
                   type="button"
-                  className="rounded-sm hover:bg-muted"
+                  className="inline-flex cursor-pointer items-center justify-center rounded-md p-1 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:bg-red-100 focus-visible:outline-none"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => removeTag(tagName)}
                   aria-label={`Remove ${tagName}`}
                 >
-                  <IconX className="h-3 w-3" />
+                  <IconX className="h-3.5 w-3.5" />
                 </button>
               )}
             </Badge>
@@ -109,7 +109,7 @@ export function TagPicker({
             value={inputValue}
             disabled={disabled}
             placeholder={value.length === 0 ? placeholder : ''}
-            className="min-w-24 flex-1 border-0 bg-transparent p-0 outline-none placeholder:text-muted-foreground"
+            className="min-w-24 flex-1 border-0 bg-transparent p-0 pl-1 text-sm outline-none placeholder:text-muted-foreground"
             onFocus={() => setIsFocused(true)}
             onBlur={() => {
               window.setTimeout(() => setIsFocused(false), 100);

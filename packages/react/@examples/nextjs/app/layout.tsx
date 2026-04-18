@@ -19,6 +19,7 @@ import {
   BadgeCheck,
   Bell,
   CreditCard,
+  FolderKanban,
 } from 'lucide-react';
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../../layouts/sidebar1';
@@ -26,7 +27,7 @@ import { TooltipProvider } from '../../../components/ui/tooltip';
 import { DialogManagerProvider } from '../../../components/widgets/dialog-manager';
 import { Toaster } from '../../../components/ui/sonner';
 import { useEffect, useState } from 'react';
-import { componentExamples, formExamples, widgetExamples } from '../lib/example-registry';
+import { componentExamples, formExamples, realExampleExamples, widgetExamples } from '../lib/example-registry';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -129,6 +130,13 @@ export default function RootLayout({
             icon: Component,
             isActive: false,
             subItems: toSubItems(widgetExamples),
+          },
+          {
+            title: 'Real Examples',
+            url: '/real-examples',
+            icon: FolderKanban,
+            isActive: false,
+            subItems: toSubItems(realExampleExamples),
           },
         ],
       },

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { componentExamples, formExamples, widgetExamples } from '../lib/example-registry';
+import { componentExamples, formExamples, realExampleExamples, widgetExamples } from '../lib/example-registry';
 
 const sections = [
   {
@@ -20,6 +20,12 @@ const sections = [
     count: widgetExamples.length,
     description: 'Explore higher-level interaction helpers built on top of the primitives.',
   },
+  {
+    title: 'Real Examples',
+    href: '/real-examples',
+    count: realExampleExamples.length,
+    description: 'See complete, task-oriented demos that combine multiple components into a realistic workflow.',
+  },
 ];
 
 export default function Home() {
@@ -36,7 +42,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {sections.map((section) => (
           <Link
             key={section.href}

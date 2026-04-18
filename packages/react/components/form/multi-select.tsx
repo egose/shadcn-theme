@@ -75,7 +75,13 @@ export function FormMultiSelect({
         </Label>
       )}
 
-      <MultiSelector values={selectedValues} onValuesChange={handleValueChange} loop={loop} disabled={disabled}>
+      <MultiSelector
+        values={selectedValues}
+        onValuesChange={handleValueChange}
+        loop={loop}
+        disabled={disabled}
+        className="p-0"
+      >
         <Popover>
           <PopoverTrigger asChild>
             <MultiSelectorTrigger className={cn('cursor-pointer', classNames?.trigger)}>
