@@ -94,7 +94,12 @@ export const componentExamples: ExampleLink[] = [
   {
     title: 'Multi Select',
     url: '/components/multi-select',
-    description: 'Extension multi-select with removable chips.',
+    description: 'Chip-based multiple selection with typeahead filtering.',
+  },
+  {
+    title: 'Tag Picker',
+    url: '/components/tag-picker',
+    description: 'Suggestion-aware tags that can also create new entries inline.',
   },
   {
     title: 'Native Select',
@@ -173,6 +178,11 @@ export const formExamples: ExampleLink[] = [
     description: 'Date picker integrated with react-hook-form.',
   },
   {
+    title: 'Hook Multi Select',
+    url: '/form/hook-multi-select',
+    description: 'Multi-select chips integrated with react-hook-form state.',
+  },
+  {
     title: 'Hook Native Select',
     url: '/form/hook-native-select',
     description: 'Native select with react-hook-form registration.',
@@ -183,6 +193,11 @@ export const formExamples: ExampleLink[] = [
     description: 'Searchable select integrated with form context.',
   },
   { title: 'Hook Select', url: '/form/hook-select', description: 'Select component wired into react-hook-form.' },
+  {
+    title: 'Hook Tag Picker',
+    url: '/form/hook-tag-picker',
+    description: 'Creatable tag picker connected to react-hook-form.',
+  },
   {
     title: 'Hook Text Input',
     url: '/form/hook-text-input',
@@ -198,6 +213,11 @@ export const formExamples: ExampleLink[] = [
     url: '/form/hook-time-input',
     description: 'Time input with form registration and conversion.',
   },
+  {
+    title: 'Multi Select',
+    url: '/form/multi-select',
+    description: 'Labeled multi-select field with removable chips.',
+  },
   { title: 'Native Select', url: '/form/native-select', description: 'Native select field with labels and defaults.' },
   {
     title: 'Searchable Select',
@@ -205,6 +225,11 @@ export const formExamples: ExampleLink[] = [
     description: 'Searchable combobox field with custom options.',
   },
   { title: 'Select', url: '/form/select', description: 'Select field built on top of the themed UI select.' },
+  {
+    title: 'Tag Picker',
+    url: '/form/tag-picker',
+    description: 'Labeled tag picker with suggestions and inline creation.',
+  },
   {
     title: 'Text Input',
     url: '/form/text-input',
@@ -253,6 +278,7 @@ export const componentDynamicSlugs = new Set([
   'sonner',
   'spinner',
   'table',
+  'tag-picker',
   'textarea',
   'toggle',
   'tooltip',
@@ -264,12 +290,16 @@ export const formDynamicSlugs = new Set([
   'date-range-picker',
   'hook-checkbox',
   'hook-date-picker',
+  'hook-multi-select',
   'hook-native-select',
   'hook-searchable-select',
   'hook-select',
+  'hook-tag-picker',
   'hook-text-input',
   'hook-textarea',
   'hook-time-input',
+  'multi-select',
+  'tag-picker',
   'text-input',
   'time-input',
 ]);

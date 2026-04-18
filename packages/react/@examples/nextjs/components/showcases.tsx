@@ -111,7 +111,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
   type MultiSelectValue,
-} from '../../../components/ui/extension/multi-select';
+} from '../../../components/ui/multi-select';
 import { Input } from '../../../components/ui/input';
 import {
   InputGroup,
@@ -207,6 +207,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../../components/ui/table';
+import { TagPicker } from '../../../components/ui/tag-picker';
 import { Textarea } from '../../../components/ui/textarea';
 import { Toggle } from '../../../components/ui/toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../components/ui/tooltip';
@@ -214,11 +215,15 @@ import { UnstyledButton } from '../../../components/ui/unstyled-button';
 
 import { FormCheckbox } from '../../../components/form/checkbox';
 import { FormDateRangePicker } from '../../../components/form/date-range-picker';
+import { FormMultiSelect } from '../../../components/form/multi-select';
+import { FormTagPicker } from '../../../components/form/tag-picker';
 import { HookFormCheckbox } from '../../../components/form/hook-checkbox';
 import { HookFormDatePicker } from '../../../components/form/hook-date-picker';
+import { HookFormMultiSelect } from '../../../components/form/hook-multi-select';
 import { HookFormNativeSelect } from '../../../components/form/hook-native-select';
 import { HookFormSearchableSelect } from '../../../components/form/hook-searchable-select';
 import { HookFormSelect } from '../../../components/form/hook-select';
+import { HookFormTagPicker } from '../../../components/form/hook-tag-picker';
 import { HookFormTextInput } from '../../../components/form/hook-text-input';
 import { HookFormTextarea } from '../../../components/form/hook-textarea';
 import { HookFormTimeInput } from '../../../components/form/hook-time-input';
@@ -251,6 +256,8 @@ const multiSelectOptions = [
   { value: 'data', label: 'Data' },
   { value: 'growth', label: 'Growth' },
 ];
+
+const tagSuggestions = ['Bug', 'Design System', 'Docs', 'Performance', 'Research', 'UX'];
 
 const orders = [
   { customer: 'Northwind', plan: 'Growth', amount: '$1,240', status: 'Paid' },
@@ -987,6 +994,24 @@ function MultiSelectShowcase() {
   );
 }
 
+function TagPickerShowcase() {
+  const [tags, setTags] = React.useState(['Design System', 'Docs']);
+
+  return (
+    <ExamplePage
+      title="Tag Picker"
+      description="Tag picker supports reusable suggestions while still letting users create new tags inline."
+    >
+      <ExampleSection title="Creatable tags">
+        <ExampleStack>
+          <TagPicker value={tags} onChange={setTags} suggestions={tagSuggestions} placeholder="Add a tag..." />
+          <p className="text-sm text-muted-foreground">Selected: {tags.join(', ')}</p>
+        </ExampleStack>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
 function PaginationShowcase() {
   return (
     <ExamplePage
@@ -1535,6 +1560,29 @@ function HookDatePickerFormShowcase() {
   );
 }
 
+function HookMultiSelectFormShowcase() {
+  const methods = useForm<{ teams: string[] }>({ defaultValues: { teams: ['ops', 'design'] } });
+
+  return (
+    <ExamplePage
+      title="Hook Multi Select"
+      description="Multi select integrates with react-hook-form when you need chip-based selection inside validated forms."
+    >
+      <ExampleSection title="Team ownership">
+        <FormProvider {...methods}>
+          <form
+            className="space-y-4"
+            onSubmit={methods.handleSubmit((data) => toast.success('Saved', { description: data.teams.join(', ') }))}
+          >
+            <HookFormMultiSelect name="teams" label="Teams" data={multiSelectOptions} placeholder="Add a team" />
+            <Button type="submit">Save</Button>
+          </form>
+        </FormProvider>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
 function HookNativeSelectFormShowcase() {
   const methods = useForm<{ plan: string }>({ defaultValues: { plan: 'growth' } });
 
@@ -1601,6 +1649,29 @@ function HookSelectFormShowcase() {
             onSubmit={methods.handleSubmit((data) => toast.success('Saved', { description: data.tier }))}
           >
             <HookFormSelect name="tier" label="Tier" data={selectOptions} placeholder="Choose a tier" />
+            <Button type="submit">Save</Button>
+          </form>
+        </FormProvider>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
+function HookTagPickerFormShowcase() {
+  const methods = useForm<{ tags: string[] }>({ defaultValues: { tags: ['Docs'] } });
+
+  return (
+    <ExamplePage
+      title="Hook Tag Picker"
+      description="Bind tag creation and suggestion picking directly to react-hook-form field arrays of strings."
+    >
+      <ExampleSection title="Release tags">
+        <FormProvider {...methods}>
+          <form
+            className="space-y-4"
+            onSubmit={methods.handleSubmit((data) => toast.success('Saved', { description: data.tags.join(', ') }))}
+          >
+            <HookFormTagPicker name="tags" label="Tags" suggestions={tagSuggestions} placeholder="Add a tag" />
             <Button type="submit">Save</Button>
           </form>
         </FormProvider>
@@ -1720,6 +1791,42 @@ function TextInputFormShowcase() {
   );
 }
 
+function MultiSelectFormShowcase() {
+  const [teams, setTeams] = React.useState(['ops', 'product']);
+
+  return (
+    <ExamplePage
+      title="Multi Select"
+      description="Use the standalone form wrapper when you want labels and layout around a controlled multi select field."
+    >
+      <ExampleSection title="Controlled teams">
+        <ExampleStack>
+          <FormMultiSelect name="teams" label="Teams" data={multiSelectOptions} value={teams} onChange={setTeams} />
+          <p className="text-sm text-muted-foreground">Selected: {teams.join(', ')}</p>
+        </ExampleStack>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
+function TagPickerFormShowcase() {
+  const [tags, setTags] = React.useState(['Bug', 'Research']);
+
+  return (
+    <ExamplePage
+      title="Tag Picker"
+      description="Standalone tag picker fields cover freeform tagging flows without requiring a full form context."
+    >
+      <ExampleSection title="Controlled tags">
+        <ExampleStack>
+          <FormTagPicker name="tags" label="Tags" value={tags} onChange={setTags} suggestions={tagSuggestions} />
+          <p className="text-sm text-muted-foreground">Selected: {tags.join(', ')}</p>
+        </ExampleStack>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
 function TimeInputFormShowcase() {
   const [value, setValue] = React.useState(2.25);
 
@@ -1769,6 +1876,7 @@ const componentShowcases: Record<string, React.ComponentType> = {
   sonner: SonnerShowcase,
   spinner: SpinnerShowcase,
   table: TableShowcase,
+  'tag-picker': TagPickerShowcase,
   textarea: TextareaShowcase,
   toggle: ToggleShowcase,
   tooltip: TooltipShowcase,
@@ -1780,12 +1888,16 @@ const formShowcases: Record<string, React.ComponentType> = {
   'date-range-picker': DateRangePickerFormShowcase,
   'hook-checkbox': HookCheckboxFormShowcase,
   'hook-date-picker': HookDatePickerFormShowcase,
+  'hook-multi-select': HookMultiSelectFormShowcase,
   'hook-native-select': HookNativeSelectFormShowcase,
   'hook-searchable-select': HookSearchableSelectFormShowcase,
   'hook-select': HookSelectFormShowcase,
+  'hook-tag-picker': HookTagPickerFormShowcase,
   'hook-text-input': HookTextInputFormShowcase,
   'hook-textarea': HookTextareaFormShowcase,
   'hook-time-input': HookTimeInputFormShowcase,
+  'multi-select': MultiSelectFormShowcase,
+  'tag-picker': TagPickerFormShowcase,
   'text-input': TextInputFormShowcase,
   'time-input': TimeInputFormShowcase,
 };
