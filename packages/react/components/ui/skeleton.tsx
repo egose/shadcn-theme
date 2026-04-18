@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { cn } from '../../utils/ui';
 
 function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {

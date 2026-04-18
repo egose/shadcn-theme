@@ -68,7 +68,7 @@ export function FormSelect({
       )}
 
       <Select onValueChange={onChange} defaultValue={defaultValue ?? value ?? ''} value={value}>
-        <SelectTrigger className="">
+        <SelectTrigger className="mb-0">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 

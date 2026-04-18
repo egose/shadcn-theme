@@ -67,7 +67,7 @@ export function AppSidebar({
           <NavUser user={data.user} menus={data.userMenus} aslink={aslink} onLogout={data.events?.logout} />
         ) : (
           <Button
-            variant="primary"
+            variant="action"
             onClick={() => {
               if (data.events?.login) {
                 data.events.login();
