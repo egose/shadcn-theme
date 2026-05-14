@@ -2,8 +2,8 @@
   "name": "tooltip",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^20.2.0",
-    "@angular/core": "^20.2.0",
+    "@angular/common": "^20.2.0 || ^21.0.0",
+    "@angular/core": "^20.2.0 || ^21.0.0",
     "@spartan-ng/brain": "^0.0.1-alpha.512"
   },
   "dependencies": {
