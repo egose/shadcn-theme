@@ -12,6 +12,19 @@ type DialogEntry = {
 
 let dialogId = 0;
 
+/**
+ * Render-context provider enabling promise-based dialog flows. Wrap your app
+ * (or a subtree) and use {@link useDialog} to open dialogs imperatively:
+ *
+ * ```tsx
+ * <DialogProvider>
+ *   <App />
+ * </DialogProvider>
+ * ```
+ *
+ * Each call to `openDialog(Component, args)` mounts the component once and
+ * returns a `Promise` that resolves when the dialog calls `onClose(result)`.
+ */
 export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [dialogs, setDialogs] = useState<DialogEntry[]>([]);
 

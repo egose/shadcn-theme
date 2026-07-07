@@ -4,6 +4,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../utils/ui';
 import { Spinner } from './spinner';
 
+/**
+ * `class-variance-authority` variant resolver backing {@link Button}. Exported
+ * so consumers can compose the same class strings elsewhere (e.g. on a `<a>`).
+ *
+ * @example
+ * buttonVariants({ variant: 'primary', size: 'default', appearance: 'solid' })
+ */
 const buttonVariants = cva(
   [
     "[&_svg:not([class*='size-'])]:size-4",
@@ -103,10 +110,19 @@ const buttonVariants = cva(
 );
 
 // Type safety for variant and size
+/** Color variant for {@link Button}. One of the theme color names (primary, secondary, action, success, warning, danger, info, light, dark, accent, destructive, muted, link, ghost). */
 export type VariantType = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
+/** Size slot for {@link Button} (`xs`, `sm`, `default`, `lg`). */
 export type SizeType = NonNullable<VariantProps<typeof buttonVariants>['size']>;
+/** Visual style (`solid`, `outline`, `outline-filled`). */
 export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['appearance']>;
 
+/**
+ * Props for the {@link Button} component. Pick `variant`, `size`, and
+ * `appearance` to control the visual style, and pass `loading` to swap the
+ * label for a spinner. `asChild` (from Radix `Slot`) forwards props onto the
+ * immediate child instead of rendering a `<button>`.
+ */
 export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
     VariantProps<typeof buttonVariants> {
@@ -195,6 +211,13 @@ function getOutlineSpinnerClasses(variant: VariantType) {
   return colors[variant];
 }
 
+/**
+ * Themed button built on top of Tailwind class variants.
+ *
+ * @example
+ * <Button variant="primary" size="default">Save</Button>
+ * <Button variant="danger" appearance="outline" loading>Deleting…</Button>
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

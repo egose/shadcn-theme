@@ -17,6 +17,18 @@ import { ThemeProvider } from 'next-themes';
 export type { ISidebarData };
 export type { INavUser };
 
+/**
+ * Collapsible sidebar layout built on `@egose/shadcn-theme/components/ui/sidebar`.
+ * Wraps content with `SidebarProvider`, renders an `AppSidebar` from `data`,
+ * and shows a breadcrumb of active items in the header. Pass `aslink` (your
+ * router's `Link`) so internal links work; the header also accepts custom
+ * content via {@link setLayoutHeader}.
+ *
+ * @example
+ * <SidebarLayout aslink={Link} data={sidebarData}>
+ *   {children}
+ * </SidebarLayout>
+ */
 export default function SidebarLayout({
   children,
   aslink,
@@ -77,10 +89,20 @@ interface HeaderState {
   content: React.ReactNode | ReturnType<typeof ref<object>>;
 }
 
+/**
+ * Internal Valtio proxy holding the header slot content. Read via
+ * `useSnapshot(headerStore)`; prefer the {@link setLayoutHeader} helper
+ * over mutating this directly so React nodes are wrapped with `valtio/ref`.
+ */
 export const headerStore = proxy<HeaderState>({
   content: null,
 });
 
+/**
+ * Replace the sidebar layout header slot. Pass a React node (it is wrapped
+ * with `valtio/ref` so it stays referentially stable inside the proxy) or
+ * `null` to reset back to the breadcrumb-driven default.
+ */
 export const setLayoutHeader = (node: React.ReactNode) => {
   if (node !== null && typeof node === 'object') {
     // We cast to any here to satisfy the internal Valtio ref assignment

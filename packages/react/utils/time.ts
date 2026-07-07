@@ -1,3 +1,15 @@
+/**
+ * Parse a human-readable duration string into hours.
+ *
+ * Accepts bare numbers (`"1.5"`), and strings with `h` / `m` / `s` suffixes
+ * (case-insensitive). Unparseable input returns `0`. Pass `asNumber: true`
+ * for a numeric return value; otherwise a string is returned (no trailing
+ * zeros).
+ *
+ * @example
+ * convertToHours('90m')     // '1.5'
+ * convertToHours('90m', true) // 1.5
+ */
 export function convertToHours(value: string): string;
 export function convertToHours(value: string, asNumber: true): number;
 export function convertToHours(value: string, asNumber: false): string;

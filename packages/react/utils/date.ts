@@ -1,6 +1,11 @@
 import { isEqual } from 'date-fns/isEqual';
 import _isNil from 'lodash-es/isNil';
 
+/**
+ * Compare two dates by value, treating `null` and `undefined` as equivalent.
+ * Returns true when both are nil or when both refer to the same calendar
+ * instant (date-fns `isEqual`).
+ */
 export function isEqualDate(dt1: Date | undefined, dt2: Date | undefined) {
   const nildt1 = _isNil(dt1);
   const nildt2 = _isNil(dt2);
@@ -15,6 +20,10 @@ export function isEqualDate(dt1: Date | undefined, dt2: Date | undefined) {
   return isEqual(dt1 as Date, dt2 as Date);
 }
 
+/**
+ * Compare two date ranges (each expressed as `[start, end]`) for equality
+ * using {@link isEqualDate} on both ends. Useful for date-range picker state.
+ */
 export function isEqualDates(dts1: [Date | undefined, Date | undefined], dts2: [Date | undefined, Date | undefined]) {
   const dts11 = dts1[0];
   const dts12 = dts1[1];
