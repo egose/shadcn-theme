@@ -34,6 +34,13 @@ repos:
     pass_filenames: true
     files: \.(ts|tsx|js|jsx|json|css|scss|md|html|yaml|yml)$
     exclude: .git/COMMIT_EDITMSG
+  - id: commitlint
+    name: commitlint
+    entry: .bin/commitlint.sh
+    language: script
+    verbose: true
+    pass_filenames: false
+    stages: [commit-msg]
 
 exclude: |
   (?x)^(

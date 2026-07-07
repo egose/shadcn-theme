@@ -25,6 +25,8 @@ const argv = yargs(hideBin(process.argv))
 const { version, major, minor, patch, context, otp } = argv;
 
 const VER_PLACEHOLDER = '0.0.0-PLACEHOLDER';
+const FIELD_PLACEHOLDER = 'PLACEHOLDER';
+const ROOT_PACKAGE_JSON = 'package.json';
 const PACKAGE_DIR = `packages/${context}`;
 const PUBLISH_DIR = 'dist';
 
@@ -79,6 +81,7 @@ async function main() {
   const publishDir = `${PACKAGE_DIR}/${PUBLISH_DIR}`;
   const originalPackageJSON = `${PACKAGE_DIR}/package.json`;
   const targetPackageJSON = `${publishDir}/package.json`;
+  const rootPackageData = parseJson(ROOT_PACKAGE_JSON);
   let packageData = parseJson(originalPackageJSON);
   if (!packageData.name) return;
 
@@ -106,6 +109,19 @@ async function main() {
       }
     });
 
+    // `license` and `author` are sourced from the root package.json so the two
+    // published packages stay in sync with the monorepo's license/authorship
+    // without each per-package package.json having to duplicate the values.
+    // Per-package values may be the literal string "PLACEHOLDER" (or absent).
+    ['license', 'author'].forEach((field) => {
+      const rootVal = rootPackageData[field];
+      if (rootVal === undefined) return;
+      const pkgVal = packageData[field];
+      if (pkgVal === FIELD_PLACEHOLDER || pkgVal === undefined) {
+        packageData[field] = rootVal;
+      }
+    });
+
     packageData = _.pick(packageData, [
       'version',
       'description',
@@ -115,6 +131,7 @@ async function main() {
       'license',
       'author',
       'sideEffects',
+      'files',
       'repository',
       'dependencies',
       'peerDependencies',
@@ -126,9 +143,18 @@ async function main() {
       'exports',
     ]);
 
-    ['LICENSE', 'README.md'].forEach((file) => {
-      const src = `${PACKAGE_DIR}/${file}`;
+    // LICENSE lives at the repo root and is shared by both packages; README.md
+    // and llms.txt are per-package. Fall back to the package dir for LICENSE in
+    // case a per-package override exists, but prefer the root copy.
+    [
+      { file: 'LICENSE', preferRoot: true },
+      { file: 'README.md', preferRoot: false },
+      { file: 'llms.txt', preferRoot: false },
+    ].forEach(({ file, preferRoot }) => {
       const dest = `${publishDir}/${file}`;
+      const rootSrc = file; // repo root, cwd is repo root when publish.mjs runs
+      const pkgSrc = `${PACKAGE_DIR}/${file}`;
+      const src = preferRoot ? (fse.pathExistsSync(rootSrc) ? rootSrc : pkgSrc) : pkgSrc;
 
       try {
         execSync(`test -f "${src}" && cp "${src}" "${dest}"`, { stdio: 'inherit' });
@@ -154,6 +180,12 @@ async function main() {
       console.log(packageJSON);
 
       writeJson(targetPackageJSON, packageJSON);
+
+      // exports.json is an internal build artifact used above to populate the
+      // Angular `exports` map; it must not ship to consumers.
+      if (context === 'angular') {
+        fse.removeSync(`${publishDir}/exports.json`);
+      }
       let publishCmd = `cd ${publishDir} && npm publish --access public`;
       if (otp) {
         publishCmd += ` --otp ${otp}`;

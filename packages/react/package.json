@@ -1,17 +1,96 @@
 {
   "name": "@egose/shadcn-theme",
   "version": "0.0.0-PLACEHOLDER",
-  "description": "shadcn UI theme",
-  "license": "MIT",
+  "description": "shadcn UI theme for React",
+  "license": "PLACEHOLDER",
+  "author": "PLACEHOLDER",
   "sideEffects": false,
   "private": true,
+  "homepage": "https://github.com/egose/shadcn-theme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/egose/shadcn-theme"
+    "url": "https://github.com/egose/shadcn-theme",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/egose/shadcn-theme/issues"
+  },
+  "keywords": [
+    "shadcn",
+    "shadcn-ui",
+    "react",
+    "tailwindcss",
+    "ui",
+    "components",
+    "design-system"
+  ],
+  "files": [
+    "components",
+    "hooks",
+    "utils",
+    "layouts",
+    "lib",
+    "*.mjs",
+    "*.js",
+    "README.md",
+    "LICENSE",
+    "llms.txt"
+  ],
+  "exports": {
+    "./components/ui/*": {
+      "types": "./components/ui/*.d.mts",
+      "import": "./components/ui/*.mjs",
+      "require": "./components/ui/*.js"
+    },
+    "./components/form/*": {
+      "types": "./components/form/*.d.mts",
+      "import": "./components/form/*.mjs",
+      "require": "./components/form/*.js"
+    },
+    "./components/widgets/dialog-manager": {
+      "types": "./components/widgets/dialog-manager/index.d.mts",
+      "import": "./components/widgets/dialog-manager/index.mjs",
+      "require": "./components/widgets/dialog-manager/index.js"
+    },
+    "./components/widgets/dialog-manager/*": {
+      "types": "./components/widgets/dialog-manager/*.d.mts",
+      "import": "./components/widgets/dialog-manager/*.mjs",
+      "require": "./components/widgets/dialog-manager/*.js"
+    },
+    "./hooks/*": {
+      "types": "./hooks/*.d.mts",
+      "import": "./hooks/*.mjs",
+      "require": "./hooks/*.js"
+    },
+    "./utils/*": {
+      "types": "./utils/*.d.mts",
+      "import": "./utils/*.mjs",
+      "require": "./utils/*.js"
+    },
+    "./layouts/simple": {
+      "types": "./layouts/simple/index.d.mts",
+      "import": "./layouts/simple/index.mjs",
+      "require": "./layouts/simple/index.js"
+    },
+    "./layouts/simple/*": {
+      "types": "./layouts/simple/*.d.mts",
+      "import": "./layouts/simple/*.mjs",
+      "require": "./layouts/simple/*.js"
+    },
+    "./layouts/sidebar1": {
+      "types": "./layouts/sidebar1/index.d.mts",
+      "import": "./layouts/sidebar1/index.mjs",
+      "require": "./layouts/sidebar1/index.js"
+    },
+    "./layouts/sidebar1/*": {
+      "types": "./layouts/sidebar1/*.d.mts",
+      "import": "./layouts/sidebar1/*.mjs",
+      "require": "./layouts/sidebar1/*.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "tsc -w",
-    "build": "tsc -d",
     "bundle": "tsup",
     "postbundle": "node prepend-use-client.mjs"
   },

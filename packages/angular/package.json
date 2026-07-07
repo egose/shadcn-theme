@@ -1,11 +1,12 @@
 {
   "name": "@egose/shadcn-theme-ng",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "Angular shadcn UI theme",
+  "license": "PLACEHOLDER",
+  "author": "PLACEHOLDER",
   "bundles": [
     "tw"
   ],
-  "version": "0.0.0-PLACEHOLDER",
-  "description": "Angular shadcn UI theme",
-  "license": "MIT",
   "sideEffects": false,
   "private": true,
   "repository": {
@@ -15,7 +16,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "bundle": "node build-all.mjs"
