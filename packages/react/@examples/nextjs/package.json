@@ -12,7 +12,7 @@
     "@eslint/eslintrc": "^3.3.5",
     "@rehype-pretty/transformers": "^0.13.2",
     "@tailwindcss/postcss": "^4.2.2",
-    "eslint": "^10.6.0",
+    "eslint": "^9.0.0",
     "eslint-config-next": "16.2.10",
     "next": "16.2.10",
     "postcss": "^8.5.8",
