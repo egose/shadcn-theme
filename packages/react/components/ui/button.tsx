@@ -124,8 +124,7 @@ export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['
  * immediate child instead of rendering a `<button>`.
  */
 export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>,
-    VariantProps<typeof buttonVariants> {
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size'>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
