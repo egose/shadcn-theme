@@ -1,0 +1,102 @@
+# @egose/shadcn-theme
+
+> shadcn/ui-style React component theme. Deep-import only — every module is its own subpath. All shipped modules are `"use client"`.
+
+## Install
+
+```
+npm i @egose/shadcn-theme react react-dom react-hook-form sonner
+```
+
+Peers: react ^18.3.1 || ^19.0.0 · react-dom ^18.3.1 || ^19.0.0 · react-hook-form ^7.54.2 · sonner ^2.0.7 · tailwindcss v4 (consumer-side setup).
+
+## Subpath map
+
+### UI primitives — `@egose/shadcn-theme/components/ui/<name>`
+
+`accordion` · `alert` · `alert-dialog` · `aspect-ratio` · `avatar` · `badge` · `basic-alert` · `breadcrumb` · `button` · `button-group` · `calendar` · `card` · `carousel` · `checkbox` · `collapsible` · `combobox` · `command` · `context-menu` · `copy-button` · `dialog` · `direction` · `drawer` · `dropdown-menu` · `empty` · `field` · `hover-card` · `input` · `input-group` · `input-otp` · `item` · `kbd` · `label` · `menubar` · `multi-select` · `native-select` · `navigation-menu` · `pagination` · `popover` · `progress` · `radio-group` · `resizable` · `scroll-area` · `select` · `separator` · `sheet` · `sidebar` · `skeleton` · `slider` · `sonner` · `spinner` · `switch` · `table` · `tabs` · `tag-picker` · `textarea` · `toggle` · `toggle-group` · `tooltip` · `unstyled-button` · `extension/file-input`
+
+### Form fields (react-hook-form) — `@egose/shadcn-theme/components/form/<name>`
+
+`checkbox` · `date-picker` · `date-range-picker` · `error` · `hook-checkbox` · `hook-date-picker` · `hook-multi-select` · `hook-native-select` · `hook-searchable-select` · `hook-select` · `hook-tag-picker` · `hook-text-input` · `hook-textarea` · `hook-time-input` · `multi-select` · `native-select` · `searchable-select` · `select` · `tag-picker` · `text-input` · `textarea` · `time-input` · `types`
+
+### Widgets — `@egose/shadcn-theme/components/widgets/<name>`
+
+- `dialog-manager` (and `dialog-manager/*`): `DialogProvider`, `useDialog`, `createTypedDialog`, `DialogContext`, `DialogProps`, `TypedDialogComponent`
+
+### Hooks — `@egose/shadcn-theme/hooks/<name>`
+
+- `use-clipboard` → `useClipboard({ timeout? })` → `{ copied, copy, error }`
+- `use-mobile` → `useIsMobile()` → `boolean`
+
+### Utils — `@egose/shadcn-theme/utils/<name>`
+
+- `ui` → `cn(...inputs: ClassValue[])` (clsx + tailwind-merge)
+- `date` → `isEqualDate`, `isEqualDates`
+- `time` → `convertToHours(value, asNumber?)` (parses `90m`, `1.5h`, `3600s`, bare numbers)
+
+### Layouts — `@egose/shadcn-theme/layouts/<name>`
+
+- `simple` (and `simple/*`): `SimpleLayout` (default) · `MenuItem`, `UserMenuSection` (types)
+- `sidebar1` (and `sidebar1/*`): `SidebarLayout` (default) · `setLayoutHeader`, `headerStore` · `ISidebarData`, `ISidebarContext`, `INavUser`, `INavUserMenuItem`, `INavMenu`, `IMenuItem`, `IMenuSubItem`, `INavContext` (types) · `AppSidebar`, `NavUser`, `NavMenus`, `ContextSwitcher`, `ThemeSwitcher`, `LinkPlaceholder`
+
+## Canonical patterns
+
+```tsx
+"use client";
+
+import { Button } from "@egose/shadcn-theme/components/ui/button";
+import { FormTextInput } from "@egose/shadcn-theme/components/form/text-input";
+import { useClipboard } from "@egose/shadcn-theme/hooks/use-clipboard";
+import { cn } from "@egose/shadcn-theme/utils/ui";
+import SimpleLayout from "@egose/shadcn-theme/layouts/simple";
+
+export function Demo() {
+  const { copy, copied } = useClipboard();
+  return (
+    <SimpleLayout aslink={Link} left={{ menus: [{ label: "Home", link: "/" }] }}>
+      <Button variant="primary" loading={copied} onClick={() => copy("hi")}>
+        {copied ? "Copied" : "Copy"}
+      </Button>
+      <FormTextInput name="title" label="Title" required />
+    </SimpleLayout>
+  );
+}
+```
+
+Promise-based dialog flow:
+
+```tsx
+"use client";
+import { DialogProvider, useDialog, createTypedDialog } from "@egose/shadcn-theme/components/widgets/dialog-manager";
+import { Dialog, DialogContent, DialogFooter, Button } from "@egose/shadcn-theme/components/ui/dialog";
+
+const ConfirmDialog = createTypedDialog<{ title: string }, boolean>(
+  ({ open, args, onClose }) => (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose(false)}>
+      <DialogContent>
+        {args.title}
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => onClose(false)}>Cancel</Button>
+          <Button variant="danger" onClick={() => onClose(true)}>Confirm</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  ),
+);
+
+// inside a component under <DialogProvider>:
+// const ok = await openDialog(ConfirmDialog, { title: "Delete?" });
+```
+
+## Notable conventions
+
+- All shipped modules start with `"use client";` — only import from client components / pages.
+- `Button` accepts `variant`, `size`, `appearance`, `loading`, `icon`, `iconPosition`; see `buttonVariants` for the resolved class string.
+- Form-field wrappers (`components/form/text-input`, `select`, `checkbox`, `date-picker`, `textarea`, …) compose with `react-hook-form` via `inputProps={{ ...register('name', rules) }}`. `HookFormRules<T>` (in `components/form/types`) is the safe `RegisterOptions` subset.
+- Layout `aslink` prop is required — pass your router's `Link` (works for both `to=` and `href=` APIs).
+- `cn` is the single point for class composition; pass `classNames` slots on layouts/form-fields to extend (never override) defaults.
+
+## License
+
+MIT. See https://github.com/egose/shadcn-theme.

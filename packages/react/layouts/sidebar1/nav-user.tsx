@@ -13,12 +13,21 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../../components/ui/sidebar';
 import { ThemeSwitcher } from './theme-switcher';
 
+/**
+ * Display profile for the user section at the bottom of the sidebar. `avatar`
+ * is rendered as the `Avatar` image source (falls back to `name` initials).
+ */
 export interface INavUser {
   name: string;
   email: string;
   avatar: string;
 }
 
+/**
+ * Single entry inside the user dropdown menu. `url` is used for navigation
+ * (rendered with the `aslink` component passed to the layout); alternatively
+ * `onClick` fires when the item is selected.
+ */
 export interface INavUserMenuItem {
   title: string;
   url?: string;

@@ -8,6 +8,12 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 const inputClass = '';
 
+/**
+ * Props for {@link FormTextInput}. `name` is required and is auto-kebabcased
+ * into the input `id` when no explicit `id` is provided. Pass additional
+ * native input attributes through `inputProps` (they are merged after the
+ * top-level props, so `inputProps` wins).
+ */
 export interface FormTextInputProps extends InputProps {
   id?: string;
   name: string;
@@ -20,6 +26,12 @@ export interface FormTextInputProps extends InputProps {
   };
 }
 
+/**
+ * Uncontrolled text input wrapped with a {@link Label}. Pairs with
+ * `react-hook-form` via `register('name')` passed through `inputProps`, or
+ * any other native input binding. Composes with `cn` so `classNames.*` are
+ * merged with the defaults rather than replacing them.
+ */
 export function FormTextInput({
   id,
   name,

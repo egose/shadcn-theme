@@ -5,6 +5,15 @@ import { UserMenus } from './user-menu';
 import { MobileMenu } from './mobile-menu';
 import type { MenuItem, UserMenuSection } from './types';
 
+/**
+ * Props for {@link SimpleLayout}. The layout renders a fixed header with
+ * optional left/right nav menus, an optional user dropdown, an optional
+ * mobile menu, an optional footer, and a main content slot for `children`.
+ *
+ * `aslink` is required: pass your router's `Link` component so internal
+ * navigation works without re-implementing it. The same component is
+ * rendered for both `to=` (React Router) and `href=` (Next.js) prop styles.
+ */
 interface LayoutProps {
   logo?: {
     src?: string;
@@ -56,6 +65,20 @@ interface LayoutProps {
   aslink: React.ElementType;
 }
 
+/**
+ * Header + main + footer layout for content-light pages. Mobile-aware
+ * (collapsible menu under 768px). Compose the inner pieces with the
+ * `classNames` slots rather than overriding internal markup.
+ *
+ * @example
+ * <SimpleLayout
+ *   aslink={Link}
+ *   left={{ menus: [{ label: 'Home', link: '/' }] }}
+ *   user={{ menuSections: [...] }}
+ * >
+ *   {children}
+ * </SimpleLayout>
+ */
 export default function SimpleLayout(props: LayoutProps) {
   const { logo, user, left, right, sidebar, footer, classNames, loading, children, aslink } = props;
 

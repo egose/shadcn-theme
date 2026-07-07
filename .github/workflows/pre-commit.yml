@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      with:
+        fetch-depth: 0
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -20,7 +21,16 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
+    - name: Lint Current Commits
+      run: npx commitlint --last --verbose
+
     - name: Run Pre-commit Hooks on CI
       run: |
-        chmod +x .bin/prettier.sh
-        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+        chmod +x .bin/prettier.sh .bin/commitlint.sh
+
+    - name: Run pre-commit
+      uses: egose/actions/precommit@05add1b5a7a995374c1bb375f3e920203efcc313
+      with:
+        config: .pre-commit-config.yaml
+        commit-on-push: true
+        commit-on-pr: false

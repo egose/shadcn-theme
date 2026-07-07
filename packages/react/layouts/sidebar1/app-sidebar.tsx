@@ -6,6 +6,11 @@ import { INavMenu } from './nav-menus';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '../../components/ui/sidebar';
 import { Button } from '../../components/ui/button';
 
+/**
+ * Optional context-switcher block rendered in the sidebar header. `items`
+ * are the selectable contexts (workspaces / orgs / tenants); the add / select
+ * callbacks live on {@link ISidebarData.events}.
+ */
 export interface ISidebarContext {
   title?: string;
   addText?: string;
@@ -13,6 +18,13 @@ export interface ISidebarContext {
   canAdd?: boolean;
 }
 
+/**
+ * Configuration object passed to {@link SidebarLayout} (and consumed by
+ * `AppSidebar`). `menus` is required and is the primary navigation surface;
+ * `user`, `context`, and `userMenus` enrich the sidebar with a profile
+ * section, a context switcher, and a user dropdown respectively. Wire
+ * side-effecting actions through `events`.
+ */
 export interface ISidebarData {
   user?: INavUser;
   context?: ISidebarContext;
