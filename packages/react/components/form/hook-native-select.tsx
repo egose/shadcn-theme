@@ -1,10 +1,23 @@
 import React from 'react';
 import _get from 'lodash-es/get';
-import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
+import { FieldValues, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../utils/ui';
 import { FormError } from './error';
 import { FormNativeSelect } from './native-select';
 import type { FormNativeSelectProps } from './native-select';
+import { isValidationRuleEnabled, mergeHookFormRules } from './types';
+import type { HookFormRules, HookFormValidationAttributes } from './types';
+
+type HookFormNativeSelectValidationAttributes = Pick<HookFormValidationAttributes, 'required'>;
+
+type HookFormNativeSelectProps<T extends FieldValues> = Omit<
+  FormNativeSelectProps,
+  'name' | 'selectProps' | keyof HookFormNativeSelectValidationAttributes
+> & {
+  name: Path<T>;
+  rules?: HookFormRules<T>;
+  error?: string;
+} & HookFormNativeSelectValidationAttributes;
 
 export function HookFormNativeSelect<T extends FieldValues>({
   id,
@@ -14,12 +27,9 @@ export function HookFormNativeSelect<T extends FieldValues>({
   error,
   classNames,
   disabled,
+  required,
   ...rest
-}: Omit<FormNativeSelectProps, 'name' | 'selectProps'> & {
-  name: Path<T>;
-  rules?: RegisterOptions<T, Path<T>> | undefined;
-  error?: string;
-}) {
+}: HookFormNativeSelectProps<T>) {
   const methods = useFormContext<T>();
   if (!methods) return null;
 
@@ -31,15 +41,17 @@ export function HookFormNativeSelect<T extends FieldValues>({
   const fieldError = _get(errors, name);
   const errorMessage = error ?? (fieldError && String(fieldError?.message));
   const showError = !!fieldError && !disabled;
+  const mergedRules = mergeHookFormRules(rules, { required });
 
   return (
     <div className={cn('$hook-form-native-select', classNames?.wrapper)}>
       <FormNativeSelect
+        {...rest}
         id={id}
         name={name}
         label={label}
         disabled={disabled}
-        {...rest}
+        required={isValidationRuleEnabled(mergedRules?.required)}
         classNames={{
           label: cn(classNames?.label, {
             'text-danger': showError,
@@ -48,7 +60,7 @@ export function HookFormNativeSelect<T extends FieldValues>({
             'ring-danger text-danger': showError,
           }),
         }}
-        selectProps={register(name, rules)}
+        selectProps={register(name, mergedRules)}
       />
       {showError && <FormError field={name} className="mt-1" message={errorMessage} />}
     </div>

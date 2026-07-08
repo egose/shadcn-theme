@@ -24,12 +24,8 @@ jobs:
     - name: Lint Current Commits
       run: npx commitlint --last --verbose
 
-    - name: Run Pre-commit Hooks on CI
-      run: |
-        chmod +x .bin/prettier.sh .bin/commitlint.sh
-
     - name: Run pre-commit
-      uses: egose/actions/precommit@05add1b5a7a995374c1bb375f3e920203efcc313
+      uses: egose/actions/precommit@ef042a54d9446c85fdd1044d342c614b5353f812
       with:
         config: .pre-commit-config.yaml
         commit-on-push: true
