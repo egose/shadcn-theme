@@ -14,14 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": false,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "ignoreDeprecations": "6.0"
   },
-  "exclude": ["node_modules"]
+  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "layouts/**/*"],
+  "exclude": ["node_modules", "dist", "@examples"]
 }
