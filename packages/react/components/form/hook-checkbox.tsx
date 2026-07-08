@@ -1,22 +1,30 @@
 import React from 'react';
 import _get from 'lodash-es/get';
-import { Controller, FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
+import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../utils/ui';
 import { FormError } from './error';
 import { FormCheckbox } from './checkbox';
 import type { FormCheckboxProps } from './checkbox';
+import { isValidationRuleEnabled, mergeHookFormRules } from './types';
+import type { HookFormRules, HookFormValidationAttributes } from './types';
 
-type HookFormCheckboxProps<T extends FieldValues> = Omit<FormCheckboxProps, 'name' | 'checked' | 'onCheckedChange'> & {
+type HookFormCheckboxValidationAttributes = Pick<HookFormValidationAttributes, 'required'>;
+
+type HookFormCheckboxProps<T extends FieldValues> = Omit<
+  FormCheckboxProps,
+  'name' | 'checked' | 'onCheckedChange' | keyof HookFormCheckboxValidationAttributes
+> & {
   name: Path<T>;
-  rules?: RegisterOptions<T, Path<T>>;
+  rules?: HookFormRules<T>;
   error?: string;
-};
+} & HookFormCheckboxValidationAttributes;
 
 export function HookFormCheckbox<T extends FieldValues>({
   id,
   name,
   label,
   rules,
+  required,
   error,
   disabled,
   classNames,
@@ -33,18 +41,21 @@ export function HookFormCheckbox<T extends FieldValues>({
   const fieldError = _get(errors, name);
   const errorMessage = error ?? (fieldError?.message as string);
   const showError = !!fieldError && !disabled;
+  const mergedRules = mergeHookFormRules(rules, { required });
 
   return (
     <div className={cn('$hook-form-checkbox', classNames?.wrapper)}>
       <Controller
         name={name}
         control={control}
-        rules={rules}
+        rules={mergedRules}
         render={({ field: { value, onChange } }) => (
           <FormCheckbox
+            {...rest}
             id={id}
             name={name}
             label={label}
+            required={isValidationRuleEnabled(mergedRules?.required)}
             disabled={disabled}
             checked={value}
             onCheckedChange={onChange}
@@ -57,7 +68,6 @@ export function HookFormCheckbox<T extends FieldValues>({
                 'ring-danger text-danger': showError,
               }),
             }}
-            {...rest}
           />
         )}
       />
