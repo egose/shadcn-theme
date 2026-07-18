@@ -52,6 +52,11 @@
       "import": "./components/widgets/dialog-manager/index.mjs",
       "require": "./components/widgets/dialog-manager/index.js"
     },
+    "./components/widgets/*": {
+      "types": "./components/widgets/*.d.mts",
+      "import": "./components/widgets/*.mjs",
+      "require": "./components/widgets/*.js"
+    },
     "./components/widgets/dialog-manager/*": {
       "types": "./components/widgets/dialog-manager/*.d.mts",
       "import": "./components/widgets/dialog-manager/*.mjs",
