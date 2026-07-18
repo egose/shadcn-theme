@@ -62,7 +62,7 @@ export function FormTextInput({
         autoComplete="off"
         {...inputProps}
         {...rest}
-        className={cn(inputClass, classNames?.input)}
+        className={cn(inputClass, inputProps.className, classNames?.input, rest.className)}
       />
     </div>
   );

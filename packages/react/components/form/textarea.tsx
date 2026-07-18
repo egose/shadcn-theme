@@ -68,7 +68,7 @@ export function FormTextarea({
             }
           });
         }}
-        className={cn(inputClass, classNames?.input)}
+        className={cn(inputClass, inputProps.className, classNames?.input, rest.className)}
       />
     </div>
   );
