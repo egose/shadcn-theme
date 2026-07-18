@@ -30,6 +30,7 @@ export function CopyableButton({
   const isText = _isString(children);
   const copyValue = value ?? (isText ? children : '');
   const tooltipText = clipboard.copied ? tooltipCopiedText : tooltipCopyText;
+  const ariaLabel = clipboard.copied ? String(tooltipCopiedText) : String(tooltipCopyText);
   const icon = clipboard.copied ? <CheckIcon /> : <CopyIcon />;
 
   const handleCopy = () => {
@@ -48,8 +49,8 @@ export function CopyableButton({
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         className={className}
-        aria-label="Copy to clipboard"
-        title="Copy to clipboard"
+        aria-label={ariaLabel}
+        title={ariaLabel}
       >
         {icon}
       </Button>
@@ -59,8 +60,8 @@ export function CopyableButton({
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
         className={cn('inline-flex cursor-pointer items-center gap-1', className)}
-        aria-label="Copy to clipboard"
-        title="Copy to clipboard"
+        aria-label={ariaLabel}
+        title={ariaLabel}
       >
         {children && <span className={cn({ 'hover:underline': isText })}>{children}</span>}
         {icon}

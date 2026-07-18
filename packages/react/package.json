@@ -42,6 +42,11 @@
       "import": "./components/ui/*.mjs",
       "require": "./components/ui/*.js"
     },
+    "./components/ui/extension/*": {
+      "types": "./components/ui/extension/*.d.mts",
+      "import": "./components/ui/extension/*.mjs",
+      "require": "./components/ui/extension/*.js"
+    },
     "./components/form/*": {
       "types": "./components/form/*.d.mts",
       "import": "./components/form/*.mjs",
