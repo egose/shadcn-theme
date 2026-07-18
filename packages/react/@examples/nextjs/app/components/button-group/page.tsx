@@ -27,84 +27,95 @@ import {
   TagIcon,
   Trash2Icon,
 } from 'lucide-react';
+import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {
   const [label, setLabel] = React.useState('personal');
 
   return (
-    <ButtonGroup>
-      <ButtonGroup className="hidden sm:flex">
-        <Button variant="ghost" appearance="outline" size="icon" aria-label="Go Back">
-          <ArrowLeftIcon />
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button variant="ghost" appearance="outline">
-          Archive
-        </Button>
-        <Button variant="ghost" appearance="outline">
-          Report
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button variant="ghost" appearance="outline">
-          Snooze
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" appearance="outline" size="icon" aria-label="More Options">
-              <MoreHorizontalIcon />
+    <ExamplePage
+      title="Button Group"
+      description="Button groups visually connect related actions into a single control cluster."
+    >
+      <ExampleSection
+        title="Message actions"
+        description="Mix nav, primary, overflow, and dropdown actions while preserving shared edges."
+      >
+        <ButtonGroup>
+          <ButtonGroup className="hidden sm:flex">
+            <Button variant="ghost" appearance="outline" size="icon" aria-label="Go Back">
+              <ArrowLeftIcon />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <MailCheckIcon />
-                Mark as Read
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <ArchiveIcon />
-                Archive
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <ClockIcon />
-                Snooze
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CalendarPlusIcon />
-                Add to Calendar
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <ListFilterIcon />
-                Add to List
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <TagIcon />
-                  Label As...
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuRadioGroup value={label} onValueChange={setLabel}>
-                    <DropdownMenuRadioItem value="personal">Personal</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="work">Work</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="other">Other</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Trash2Icon />
-                Trash
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </ButtonGroup>
-    </ButtonGroup>
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button variant="ghost" appearance="outline">
+              Archive
+            </Button>
+            <Button variant="ghost" appearance="outline">
+              Report
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button variant="ghost" appearance="outline">
+              Snooze
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" appearance="outline" size="icon" aria-label="More Options">
+                  <MoreHorizontalIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <MailCheckIcon />
+                    Mark as Read
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ArchiveIcon />
+                    Archive
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <ClockIcon />
+                    Snooze
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <CalendarPlusIcon />
+                    Add to Calendar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ListFilterIcon />
+                    Add to List
+                  </DropdownMenuItem>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <TagIcon />
+                      Label As...
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuRadioGroup value={label} onValueChange={setLabel}>
+                        <DropdownMenuRadioItem value="personal">Personal</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="work">Work</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="other">Other</DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Trash2Icon />
+                    Trash
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        </ButtonGroup>
+      </ExampleSection>
+    </ExamplePage>
   );
 }

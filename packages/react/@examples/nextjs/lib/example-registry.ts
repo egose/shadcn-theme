@@ -129,6 +129,11 @@ export const componentExamples: ExampleLink[] = [
     url: '/components/scroll-area',
     description: 'Custom scroll containers with themed scrollbars.',
   },
+  {
+    title: 'Scroll Shadow',
+    url: '/components/scroll-shadow',
+    description: 'CSS-mask fade shadows at the edges of any scroll container.',
+  },
   { title: 'Select', url: '/components/select', description: 'Radix-powered select menus with labels and groups.' },
   {
     title: 'Separator',
@@ -245,6 +250,41 @@ export const widgetExamples: ExampleLink[] = [
     url: '/widgets/dialog-manager',
     description: 'Programmatic dialogs created through a shared manager context.',
   },
+  {
+    title: 'Action Menu',
+    url: '/widgets/action-menu',
+    description: 'List-driven dropdown menu for row and card overflow actions.',
+  },
+  {
+    title: 'Confirmation Dialog',
+    url: '/widgets/confirmation-dialog',
+    description: 'Promise-based confirmation dialog that resolves with the user decision.',
+  },
+  {
+    title: 'Content Sidebar',
+    url: '/widgets/content-sidebar',
+    description: 'Sidebar paired with switchable content panels and breadcrumbs.',
+  },
+  {
+    title: 'Image Preview Dialog',
+    url: '/widgets/image-preview-dialog',
+    description: 'Programmatic image preview dialog driven through the shared manager.',
+  },
+  {
+    title: 'Page Header',
+    url: '/widgets/page-header',
+    description: 'Consistent title, description, and trailing actions for page tops.',
+  },
+  {
+    title: 'Text Input Dialog',
+    url: '/widgets/text-input-dialog',
+    description: 'Promise-based text prompt with built-in length validation.',
+  },
+  {
+    title: 'Use Debounced Value',
+    url: '/widgets/use-debounced-value',
+    description: 'A hook demo showing deferred filtering while the user types.',
+  },
 ];
 
 export const realExampleExamples: ExampleLink[] = [
@@ -279,6 +319,7 @@ export const componentDynamicSlugs = new Set([
   'pagination',
   'progress',
   'scroll-area',
+  'scroll-shadow',
   'select',
   'separator',
   'sidebar',
