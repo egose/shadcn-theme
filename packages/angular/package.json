@@ -9,6 +9,7 @@
   ],
   "sideEffects": false,
   "private": true,
+  "homepage": "https://shadcn-theme-ng.pages.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/egose/shadcn-theme"
