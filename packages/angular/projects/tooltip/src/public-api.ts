@@ -3,13 +3,12 @@
  */
 
 import { NgModule } from '@angular/core';
-import { HlmTooltip } from './lib/tooltip';
-import { HlmTooltipTrigger } from './lib/tooltip-trigger';
 
-export * from './lib/tooltip';
-export * from './lib/tooltip-trigger';
+import { HlmTooltip } from './lib/hlm-tooltip';
 
-export const HlmTooltipImports = [HlmTooltip, HlmTooltipTrigger] as const;
+export * from './lib/hlm-tooltip';
+
+export const HlmTooltipImports = [HlmTooltip] as const;
 
 @NgModule({
   imports: [...HlmTooltipImports],

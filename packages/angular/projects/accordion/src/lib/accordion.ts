@@ -8,7 +8,7 @@ import type { ClassValue } from 'clsx';
   host: {
     '[class]': '_computedClass()',
   },
-  hostDirectives: [{ directive: BrnAccordion, inputs: ['type', 'dir', 'orientation'] }],
+  hostDirectives: [{ directive: BrnAccordion, inputs: ['type', 'orientation'] }],
 })
 export class HlmAccordion {
   private readonly _brn = inject(BrnAccordion);

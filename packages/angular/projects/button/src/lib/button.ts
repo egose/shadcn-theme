@@ -34,6 +34,8 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
+        default:
+          'tw:border tw:border-primary tw:bg-primary tw:text-primary-foreground tw:shadow-sm tw:hover:bg-primary/90',
         primary:
           'tw:border tw:border-primary tw:bg-primary tw:text-primary-foreground tw:shadow-sm tw:hover:bg-primary/90',
         secondary:
@@ -50,6 +52,7 @@ export const buttonVariants = cva(
         destructive:
           'tw:border tw:border-destructive tw:bg-destructive tw:text-destructive-foreground tw:shadow-sm tw:hover:bg-destructive/90',
         muted: 'tw:border tw:border-muted tw:bg-muted tw:text-muted-foreground tw:shadow-sm tw:hover:bg-muted/90',
+        outline: 'tw:border tw:border-primary tw:bg-white tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
         link: 'tw:text-primary tw:underline-offset-4 tw:hover:underline',
         ghost: 'tw:hover:bg-light tw:hover:text-light-foreground',
       },
@@ -59,6 +62,9 @@ export const buttonVariants = cva(
         default: 'tw:h-9 tw:px-4 tw:py-2',
         lg: 'tw:h-10 tw:rounded-sm tw:px-7 tw:text-base',
         icon: 'tw:h-9 tw:w-9',
+        'icon-xs': 'tw:h-6 tw:w-6 tw:rounded-xs',
+        'icon-sm': 'tw:h-8 tw:w-8 tw:rounded-sm',
+        'icon-lg': 'tw:h-10 tw:w-10 tw:rounded-sm',
         'compact-xs': 'tw:h-6 tw:px-2 tw:py-1 tw:text-xs',
         'compact-sm': 'tw:h-7 tw:px-2 tw:py-1',
         'compact-default': 'tw:h-8 tw:px-2 tw:py-1',
@@ -183,6 +189,7 @@ export class HlmButton {
   /** Helper functions */
   private getOutlineClasses(variant: VariantType) {
     const colors: Record<VariantType, string> = {
+      default: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
       primary: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
       secondary: 'tw:border-secondary tw:text-secondary tw:shadow-sm tw:hover:bg-secondary/10',
       success: 'tw:border-success tw:text-success tw:shadow-sm tw:hover:bg-success/10',
@@ -194,6 +201,7 @@ export class HlmButton {
       accent: 'tw:border-accent tw:text-accent tw:shadow-sm tw:hover:bg-accent/10',
       destructive: 'tw:border-destructive tw:text-destructive tw:shadow-sm tw:hover:bg-destructive/10',
       muted: 'tw:border-muted tw:text-muted-foreground tw:shadow-sm tw:hover:bg-muted/10',
+      outline: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
       link: 'tw:text-primary',
       ghost: 'tw:text-light-foreground',
     };
@@ -202,6 +210,7 @@ export class HlmButton {
 
   private getOutlineFilledClasses(variant: VariantType) {
     const colors: Record<VariantType, string> = {
+      default: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
       primary: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
       secondary: 'tw:hover:bg-secondary tw:hover:text-secondary-foreground',
       success: 'tw:hover:bg-success tw:hover:text-success-foreground',
@@ -213,6 +222,7 @@ export class HlmButton {
       accent: 'tw:hover:bg-accent tw:hover:text-accent-foreground',
       destructive: 'tw:hover:bg-destructive tw:hover:text-destructive-foreground',
       muted: 'tw:hover:bg-muted tw:hover:text-muted-foreground',
+      outline: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
       link: 'tw:hover:underline',
       ghost: 'tw:hover:bg-light',
     };
@@ -221,6 +231,7 @@ export class HlmButton {
 
   private getSpinnerClasses(variant: VariantType) {
     const colors: Record<VariantType, string> = {
+      default: 'tw:[&>svg]:text-primary-foreground',
       primary: 'tw:[&>svg]:text-primary-foreground',
       secondary: 'tw:[&>svg]:text-secondary-foreground',
       success: 'tw:[&>svg]:text-success-foreground',
@@ -232,6 +243,7 @@ export class HlmButton {
       accent: 'tw:[&>svg]:text-accent-foreground',
       destructive: 'tw:[&>svg]:text-destructive-foreground',
       muted: 'tw:[&>svg]:text-muted-foreground',
+      outline: 'tw:[&>svg]:text-primary',
       link: 'tw:[&>svg]:text-primary',
       ghost: 'tw:[&>svg]:text-light-foreground',
     };
@@ -240,6 +252,7 @@ export class HlmButton {
 
   private getOutlineSpinnerClasses(variant: VariantType) {
     const colors: Record<VariantType, string> = {
+      default: 'tw:[&>svg]:text-primary',
       primary: 'tw:[&>svg]:text-primary',
       secondary: 'tw:[&>svg]:text-secondary',
       success: 'tw:[&>svg]:text-success',
@@ -251,6 +264,7 @@ export class HlmButton {
       accent: 'tw:[&>svg]:text-accent',
       destructive: 'tw:[&>svg]:text-destructive',
       muted: 'tw:[&>svg]:text-muted-foreground',
+      outline: 'tw:[&>svg]:text-primary',
       link: 'tw:[&>svg]:text-primary',
       ghost: 'tw:[&>svg]:text-light-foreground',
     };
