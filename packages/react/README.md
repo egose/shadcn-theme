@@ -71,15 +71,18 @@ export function Demo() {
 
 ## Selected exports
 
-| Surface         | Example import                                          | Exported names                                                                          |
-| --------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Button          | `@egose/shadcn-theme/components/ui/button`              | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`                    |
-| `cn` helper     | `@egose/shadcn-theme/utils/ui`                          | `cn`                                                                                    |
-| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`               | `useClipboard`                                                                          |
-| Form text input | `@egose/shadcn-theme/components/form/text-input`        | `FormTextInput`, `FormTextInputProps`                                                   |
-| Simple layout   | `@egose/shadcn-theme/layouts/simple`                    | `SimpleLayout` (default export)                                                         |
-| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                  | `SidebarLayout` (default), `setLayoutHeader`, `headerStore`, `ISidebarData`, `INavUser` |
-| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager` | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogContext`              |
+| Surface         | Example import                                               | Exported names                                                                          |
+| --------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| Button          | `@egose/shadcn-theme/components/ui/button`                   | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`                    |
+| `cn` helper     | `@egose/shadcn-theme/utils/ui`                               | `cn`                                                                                    |
+| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`                    | `useClipboard`                                                                          |
+| Form text input | `@egose/shadcn-theme/components/form/text-input`             | `FormTextInput`, `FormTextInputProps`                                                   |
+| Page header     | `@egose/shadcn-theme/components/widgets/page-header`         | `PageHeader`, `PageHeaderProps`                                                         |
+| Action menu     | `@egose/shadcn-theme/components/widgets/action-menu`         | `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`                                       |
+| Confirm dialog  | `@egose/shadcn-theme/components/widgets/confirmation-dialog` | `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`              |
+| Simple layout   | `@egose/shadcn-theme/layouts/simple`                         | `SimpleLayout` (default export)                                                         |
+| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                       | `SidebarLayout` (default), `setLayoutHeader`, `headerStore`, `ISidebarData`, `INavUser` |
+| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager`      | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogContext`              |
 
 The full list of public modules lives under `dist/components/`, `dist/hooks/`, `dist/utils/`, and `dist/layouts/`; the `exports` map in `package.json` enumerates the supported subpaths.
 

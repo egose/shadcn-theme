@@ -42,6 +42,11 @@
       "import": "./components/ui/*.mjs",
       "require": "./components/ui/*.js"
     },
+    "./components/ui/extension/*": {
+      "types": "./components/ui/extension/*.d.mts",
+      "import": "./components/ui/extension/*.mjs",
+      "require": "./components/ui/extension/*.js"
+    },
     "./components/form/*": {
       "types": "./components/form/*.d.mts",
       "import": "./components/form/*.mjs",
@@ -51,6 +56,11 @@
       "types": "./components/widgets/dialog-manager/index.d.mts",
       "import": "./components/widgets/dialog-manager/index.mjs",
       "require": "./components/widgets/dialog-manager/index.js"
+    },
+    "./components/widgets/*": {
+      "types": "./components/widgets/*.d.mts",
+      "import": "./components/widgets/*.mjs",
+      "require": "./components/widgets/*.js"
     },
     "./components/widgets/dialog-manager/*": {
       "types": "./components/widgets/dialog-manager/*.d.mts",

@@ -15,8 +15,8 @@ import {
   IconLink,
   IconGhost,
 } from '@tabler/icons-react';
+import { ExamplePage, ExampleSection, ExampleStack, ExampleGrid } from '@/components/showcase-shell';
 
-// All possible values from your alertVariants definition
 const variants = [
   'primary',
   'secondary',
@@ -37,13 +37,13 @@ const appearances = ['solid', 'light'] as const;
 
 export default function Page() {
   return (
-    <>
-      <h1 className="font-bold text-2xl mt-4 mb-5">Alert Showcase</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2">
-        {/* Solid Appearance */}
-        <Section title="Solid Appearance">
-          <div className="grid gap-2">
+    <ExamplePage
+      title="Alert"
+      description="A feedback surface for surfacing important contextual messages to the user."
+    >
+      <ExampleGrid>
+        <ExampleSection title="Solid Appearance">
+          <ExampleStack>
             {variants.map((variant) => (
               <Alert key={`${variant}-solid`} variant={variant} appearance="solid">
                 {getIcon(variant)}
@@ -53,12 +53,11 @@ export default function Page() {
                 </AlertDescription>
               </Alert>
             ))}
-          </div>
-        </Section>
+          </ExampleStack>
+        </ExampleSection>
 
-        {/* Basic Solid Appearance */}
-        <Section title="Basic Solid Appearance">
-          <div className="grid gap-2">
+        <ExampleSection title="Basic Solid Appearance">
+          <ExampleStack>
             {variants.map((variant) => (
               <BasicAlert
                 key={`${variant}-solid`}
@@ -68,12 +67,11 @@ export default function Page() {
                 description={`This is a solid ${_startCase(variant)} alert with an icon, title and description.`}
               />
             ))}
-          </div>
-        </Section>
+          </ExampleStack>
+        </ExampleSection>
 
-        {/* Light Appearance */}
-        <Section title="Light Appearance">
-          <div className="grid gap-2">
+        <ExampleSection title="Light Appearance">
+          <ExampleStack>
             {variants.map((variant) => (
               <Alert key={`${variant}-light`} variant={variant} appearance="light">
                 {getIcon(variant)}
@@ -83,12 +81,11 @@ export default function Page() {
                 </AlertDescription>
               </Alert>
             ))}
-          </div>
-        </Section>
+          </ExampleStack>
+        </ExampleSection>
 
-        {/* Basic Light Appearance */}
-        <Section title="Basic Solid Appearance">
-          <div className="grid gap-2">
+        <ExampleSection title="Basic Light Appearance">
+          <ExampleStack>
             {variants.map((variant) => (
               <BasicAlert
                 key={`${variant}-light`}
@@ -98,19 +95,10 @@ export default function Page() {
                 description={`This is a light ${_startCase(variant)} alert with an icon, title and description.`}
               />
             ))}
-          </div>
-        </Section>
-      </div>
-    </>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="space-y-4">
-      <h3 className="font-semibold mb-2">{title}</h3>
-      {children}
-    </div>
+          </ExampleStack>
+        </ExampleSection>
+      </ExampleGrid>
+    </ExamplePage>
   );
 }
 

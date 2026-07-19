@@ -22,7 +22,13 @@ Peers: react ^18.3.1 || ^19.0.0 · react-dom ^18.3.1 || ^19.0.0 · react-hook-fo
 
 ### Widgets — `@egose/shadcn-theme/components/widgets/<name>`
 
+- `action-menu` → `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`
+- `confirmation-dialog` → `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`
+- `content-sidebar` → `ContentSidebar`, `ContentSidebarProps`, `ContentSidebarItem`
 - `dialog-manager` (and `dialog-manager/*`): `DialogProvider`, `useDialog`, `createTypedDialog`, `DialogContext`, `DialogProps`, `TypedDialogComponent`
+- `image-preview-dialog` → `ImagePreviewDialog`, `ImagePreviewDialogArgs`
+- `page-header` → `PageHeader`, `PageHeaderProps`
+- `text-input-dialog` → `TextInputDialog`, `TextInputDialogArgs`, `TextInputDialogResult`
 
 ### Hooks — `@egose/shadcn-theme/hooks/<name>`
 

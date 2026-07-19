@@ -98,9 +98,27 @@ const alertVariants = cva(
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {}
 export type VariantType = NonNullable<VariantProps<typeof alertVariants>['variant']>;
+/** Specific alias of {@link VariantType} for the Alert component (mirrors the Badge naming convention). */
+export type AlertVariant = NonNullable<VariantProps<typeof alertVariants>['variant']>;
+/** Visual style of the Alert surface (`solid` or `light`). */
+export type AlertAppearance = NonNullable<VariantProps<typeof alertVariants>['appearance']>;
 
-function Alert({ className, variant, ...props }: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
-  return <div data-slot="alert" role="alert" className={cn(alertVariants({ variant }), className)} {...props} />;
+function Alert({
+  className,
+  variant,
+  appearance,
+  ...props
+}: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
+  return (
+    <div
+      data-slot="alert"
+      data-variant={variant}
+      data-appearance={appearance}
+      role="alert"
+      className={cn(alertVariants({ variant, appearance }), className)}
+      {...props}
+    />
+  );
 }
 function AlertTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (

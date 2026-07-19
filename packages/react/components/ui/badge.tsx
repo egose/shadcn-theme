@@ -28,7 +28,6 @@ const badgeVariants = cva(
     'transition-[color,box-shadow]',
     'w-fit',
     'whitespace-nowrap',
-    'transition-colors',
   ],
   {
     variants: {
