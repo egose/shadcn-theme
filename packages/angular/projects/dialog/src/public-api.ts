@@ -1,36 +1,43 @@
 /*
  * Public API Surface of dialog
  */
+
 import { NgModule } from '@angular/core';
 
-import { HlmDialog } from './lib/dialog';
-import { HlmDialogClose } from './lib/dialog-close';
-import { HlmDialogContent } from './lib/dialog-content';
-import { HlmDialogDescription } from './lib/dialog-description';
-import { HlmDialogFooter } from './lib/dialog-footer';
-import { HlmDialogHeader } from './lib/dialog-header';
-import { HlmDialogOverlay } from './lib/dialog-overlay';
-import { HlmDialogTitle } from './lib/dialog-title';
+import { HlmDialog } from './lib/hlm-dialog';
+import { HlmDialogClose } from './lib/hlm-dialog-close';
+import { HlmDialogContent } from './lib/hlm-dialog-content';
+import { HlmDialogDescription } from './lib/hlm-dialog-description';
+import { HlmDialogFooter } from './lib/hlm-dialog-footer';
+import { HlmDialogHeader } from './lib/hlm-dialog-header';
+import { HlmDialogOverlay } from './lib/hlm-dialog-overlay';
+import { HlmDialogPortal } from './lib/hlm-dialog-portal';
+import { HlmDialogTitle } from './lib/hlm-dialog-title';
+import { HlmDialogTrigger } from './lib/hlm-dialog-trigger';
 
-export * from './lib/dialog';
-export * from './lib/dialog-close';
-export * from './lib/dialog-content';
-export * from './lib/dialog-description';
-export * from './lib/dialog-footer';
-export * from './lib/dialog-header';
-export * from './lib/dialog-overlay';
-export * from './lib/dialog-title';
-export * from './lib/dialog.service';
+export * from './lib/hlm-dialog';
+export * from './lib/hlm-dialog-close';
+export * from './lib/hlm-dialog-content';
+export * from './lib/hlm-dialog-description';
+export * from './lib/hlm-dialog-footer';
+export * from './lib/hlm-dialog-header';
+export * from './lib/hlm-dialog-overlay';
+export * from './lib/hlm-dialog-portal';
+export * from './lib/hlm-dialog-title';
+export * from './lib/hlm-dialog-trigger';
+export * from './lib/hlm-dialog.service';
 
 export const HlmDialogImports = [
   HlmDialog,
-  HlmDialogClose,
   HlmDialogContent,
   HlmDialogDescription,
   HlmDialogFooter,
   HlmDialogHeader,
   HlmDialogOverlay,
+  HlmDialogPortal,
   HlmDialogTitle,
+  HlmDialogTrigger,
+  HlmDialogClose,
 ] as const;
 
 @NgModule({

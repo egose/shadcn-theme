@@ -3,3 +3,4 @@
  */
 
 export * from './lib/utils';
+export * from './lib/provide-spartan-hlm';

@@ -3,30 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Geist, Geist_Mono } from 'next/font/google';
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  Component,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-  CircleDollarSign,
-  BadgeCheck,
-  Bell,
-  CreditCard,
-  FolderKanban,
-} from 'lucide-react';
+import { Component, LayoutPanelLeft, TextCursorInput, FolderKanban, BadgeCheck, Bell, CreditCard } from 'lucide-react';
 import './globals.css';
 import SidebarLayout, { ISidebarData } from '../../../layouts/sidebar1';
 import { TooltipProvider } from '../../../components/ui/tooltip';
 import { DialogManagerProvider } from '../../../components/widgets/dialog-manager';
 import { Toaster } from '../../../components/ui/sonner';
-import { useEffect, useState } from 'react';
 import { componentExamples, formExamples, realExampleExamples, widgetExamples } from '../lib/example-registry';
 
 const geistSans = Geist({
@@ -59,15 +41,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const [count, setCount] = useState(0);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCount((prev) => prev + 1);
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
 
   const data: ISidebarData = {
     user: {
@@ -81,31 +54,13 @@ export default function RootLayout({
       items: [
         {
           name: 'Egose Inc',
-          text: `Enterprise - ${count}`,
-          // logo: GalleryVerticalEnd,
+          text: 'Enterprise',
           logoUrl: 'https://avatars.githubusercontent.com/u/36021827?v=4&size=64',
           className: 'bg-purple-500 text-white',
         },
       ],
     },
     menus: [
-      {
-        title: 'Platform',
-        items: [
-          {
-            title: 'GitHub',
-            url: '/github',
-            icon: SquareTerminal,
-            isActive: false,
-          },
-          {
-            title: 'GitLab',
-            url: '/gitlab',
-            icon: CircleDollarSign,
-            isActive: false,
-          },
-        ],
-      },
       {
         title: 'Theme',
         hideTitle: true,
@@ -120,14 +75,14 @@ export default function RootLayout({
           {
             title: 'Form',
             url: '/form',
-            icon: Component,
+            icon: TextCursorInput,
             isActive: false,
             subItems: toSubItems(formExamples),
           },
           {
             title: 'Widgets',
             url: '/widgets',
-            icon: Component,
+            icon: LayoutPanelLeft,
             isActive: false,
             subItems: toSubItems(widgetExamples),
           },
@@ -180,8 +135,6 @@ export default function RootLayout({
       }
     });
   });
-
-  console.log(count);
 
   return (
     <html lang="en">

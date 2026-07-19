@@ -3,10 +3,13 @@
  */
 
 import { NgModule } from '@angular/core';
+import { HlmBtn } from './lib/btn';
 import { HlmButton } from './lib/button';
+export * from './lib/btn';
 export * from './lib/button';
+export * from './lib/button.token';
 
-export const HlmButtonImports = [HlmButton] as const;
+export const HlmButtonImports = [HlmButton, HlmBtn] as const;
 
 @NgModule({
   imports: [...HlmButtonImports],

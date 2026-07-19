@@ -5,51 +5,73 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "paths": {
-      "@egose/shadcn-theme-ng/utils": ["./dist/utils"],
-      "@egose/shadcn-theme-ng/icon": ["./dist/icon"],
-      "@egose/shadcn-theme-ng/spinner": ["./dist/spinner"],
-      "@egose/shadcn-theme-ng/badge": ["./dist/badge"],
-      "@egose/shadcn-theme-ng/input": ["./dist/input"],
-      "@egose/shadcn-theme-ng/select": ["./dist/select"],
-      "@egose/shadcn-theme-ng/button": ["./dist/button"],
-      "@egose/shadcn-theme-ng/accordion": ["./dist/accordion"],
-      "@egose/shadcn-theme-ng/alert": ["./dist/alert"],
-      "@egose/shadcn-theme-ng/switch": ["./dist/switch"],
-      "@egose/shadcn-theme-ng/label": ["./dist/label"],
-      "@egose/shadcn-theme-ng/form-field": ["./dist/form-field"],
-      "@egose/shadcn-theme-ng/form-field-simple": ["./dist/form-field-simple"],
-      "@egose/shadcn-theme-ng/checkbox": ["./dist/checkbox"],
-      "@egose/shadcn-theme-ng/popover": ["./dist/popover"],
-      "@egose/shadcn-theme-ng/calendar": ["./dist/calendar"],
-      "@egose/shadcn-theme-ng/date-picker": ["./dist/date-picker"],
-      "@egose/shadcn-theme-ng/dialog": ["./dist/dialog"],
-      "@egose/shadcn-theme-ng/menu": ["./dist/menu"],
-      "@egose/shadcn-theme-ng/radio-group": ["./dist/radio-group"],
-      "@egose/shadcn-theme-ng/separator": ["./dist/separator"],
-      "@egose/shadcn-theme-ng/sheet": ["./dist/sheet"],
-      "@egose/shadcn-theme-ng/tabs": ["./dist/tabs"],
-      "@egose/shadcn-theme-ng/tooltip": ["./dist/tooltip"],
-      "@egose/shadcn-theme-ng/form-select": ["./dist/form-select"],
-      "@egose/shadcn-theme-ng/form-text-input": ["./dist/form-text-input"],
-      "@egose/shadcn-theme-ng/form-textarea": ["./dist/form-textarea"],
-      "@egose/shadcn-theme-ng/form-date-picker": ["./dist/form-date-picker"],
-      "@egose/shadcn-theme-ng/basic-alert": ["./dist/basic-alert"],
-      "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"],
-      "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
-      "@egose/shadcn-theme-ng/autocomplete": ["./dist/autocomplete"],
-      "@egose/shadcn-theme-ng/searchable-multiselect": ["./dist/searchable-multiselect"],
-      "@egose/shadcn-theme-ng/form-searchable-multiselect": ["./dist/form-searchable-multiselect"],
-      "@egose/shadcn-theme-ng/form-checkbox": ["./dist/form-checkbox"],
-      "@egose/shadcn-theme-ng/layout-simple": ["./dist/layout-simple"]
-    },
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "@egose/shadcn-theme-ng/accordion": ["./projects/accordion/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/alert": ["./projects/alert/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/alert-dialog": ["./projects/alert-dialog/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/aspect-ratio": ["./projects/aspect-ratio/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/autocomplete": ["./projects/autocomplete/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/avatar": ["./projects/avatar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/badge": ["./projects/badge/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/breadcrumb": ["./projects/breadcrumb/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/button": ["./projects/button/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/button-group": ["./projects/button-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/calendar": ["./projects/calendar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/card": ["./projects/card/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/carousel": ["./projects/carousel/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/checkbox": ["./projects/checkbox/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/collapsible": ["./projects/collapsible/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/combobox": ["./projects/combobox/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/command": ["./projects/command/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/context-menu": ["./projects/context-menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/date-picker": ["./projects/date-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/dialog": ["./projects/dialog/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/drawer": ["./projects/drawer/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/dropdown-menu": ["./projects/dropdown-menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/empty": ["./projects/empty/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/field": ["./projects/field/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/hover-card": ["./projects/hover-card/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/icon": ["./projects/icon/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/input": ["./projects/input/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/input-group": ["./projects/input-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/input-otp": ["./projects/input-otp/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/item": ["./projects/item/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/kbd": ["./projects/kbd/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/label": ["./projects/label/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/menubar": ["./projects/menubar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/native-select": ["./projects/native-select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/navigation-menu": ["./projects/navigation-menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/pagination": ["./projects/pagination/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/popover": ["./projects/popover/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/progress": ["./projects/progress/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/radio-group": ["./projects/radio-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/resizable": ["./projects/resizable/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/scroll-area": ["./projects/scroll-area/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/select": ["./projects/select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/separator": ["./projects/separator/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/sheet": ["./projects/sheet/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/sidebar": ["./projects/sidebar/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/skeleton": ["./projects/skeleton/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/slider": ["./projects/slider/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/sonner": ["./projects/sonner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/spinner": ["./projects/spinner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/switch": ["./projects/switch/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/table": ["./projects/table/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/tabs": ["./projects/tabs/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/textarea": ["./projects/textarea/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/toggle": ["./projects/toggle/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/toggle-group": ["./projects/toggle-group/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/tooltip": ["./projects/tooltip/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/typography": ["./projects/typography/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/utils": ["./projects/utils/src/public-api.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -275,6 +297,216 @@
     },
     {
       "path": "./projects/menu/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/alert-dialog/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/alert-dialog/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/aspect-ratio/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/aspect-ratio/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/avatar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/avatar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/breadcrumb/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/breadcrumb/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/button-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/button-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/card/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/card/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/carousel/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/carousel/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/collapsible/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/collapsible/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/combobox/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/combobox/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/command/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/command/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/context-menu/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/context-menu/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/drawer/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/drawer/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dropdown-menu/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/dropdown-menu/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/empty/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/empty/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/field/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/field/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/hover-card/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/hover-card/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/input-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/input-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/input-otp/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/input-otp/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/item/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/item/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/kbd/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/kbd/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/menubar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/menubar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/native-select/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/native-select/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/navigation-menu/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/navigation-menu/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/pagination/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/pagination/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/progress/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/progress/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/resizable/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/resizable/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/scroll-area/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/scroll-area/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/sidebar/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/sidebar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/skeleton/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/skeleton/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/slider/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/slider/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/table/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/table/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/textarea/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/textarea/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/toggle/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/toggle/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/toggle-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/toggle-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/typography/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/typography/tsconfig.spec.json"
     }
   ]
 }

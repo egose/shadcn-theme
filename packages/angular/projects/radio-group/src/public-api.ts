@@ -4,15 +4,15 @@
 
 import { NgModule } from '@angular/core';
 
-import { HlmRadio } from './lib/radio';
-import { HlmRadioGroup } from './lib/radio-group';
-import { HlmRadioIndicator } from './lib/radio-indicator';
+import { HlmRadio } from './lib/hlm-radio';
+import { HlmRadioGroup } from './lib/hlm-radio-group';
+import { HlmRadioIndicator } from './lib/hlm-radio-indicator';
 
-export * from './lib/radio';
-export * from './lib/radio-group';
-export * from './lib/radio-indicator';
+export * from './lib/hlm-radio';
+export * from './lib/hlm-radio-group';
+export * from './lib/hlm-radio-indicator';
 
-export const HlmRadioGroupImports = [HlmRadioGroup, HlmRadio, HlmRadioIndicator];
+export const HlmRadioGroupImports = [HlmRadioGroup, HlmRadio, HlmRadioIndicator] as const;
 
 @NgModule({
   imports: [...HlmRadioGroupImports],

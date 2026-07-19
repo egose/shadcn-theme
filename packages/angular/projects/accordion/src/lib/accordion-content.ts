@@ -6,7 +6,7 @@ import type { ClassValue } from 'clsx';
 @Component({
   selector: 'hlm-accordion-content',
   template: `
-    <div [attr.inert]="_addInert()" style="tw:overflow:hidden">
+    <div [attr.inert]="_inert()" style="tw:overflow:hidden">
       <div class="tw:flex tw:flex-col tw:gap-4 tw:text-balance tw:pb-4 tw:pt-0">
         <ng-content />
       </div>

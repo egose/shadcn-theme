@@ -30,6 +30,65 @@ async function getAllFiles(dir) {
   return files;
 }
 
+async function getProjectDependencies(name, knownProjects, pkgName) {
+  const srcDir = join(projectDir, name, 'src');
+  const files = await getAllFiles(srcDir);
+  const deps = new Set();
+  const importRegex = new RegExp(`${pkgName}/([a-z0-9-]+)`, 'g');
+
+  for (const file of files) {
+    if (!file.endsWith('.ts')) continue;
+
+    const content = await readFile(file, 'utf8');
+    let match;
+
+    while ((match = importRegex.exec(content))) {
+      const dep = match[1];
+      if (dep !== name && knownProjects.has(dep)) deps.add(dep);
+    }
+  }
+
+  return deps;
+}
+
+async function sortProjectsForBuild(projects, pkgName) {
+  const projectSet = new Set(projects);
+  const dependencyMap = new Map();
+  const inverseDependencyMap = new Map();
+
+  for (const name of projects) {
+    const deps = await getProjectDependencies(name, projectSet, pkgName);
+    dependencyMap.set(name, deps);
+
+    for (const dep of deps) {
+      if (!inverseDependencyMap.has(dep)) inverseDependencyMap.set(dep, new Set());
+      inverseDependencyMap.get(dep).add(name);
+    }
+  }
+
+  const ready = projects.filter((name) => dependencyMap.get(name).size === 0).sort();
+  const ordered = [];
+
+  while (ready.length > 0) {
+    const name = ready.shift();
+    ordered.push(name);
+
+    for (const dependent of inverseDependencyMap.get(name) ?? []) {
+      const remaining = dependencyMap.get(dependent);
+      remaining.delete(name);
+      if (remaining.size === 0) {
+        ready.push(dependent);
+        ready.sort();
+      }
+    }
+  }
+
+  if (ordered.length === projects.length) return ordered;
+
+  const remaining = projects.filter((name) => !ordered.includes(name)).sort();
+  return [...ordered, ...remaining];
+}
+
 /**
  * Replace text in a file
  * @param {string} filePath - file path
@@ -61,17 +120,20 @@ async function buildAll() {
   console.log('Angular projects:', projects);
 
   await rm('./dist', { recursive: true, force: true });
+  await fse.ensureDir('./dist');
 
   const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf8'));
   const paths = tsconfig.compilerOptions?.paths || {};
   const pkgName = '@egose/shadcn-theme-ng';
   const matchingKeys = Object.keys(paths).filter((key) => key.startsWith(pkgName));
   const namesWithoutPrefix = matchingKeys.map((key) => key.replace(`${pkgName}/`, ''));
+  const orderedNames = await sortProjectsForBuild(
+    namesWithoutPrefix.filter((name) => projects.includes(name)),
+    pkgName,
+  );
 
   const exports = {};
-  namesWithoutPrefix.forEach((name) => {
-    if (!projects.includes(name)) return;
-
+  orderedNames.forEach((name) => {
     try {
       execSync(`pnpm ng build ${name}`);
       exports[`./${name}`] = {
