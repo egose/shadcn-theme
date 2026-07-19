@@ -2,5 +2,6 @@
   "componentsPath": "libs/ui",
   "buildable": true,
   "generateAs": "library",
-  "importAlias": "@egose/shadcn-theme-ng"
+  "importAlias": "@egose/shadcn-theme-ng",
+  "style": "vega"
 }
