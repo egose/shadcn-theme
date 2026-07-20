@@ -15,24 +15,16 @@ import { EgLayoutSimple, MenuItem, MenuGroup } from '@egose/shadcn-theme-ng/layo
 
 type Country = { name: string; code: string; flag: string };
 
-// All 70 component demos, grouped by their natural category (mirrors the sidebar in components.ts).
+// All 70 component demos, grouped by their natural category. "Existing" items are
+// merged back into the appropriate categories — there is no special "Existing" group.
 const COMPONENT_GROUPS: MenuGroup[] = [
-  {
-    label: 'Existing',
-    items: [
-      { label: 'Button', link: '/components/button' },
-      { label: 'Badge', link: '/components/badge' },
-      { label: 'Icon', link: '/components/icon' },
-      { label: 'Alert', link: '/components/alert' },
-      { label: 'Accordion', link: '/components/accordion' },
-      { label: 'Spinner', link: '/components/spinner' },
-      { label: 'Form Field', link: '/components/form-field' },
-    ],
-  },
   {
     label: 'Buttons & Indicators',
     items: [
+      { label: 'Button', link: '/components/button' },
       { label: 'Button Group', link: '/components/button-group' },
+      { label: 'Icon', link: '/components/icon' },
+      { label: 'Spinner', link: '/components/spinner' },
       { label: 'Toggle', link: '/components/toggle' },
       { label: 'Toggle Group', link: '/components/toggle-group' },
       { label: 'Switch', link: '/components/switch' },
@@ -56,6 +48,7 @@ const COMPONENT_GROUPS: MenuGroup[] = [
       { label: 'Date Picker', link: '/components/date-picker' },
       { label: 'Calendar', link: '/components/calendar' },
       { label: 'Field', link: '/components/field' },
+      { label: 'Form Field', link: '/components/form-field' },
       { label: 'Form Checkbox', link: '/components/form-checkbox' },
       { label: 'Form Date Picker', link: '/components/form-date-picker' },
       { label: 'Form Field Simple', link: '/components/form-field-simple' },
@@ -85,6 +78,7 @@ const COMPONENT_GROUPS: MenuGroup[] = [
   {
     label: 'Layout & Navigation',
     items: [
+      { label: 'Accordion', link: '/components/accordion' },
       { label: 'Collapsible', link: '/components/collapsible' },
       { label: 'Breadcrumb', link: '/components/breadcrumb' },
       { label: 'Navigation Menu', link: '/components/navigation-menu' },
@@ -99,9 +93,11 @@ const COMPONENT_GROUPS: MenuGroup[] = [
   {
     label: 'Data Display',
     items: [
+      { label: 'Alert', link: '/components/alert' },
+      { label: 'Basic Alert', link: '/components/basic-alert' },
+      { label: 'Badge', link: '/components/badge' },
       { label: 'Card', link: '/components/card' },
       { label: 'Avatar', link: '/components/avatar' },
-      { label: 'Basic Alert', link: '/components/basic-alert' },
       { label: 'Table', link: '/components/table' },
       { label: 'Kbd', link: '/components/kbd' },
       { label: 'Separator', link: '/components/separator' },
@@ -131,9 +127,6 @@ export class App {
   protected title = 'angular';
 
   iconPath = 'assets/logo.png';
-
-  // Use groups (rendered as hover-dropdowns in the header) for full 70 item inventory.
-  leftMenuGroups: MenuGroup[] = COMPONENT_GROUPS;
 
   // Quick-access left menus that always appear in the header (regardless of grouping).
   leftMenus: MenuItem[] = [
