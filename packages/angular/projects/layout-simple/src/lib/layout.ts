@@ -61,6 +61,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   leftMenus = input<MenuItem[]>([]);
   leftMenuGroups = input<MenuGroup[]>([]);
   rightMenus = input<MenuItem[]>([]);
+  topMenus = input<MenuItem[]>([]);
   userMenus = input<UserMenuSection[]>([]);
   logo = input<string>('assets/logo.png');
   logoLink = input<string>('/');
@@ -73,10 +74,12 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   /** Container class inputs */
   leftMenuClass = input<ClassValue>('', { alias: 'leftClass' });
   rightMenuClass = input<ClassValue>('', { alias: 'rightClass' });
+  topMenuClass = input<ClassValue>('', { alias: 'topClass' });
 
   /** Link/button base class inputs */
   leftLinkClass = input<ClassValue>('', { alias: 'leftLinkClass' });
   rightLinkClass = input<ClassValue>('', { alias: 'rightLinkClass' });
+  topLinkClass = input<ClassValue>('', { alias: 'topLinkClass' });
 
   searchEnabled = input<boolean>(false);
   loading = input<boolean>(false);
@@ -103,10 +106,22 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   /** Computed merged classes for containers */
   protected readonly _computedLeftClass = computed(() => hlm(commonLinkGroupClasses, this.leftMenuClass()));
   protected readonly _computedRightClass = computed(() => hlm(commonLinkGroupClasses, this.rightMenuClass()));
+  protected readonly _computedTopClass = computed(() =>
+    hlm(
+      'tw:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-2 tw:bg-gray-50 tw:border-b tw:border-gray-200',
+      this.topMenuClass(),
+    ),
+  );
 
   /** Computed merged classes for link/button elements */
   protected readonly _computedLeftLinkClass = computed(() => hlm(commonLinkClasses, this.leftLinkClass()));
   protected readonly _computedRightLinkClass = computed(() => hlm(commonLinkClasses, this.rightLinkClass()));
+  protected readonly _computedTopLinkClass = computed(() =>
+    hlm(
+      'tw:text-secondary tw:visited:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline tw:text-sm',
+      this.topLinkClass(),
+    ),
+  );
 
   mobileMenuItemClass = commonLinkClasses;
 

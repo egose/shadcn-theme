@@ -121,11 +121,28 @@
   </header>
 
   @let _topMenus = leftMenus().concat(rightMenus()); @let _userMenus = userMenus(); @let _leftMenuGroups =
-  leftMenuGroups();
+  leftMenuGroups(); @let _topMenuItems = topMenus();
+
+  <!-- Top menus (desktop) -->
+  @if (_topMenuItems.length > 0) {
+  <nav [class]="_computedTopClass()">
+    @for (item of _topMenuItems; track item.label) { @if (item.link) {
+    <a [routerLink]="item.link" [class]="hlm(_computedTopLinkClass(), item.class || '')"> {{ item.label }} </a>
+    } @else {
+    <button type="button" (click)="item.action?.()" [class]="hlm(_computedTopLinkClass(), item.class || '')">
+      {{ item.label }}
+    </button>
+    } }
+  </nav>
+  }
 
   <!-- Mobile menu -->
   @if (isMobile() && mobileMenuOpen) {
   <div class="tw:w-full tw:border-none">
+    @if (_topMenuItems.length > 0) {
+    <eg-layout-simple-mobile-menu-group [items]="_topMenuItems" (itemClick)="toggleMobileMenu()" />
+    }
+
     <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
 
     @for (group of _leftMenuGroups; track $index) { @if (group.items && group.items.length > 0) {
