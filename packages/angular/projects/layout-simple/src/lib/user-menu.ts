@@ -3,10 +3,16 @@ import { CommonModule } from '@angular/common';
 import { provideIcons } from '@ng-icons/core';
 import { lucideUser } from '@ng-icons/lucide';
 import { RouterLink } from '@angular/router';
-import { BrnMenuTrigger } from '@spartan-ng/brain/menu';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
-import { HlmMenu, HlmMenuGroup, HlmMenuItem, HlmMenuLabel, HlmMenuSeparator } from '@egose/shadcn-theme-ng/menu';
+import {
+  HlmDropdownMenu,
+  HlmDropdownMenuGroup,
+  HlmDropdownMenuItem,
+  HlmDropdownMenuLabel,
+  HlmDropdownMenuSeparator,
+  HlmDropdownMenuTrigger,
+} from '@egose/shadcn-theme-ng/dropdown-menu';
 import { NgIcon } from '@ng-icons/core';
 
 // Interface for menu items
@@ -29,12 +35,12 @@ export interface UserMenuSection {
   selector: 'eg-layout-simple-user-menu',
   imports: [
     CommonModule,
-    BrnMenuTrigger,
-    HlmMenu,
-    HlmMenuItem,
-    HlmMenuLabel,
-    HlmMenuSeparator,
-    HlmMenuGroup,
+    HlmDropdownMenu,
+    HlmDropdownMenuTrigger,
+    HlmDropdownMenuItem,
+    HlmDropdownMenuLabel,
+    HlmDropdownMenuSeparator,
+    HlmDropdownMenuGroup,
     HlmButton,
     NgIcon,
     RouterLink,
@@ -53,73 +59,84 @@ export interface UserMenuSection {
 
     <div class="tw:flex tw:w-full tw:items-center tw:justify-center">
       @if (_menuTrigger) {
-        <div [brnMenuTriggerFor]="menu"><ng-container *ngTemplateOutlet="_menuTrigger"></ng-container></div>
+        <button
+          type="button"
+          [hlmDropdownMenuTrigger]="menu"
+          class="tw:cursor-pointer tw:bg-transparent tw:border-0 tw:p-0"
+        >
+          <ng-container *ngTemplateOutlet="_menuTrigger" />
+        </button>
       } @else {
         <button
           hlmButton
           variant="primary"
           size="icon"
-          align="end"
-          [brnMenuTriggerFor]="menu"
+          [hlmDropdownMenuTrigger]="menu"
           [icon]="iconTemplate"
           class="tw:rounded-full tw:border tw:border-gray-400"
         ></button>
       }
-    </div>
 
-    <ng-template #menu>
-      <hlm-menu class="tw:w-56">
-        @for (section of menus(); track section) {
-          @if (section.label) {
-            <hlm-menu-label>{{ section.label }}</hlm-menu-label>
-          }
-          @if (section.items?.length) {
-            <hlm-menu-group>
-              @for (item of section.items; track item) {
-                @if (item.link) {
-                  <a
-                    hlmMenuItem
-                    [routerLink]="item.link"
-                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
-                  >
-                    @if (item.icon) {
-                      <ng-icon
-                        [svg]="item.icon"
-                        size="1rem"
-                        [class]="
-                          hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2', item.class)
-                        "
-                      />
-                    }
-                    <span>{{ item.label }}</span>
-                  </a>
-                } @else {
-                  <button
-                    hlmMenuItem
-                    (click)="item.action?.()"
-                    [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
-                  >
-                    @if (item.icon) {
-                      <ng-icon
-                        [svg]="item.icon"
-                        size="1rem"
-                        [class]="
-                          hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2', item.class)
-                        "
-                      />
-                    }
-                    <span>{{ item.label }}</span>
-                  </button>
+      <ng-template #menu>
+        <div hlmDropdownMenu class="tw:w-56">
+          @for (section of menus(); track section) {
+            @if (section.label) {
+              <div hlmDropdownMenuLabel>{{ section.label }}</div>
+            }
+            @if (section.items?.length) {
+              <div hlmDropdownMenuGroup>
+                @for (item of section.items; track item) {
+                  @if (item.link) {
+                    <a
+                      hlmDropdownMenuItem
+                      [routerLink]="item.link"
+                      [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                    >
+                      @if (item.icon) {
+                        <ng-icon
+                          [svg]="item.icon"
+                          size="1rem"
+                          [class]="
+                            hlm(
+                              'tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2',
+                              item.class
+                            )
+                          "
+                        />
+                      }
+                      <span>{{ item.label }}</span>
+                    </a>
+                  } @else {
+                    <button
+                      hlmDropdownMenuItem
+                      (click)="item.action?.()"
+                      [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                    >
+                      @if (item.icon) {
+                        <ng-icon
+                          [svg]="item.icon"
+                          size="1rem"
+                          [class]="
+                            hlm(
+                              'tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2',
+                              item.class
+                            )
+                          "
+                        />
+                      }
+                      <span>{{ item.label }}</span>
+                    </button>
+                  }
                 }
-              }
-            </hlm-menu-group>
+              </div>
+            }
+            @if (section.separator) {
+              <div hlmDropdownMenuSeparator></div>
+            }
           }
-          @if (section.separator) {
-            <hlm-menu-separator />
-          }
-        }
-      </hlm-menu>
-    </ng-template>
+        </div>
+      </ng-template>
+    </div>
   `,
 })
 export class EgLayoutSimpleUserMenu {

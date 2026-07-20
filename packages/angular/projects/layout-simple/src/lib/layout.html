@@ -38,7 +38,47 @@
         <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
           {{ item.label }}
         </button>
-        } }
+        } } @for (group of leftMenuGroups(); track $index) {
+        <div class="tw:relative tw:group">
+          <button
+            type="button"
+            class="tw:text-left tw:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline tw:py-1 tw:flex tw:items-center tw:gap-1"
+          >
+            {{ group.label ?? 'Menu' }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="tw:h-3 tw:w-3"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            class="tw:absolute tw:left-0 tw:top-full tw:mt-1 tw:hidden tw:group-hover:flex tw:flex-col tw:min-w-[12rem] tw:bg-popover tw:text-popover-foreground tw:border tw:border-gray-200 tw:rounded-md tw:shadow-md tw:py-1 tw:z-50"
+          >
+            @if (group.label) {
+            <div class="tw:px-3 tw:py-1 tw:text-xs tw:font-semibold tw:text-muted-foreground">{{ group.label }}</div>
+            } @for (item of group.items; track item.label) { @if (item.link) {
+            <a
+              [routerLink]="item.link"
+              [class]="hlm('tw:px-3 tw:py-1.5 tw:text-sm tw:no-underline tw:hover:bg-secondary tw:cursor-pointer', item.class || '')"
+            >
+              {{ item.label }}
+            </a>
+            } @else {
+            <button
+              type="button"
+              (click)="item.action?.()"
+              [class]="hlm('tw:px-3 tw:py-1.5 tw:text-sm tw:text-left tw:hover:bg-secondary tw:cursor-pointer tw:bg-transparent tw:border-0 tw:w-full', item.class || '')"
+            >
+              {{ item.label }}
+            </button>
+            } }
+          </div>
+        </div>
+        }
       </nav>
     </div>
 
@@ -46,7 +86,6 @@
     <nav [class]="_computedRightClass()">
       @if (searchEnabled()) {
       <eg-generic-autocomplete
-        [optionTemplate]="searchOptionTemplate()"
         [loaderFn]="searchLoaderFn()"
         [transformValueToSearch]="searchTransformValueToSearch()"
         [placeholderText]="searchPlaceholderText()"
@@ -81,14 +120,21 @@
     </button>
   </header>
 
-  @let _topMenus = leftMenus().concat(rightMenus()); @let _userMenus = userMenus();
+  @let _topMenus = leftMenus().concat(rightMenus()); @let _userMenus = userMenus(); @let _leftMenuGroups =
+  leftMenuGroups();
 
   <!-- Mobile menu -->
   @if (isMobile() && mobileMenuOpen) {
-  <hlm-menu class="tw:w-full tw:border-none">
+  <div class="tw:w-full tw:border-none">
     <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
 
-    @if (_topMenus.length > 0 && _userMenus.length > 0) {
+    @for (group of _leftMenuGroups; track $index) { @if (group.items && group.items.length > 0) {
+    <eg-layout-simple-mobile-menu-group
+      [items]="group.items"
+      [label]="group.label"
+      (itemClick)="toggleMobileMenu()"
+    ></eg-layout-simple-mobile-menu-group>
+    } } @if ((_topMenus.length > 0 || _leftMenuGroups.length > 0) && _userMenus.length > 0) {
     <hr class="tw:border-gray-300 tw:my-2" />
     } @for (section of userMenus(); track section.label) {
     <eg-layout-simple-mobile-menu-group
@@ -100,7 +146,7 @@
     @if (section.separator) {
     <hr class="tw:border-gray-300 tw:my-2" />
     } }
-  </hlm-menu>
+  </div>
   }
 
   <!-- Main content -->
