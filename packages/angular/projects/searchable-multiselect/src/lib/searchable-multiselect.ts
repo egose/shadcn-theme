@@ -1,16 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  signal,
-  input,
-  output,
-  viewChild,
-  effect,
-  forwardRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, forwardRef, input, output, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { HlmAutocomplete } from '@egose/shadcn-theme-ng/autocomplete';
+import { HlmPopover, HlmPopoverContent, HlmPopoverTrigger } from '@egose/shadcn-theme-ng/popover';
+import { HlmButton } from '@egose/shadcn-theme-ng/button';
+import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
+import { ClassValue } from 'clsx';
 
 export interface SelectOption {
   label: string;
@@ -20,7 +14,7 @@ export interface SelectOption {
 @Component({
   selector: 'eg-searchable-multiselect',
   standalone: true,
-  imports: [HlmAutocomplete],
+  imports: [HlmPopover, HlmPopoverTrigger, HlmPopoverContent, HlmButton, HlmCheckbox],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -29,14 +23,13 @@ export interface SelectOption {
       multi: true,
     },
   ],
+  host: {
+    '[class]': '_hostClass()',
+  },
   template: `
     <div class="tw:flex tw:flex-col tw:gap-2 tw:w-full">
-      <!-- Selected items -->
-      <div
-        class="tw:flex tw:gap-2 tw:overflow-x-auto tw:whitespace-nowrap
-               tw:[scrollbar-width:none] tw:[-ms-overflow-style:none]
-               tw:[&::-webkit-scrollbar]:hidden"
-      >
+      <!-- Selected chips -->
+      <div class="tw:flex tw:flex-wrap tw:gap-2">
         @if (selectedItems().length === 0) {
           <span
             class="tw:bg-gray-100 tw:text-gray-400 tw:rounded-full
@@ -64,106 +57,79 @@ export interface SelectOption {
         }
       </div>
 
-      <!-- Autocomplete -->
-      <hlm-autocomplete
-        [filteredOptions]="filteredOptionLabels()"
-        [(search)]="search"
-        (valueChange)="addItemByLabel($event)"
-        [searchPlaceholderText]="this.selectedItems().length.toString() + ' of ' + this.options().length + ' selected'"
-        [onSelect]="handleSelect.bind(this)"
-        [disabled]="isDisabled"
-      />
+      <!-- Trigger -->
+      <hlm-popover>
+        <button hlmPopoverTrigger hlmButton variant="secondary" appearance="outline" type="button">
+          {{ selectedItems().length }} selected
+        </button>
+
+        <hlm-popover-content class="tw:w-64 tw:p-2">
+          <div class="tw:max-h-60 tw:overflow-auto tw:flex tw:flex-col tw:gap-1">
+            @for (option of options(); track option.value) {
+              <label
+                class="tw:flex tw:items-center tw:gap-2 tw:cursor-pointer tw:px-2 tw:py-1 tw:rounded-sm tw:hover:bg-secondary"
+              >
+                <hlm-checkbox [checked]="isSelected(option.value)" (changed)="toggle(option.value, $event)" />
+                <span class="tw:text-sm">{{ option.label }}</span>
+              </label>
+            } @empty {
+              <span class="tw:text-xs tw:text-muted-foreground tw:px-2 tw:py-1">No options</span>
+            }
+          </div>
+        </hlm-popover-content>
+      </hlm-popover>
     </div>
   `,
 })
 export class EgSearchableMultiselect implements ControlValueAccessor {
-  autoComplete = viewChild(HlmAutocomplete);
-
   /** Full option list with labels/values */
   options = input<SelectOption[]>([]);
   placeholder = input<string>('Start typing to add…');
 
+  userClass = input<ClassValue>('', { alias: 'class' });
+
   /** Value: array of selected values (string[]) */
   value = input<string[]>([]);
-  valueChange = output<string[]>(); // emits string[] of values
+  valueChange = output<string[]>();
 
-  /** Internal state */
-  search = signal<string>('');
-  selectedItems = signal<SelectOption[]>([]); // full objects for display
-  isDisabled = false;
+  protected readonly selectedItems = signal<SelectOption[]>([]);
+  protected isDisabled = false;
   private isFormBound = false;
 
-  /** Filtered **labels** for hlm-autocomplete */
-  filteredOptionLabels = computed(
-    () =>
-      (this.options() || [])
-        .filter(
-          (opt) =>
-            opt.label.toLowerCase().includes(this.search().toLowerCase()) &&
-            !this.selectedItems().some((sel) => sel.value === opt.value),
-        )
-        .map((opt) => opt.label), // convert to string[] for hlm-autocomplete
-  );
+  protected readonly _hostClass = computed(() => hlm(this.userClass()));
 
-  /** Form callbacks */
-  private onChange: (value: string[]) => void = () => {};
-  private onTouched: () => void = () => {};
-
-  constructor() {
-    // Sync `value` input to selectedItems for standalone usage
-    effect(() => {
-      if (!this.isFormBound) {
-        this.updateSelectedFromValues(this.value() || []);
-      }
-    });
+  protected isSelected(value: string): boolean {
+    return this.selectedItems().some((s) => s.value === value);
   }
 
-  /** Add by label string (from autocomplete) */
-  addItemByLabel(label: string) {
-    const opt = this.options()?.find((o) => o.label === label);
-    if (opt) {
-      this.addItem(opt.value);
+  protected toggle(value: string, checked: boolean): void {
+    if (checked) {
+      this.addItem(value);
+    } else {
+      this.removeItem(value);
     }
   }
 
-  /** Add by value string */
-  addItem(value: string) {
-    if (!this.selectedItems().some((sel) => sel.value === value)) {
+  protected addItem(value: string): void {
+    if (!this.selectedItems().some((s) => s.value === value)) {
       const opt = this.options()?.find((o) => o.value === value);
       if (!opt) return;
-      const updatedItems = [...this.selectedItems(), opt];
-      this.updateValueFromSelected(updatedItems);
+      const updated = [...this.selectedItems(), opt];
+      this.updateValueFromSelected(updated);
     }
   }
 
-  /** Remove by value string */
-  removeItem(value: string) {
-    const updatedItems = this.selectedItems().filter((i) => i.value !== value);
-    this.updateValueFromSelected(updatedItems);
+  protected removeItem(value: string): void {
+    const updated = this.selectedItems().filter((i) => i.value !== value);
+    this.updateValueFromSelected(updated);
   }
 
-  /** Clear autocomplete text */
-  clearAutocompleteText() {
-    this.autoComplete()?.clearText();
-
-    if (this.options().length === this.selectedItems().length) {
-      this.autoComplete()?.setPopoverState('closed');
-    }
-  }
-
-  handleSelect(label: string) {
-    this.clearAutocompleteText();
-  }
-
-  /** Map string[] values → full objects */
-  private updateSelectedFromValues(values: string[]) {
+  private updateSelectedFromValues(values: string[]): void {
     const opts = this.options() || [];
-    const matched = opts.filter((o) => values.includes(o.value));
-    this.selectedItems.set(matched);
+    this.selectedItems.set(opts.filter((o) => values.includes(o.value)));
   }
 
-  /** Map full objects → string[] values and emit */
-  private updateValueFromSelected(items: SelectOption[]) {
+  private updateValueFromSelected(items: SelectOption[]): void {
     this.selectedItems.set(items);
     const values = items.map((i) => i.value);
     this.valueChange.emit(values);
@@ -171,7 +137,14 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
     this.onTouched();
   }
 
+  constructor() {
+    // No effect needed; we read `value` input directly via writeValue for form-bound usage.
+  }
+
   // --- ControlValueAccessor ---
+  private onChange: (value: string[]) => void = () => {};
+  private onTouched: () => void = () => {};
+
   writeValue(values: string[] | null): void {
     this.isFormBound = true;
     this.updateSelectedFromValues(values || []);

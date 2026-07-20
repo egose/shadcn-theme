@@ -5,9 +5,7 @@ import { ClassValue } from 'clsx';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMenu } from '@ng-icons/lucide';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
-import { HlmAutocompleteOption } from '@egose/shadcn-theme-ng/autocomplete';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
-import { HlmMenu } from '@egose/shadcn-theme-ng/menu';
 import { EgLayoutSimpleUserMenu, type UserMenuSection } from './user-menu';
 import { EgGenericAutocomplete } from './search';
 import { EgLayoutSimpleSidebar } from './sidebar';
@@ -20,6 +18,11 @@ export interface MenuItem {
   link?: string; // optional router link
   action?: () => void; // optional click handler
   class?: string; // optional per-item CSS/Tailwind classes
+}
+
+export interface MenuGroup {
+  label?: string;
+  items: MenuItem[];
 }
 
 const commonLinkGroupClasses = 'tw:hidden tw:md:flex tw:space-x-4 tw:items-center';
@@ -36,7 +39,6 @@ const commonLinkClasses =
     EgLayoutSimpleMobileMenuGroup,
     EgGenericAutocomplete,
     HlmButton,
-    HlmMenu,
     NgIcon,
   ],
   providers: [
@@ -57,6 +59,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
 
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
+  leftMenuGroups = input<MenuGroup[]>([]);
   rightMenus = input<MenuItem[]>([]);
   userMenus = input<UserMenuSection[]>([]);
   logo = input<string>('assets/logo.png');
@@ -79,7 +82,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   loading = input<boolean>(false);
   searchPlaceholderText = input<string>('Select an page');
   searchEmptyText = input<string>('No pages found');
-  searchOptionTemplate = input<TemplateRef<HlmAutocompleteOption<TItem>>>();
+  searchOptionTemplate = input<TemplateRef<any>>();
   searchLoaderFn = input<(params: TParams) => Promise<TItem[]>>();
   searchTransformValueToSearch = input<(value: TItem) => string>();
 

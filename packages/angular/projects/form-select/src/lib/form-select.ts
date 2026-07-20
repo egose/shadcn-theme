@@ -5,7 +5,16 @@ import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
-import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
+import {
+  HlmSelectImports,
+  HlmSelect,
+  HlmSelectTrigger,
+  HlmSelectValue,
+  HlmSelectContent,
+  HlmSelectItem,
+  HlmSelectLabel,
+  HlmSelectPlaceholder,
+} from '@egose/shadcn-theme-ng/select';
 
 interface SelectOption {
   value: string;
@@ -18,7 +27,22 @@ interface SelectOption {
   host: {
     class: 'tw:w-full',
   },
-  imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, BrnSelectImports, HlmSelectImports],
+  imports: [
+    ReactiveFormsModule,
+    HlmFormField,
+    HlmError,
+    HlmHint,
+    HlmLabel,
+    BrnSelectImports,
+    HlmSelectImports,
+    HlmSelect,
+    HlmSelectTrigger,
+    HlmSelectValue,
+    HlmSelectContent,
+    HlmSelectItem,
+    HlmSelectLabel,
+    HlmSelectPlaceholder,
+  ],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
@@ -38,28 +62,41 @@ interface SelectOption {
         </span>
       }
 
-      <brn-select
-        [id]="cid || id()"
-        [multiple]="multiple()"
-        [placeholder]="placeholder()"
-        [formControlName]="cnm"
-        [required]="rqrd"
-      >
-        <hlm-select-trigger [class]="$selectClass()">
-          <hlm-select-value />
-        </hlm-select-trigger>
+      @if (multiple()) {
+        <brn-select-multiple hlmSelect [id]="cid || id()" [formControlName]="cnm">
+          <hlm-select-trigger [class]="$selectClass()">
+            <hlm-select-value [placeholder]="placeholder()" />
+          </hlm-select-trigger>
 
-        <hlm-select-content>
-          @if (options().length) {
-            @if (optionsLabel()) {
-              <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
+          <hlm-select-content>
+            @if (options().length) {
+              @if (optionsLabel()) {
+                <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
+              }
+              @for (option of options(); track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
             }
-            @for (option of options(); track option.value) {
-              <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
+          </hlm-select-content>
+        </brn-select-multiple>
+      } @else {
+        <brn-select hlmSelect [id]="cid || id()" [formControlName]="cnm">
+          <hlm-select-trigger [class]="$selectClass()">
+            <hlm-select-value [placeholder]="placeholder()" />
+          </hlm-select-trigger>
+
+          <hlm-select-content>
+            @if (options().length) {
+              @if (optionsLabel()) {
+                <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
+              }
+              @for (option of options(); track option.value) {
+                <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+              }
             }
-          }
-        </hlm-select-content>
-      </brn-select>
+          </hlm-select-content>
+        </brn-select>
+      }
 
       @if (err) {
         <hlm-error [class]="$errorClass()">

@@ -1,12 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
-import { HlmMenuLabel, HlmMenuGroup, HlmMenuItem } from '@egose/shadcn-theme-ng/menu';
 import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'eg-layout-simple-mobile-menu-group',
-  imports: [HlmMenuItem, HlmMenuLabel, HlmMenuGroup, NgIcon, RouterLink],
+  imports: [NgIcon, RouterLink],
   providers: [],
   template: `
     @let _label = label();
@@ -14,42 +13,43 @@ import { NgIcon } from '@ng-icons/core';
 
     @if (_items && _items.length > 0) {
       @if (_label) {
-        <hlm-menu-label>{{ _label }}</hlm-menu-label>
+        <div class="tw:px-3 tw:py-1 tw:text-xs tw:font-semibold tw:text-muted-foreground">{{ _label }}</div>
       }
-      <hlm-menu-group>
+      <div class="tw:flex tw:flex-col">
         @for (item of _items; track item.label) {
           @if (item.link) {
             <a
-              hlmMenuItem
               [routerLink]="item.link"
-              [class]="hlm('tw:cursor-pointer tw:no-underline')"
+              [class]="
+                hlm(
+                  'tw:cursor-pointer tw:no-underline tw:px-3 tw:py-2 tw:text-sm tw:hover:bg-secondary tw:rounded-sm tw:flex tw:items-center tw:gap-2'
+                )
+              "
               (click)="handleClick(item)"
             >
               @if (item.icon) {
-                <ng-icon
-                  [svg]="item.icon"
-                  size="1rem"
-                  [class]="hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2')"
-                >
-                </ng-icon>
+                <ng-icon [svg]="item.icon" size="1rem" [class]="hlm('tw:cursor-pointer tw:mr-2')"> </ng-icon>
               }
               <span>{{ item.label }}</span>
             </a>
           } @else {
-            <button hlmMenuItem (click)="handleClick(item)" [class]="hlm('tw:cursor-pointer tw:no-underline')">
+            <button
+              type="button"
+              (click)="handleClick(item)"
+              [class]="
+                hlm(
+                  'tw:cursor-pointer tw:no-underline tw:px-3 tw:py-2 tw:text-sm tw:hover:bg-secondary tw:rounded-sm tw:flex tw:items-center tw:gap-2 tw:bg-transparent tw:border-0 tw:text-left tw:w-full'
+                )
+              "
+            >
               @if (item.icon) {
-                <ng-icon
-                  [svg]="item.icon"
-                  size="1rem"
-                  [class]="hlm('tw:[_svg]:text-[inherit]! tw:[_svg]:bg-[inherit]! tw:cursor-pointer tw:mr-2')"
-                >
-                </ng-icon>
+                <ng-icon [svg]="item.icon" size="1rem" [class]="hlm('tw:cursor-pointer tw:mr-2')"> </ng-icon>
               }
               <span>{{ item.label }}</span>
             </button>
           }
         }
-      </hlm-menu-group>
+      </div>
     }
   `,
 })

@@ -1,10 +1,9 @@
 import { Component, inject, Injectable } from '@angular/core';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
+import { HlmAlert, HlmAlertIcon } from '@egose/shadcn-theme-ng/alert';
 import {
-  HlmDialog,
   HlmDialogDescription,
-  HlmDialogContent,
   HlmDialogHeader,
   HlmDialogFooter,
   HlmDialogService,
@@ -16,7 +15,17 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideTriangleAlert } from '@ng-icons/lucide';
 
 @Component({
-  imports: [HlmButton, HlmDialogDescription, HlmDialogHeader, HlmDialogFooter, HlmDialogTitle, NgIcon, HlmIcon],
+  imports: [
+    HlmButton,
+    HlmAlert,
+    HlmAlertIcon,
+    HlmDialogDescription,
+    HlmDialogHeader,
+    HlmDialogFooter,
+    HlmDialogTitle,
+    NgIcon,
+    HlmIcon,
+  ],
   standalone: true,
   providers: [provideIcons({ lucideTriangleAlert })],
   template: `
@@ -55,7 +64,7 @@ export class EgConfirmationDialogService {
 
   showConfirmationDialog({ title, description }: { title: string; description: string }) {
     return new Promise<boolean>((resolve) => {
-      const dialogRef = this.hlmDialogService.open(EgConfirmationDiaglog, {
+      const dialogRef = this.hlmDialogService.open<boolean>(EgConfirmationDiaglog, {
         context: { title, description },
         contentClass: '',
       });

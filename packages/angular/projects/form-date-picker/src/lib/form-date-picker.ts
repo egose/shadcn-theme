@@ -2,7 +2,7 @@ import { Component, computed, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
-import { HlmDatePicker } from '@egose/shadcn-theme-ng/date-picker';
+import { HlmDatePicker, HlmDatePickerInput } from '@egose/shadcn-theme-ng/date-picker';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
@@ -14,7 +14,7 @@ let nextId = 0;
   host: {
     class: 'tw:w-full',
   },
-  imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, HlmDatePicker],
+  imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, HlmDatePicker, HlmDatePickerInput],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
@@ -34,16 +34,8 @@ let nextId = 0;
         </span>
       }
 
-      <hlm-date-picker
-        [buttonId]="cid || id()"
-        [min]="min()"
-        [max]="max()"
-        [formControlName]="cnm"
-        [autoCloseOnSelect]="autoCloseOnSelect()"
-        [required]="rqrd"
-        [class]="$pickerClass()"
-      >
-        <span>{{ placeholder() }}</span>
+      <hlm-date-picker [min]="min()" [max]="max()" [formControlName]="cnm" [class]="$pickerClass()">
+        <hlm-date-picker-input [inputId]="cid || id()" [placeholder]="placeholder()" />
       </hlm-date-picker>
 
       @if (err) {

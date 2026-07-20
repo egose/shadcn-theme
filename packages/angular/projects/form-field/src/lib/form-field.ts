@@ -8,7 +8,7 @@ import {
   input,
 } from '@angular/core';
 import { ControlContainer, FormGroupDirective } from '@angular/forms';
-import { BrnFormFieldControl } from '@spartan-ng/brain/form-field';
+import { BrnField, BrnFieldControl } from '@spartan-ng/brain/field';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { HlmError } from './error';
@@ -28,6 +28,7 @@ import { HlmError } from './error';
     }
   `,
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
+  hostDirectives: [BrnField],
   host: {
     '[class]': '_computedClass()',
   },
@@ -36,18 +37,20 @@ import { HlmError } from './error';
 export class HlmFormField {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => hlm('tw:block tw:space-y-2', this.userClass()));
-  public readonly control = contentChild(BrnFormFieldControl);
+  public readonly control = contentChild(BrnFieldControl);
 
   public readonly errorChildren = contentChildren(HlmError);
 
-  protected readonly _hasDisplayedMessage = computed<'error' | 'hint'>(() =>
-    this.errorChildren() && this.errorChildren().length > 0 && this.control()?.errorState() ? 'error' : 'hint',
-  );
+  protected readonly _hasDisplayedMessage = computed<'error' | 'hint'>(() => {
+    const errors = this.control()?.errors();
+    const hasErrors = !!errors && Object.keys(errors).length > 0;
+    return this.errorChildren() && this.errorChildren().length > 0 && hasErrors ? 'error' : 'hint';
+  });
 
   constructor() {
     effect(() => {
       if (!this.control()) {
-        throw new Error('hlm-form-field must contain a BrnFormFieldControl.');
+        throw new Error('hlm-form-field must contain a BrnFieldControl.');
       }
     });
   }

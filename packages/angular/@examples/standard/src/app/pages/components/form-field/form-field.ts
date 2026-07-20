@@ -34,7 +34,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideInfo } from '@ng-icons/lucide';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { toast } from 'ngx-sonner';
-import { SheetExample } from './sheet';
 
 @Component({
   imports: [
@@ -109,13 +108,11 @@ class ConfirmationDiaglog {
     NgIcon,
     HlmIcon,
     EgFormSearchableMultiselect,
-    SheetExample,
   ],
   providers: [provideIcons({ lucideInfo })],
   template: `
     <div class="">
       <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Field</h3>
-      <sheet-example />
       <!-- Info Alert above the form -->
       <div hlmAlert variant="info" class="tw:mb-4">
         <ng-icon hlm hlmAlertIcon name="lucideInfo" />
