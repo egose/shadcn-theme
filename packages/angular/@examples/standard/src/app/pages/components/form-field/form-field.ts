@@ -111,141 +111,170 @@ class ConfirmationDiaglog {
   ],
   providers: [provideIcons({ lucideInfo })],
   template: `
-    <div class="">
-      <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Field</h3>
-      <!-- Info Alert above the form -->
-      <div hlmAlert variant="info" class="tw:mb-4">
-        <ng-icon hlm hlmAlertIcon name="lucideInfo" />
-        <h4 hlmAlertTitle>Form Information</h4>
-        <p hlmAlertDescription>
-          Please fill out all required fields before submitting. Fields marked with * are mandatory.
+    <section class="tw:space-y-8">
+      <div class="tw:max-w-4xl tw:space-y-3">
+        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Form Field</h3>
+        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
+          This page is the strongest end-to-end form example in the gallery, so it now presents the inputs inside a more
+          product-like onboarding flow instead of a raw field dump.
         </p>
       </div>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tw:space-y-6">
-        <!-- Grid container -->
-        <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-6">
-          <eg-form-text-input
-            label="Full Name"
-            placeholder="Enter your full name"
-            controlName="name"
-            [required]="true"
-            [error]="getError('name')"
-            hint="First and last name required"
-          ></eg-form-text-input>
 
-          <eg-form-text-input
-            label="Email Address"
-            type="email"
-            placeholder="Enter your email"
-            controlName="email"
-            [error]="getError('email')"
-            hint="We'll never share your email"
-          ></eg-form-text-input>
+      <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.4fr)_20rem]">
+        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm sm:tw:p-8">
+          <div hlmAlert variant="info" class="tw:mb-6">
+            <ng-icon hlm hlmAlertIcon name="lucideInfo" />
+            <h4 hlmAlertTitle>Complete your profile</h4>
+            <p hlmAlertDescription>
+              Use this page to review how the packaged form wrappers behave in a realistic onboarding flow.
+            </p>
+          </div>
 
-          <eg-form-text-input
-            label="Password"
-            type="password"
-            placeholder="Enter a secure password"
-            controlName="password"
-            [error]="getError('password')"
-            hint="At least 6 characters"
-          ></eg-form-text-input>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tw:space-y-6">
+            <div class="tw:grid tw:grid-cols-1 tw:md:grid-cols-2 tw:gap-6">
+              <eg-form-text-input
+                label="Full Name"
+                placeholder="Enter your full name"
+                controlName="name"
+                [required]="true"
+                [error]="getError('name')"
+                hint="First and last name required"
+              ></eg-form-text-input>
 
-          <!-- New Numeric Input for Age -->
-          <eg-form-text-input
-            label="Age"
-            type="number"
-            placeholder="Enter your age"
-            controlName="age"
-            [error]="getError('age')"
-            max="100"
-            hint="Age must be between 1 and 120"
-          ></eg-form-text-input>
+              <eg-form-text-input
+                label="Email Address"
+                type="email"
+                placeholder="Enter your email"
+                controlName="email"
+                [error]="getError('email')"
+                hint="We'll never share your email"
+              ></eg-form-text-input>
 
-          <eg-form-date-picker
-            label="Date of Birth"
-            controlName="birthday"
-            pickerClass="tw:w-[280px]"
-            [min]="minDate"
-            [max]="maxDate"
-            placeholder="Pick a date"
-            [error]="getError('birthday')"
-            hint="Your date of birth is used to calculate your age."
-          ></eg-form-date-picker>
+              <eg-form-text-input
+                label="Password"
+                type="password"
+                placeholder="Enter a secure password"
+                controlName="password"
+                [error]="getError('password')"
+                hint="At least 6 characters"
+              ></eg-form-text-input>
 
-          <eg-form-select
-            [label]="'Gender'"
-            [controlName]="'gender'"
-            [optionsLabel]="'Gender'"
-            [options]="genderOptions"
-            [required]="true"
-            [error]="getError('gender')"
-          ></eg-form-select>
+              <!-- New Numeric Input for Age -->
+              <eg-form-text-input
+                label="Age"
+                type="number"
+                placeholder="Enter your age"
+                controlName="age"
+                [error]="getError('age')"
+                max="100"
+                hint="Age must be between 1 and 120"
+              ></eg-form-text-input>
 
-          <eg-form-select
-            [label]="'Country'"
-            [controlName]="'country'"
-            [optionsLabel]="'Countries'"
-            [options]="countryOptions"
-            [required]="true"
-            [error]="getError('country')"
-          ></eg-form-select>
+              <eg-form-date-picker
+                label="Date of Birth"
+                controlName="birthday"
+                pickerClass="tw:w-[280px]"
+                [min]="minDate"
+                [max]="maxDate"
+                placeholder="Pick a date"
+                [error]="getError('birthday')"
+                hint="Your date of birth is used to calculate your age."
+              ></eg-form-date-picker>
 
-          <!-- Multi-select for Hobbies -->
-          <eg-form-select
-            [label]="'Hobbies'"
-            [controlName]="'hobbies'"
-            [optionsLabel]="'Select your hobbies'"
-            [options]="hobbiesOptions"
-            [required]="true"
-            [multiple]="true"
-            [error]="getError('hobbies')"
-          ></eg-form-select>
+              <eg-form-select
+                [label]="'Gender'"
+                [controlName]="'gender'"
+                [optionsLabel]="'Gender'"
+                [options]="genderOptions"
+                [required]="true"
+                [error]="getError('gender')"
+              ></eg-form-select>
 
-          <!-- Full-width textarea -->
-          <eg-form-textarea
-            class="tw:md:col-span-2"
-            textareaClass="tw:min-h-[100px]"
-            label="About You"
-            placeholder="Tell us something about yourself"
-            controlName="about"
-            [error]="getError('about')"
-            hint="Minimum 20 characters"
-          ></eg-form-textarea>
+              <eg-form-select
+                [label]="'Country'"
+                [controlName]="'country'"
+                [optionsLabel]="'Countries'"
+                [options]="countryOptions"
+                [required]="true"
+                [error]="getError('country')"
+              ></eg-form-select>
 
-          <eg-form-searchable-multiselect
-            [options]="memberOptions"
-            controlName="members"
-            label="Members"
-            [error]="getError('members')"
-            hint="Members"
-          />
+              <!-- Multi-select for Hobbies -->
+              <eg-form-select
+                [label]="'Hobbies'"
+                [controlName]="'hobbies'"
+                [optionsLabel]="'Select your hobbies'"
+                [options]="hobbiesOptions"
+                [required]="true"
+                [multiple]="true"
+                [error]="getError('hobbies')"
+              ></eg-form-select>
 
-          <eg-form-checkbox
-            controlName="agreed"
-            label="Agreed"
-            [error]="getError('agreed')"
-            hint="We'll never share your email"
-          />
-        </div>
+              <!-- Full-width textarea -->
+              <eg-form-textarea
+                class="tw:md:col-span-2"
+                textareaClass="tw:min-h-[100px]"
+                label="About You"
+                placeholder="Tell us something about yourself"
+                controlName="about"
+                [error]="getError('about')"
+                hint="Minimum 20 characters"
+              ></eg-form-textarea>
 
-        <!-- Actions -->
-        <div class="tw:flex tw:gap-2 tw:pt-4">
-          <button type="submit" hlmButton [disabled]="form.invalid || loading">
-            {{ loading ? 'Submitting...' : 'Submit' }}
-          </button>
-          <button type="button" hlmButton variant="warning" variantType="outline" (click)="onReset()">Reset</button>
-        </div>
-      </form>
+              <eg-form-searchable-multiselect
+                [options]="memberOptions"
+                controlName="members"
+                label="Members"
+                [error]="getError('members')"
+                hint="Members"
+              />
 
-      <!-- Submitted Data -->
-      <!-- @if (submitted) {
-      <div class="tw:mt-6 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
-        <h3 class="tw:font-semibold tw:mb-2">Form Submitted:</h3>
-        <pre>{{ form.value | json }}</pre>
+              <eg-form-checkbox
+                controlName="agreed"
+                label="Agreed"
+                [error]="getError('agreed')"
+                hint="Required before the profile can be submitted"
+              />
+            </div>
+
+            <div class="tw:flex tw:flex-wrap tw:gap-2 tw:pt-2">
+              <button type="submit" hlmButton [disabled]="form.invalid || loading">
+                {{ loading ? 'Submitting...' : 'Submit profile' }}
+              </button>
+              <button type="button" hlmButton variant="warning" variantType="outline" (click)="onReset()">Reset</button>
+            </div>
+          </form>
+        </article>
+
+        <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
+          <div>
+            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Why it works</p>
+            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Form wrappers in context</h4>
+          </div>
+
+          <div class="tw:space-y-3">
+            <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Mixed field types</p>
+              <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
+                Text, select, date picker, checkbox, and multiselect all share one rhythm.
+              </p>
+            </div>
+            <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Validation feedback</p>
+              <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
+                Error, hint, and required states remain easy to review in a realistic layout.
+              </p>
+            </div>
+            <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Submission flow</p>
+              <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
+                The dialog preview and confirmation reset still exercise the supporting components.
+              </p>
+            </div>
+          </div>
+        </aside>
       </div>
-      } -->
-    </div>
+    </section>
   `,
 })
 export class FormFieldPage {
