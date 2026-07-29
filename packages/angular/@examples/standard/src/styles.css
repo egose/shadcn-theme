@@ -158,4 +158,26 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(34, 139, 230, 0.08), transparent 30%),
+      linear-gradient(180deg, rgba(248, 250, 252, 1), rgba(241, 245, 249, 1));
+    color: rgb(15 23 42);
+  }
+}
+
+@layer components {
+  eg-layout-simple main > div {
+    @apply tw:w-full tw:items-start tw:justify-start;
+  }
+
+  eg-layout-simple main > div > * {
+    @apply tw:block tw:w-full tw:max-w-none tw:self-stretch;
+  }
 }

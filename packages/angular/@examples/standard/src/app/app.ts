@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import {
   lucideCircleHelp,
   lucideCircleUser,
@@ -13,7 +13,7 @@ import {
 } from '@ng-icons/lucide';
 import { EgLayoutSimple, MenuItem, MenuGroup } from '@egose/shadcn-theme-ng/layout-simple';
 
-type Country = { name: string; code: string; flag: string };
+type DemoRoute = { label: string; link: string; group: string };
 
 // All 70 component demos, grouped by their natural category. "Existing" items are
 // merged back into the appropriate categories — there is no special "Existing" group.
@@ -119,66 +119,63 @@ const COMPONENT_GROUPS: MenuGroup[] = [
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, EgLayoutSimple],
+  imports: [RouterOutlet, RouterLink, EgLayoutSimple],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
+  private readonly router = inject(Router);
+
   protected title = 'angular';
 
   iconPath = 'assets/logo.png';
 
-  // Quick-access left menus that always appear in the header (regardless of grouping).
   leftMenus: MenuItem[] = [
     { label: 'Home', link: '/' },
-    { label: 'Components', link: '/components/button', class: 'tw:font-bold' },
+    { label: 'Components', link: '/components/button' },
   ];
 
-  // Category shortcuts rendered in a top menu bar below the header.
-  topMenus: MenuItem[] = COMPONENT_GROUPS.map((g) => ({
-    label: g.label ?? 'Other',
-    link: g.items[0]?.link ?? '/components/button',
-    class: 'tw:font-medium',
-  }));
+  topMenus: MenuItem[] = COMPONENT_GROUPS.map((group) => ({ label: group.label ?? 'Other' }));
+  topSecondaryMenus: MenuGroup[] = COMPONENT_GROUPS;
 
-  rightMenus = [{ label: 'Sign Out', action: () => alert('Signed out'), class: 'tw:bg-yellow-200' }];
+  rightMenus: MenuItem[] = [];
 
   menus = [
     {
-      label: 'My Account',
+      label: 'Explore',
       items: [
-        { label: 'Profile', icon: lucideCircleUser, link: '/profile' },
-        { label: 'Billing', icon: lucideLayers, action: () => this.onBilling() },
-        { label: 'Settings', icon: lucideCog, class: 'tw:text-blue-500' },
-        { label: 'Keyboard shortcuts', icon: lucideKeyboard },
+        { label: 'Overview', icon: lucideCircleUser, link: '/components/layout-simple' },
+        { label: 'Form flows', icon: lucideLayers, link: '/components/form-field' },
+        { label: 'Patterns', icon: lucideCog, link: '/components/card' },
+        { label: 'Keyboard shortcuts', icon: lucideKeyboard, action: () => this.onSupport() },
       ],
       separator: true,
     },
     {
-      label: 'Team',
+      label: 'Popular',
       items: [
-        { label: 'Team', icon: lucideUser, link: '/team' },
-        { label: 'New Team', icon: lucidePlus },
+        { label: 'Buttons', icon: lucideUser, link: '/components/button' },
+        { label: 'Forms', icon: lucidePlus, link: '/components/form-text-input' },
       ],
       separator: true,
     },
     {
-      label: 'Links',
+      label: 'Resources',
       items: [
-        { label: 'GitHub', icon: lucideGithub, link: '/github' },
+        { label: 'GitHub', icon: lucideGithub, action: () => this.onBilling() },
         { label: 'Support', icon: lucideCircleHelp, action: () => this.onSupport() },
       ],
       separator: true,
     },
     {
-      items: [{ label: 'Log out', icon: lucideLogOut, action: () => this.logout() }],
+      items: [{ label: 'Reset demo', icon: lucideLogOut, link: '/components/button' }],
     },
   ];
 
   footerMenus = [
-    { label: 'Privacy Policy', link: '/privacy' },
-    { label: 'Terms of Service', link: '/terms' },
-    { label: 'Contact', action: () => {} },
+    { label: 'Buttons', link: '/components/button' },
+    { label: 'Forms', link: '/components/form-field' },
+    { label: 'Tables', link: '/components/table' },
   ];
 
   onBilling() {
@@ -193,43 +190,33 @@ export class App {
     console.log('Logged out');
   }
 
-  private readonly _countries: Country[] = [
-    { name: 'Argentina', code: 'AR', flag: '🇦🇷' },
-    { name: 'Australia', code: 'AU', flag: '🇦🇺' },
-    { name: 'Belgium', code: 'BE', flag: '🇧🇪' },
-    { name: 'Brazil', code: 'BR', flag: '🇧🇷' },
-    { name: 'Canada', code: 'CA', flag: '🇨🇦' },
-    { name: 'China', code: 'CN', flag: '🇨🇳' },
-    { name: 'France', code: 'FR', flag: '🇫🇷' },
-    { name: 'Germany', code: 'DE', flag: '🇩🇪' },
-    { name: 'India', code: 'IN', flag: '🇮🇳' },
-    { name: 'Italy', code: 'IT', flag: '🇮🇹' },
-    { name: 'Japan', code: 'JP', flag: '🇯🇵' },
-    { name: 'Mexico', code: 'MX', flag: '🇲🇽' },
-    { name: 'Netherlands', code: 'NL', flag: '🇳🇱' },
-    { name: 'Norway', code: 'NO', flag: '🇳🇴' },
-    { name: 'Russia', code: 'RU', flag: '🇷🇺' },
-    { name: 'South Africa', code: 'ZA', flag: '🇿🇦' },
-    { name: 'South Korea', code: 'KR', flag: '🇰🇷' },
-    { name: 'Spain', code: 'ES', flag: '🇪🇸' },
-    { name: 'Sweden', code: 'SE', flag: '🇸🇪' },
-    { name: 'Switzerland', code: 'CH', flag: '🇨🇭' },
-    { name: 'United Kingdom', code: 'GB', flag: '🇬🇧' },
-    { name: 'United States', code: 'US', flag: '🇺🇸' },
-  ];
+  private readonly componentRoutes: DemoRoute[] = COMPONENT_GROUPS.flatMap((group) =>
+    group.items
+      .filter((item): item is MenuItem & { link: string } => Boolean(item.link))
+      .map((item) => ({
+        label: item.label,
+        link: item.link,
+        group: group.label ?? 'Other',
+      })),
+  );
 
-  countryToSearch = (value: Country) => `${value.flag} ${value.name}`;
+  demoToSearch = (value: DemoRoute) => `${value.group} ${value.label}`;
 
-  loadCountries = async ({ search }: { search: string }): Promise<Country[]> => {
-    if (!search) return [];
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(this._countries.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())));
-      }, 500);
-    });
+  loadDemoRoutes = async ({ search }: { search: string }): Promise<DemoRoute[]> => {
+    const query = search.trim().toLowerCase();
+    if (!query) {
+      return this.componentRoutes.slice(0, 8);
+    }
+
+    return this.componentRoutes
+      .filter((item) => {
+        const haystack = `${item.group} ${item.label}`.toLowerCase();
+        return haystack.includes(query);
+      })
+      .slice(0, 8);
   };
 
-  onSearchOptionChange(value: Country) {
-    console.log('Selected country:', value);
+  onSearchOptionChange(value: DemoRoute) {
+    void this.router.navigateByUrl(value.link);
   }
 }

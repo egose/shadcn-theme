@@ -62,6 +62,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   leftMenuGroups = input<MenuGroup[]>([]);
   rightMenus = input<MenuItem[]>([]);
   topMenus = input<MenuItem[]>([]);
+  topSecondaryMenus = input<MenuGroup[]>([]);
   userMenus = input<UserMenuSection[]>([]);
   logo = input<string>('assets/logo.png');
   logoLink = input<string>('/');
@@ -109,6 +110,12 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   protected readonly _computedTopClass = computed(() =>
     hlm(
       'tw:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-2 tw:bg-gray-50 tw:border-b tw:border-gray-200',
+      this.topMenuClass(),
+    ),
+  );
+  protected readonly _computedTopSecondaryClass = computed(() =>
+    hlm(
+      'tw:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-1.5 tw:bg-gray-100/60 tw:border-b tw:border-gray-200',
       this.topMenuClass(),
     ),
   );

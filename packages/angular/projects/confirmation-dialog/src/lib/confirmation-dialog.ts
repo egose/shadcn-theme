@@ -1,7 +1,7 @@
 import { Component, inject, Injectable } from '@angular/core';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
-import { HlmAlert, HlmAlertIcon } from '@egose/shadcn-theme-ng/alert';
+import { HlmAlertIcon } from '@egose/shadcn-theme-ng/alert';
 import {
   HlmDialogDescription,
   HlmDialogHeader,
@@ -17,7 +17,6 @@ import { lucideTriangleAlert } from '@ng-icons/lucide';
 @Component({
   imports: [
     HlmButton,
-    HlmAlert,
     HlmAlertIcon,
     HlmDialogDescription,
     HlmDialogHeader,
