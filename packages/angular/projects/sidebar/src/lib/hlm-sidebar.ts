@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { BrnSheetImports } from '@spartan-ng/brain/sheet';
 import { HlmSheetImports } from '@egose/shadcn-theme-ng/sheet';
 import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
@@ -8,7 +9,7 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
 
 @Component({
   selector: 'hlm-sidebar',
-  imports: [NgTemplateOutlet, HlmSheetImports],
+  imports: [NgTemplateOutlet, BrnSheetImports, HlmSheetImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.data-slot]': '_dataSlot()',
@@ -31,7 +32,7 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
         (stateChanged)="_sidebarService.setOpenMobile($event === 'open')"
       >
         <hlm-sheet-content
-          *hlmSheetPortal="let ctx"
+          *brnSheetContent="let ctx"
           data-slot="sidebar"
           data-sidebar="sidebar"
           data-mobile="true"

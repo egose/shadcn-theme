@@ -13,7 +13,6 @@ import {
   HlmSelectContent,
   HlmSelectItem,
   HlmSelectLabel,
-  HlmSelectPlaceholder,
 } from '@egose/shadcn-theme-ng/select';
 
 interface SelectOption {
@@ -41,7 +40,6 @@ interface SelectOption {
     HlmSelectContent,
     HlmSelectItem,
     HlmSelectLabel,
-    HlmSelectPlaceholder,
   ],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
