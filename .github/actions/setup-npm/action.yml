@@ -19,7 +19,7 @@ runs:
     shell: bash
 
   - name: Install Package React NPM packages
-    run: pnpm install --no-frozen-lockfile
+    run: pnpm install --frozen-lockfile
     shell: bash
     working-directory: packages/react
 
@@ -29,7 +29,7 @@ runs:
     working-directory: packages/angular
 
   - name: Install Nextjs app NPM packages
-    run: pnpm install --no-frozen-lockfile
+    run: pnpm install --frozen-lockfile
     shell: bash
     working-directory: packages/react/@examples/nextjs
 

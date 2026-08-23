@@ -15,6 +15,11 @@ const argv = yargs(hideBin(process.argv))
   .option('minor', { type: 'boolean', default: false })
   .option('patch', { type: 'boolean', default: false })
   .option('otp', { type: 'string', describe: '2FA code for npm publish' })
+  .option('prepare-only', {
+    type: 'boolean',
+    default: false,
+    describe: 'Build and stage the package without publishing it',
+  })
   .option('context', {
     type: 'string',
     choices: ['react', 'angular'],
@@ -22,7 +27,7 @@ const argv = yargs(hideBin(process.argv))
     describe: 'Specify the framework context',
   }).argv;
 
-const { version, major, minor, patch, context, otp } = argv;
+const { version, major, minor, patch, context, otp, prepareOnly } = argv;
 
 const VER_PLACEHOLDER = '0.0.0-PLACEHOLDER';
 const FIELD_PLACEHOLDER = 'PLACEHOLDER';
@@ -186,6 +191,10 @@ async function main() {
       if (context === 'angular') {
         fse.removeSync(`${publishDir}/exports.json`);
       }
+      if (prepareOnly) {
+        console.log(`Prepared ${name} in ${publishDir}; skipping npm publish.`);
+        return;
+      }
       let publishCmd = `cd ${publishDir} && npm publish --access public`;
       if (otp) {
         publishCmd += ` --otp ${otp}`;
@@ -197,4 +206,7 @@ async function main() {
   });
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

@@ -1,6 +1,8 @@
 name: Test
 
-on: push
+on:
+  push:
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,9 +12,9 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  react:
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
@@ -21,6 +23,65 @@ jobs:
 
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
+
+    - name: Verify frozen React lockfile
+      run: git diff --exit-code -- packages/react/pnpm-lock.yaml
+
+    - name: React typecheck
+      run: pnpm typecheck
+      working-directory: packages/react
+
+    - name: React lint
+      run: pnpm lint
+      working-directory: packages/react
+
+    - name: React unit tests
+      run: pnpm test
+      working-directory: packages/react
+
+    - name: React bundle
+      run: pnpm bundle
+      working-directory: packages/react
+
+    - name: Stage React package
+      run: pnpm prepare:package
+      working-directory: packages/react
+
+    - name: Test React artifact validator
+      run: pnpm test:package-validator
+      working-directory: packages/react
+
+    - name: Validate staged React ESM, CommonJS, and declarations
+      run: pnpm validate:package
+      working-directory: packages/react
+
+    - name: Validate React client boundaries
+      run: pnpm test:client-boundaries
+      working-directory: packages/react
+
+    - name: Validate React RSC utilities and dialog-manager barrel
+      run: pnpm test:rsc
+      working-directory: packages/react
+
+    - name: Pack staged React package
+      run: pnpm pack:package
+      working-directory: packages/react
+
+    - name: Install isolated consumer dependencies
+      run: pnpm install --frozen-lockfile --ignore-workspace
+      working-directory: packages/react/test-fixtures/isolated-consumer
+
+    - name: Install React tarball offline
+      run: pnpm prepare:consumer
+      working-directory: packages/react
+
+    - name: Build isolated consumer
+      run: pnpm build:consumer
+      working-directory: packages/react
+
+    - name: Test isolated consumer
+      run: pnpm test:consumer
+      working-directory: packages/react
 
     - name: Nextjs Lint & Build
       run: |
