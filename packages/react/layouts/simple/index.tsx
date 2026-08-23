@@ -1,9 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { cn } from '../../utils/ui';
 import { UserMenus } from './user-menu';
 import { MobileMenu } from './mobile-menu';
 import type { MenuItem, UserMenuSection } from './types';
+
+export type { MenuItem, UserMenuSection } from './types';
 
 /**
  * Props for {@link SimpleLayout}. The layout renders a fixed header with
@@ -14,7 +18,7 @@ import type { MenuItem, UserMenuSection } from './types';
  * navigation works without re-implementing it. The same component is
  * rendered for both `to=` (React Router) and `href=` (Next.js) prop styles.
  */
-interface LayoutProps {
+export interface SimpleLayoutProps {
   logo?: {
     src?: string;
     link?: string;
@@ -28,10 +32,6 @@ interface LayoutProps {
   };
   right?: {
     menus: MenuItem[];
-  };
-  sidebar?: {
-    title: string;
-    content: React.ReactNode;
   };
   footer?: {
     menus: MenuItem[];
@@ -79,30 +79,24 @@ interface LayoutProps {
  *   {children}
  * </SimpleLayout>
  */
-export default function SimpleLayout(props: LayoutProps) {
-  const { logo, user, left, right, sidebar, footer, classNames, loading, children, aslink } = props;
+export default function SimpleLayout(props: SimpleLayoutProps) {
+  const { logo, user, left, right, footer, classNames, loading, children, aslink } = props;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  const LinkComponent = aslink ?? 'button';
+  const LinkComponent = aslink;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const toggleMobileMenu = () => setMobileMenuOpen((open) => !open);
 
   const leftMenus = left?.menus ?? [];
   const rightMenus = right?.menus ?? [];
-  const topMenus = [...leftMenus, ...rightMenus];
   const userMenuSections = user?.menuSections ?? [];
   const footerMenus = footer?.menus ?? [];
+  const mobileMenuSections: UserMenuSection[] = [
+    ...(leftMenus.some((item) => !item.title) ? [{ items: leftMenus.filter((item) => !item.title) }] : []),
+    ...(rightMenus.length > 0 ? [{ items: rightMenus }] : []),
+    ...userMenuSections,
+  ];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -114,16 +108,6 @@ export default function SimpleLayout(props: LayoutProps) {
         )}
       >
         <div className="flex items-center space-x-4">
-          {sidebar && (
-            <button
-              className="bg-transparent border-gray-400 hover:border-gray-500"
-              onClick={() => {
-                /* open sidebar */
-              }}
-            >
-              {/* icon */}
-            </button>
-          )}
           {logo && (
             <div className={cn('_logo')}>
               <LinkComponent to={logo.link ?? '/'} href={logo.link ?? '/'}>
@@ -133,7 +117,10 @@ export default function SimpleLayout(props: LayoutProps) {
           )}
 
           {/* Left Menus */}
-          <nav className={cn('flex space-x-4 items-center', classNames?.header?.left?.nav)}>
+          <nav
+            aria-label="Primary navigation"
+            className={cn('flex space-x-4 items-center', classNames?.header?.left?.nav)}
+          >
             {leftMenus.map((item) =>
               item.link ? (
                 <LinkComponent
@@ -144,20 +131,21 @@ export default function SimpleLayout(props: LayoutProps) {
                     'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
                     classNames?.header?.left?.link,
                     item.className,
-                    item.title || !isMobile ? 'inline-block' : 'hidden',
+                    item.title ? 'inline-block' : 'hidden md:inline-block',
                   )}
                 >
                   {item.label}
                 </LinkComponent>
               ) : (
                 <button
+                  type="button"
                   key={item.label}
                   onClick={item.action}
                   className={cn(
                     'text-left text-secondary visited:text-secondary hover:text-primary cursor-pointer no-underline',
                     classNames?.header?.left?.link,
                     item.className,
-                    item.title || !isMobile ? 'inline-block' : 'hidden',
+                    item.title ? 'inline-block' : 'hidden md:inline-block',
                   )}
                 >
                   {item.label}
@@ -168,7 +156,10 @@ export default function SimpleLayout(props: LayoutProps) {
         </div>
 
         {/* Right menus */}
-        <nav className={cn('hidden md:flex space-x-4 items-center', classNames?.header?.right?.nav)}>
+        <nav
+          aria-label="Secondary navigation"
+          className={cn('hidden md:flex space-x-4 items-center', classNames?.header?.right?.nav)}
+        >
           {rightMenus.map((item) =>
             item.link ? (
               <LinkComponent
@@ -185,6 +176,7 @@ export default function SimpleLayout(props: LayoutProps) {
               </LinkComponent>
             ) : (
               <button
+                type="button"
                 key={item.label}
                 onClick={item.action}
                 className={cn(
@@ -203,20 +195,26 @@ export default function SimpleLayout(props: LayoutProps) {
         </nav>
 
         {/* Mobile menu button */}
-        <button onClick={toggleMobileMenu} className="md:hidden p-2 text-gray-700 hover:text-primary cursor-pointer">
+        <button
+          type="button"
+          aria-label="Toggle navigation"
+          aria-expanded={mobileMenuOpen}
+          onClick={toggleMobileMenu}
+          className="md:hidden p-2 text-gray-700 hover:text-primary cursor-pointer"
+        >
           <Menu className="" />
         </button>
       </header>
 
       {/* Mobile menu */}
-      {isMobile && mobileMenuOpen && (
-        <div className="w-full">
-          <MobileMenu sections={userMenuSections} aslink={aslink} onClick={toggleMobileMenu} />
+      {mobileMenuOpen && (
+        <div className="w-full md:hidden">
+          <MobileMenu sections={mobileMenuSections} aslink={aslink} onClick={toggleMobileMenu} />
         </div>
       )}
 
       {/* Main content */}
-      <main className={cn('p-4 flex flex-col flex-1', classNames?.content)}>
+      <main className={cn('p-4 flex flex-col flex-1', classNames?.content?.wrapper)}>
         {!loading && <div className="flex items-center justify-center h-full">{children}</div>}
         <div className={cn('flex-1', classNames?.content?.bottom)}></div>
       </main>
@@ -246,6 +244,7 @@ export default function SimpleLayout(props: LayoutProps) {
                 </LinkComponent>
               ) : (
                 <button
+                  type="button"
                   key={item.label}
                   onClick={item.action}
                   className={cn(

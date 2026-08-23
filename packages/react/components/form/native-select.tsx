@@ -1,6 +1,8 @@
+'use client';
+
 import React, { SelectHTMLAttributes } from 'react';
-import _kebabCase from 'lodash-es/kebabCase';
-import _isString from 'lodash-es/isString';
+import _kebabCase from 'lodash-es/kebabCase.js';
+import _isString from 'lodash-es/isString.js';
 import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 
@@ -76,7 +78,7 @@ export function FormNativeSelect({
         defaultValue={defaultValue}
         {...rest}
       >
-        {_options.map((option, index) => {
+        {_options.map((option) => {
           return (
             <option
               key={option.value}

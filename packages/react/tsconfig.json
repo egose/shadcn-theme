@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -12,10 +12,10 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": false,
     "ignoreDeprecations": "6.0"
   },
-  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "layouts/**/*"],
+  "include": ["components/**/*", "hooks/**/*", "utils/**/*", "layouts/**/*", "tests/**/*", "vitest.config.mts"],
   "exclude": ["node_modules", "dist", "@examples"]
 }

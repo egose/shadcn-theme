@@ -1,8 +1,8 @@
 /**
  * A single menu entry rendered by {@link SimpleLayout}. Either `link` (for
  * navigation) or `action` (for callbacks) should be supplied; `link` wins
- * when both are present. `title: true` hides the entry on mobile widths and
- * surfaces it as a section title in the mobile menu instead.
+ * when both are present. `title: true` keeps the entry in the compact mobile
+ * header; other entries move into the mobile navigation panel.
  */
 export interface MenuItem {
   label: string;

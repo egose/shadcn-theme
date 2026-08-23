@@ -1,5 +1,7 @@
+'use client';
+
 import * as React from 'react';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash-es/isString.js';
 import { useClipboard } from '../../hooks/use-clipboard';
 import { Button } from './button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';

@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import _get from 'lodash-es/get';
+import _get from 'lodash-es/get.js';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 import { cn } from '../../utils/ui';
 import { FormError } from './error';

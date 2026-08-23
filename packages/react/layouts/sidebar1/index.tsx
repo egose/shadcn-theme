@@ -1,9 +1,9 @@
+'use client';
+
 import * as React from 'react';
-import { proxy, ref, useSnapshot } from 'valtio';
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -22,7 +22,7 @@ export type { INavUser };
  * Wraps content with `SidebarProvider`, renders an `AppSidebar` from `data`,
  * and shows a breadcrumb of active items in the header. Pass `aslink` (your
  * router's `Link`) so internal links work; the header also accepts custom
- * content via {@link setLayoutHeader}.
+ * content via {@link useLayoutHeader}.
  *
  * @example
  * <SidebarLayout aslink={Link} data={sidebarData}>
@@ -45,6 +45,7 @@ export default function SidebarLayout({
     main?: string;
   };
 }>) {
+  const [header, setHeader] = React.useState<React.ReactNode>(null);
   const activeItems: string[] = [];
 
   data.menus.forEach((menu) => {
@@ -63,60 +64,50 @@ export default function SidebarLayout({
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <SidebarProvider>
-        <AppSidebar aslink={aslink} data={data} className={cn(classNames?.sidebar)} />
-        <SidebarInset className={cn(classNames?.inset)}>
-          <header
-            className={cn(
-              'flex h-14 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
-              classNames?.header,
-            )}
-          >
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="" />
-              <LayoutHeader items={activeItems} />
-            </div>
-          </header>
-          <main className={cn('px-4 pb-2 overflow-auto', classNames?.main)}>{children}</main>
-        </SidebarInset>
-      </SidebarProvider>
+      <LayoutHeaderContext.Provider value={setHeader}>
+        <SidebarProvider>
+          <AppSidebar aslink={aslink} data={data} className={cn(classNames?.sidebar)} />
+          <SidebarInset className={cn(classNames?.inset)}>
+            <header
+              className={cn(
+                'flex h-14 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+                classNames?.header,
+              )}
+            >
+              <div className="flex items-center gap-2 px-4">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="" />
+                <LayoutHeader items={activeItems} content={header} />
+              </div>
+            </header>
+            <main className={cn('px-4 pb-2 overflow-auto', classNames?.main)}>{children}</main>
+          </SidebarInset>
+        </SidebarProvider>
+      </LayoutHeaderContext.Provider>
     </ThemeProvider>
   );
 }
 
-interface HeaderState {
-  content: React.ReactNode | ReturnType<typeof ref<object>>;
+type SetLayoutHeader = (node: React.ReactNode) => void;
+
+const LayoutHeaderContext = React.createContext<React.Dispatch<React.SetStateAction<React.ReactNode>> | null>(null);
+
+/**
+ * Returns a setter for the nearest sidebar layout's header slot. Pass a React
+ * node to replace its breadcrumb or `null` to restore that layout's default.
+ * Throws when used outside a {@link SidebarLayout}.
+ */
+export function useLayoutHeader(): SetLayoutHeader {
+  const setHeader = React.useContext(LayoutHeaderContext);
+  if (!setHeader) {
+    throw new Error('useLayoutHeader must be used within a SidebarLayout');
+  }
+  return React.useCallback((node: React.ReactNode) => setHeader(() => node), [setHeader]);
 }
 
-/**
- * Internal Valtio proxy holding the header slot content. Read via
- * `useSnapshot(headerStore)`; prefer the {@link setLayoutHeader} helper
- * over mutating this directly so React nodes are wrapped with `valtio/ref`.
- */
-export const headerStore = proxy<HeaderState>({
-  content: null,
-});
-
-/**
- * Replace the sidebar layout header slot. Pass a React node (it is wrapped
- * with `valtio/ref` so it stays referentially stable inside the proxy) or
- * `null` to reset back to the breadcrumb-driven default.
- */
-export const setLayoutHeader = (node: React.ReactNode) => {
-  if (node !== null && typeof node === 'object') {
-    // We cast to any here to satisfy the internal Valtio ref assignment
-    // or use a utility type
-    headerStore.content = ref(node as object);
-  } else {
-    headerStore.content = node;
-  }
-};
-
-function LayoutHeader({ items }: { items: string[] }) {
-  const snap = useSnapshot(headerStore);
-  if (snap.content) {
-    return <>{snap.content}</>;
+function LayoutHeader({ items, content }: { items: string[]; content: React.ReactNode }) {
+  if (content !== null) {
+    return <>{content}</>;
   }
 
   return (

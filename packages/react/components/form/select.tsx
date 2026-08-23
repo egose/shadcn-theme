@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
-import _kebabCase from 'lodash-es/kebabCase';
-import _isString from 'lodash-es/isString';
+import _kebabCase from 'lodash-es/kebabCase.js';
+import _isString from 'lodash-es/isString.js';
 import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export interface SelectOption {
   label: string;
@@ -45,8 +47,6 @@ export function FormSelect({
   onChange,
   classNames,
   required,
-  disabled,
-  ...rest
 }: FormSelectProps) {
   let _options: SelectOption[] = [];
   if (data.length > 0) {
@@ -73,7 +73,7 @@ export function FormSelect({
         </SelectTrigger>
 
         <SelectContent className={cn(classNames?.input)}>
-          {_options.map((option, index) => {
+          {_options.map((option) => {
             return (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}

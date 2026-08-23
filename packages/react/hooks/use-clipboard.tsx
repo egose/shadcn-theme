@@ -1,4 +1,6 @@
-import { useState, useCallback } from 'react';
+'use client';
+
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 /**
  * Copy text to the clipboard and track the copied / error state.
@@ -15,15 +17,33 @@ import { useState, useCallback } from 'react';
 export function useClipboard({ timeout = 2000 }: { timeout?: number } = {}) {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      requestRef.current += 1;
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    };
+  }, []);
 
   const copy = useCallback(
     async (value: string) => {
+      const request = ++requestRef.current;
+
       try {
         await navigator.clipboard.writeText(value);
+        if (request !== requestRef.current) return;
+
+        if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
         setCopied(true);
         setError(null);
-        setTimeout(() => setCopied(false), timeout);
+        resetTimerRef.current = setTimeout(() => {
+          resetTimerRef.current = null;
+          setCopied(false);
+        }, timeout);
       } catch (err) {
+        if (request !== requestRef.current) return;
         setError(err instanceof Error ? err : new Error(String(err)));
       }
     },

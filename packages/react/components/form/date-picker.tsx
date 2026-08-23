@@ -1,37 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { addDays, format, isEqual } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import _kebabCase from 'lodash-es/kebabCase';
-import _isNil from 'lodash-es/isNil';
-import _isUndefined from 'lodash-es/isUndefined';
-import _isString from 'lodash-es/isString';
+'use client';
 
-import { isEqualDate } from '../../utils/date';
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import _kebabCase from 'lodash-es/kebabCase.js';
+
 import { cn } from '../../utils/ui';
 import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Matcher } from 'react-day-picker';
+import type { Matcher } from 'react-day-picker';
 
 function formatDate(date: Date) {
   return format(date, 'LLL dd, y');
 }
 
-function getStartOfDay(date: Date) {
-  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  return startOfDay;
+function parseLocalDate(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return undefined;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]) - 1;
+  const day = Number(match[3]);
+  const date = new Date(0);
+  date.setFullYear(year, month, day);
+  date.setHours(0, 0, 0, 0);
+
+  if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) return undefined;
+  return date;
 }
 
+function normalizeDate(value: Date | string | undefined) {
+  if (value === undefined) return undefined;
+  if (typeof value === 'string') return parseLocalDate(value);
+  if (Number.isNaN(value.getTime())) return undefined;
+
+  return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+}
+
+/** Props for the controlled {@link FormDatePicker}. */
 export interface FormDatePickerProps {
   id?: string;
   name: string;
   label?: string;
   required?: boolean;
   disabled?: Matcher | Matcher[];
-  initialValue?: Date | string;
   closeOnSelect?: boolean;
+  /**
+   * The selected local date. Strings must be valid `YYYY-MM-DD` values and
+   * are parsed as local calendar dates. Invalid values render an empty selection.
+   */
   value?: Date | string;
+  /** Called once per user selection or clear, with the date normalized to local midnight. */
   onChange: (value?: Date) => void;
   classNames?: {
     wrapper?: string;
@@ -40,6 +61,10 @@ export interface FormDatePickerProps {
   };
 }
 
+/**
+ * Controlled single-date picker. Selection is derived exclusively from
+ * `value`; mounting and prop changes never invoke `onChange`.
+ */
 export function FormDatePicker({
   id,
   name,
@@ -47,46 +72,16 @@ export function FormDatePicker({
   required = false,
   closeOnSelect = true,
   disabled,
-  initialValue,
   value,
   onChange,
   classNames,
 }: FormDatePickerProps) {
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [initialized, setInitialized] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (!initialized) {
-      const dt = initialValue ? getStartOfDay(new Date(initialValue)) : getStartOfDay(new Date());
-
-      setDate(dt);
-      setInitialized(true);
-    }
-  }, [initialized, initialValue]);
-
-  useEffect(() => {
-    if (_isUndefined(value)) {
-      if (!_isUndefined(date)) {
-        setDate(undefined);
-      }
-    } else {
-      const dt = _isString(value) ? new Date(value) : value;
-      if (!isEqualDate(date, dt)) {
-        setDate(getStartOfDay(dt));
-      }
-    }
-  }, [value]);
-
-  useEffect(() => {
-    if (initialized) {
-      onChange(date);
-    }
-  }, [date, initialized]);
+  const date = normalizeDate(value);
 
   if (!id) id = _kebabCase(name);
 
-  const display = !initialized ? <span></span> : date ? <>{formatDate(date)}</> : <span>Pick a date</span>;
+  const display = date ? <>{formatDate(date)}</> : <span>Pick a date</span>;
 
   return (
     <div className={cn('$form-date-picker space-y-1', classNames?.wrapper)}>
@@ -115,9 +110,7 @@ export function FormDatePicker({
               defaultMonth={date}
               selected={date}
               onSelect={(newdate) => {
-                if (!isEqualDate(date, newdate)) {
-                  setDate(newdate);
-                }
+                onChange(normalizeDate(newdate));
                 if (closeOnSelect) setIsOpen(false);
               }}
               disabled={disabled}

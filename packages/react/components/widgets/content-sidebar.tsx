@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../ui/breadcrumb';

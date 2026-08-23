@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext } from 'react';
 import { TypedDialogComponent } from './types';
 
@@ -13,7 +15,8 @@ export const DialogContext = createContext<DialogContextType | null>(null);
  *
  * @returns `{ openDialog }` — call `openDialog(MyDialog, args)` to render the
  *   dialog; the returned `Promise<R>` resolves with whatever the dialog
- *   passes to `onClose(result)`.
+ *   passes to `onClose(result)`, or rejects with `DialogCancellationError`
+ *   if the owning provider unmounts first.
  *
  * @example
  * const { openDialog } = useDialog()
