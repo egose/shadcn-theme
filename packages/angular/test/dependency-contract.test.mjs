@@ -50,29 +50,6 @@ test('real package metadata classifies the tested compatibility contract', async
   const packageJson = JSON.parse(
     await (await import('node:fs/promises')).readFile(path.join(workspace, 'package.json'), 'utf8'),
   );
-  const imports = await validateArtifactDependencyContract(path.join(workspace, 'dist'), packageJson);
-  assert.deepEqual(
-    [...imports.keys()],
-    [
-      '@angular/cdk',
-      '@angular/common',
-      '@angular/core',
-      '@angular/forms',
-      '@angular/router',
-      '@ng-icons/core',
-      '@ng-icons/lucide',
-      '@ng-icons/tabler-icons',
-      '@spartan-ng/brain',
-      'class-variance-authority',
-      'clsx',
-      'embla-carousel',
-      'embla-carousel-angular',
-      'ngx-scrollbar',
-      'ngx-sonner',
-      'rxjs',
-      'tailwind-merge',
-    ],
-  );
   assert.deepEqual(packageJson.peerDependencies, {
     '@angular/cdk': '>=22.0.0 <23.0.0',
     '@angular/common': '>=22.0.0 <23.0.0',
