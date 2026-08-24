@@ -18,7 +18,7 @@ import { NgIcon } from '@ng-icons/core';
 // Interface for menu items
 export interface UserMenuItem {
   label: string;
-  icon?: any;
+  icon?: string;
   action?: () => void;
   link?: string;
   class?: string;
@@ -144,5 +144,5 @@ export class EgLayoutSimpleUserMenu {
   lucideUser = lucideUser;
 
   menus = input<UserMenuSection[]>([]);
-  menuTrigger = input<TemplateRef<any> | undefined>();
+  menuTrigger = input<TemplateRef<unknown> | undefined>();
 }

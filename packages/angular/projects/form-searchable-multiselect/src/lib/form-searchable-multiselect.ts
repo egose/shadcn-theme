@@ -1,8 +1,8 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { EgFormField } from '@egose/shadcn-theme-ng/form-field-simple';
-import { HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
@@ -17,7 +17,6 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -25,30 +24,33 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
 
     <eg-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()">
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()">
           {{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
           }
-        </span>
+        </label>
       }
 
       <eg-searchable-multiselect
-        [id]="cid || id()"
+        [id]="effectiveId()"
         [options]="options()"
         [placeholder]="placeholder()"
         [formControlName]="cnm"
         [required]="rqrd"
+        [wrapperDisabled]="disabled()"
+        [ariaLabel]="lbl"
+        [ariaDescribedby]="describedBy()"
         [class]="$controlClass()"
       ></eg-searchable-multiselect>
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -56,6 +58,9 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
   `,
 })
 export class EgFormSearchableMultiselect {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-searchable-multiselect');
+
   // Form field inputs
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -64,10 +69,23 @@ export class EgFormSearchableMultiselect {
   hint = input<string | undefined>(undefined);
 
   // HTML/control attributes
-  id = input<string>(crypto.randomUUID());
+  id = input<string | undefined>(undefined);
   placeholder = input<string>('Start typing to add…');
   disabled = input<boolean>(false);
   required = input<boolean>(false);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
 
   // Multiselect-specific
   options = input<SelectOption[]>([]); // [{ label, value }]

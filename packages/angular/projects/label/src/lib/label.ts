@@ -8,7 +8,7 @@ import type { ClassValue } from 'clsx';
   hostDirectives: [
     {
       directive: BrnLabel,
-      inputs: ['id'],
+      inputs: ['id', 'for'],
     },
   ],
   host: {

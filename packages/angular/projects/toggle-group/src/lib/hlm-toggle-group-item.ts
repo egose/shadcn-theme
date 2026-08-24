@@ -2,7 +2,7 @@ import { computed, Directive, input } from '@angular/core';
 import { BrnToggleGroupItem } from '@spartan-ng/brain/toggle-group';
 import { toggleVariants, ToggleVariants } from '@egose/shadcn-theme-ng/toggle';
 import { classes } from '@egose/shadcn-theme-ng/utils';
-import { injectHlmToggleGroup } from './hlm-toggle-group.token';
+import { type HlmToggleGroupContext, injectHlmToggleGroup } from './hlm-toggle-group.token';
 
 @Directive({
   selector: 'button[hlmToggleGroupItem]',
@@ -21,7 +21,7 @@ import { injectHlmToggleGroup } from './hlm-toggle-group.token';
   },
 })
 export class HlmToggleGroupItem {
-  protected readonly _toggleGroup = injectHlmToggleGroup();
+  protected readonly _toggleGroup: HlmToggleGroupContext = injectHlmToggleGroup();
 
   public readonly variant = input<ToggleVariants['variant']>('default');
   public readonly size = input<ToggleVariants['size']>('default');

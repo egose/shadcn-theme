@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BrnMenuBar } from '@spartan-ng/brain/menu';
+import { CdkMenuBar } from '@angular/cdk/menu';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
@@ -8,7 +8,7 @@ import type { ClassValue } from 'clsx';
   host: {
     '[class]': '_computedClass()',
   },
-  hostDirectives: [BrnMenuBar],
+  hostDirectives: [CdkMenuBar],
   template: '<ng-content/>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

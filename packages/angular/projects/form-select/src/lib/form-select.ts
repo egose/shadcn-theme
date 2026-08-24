@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmFormField, HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
@@ -44,7 +44,6 @@ interface SelectOption {
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -52,17 +51,22 @@ interface SelectOption {
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()"
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()"
           >{{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
           }
-        </span>
+        </label>
       }
 
       @if (multiple()) {
-        <brn-select-multiple hlmSelect [id]="cid || id()" [formControlName]="cnm">
-          <hlm-select-trigger [class]="$selectClass()">
+        <brn-select-multiple hlmSelect [formControlName]="cnm">
+          <hlm-select-trigger
+            [buttonId]="effectiveId()"
+            [ariaDescribedby]="describedBy()"
+            [wrapperDisabled]="disabled()"
+            [class]="$selectClass()"
+          >
             <hlm-select-value [placeholder]="placeholder()" />
           </hlm-select-trigger>
 
@@ -78,8 +82,13 @@ interface SelectOption {
           </hlm-select-content>
         </brn-select-multiple>
       } @else {
-        <brn-select hlmSelect [id]="cid || id()" [formControlName]="cnm">
-          <hlm-select-trigger [class]="$selectClass()">
+        <brn-select hlmSelect [formControlName]="cnm">
+          <hlm-select-trigger
+            [buttonId]="effectiveId()"
+            [ariaDescribedby]="describedBy()"
+            [wrapperDisabled]="disabled()"
+            [class]="$selectClass()"
+          >
             <hlm-select-value [placeholder]="placeholder()" />
           </hlm-select-trigger>
 
@@ -97,13 +106,13 @@ interface SelectOption {
       }
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
 
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -111,6 +120,9 @@ interface SelectOption {
   `,
 })
 export class EgFormSelect {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-select');
+
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
   controlName = input<string>('');
@@ -118,10 +130,23 @@ export class EgFormSelect {
   hint = input<string | undefined>(undefined);
 
   // HTML/select attributes
-  id = input<string>(crypto.randomUUID());
+  id = input<string | undefined>(undefined);
   placeholder = input<string>('');
   disabled = input<boolean>(false);
   required = input<boolean>(false);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
 
   // Select-specific
   multiple = input<boolean>(false);

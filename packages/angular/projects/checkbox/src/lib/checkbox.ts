@@ -34,7 +34,7 @@ export const HLM_CHECKBOX_VALUE_ACCESSOR = {
       [name]="name()"
       [class]="_computedClass()"
       [checked]="checked()"
-      [disabled]="_state().disabled()"
+      [disabled]="disabledState()"
       [required]="required()"
       [aria-label]="ariaLabel()"
       [aria-labelledby]="ariaLabelledby()"
@@ -55,7 +55,7 @@ export const HLM_CHECKBOX_VALUE_ACCESSOR = {
     '[attr.aria-label]': 'null',
     '[attr.aria-labelledby]': 'null',
     '[attr.aria-describedby]': 'null',
-    '[attr.data-disabled]': '_state().disabled() ? "" : null',
+    '[attr.data-disabled]': 'disabledState() ? "" : null',
   },
   providers: [HLM_CHECKBOX_VALUE_ACCESSOR],
   viewProviders: [provideIcons({ lucideCheck })],
@@ -68,7 +68,7 @@ export class HlmCheckbox implements ControlValueAccessor {
     hlm(
       'tw:border-input tw:dark:bg-input/30 tw:data-[state=checked]:bg-primary tw:data-[state=checked]:text-primary-foreground tw:dark:data-[state=checked]:bg-primary tw:data-[state=checked]:border-primary tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:aria-invalid:ring-destructive/20 tw:dark:aria-invalid:ring-destructive/40 tw:aria-invalid:border-destructive tw:shadow-xs tw:peer tw:size-4 tw:shrink-0 tw:cursor-default tw:rounded-[4px] tw:border tw:outline-none tw:transition-shadow tw:focus-visible:ring-[3px] tw:disabled:cursor-not-allowed tw:disabled:opacity-50',
       this.userClass(),
-      this._state().disabled() ? 'tw:cursor-not-allowed tw:opacity-50' : '',
+      this.disabledState() ? 'tw:cursor-not-allowed tw:opacity-50' : '',
     ),
   );
 
@@ -96,9 +96,11 @@ export class HlmCheckbox implements ControlValueAccessor {
   /** Whether the checkbox is disabled. */
   public readonly disabled = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
-  protected readonly _state = computed(() => ({
-    disabled: signal(this.disabled()),
-  }));
+  /** Additional visual/interaction lock that does not write to a reactive form control. */
+  public readonly wrapperDisabled = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
+
+  private readonly formDisabled = signal(false);
+  public readonly disabledState = computed(() => this.disabled() || this.wrapperDisabled() || this.formDisabled());
 
   public readonly changed = output<boolean>();
 
@@ -106,7 +108,7 @@ export class HlmCheckbox implements ControlValueAccessor {
   protected _onTouched?: TouchFn;
 
   protected _handleChange(): void {
-    if (this._state().disabled()) return;
+    if (this.disabledState()) return;
 
     const previousChecked = this.checked();
     this.checked.set(previousChecked === 'indeterminate' ? true : !previousChecked);
@@ -128,7 +130,7 @@ export class HlmCheckbox implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this._state().disabled.set(isDisabled);
+    this.formDisabled.set(isDisabled);
   }
 }
 

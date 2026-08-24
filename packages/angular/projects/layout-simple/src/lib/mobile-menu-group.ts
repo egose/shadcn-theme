@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { NgIcon } from '@ng-icons/core';
+import type { MenuItem } from './layout';
 
 @Component({
   selector: 'eg-layout-simple-mobile-menu-group',
@@ -57,18 +58,11 @@ export class EgLayoutSimpleMobileMenuGroup {
   hlm = hlm;
 
   label = input<string | undefined>('');
-  items = input<
-    {
-      label: string;
-      link?: string;
-      icon?: string;
-      action?: () => void;
-    }[]
-  >();
+  items = input<MenuItem[]>();
 
-  itemClick = output<any>();
+  itemClick = output<MenuItem>();
 
-  handleClick(item: any) {
+  handleClick(item: MenuItem) {
     item.action?.();
     this.itemClick.emit(item);
   }

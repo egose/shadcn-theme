@@ -18,6 +18,8 @@ import type { ClassValue } from 'clsx';
       brnFieldControlDescribedBy
       [forceInvalid]="forceInvalid()"
       [id]="buttonId()"
+      [aria-describedby]="ariaDescribedby()"
+      [attr.disabled]="wrapperDisabled() ? '' : null"
       [class]="_computedClass()"
       [attr.data-size]="size()"
       data-slot="select-trigger"
@@ -39,6 +41,10 @@ export class HlmSelectTrigger {
   );
 
   public readonly buttonId = input<string>(`hlm-select-trigger-${HlmSelectTrigger._id++}`);
+
+  public readonly ariaDescribedby = input<string | null>(null);
+
+  public readonly wrapperDisabled = input(false);
 
   public readonly size = input<'default' | 'sm'>('default');
 

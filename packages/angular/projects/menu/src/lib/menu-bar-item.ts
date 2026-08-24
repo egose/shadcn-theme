@@ -1,5 +1,5 @@
 import { Directive, computed, input } from '@angular/core';
-import { BrnMenuItem } from '@spartan-ng/brain/menu';
+import { CdkMenuItem } from '@angular/cdk/menu';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
 
@@ -8,7 +8,7 @@ import type { ClassValue } from 'clsx';
   host: {
     '[class]': '_computedClass()',
   },
-  hostDirectives: [BrnMenuItem],
+  hostDirectives: [CdkMenuItem],
 })
 export class HlmMenuBarItem {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });

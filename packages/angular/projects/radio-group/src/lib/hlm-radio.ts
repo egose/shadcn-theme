@@ -111,9 +111,12 @@ export class HlmRadio<T = unknown> {
 
       if (!this._elementRef.nativeElement || !this._isBrowser) return;
 
+      const inputId = this.inputId();
       const labelElement =
         this._elementRef.nativeElement.closest('label') ??
-        this._document.querySelector(`label[for="${this.inputId()}"]`);
+        (inputId
+          ? Array.from(this._document.getElementsByTagName('label')).find((label) => label.htmlFor === inputId)
+          : undefined);
 
       if (!labelElement) return;
       this._renderer.setAttribute(labelElement, 'data-disabled', isDisabled ? 'true' : 'false');

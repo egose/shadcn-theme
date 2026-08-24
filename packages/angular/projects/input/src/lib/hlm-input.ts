@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import { BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 import { BrnInput } from '@spartan-ng/brain/input';
 import { classes } from '@egose/shadcn-theme-ng/utils';
@@ -6,9 +6,14 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 @Directive({
   selector: '[hlmInput]',
   hostDirectives: [{ directive: BrnInput, inputs: ['id', 'forceInvalid'] }, BrnFieldControlDescribedBy],
-  host: { 'data-slot': 'input' },
+  host: {
+    'data-slot': 'input',
+    '[attr.aria-describedby]': 'ariaDescribedby()',
+  },
 })
 export class HlmInput {
+  public readonly ariaDescribedby = input<string | null>(null);
+
   constructor() {
     classes(
       () =>

@@ -1,12 +1,10 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmFormField, HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmDatePicker, HlmDatePickerInput } from '@egose/shadcn-theme-ng/date-picker';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
-
-let nextId = 0;
 
 @Component({
   selector: 'eg-form-date-picker',
@@ -18,7 +16,6 @@ let nextId = 0;
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -26,26 +23,37 @@ let nextId = 0;
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()"
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()"
           >{{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
           }
-        </span>
+        </label>
       }
 
-      <hlm-date-picker [min]="min()" [max]="max()" [formControlName]="cnm" [class]="$pickerClass()">
-        <hlm-date-picker-input [inputId]="cid || id()" [placeholder]="placeholder()" />
+      <hlm-date-picker
+        [min]="min()"
+        [max]="max()"
+        [wrapperDisabled]="disabled()"
+        [formControlName]="cnm"
+        [class]="$pickerClass()"
+      >
+        <hlm-date-picker-input
+          [inputId]="effectiveId()"
+          [ariaLabel]="lbl"
+          [ariaDescribedby]="describedBy()"
+          [placeholder]="placeholder()"
+        />
       </hlm-date-picker>
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
 
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -53,6 +61,9 @@ let nextId = 0;
   `,
 })
 export class EgFormDatePicker {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-date-picker');
+
   // Inputs
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -61,7 +72,7 @@ export class EgFormDatePicker {
   hint = input<string | undefined>(undefined);
 
   // HTML attributes
-  id = input<string>(crypto.randomUUID());
+  id = input<string | undefined>(undefined);
   name = input<string | undefined>(undefined);
   placeholder = input<string>('Pick a date');
   readonly = input<boolean>(false);
@@ -70,6 +81,19 @@ export class EgFormDatePicker {
   min = input<Date | string | null>(null);
   max = input<Date | string | null>(null);
   autoCloseOnSelect = input<boolean>(true);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
 
   // Styling
   userClass = input<ClassValue>('', { alias: 'class' });

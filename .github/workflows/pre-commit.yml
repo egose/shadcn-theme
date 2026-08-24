@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 0
 
@@ -20,12 +20,14 @@ jobs:
 
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
+      with:
+        context: root
 
     - name: Lint Current Commits
       run: npx commitlint --last --verbose
 
     - name: Run pre-commit
-      uses: egose/actions/precommit@ef042a54d9446c85fdd1044d342c614b5353f812
+      uses: egose/actions/precommit@0802d5eb78229994c066ea07b8c576dd38adfb5b
       with:
         config: .pre-commit-config.yaml
         commit-on-push: true

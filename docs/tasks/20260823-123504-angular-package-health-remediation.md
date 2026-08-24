@@ -2,6 +2,8 @@
 
 Created: 2026-08-23 12:35:04 local time
 
+Status: completed
+
 ## Objective
 
 Make `@egose/shadcn-theme-ng` and `@egose/shadcn-theme-ng-tw` complete, deterministic, and safe to publish. Every intended subpath must build or fail the release, declarations and runtime files must use the correct package identity, dependency metadata must support a clean consumer, and high-risk form/DOM behavior must have focused tests.
@@ -55,7 +57,16 @@ These commands must run serially.
 
 ### Task ANGULAR-01: Add Exact Artifact and Project-Set Validators
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/validate-package.mjs`, `packages/angular/test/validate-package.test.mjs`, `packages/angular/test/fixtures/package-validator/`, `packages/angular/package.json`
+- Verified: `pnpm --dir packages/angular test:package-validator` (11/11 passing; valid plain and `tw` staged fixtures each execute `npm pack --dry-run --json --ignore-scripts`)
+- Verified: `node packages/angular/validate-package.mjs --workspace packages/angular --package packages/angular/dist --variant tw` (expected nonzero; detects missing `menu` path/output/export, invalid `./<project>/index.d.ts` targets, and plain-package imports in `tw` declarations)
+- Verified: `pnpm exec prettier --check "packages/angular/validate-package.mjs" "packages/angular/test/validate-package.test.mjs" "packages/angular/test/fixtures/package-validator/**/*.{json,ts,md,mjs}" "packages/angular/package.json"` and `git diff --check`
+- Result: staged project/config/path/output/export equality, target existence, variant identity, metadata/placeholders, leaked/internal files, and exact dry-run tarball contents are validated offline without publishing or registry access.
+- Follow-up: ANGULAR-02
 
 Priority: P0
 
@@ -98,7 +109,24 @@ Acceptance criteria:
 
 ### Task ANGULAR-02: Make Project Builds Complete and Fail-Fast
 
-Status: pending
+Status: completed
+
+Resolution evidence (ANGULAR-FINAL independent review):
+
+- The historical `menu` blocker is resolved in the current source: the project uses Angular CDK menu APIs and both serial release builds emitted `menu` and all other 70 manifest projects.
+- Verified: `pnpm --dir packages/angular test:build-all` (6/6, including injected build failure cleanup, cycle reporting, metadata-derived targets, project-set equality, and top-level nonzero exit).
+- Verified: `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-final.0` built all 71 projects exactly once for each variant, validated each complete stage, and produced both tarballs without publishing.
+- Verified: `node packages/angular/validate-package.mjs --workspace packages/angular --package packages/angular/release/staged/plain --variant plain` and the equivalent `tw` command (71 projects and 287 packed files each; project/config/path/output/export sets and all targets valid).
+- Result: every intended project, including `menu`, has valid runtime and declaration exports; injected failure behavior remains fail-fast and removes partial output.
+- Follow-up: none.
+
+Blocked evidence:
+
+- Implemented: `publishable-projects.json` is the authoritative 71-project manifest; build membership, configuration checks, wrapper synchronization, dependency ordering, emitted-metadata export targets, aggregate failure handling, final export generation, and top-level exit status now derive from or validate against it.
+- Changed: `packages/angular/build-all.mjs`, `packages/angular/publishable-projects.json`, `packages/angular/tsconfig.json`, `packages/angular/tsconfig.build.json`, `packages/angular/sync-project-wrappers.mjs`, `packages/angular/validate-package.mjs`, `packages/angular/test/build-all.test.mjs`, validator fixtures, and `packages/angular/package.json`.
+- Verified: `pnpm --dir packages/angular test:build-all` (6/6 passing) and `pnpm --dir packages/angular test:package-validator` (11/11 passing).
+- Blocker: `pnpm --dir packages/angular bundle` exits 1 after aggregating the sole failed project, `menu`, and removes partial `dist`; `projects/menu/src/lib/*.ts` imports the nonexistent `@spartan-ng/brain/menu` subpath, which `@spartan-ng/brain@1.1.1` does not export, causing TS2307 followed by Angular host-directive/module diagnostics.
+- Acceptance impact: the requested public `menu` project cannot emit valid runtime/type exports without a separate menu API migration or a maintainer-approved removal; no staged package exists for ANGULAR-01 validation after the failed bundle.
 
 Priority: P0
 
@@ -146,7 +174,26 @@ Acceptance criteria:
 
 ### Task ANGULAR-03: Generate Correct Plain and Tailwind-Prefixed Variants
 
-Status: pending
+Status: completed
+
+Resolution evidence (ANGULAR-FINAL independent review):
+
+- The historical `menu` blocker is resolved; fresh complete plain and `tw` builds now pass independently.
+- Verified: `pnpm --dir packages/angular test:variants` (3/3), followed by fresh serial `prepare:release` and explicit validation of both 71-project/287-file stages.
+- Artifact inspection: plain runtime/declarations contain no `@egose/shadcn-theme-ng-tw/` references; `tw` runtime/declarations contain no `@egose/shadcn-theme-ng/` references; neither stage contains `.map` files, `sourceMappingURL` references, or leaked `exports.json`.
+- Representative classes: pagination, carousel, and radio-group artifacts contain no `tw:` utilities in plain output and use `tw:` for the corresponding required utilities in prefixed output. The review corrected malformed radio disabled variants before regenerating the candidates.
+- Result: both variants satisfy package identity, class-prefix, declaration, source-map, independent staging, and package-validator criteria.
+- Follow-up: none.
+
+Blocked evidence:
+
+- Implemented: AST-guided class transformation normalizes recognized Tailwind candidates to an unprefixed canonical form before emitting either plain or `tw:` classes; package self-imports are rewritten in both runtime and declarations.
+- Implemented: invalidated ng-packagr source maps and their runtime references are intentionally excluded, with the policy documented in `packages/angular/README.md` and enforced by package validation.
+- Implemented: `--stage <directory>` preserves independently inspectable variant output outside `dist`; focused tests stage plain and `tw` artifacts separately, verify representative template/runtime classes, declarations, package identity, and map exclusion, then run ANGULAR-01 validation against each stage.
+- Changed: `packages/angular/build-all.mjs`, `packages/angular/validate-package.mjs`, `packages/angular/test/variants.test.mjs`, `packages/angular/test/validate-package.test.mjs`, `packages/angular/test/build-all.test.mjs`, `packages/angular/package.json`, `packages/angular/README.md`.
+- Verified: `pnpm --dir packages/angular test:variants` (3/3 passing), `pnpm --dir packages/angular test:build-all` (6/6 passing), and `pnpm --dir packages/angular test:package-validator` (12/12 passing).
+- Blocker: `pnpm --dir packages/angular bundle` exits 1 and removes partial `dist` because `@spartan-ng/brain@1.1.1` does not export `@spartan-ng/brain/menu`; therefore complete plain and `tw` tarballs cannot be generated and cannot pass ANGULAR-01 independently until ANGULAR-04 resolves the dependency contract.
+- Acceptance impact: focused fixture evidence demonstrates the variant transformation, but acceptance criteria requiring complete real tarballs and independent ANGULAR-01 validation remain blocked.
 
 Priority: P0
 
@@ -190,7 +237,17 @@ Acceptance criteria:
 
 ### Task ANGULAR-04: Declare the Complete Consumer Dependency Contract
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/package.json`, `packages/angular/pnpm-lock.yaml`, `packages/angular/dependency-contract.mjs`, `packages/angular/test/dependency-contract.test.mjs`, `packages/angular/test/isolated-consumers.mjs`, `packages/angular/validate-package.mjs`, `packages/angular/projects/menu/src/lib/*.ts`, and `packages/angular/projects/toggle-group/src/lib/hlm-toggle-group*.ts`.
+- Contract: Angular/CDK `>=22.0.0 <23.0.0`, Spartan `>=1.1.1 <2.0.0`, ng-icons core `>=33.4.0 <34.0.0`, and RxJS `>=7.8.0 <8.0.0` are peers; implementation-owned icon sets, styling helpers, carousel integration, scrollbar, toaster, and `tslib` are dependencies; compiler, CLI, test, packaging, and Tailwind transformation tools remain development-only.
+- Inventory: plain and `tw` emitted JavaScript/declarations contain 17 external package roots, all declared and checked by the staged package validator; the validator also rejects build-only packages in published dependencies/peers.
+- Verified: `pnpm --dir packages/angular bundle` (71/71 projects, including `menu`); `pnpm --dir packages/angular verify:consumers` (serial plain and `tw` 71-project builds, exact package validation/packing, isolated strict npm installs of 429 packages each, `tsc --noEmit`, and production `ng build` for both variants; incompatible Angular 21 peer install fails with an npm peer diagnostic).
+- Verified: `pnpm --dir packages/angular test:dependency-contract` (3/3), `test:build-all` (6/6), `test:package-validator` (12/12), `test:variants` (3/3), `pnpm --dir packages/angular install --frozen-lockfile`, targeted Prettier check, and `git diff --check`.
+- Prior blocker resolution for integration: the public `menu` project now uses the compatible Angular CDK menu primitives instead of the nonexistent Spartan subpath, so the sole recorded ANGULAR-02/03 real-bundle blocker is resolved; their statuses remain unchanged for their owners to re-evaluate.
+- Follow-up: ANGULAR-02 and ANGULAR-03 integration review; no ANGULAR-04 blocker remains.
 
 Priority: P0
 
@@ -234,7 +291,20 @@ Acceptance criteria:
 
 ### Task ANGULAR-05: Secure and Stage Angular Releases Before Publishing
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `scripts/publish.mjs`, `packages/angular/test/release.test.mjs`, `packages/angular/package.json`, `packages/angular/README.md`, `.gitignore`
+- Security: all npm/pnpm/node invocations use argument arrays, explicit `cwd`, and `shell: false`; OTP remains one opaque argument and is never included in release logs; only a confirmed npm `E404`/not-found response selects the initial-version path.
+- Atomic release: plain and `tw` builds are staged, validated, and packed serially before either exact tarball can be passed to `npm publish`; every child-process/build/validation/pack/publish or top-level CLI failure propagates nonzero.
+- Verified: `pnpm --dir packages/angular test:release` (5/5 passing, including absolute working directories and disabled shells, shell-like OTP opacity/redaction, confirmed package absence versus missing npm/authentication/network/timeout/registry/unknown/malformed responses, second-variant atomic publish prevention, two-tarball prepare-only output, and CLI nonzero failure).
+- Verified: `pnpm --dir packages/angular test:package-validator` (12/12), `pnpm --dir packages/angular test:variants` (3/3), and `pnpm --dir packages/angular test:build-all` (6/6).
+- Verified: `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-05.1` (two serial 71-project builds; both staged packages validated with 287 packed files; no publish calls).
+- Packed artifacts: `egose-shadcn-theme-ng-0.0.0-angular-05.1.tgz` SHA-256 `72af365c7f9df8c44979f0c70cbe592ed52cc5b666a655dddc6b2a8b9f8826ac`; `egose-shadcn-theme-ng-tw-0.0.0-angular-05.1.tgz` SHA-256 `fa55c1664a44e3797ab83ab4fe2f113fa5b02080908bad9395f025d583a505cc` (generated under ignored `packages/angular/release/`, not committed).
+- React regression verification: `node scripts/publish.mjs --context react --version 0.0.0-test.0 --prepare-only` and `pnpm --dir packages/react validate:package` (120 exports, 238 runtime targets, 238 declarations, 2 TypeScript consumers, 784 packed files).
+- Verified: `pnpm exec prettier --check "scripts/publish.mjs" "packages/angular/test/release.test.mjs" "packages/angular/package.json" "packages/angular/README.md"` and `git diff --check`.
+- Follow-up: ANGULAR-10; move production publication to protected CI with npm trusted publishing/OIDC.
 
 Priority: P0
 
@@ -278,7 +348,18 @@ Acceptance criteria:
 
 ### Task ANGULAR-06: Add Angular Library Test Infrastructure
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/test/setup.ts`, `packages/angular/test/run-library-tests.mjs`, `packages/angular/test/source-exports.mjs`, `packages/angular/test/source-exports.test.mjs`, `packages/angular/test/fixtures/source-exports/broken-public-api.ts`, `packages/angular/projects/form-text-input/src/lib/form-text-input.spec.ts`, `packages/angular/projects/utils/src/lib/utils.spec.ts`, `packages/angular/@examples/standard/src/app/app.spec.ts`, package scripts, and Angular README test commands.
+- Coverage: focused form binding and explicit-ID hydration stability; browser/server class management; real `MutationObserver`, animation-frame settling, and teardown; stable example shell/router behavior; source-level public exports kept separate from staged artifact validation.
+- Failure proof: deliberately broken form binding and resource-leak fixtures are rejected by shared browser assertions; the deliberately broken public-API fixture is rejected by the source export contract test.
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:libraries` (2 source contracts, 3 form tests, and 3 utils tests passing serially in Chrome Headless 151).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:library form-text-input` (targeted 3/3 passing).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular/@examples/standard run test:ci` (2/2 passing in Chrome Headless 151).
+- Result: targeted `test:library <name>`, aggregate `test:libraries`, source-only `test:source-exports`, and example `test:ci` commands are non-watching and CI-suitable; no browser process, timer, observer, or subscription kept either run alive.
+- Follow-up: ANGULAR-07 and ANGULAR-08 can extend the shared setup with the remaining production regressions.
 
 Priority: P1
 
@@ -321,7 +402,31 @@ Acceptance criteria:
 
 ### Task ANGULAR-07: Make Form Wrappers Behavioral and Hydration-Safe
 
-Status: pending
+Status: completed
+
+Resolved independent review blocker (ANGULAR-FINAL):
+
+- The earlier hydration test only compared generated IDs. The current test now consumes markup produced by Node `renderApplication`, verifies its `ngh` hydration marker, hydrates it in Chrome with `provideClientHydration`, and proves that Angular reuses the server-rendered input node without changing ID, label, hint, or ARIA relationships.
+- Independently verified: the focused test passed with Angular reporting 3 components and 21 nodes hydrated, 0 components skipped.
+
+Completion evidence:
+
+- Changed: all six form wrappers and focused specs; shared application-scoped `HlmFormIdGenerator`; narrow checkbox, date-picker, select-trigger, label, and searchable-multiselect forwarding needed to reach the actual interactive controls; ANGULAR-06 library test selection.
+- Behavior: wrapper-only disabled locks and reactive-form disabled state are combined without competing writes to the CVA `disabled` input; explicit/generated IDs now align controls, labels, and active error/hint descriptions; generated IDs replay deterministically for fresh server/client application injectors using `APP_ID` plus an application-scoped sequence.
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:library form-text-input form-textarea form-select form-checkbox form-date-picker form-searchable-multiselect` (13/13 passing).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:libraries` (2/2 source contracts and 16/16 browser tests passing serially).
+- Verified: `pnpm --dir packages/angular bundle` (71/71 projects), targeted Prettier check, and `git diff --check`.
+- Follow-up: none.
+
+Completion evidence (independent-review closure):
+
+- Changed: `packages/angular/test/form-hydration-server.mjs`, `packages/angular/test/run-library-tests.mjs`, `packages/angular/projects/form-text-input/src/lib/form-text-input.spec.ts`, `packages/angular/projects/input/src/lib/hlm-input.ts`, all six form-wrapper templates, and Angular test dependencies/lockfile.
+- SSR/hydration proof: the focused runner builds the representative wrapper and its source dependencies, starts a Node `renderApplication` server with hydration metadata, and Chrome hydrates that exact markup with the same application ID. The test asserts the server `ngh` marker, generated ID format, control/label/hint ARIA alignment, exact server input-node reuse, and unchanged identity after hydration; Angular reports 3 components and 21 nodes hydrated with 0 skipped.
+- Warning cleanup: removed stale `@let cid` declarations from all six wrappers; the focused and aggregate builds report no NG8112 warning for these templates.
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:library form-text-input form-textarea form-select form-checkbox form-date-picker form-searchable-multiselect` (13/13 passing, including real Node SSR/browser hydration).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:libraries` (2/2 source contracts and 22/22 browser tests passing serially).
+- Verified: `pnpm --dir packages/angular bundle` (71/71 projects).
+- Follow-up: none; the ANGULAR-FINAL hydration blocker is resolved.
 
 Priority: P1
 
@@ -370,7 +475,17 @@ Acceptance criteria:
 
 ### Task ANGULAR-08: Bound DOM Observation and Lifecycle Resources
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/projects/utils/src/lib/utils.ts`, `packages/angular/projects/utils/src/lib/utils.spec.ts`, `packages/angular/projects/layout-simple/src/lib/layout.ts`, `packages/angular/projects/layout-simple/src/lib/layout.spec.ts`, `packages/angular/projects/dropdown-menu/src/lib/hlm-dropdown-menu.ts`, `packages/angular/projects/dropdown-menu/src/lib/hlm-dropdown-menu-sub.ts`, `packages/angular/projects/dropdown-menu/src/lib/hlm-dropdown-menu.spec.ts`, `packages/angular/projects/radio-group/src/lib/hlm-radio.ts`, `packages/angular/projects/radio-group/src/lib/hlm-radio.spec.ts`, and `packages/angular/test/run-library-tests.mjs`.
+- Runtime: class reconciliation now observes only managed hosts through injected-`DOCUMENT`, per-document state and document-owned browser APIs; teardown disconnects/rebinds observers and cancels pending animation frames. Layout subscriptions use `takeUntilDestroyed`, dropdown timers use `DestroyRef`, and radio labels are matched by exact `htmlFor` values without selector interpolation.
+- Instrumentation: a 100-element unrelated class-mutation fixture triggers the document-wide baseline observer while producing zero package observer callbacks; separate iframe documents create and release independent observers.
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:library utils layout-simple dropdown-menu radio-group` (9/9 passing).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular run test:libraries` (2/2 source contracts and 22/22 browser tests passing serially).
+- Verified: `pnpm --dir packages/angular bundle` (71/71 projects).
+- Follow-up: none.
 
 Priority: P1
 
@@ -418,7 +533,18 @@ Acceptance criteria:
 
 ### Task ANGULAR-09: Align Public API Quality and Documentation
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/README.md`, 36 per-project READMEs that contained publish boilerplate, `projects/form-text-input/src/{public-api.ts,lib/form-text-input.ts}`, `projects/button/src/lib/button.ts`, `projects/layout-simple/src/lib/{layout,user-menu,sidebar,mobile-menu-group}.ts`, `projects/confirmation-dialog/src/{public-api.ts,lib/confirmation-dialog.ts}`, `packages/angular/validate-package.mjs`, `packages/angular/test/{public-api.test.mjs,validate-package.test.mjs}`, validator fixtures, and `packages/angular/package.json`.
+- Public contract: the README's 71-subpath section is checked against `publishable-projects.json`; peer ranges and tested Angular 22.0.7/CDK 22.0.5/Spartan 1.1.1 compatibility, transitive runtime dependencies, canonical imports, and exact plain/`tw:` class semantics now match staged metadata and behavior.
+- API migration: removed the unused public `SpreadAttrsDirective`; replaced avoidable public `any` in the button/layout APIs with `TemplateRef<unknown>`, `object`, `string`, and `MenuItem`; introduced `EgConfirmationDialog` while preserving `EgConfirmationDiaglog` as a declaration-visible deprecated type/value alias until the next major release.
+- Verified: `pnpm --dir packages/angular test:public-api` (3/3), `test:source-exports` (2/2), and `test:package-validator` (15/15); validator regressions cover documentation drift, unresolved documented imports, internal publish instructions, leaked helpers, and avoidable authored declaration `any`.
+- Verified: `pnpm --dir packages/angular bundle` (71/71); `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-09.0` (both serial 71-project builds, both exact staged packages validated and packed); explicit plain and `tw` validation each passed with 71 projects and 287 packed files.
+- Packed artifacts: `egose-shadcn-theme-ng-0.0.0-angular-09.0.tgz` SHA-256 `86ad49f4a35a70e7c626d8c8926ad706b3a5f9805a4c23d284e492eb7bc879a2`; `egose-shadcn-theme-ng-tw-0.0.0-angular-09.0.tgz` SHA-256 `5990b1fecd91de8c227ffdbc8003e1ee607b158f0e91fb9a1a608261fb3144a5` (ignored generated output under `packages/angular/release/`).
+- Verified: targeted Prettier check and `git diff --check`; no React source/config or `CHANGELOG.md` changes.
+- Follow-up: none.
 
 Priority: P2
 
@@ -466,7 +592,28 @@ Acceptance criteria:
 
 ### Task ANGULAR-10: Add Isolated Consumers and Required CI Gates
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `.github/workflows/test.yml`, `.github/actions/setup-npm/action.yml`, `.github/workflows/deploy-nextjs.yml`, `.github/workflows/deploy-angular.yml`, `.github/workflows/pre-commit.yml`, and `packages/angular/test/isolated-consumers.mjs`.
+- CI contract: pull requests and pushes use frozen root/framework lockfiles; React retains its package/example setup; Angular runs separately named project-set, targeted source/variant/dependency, package-validator regression, release-script, serial release preparation, preserved-stage validation, exact-tarball consumer, and final lockfile checks.
+- Isolation: the release helper serially preserves `release/staged/{plain,tw}` and both exact tarballs; each tarball is installed with strict peer resolution into a fresh `/tmp` application with no TypeScript path aliases or monorepo ancestry, then imports core button, form input, dialog overlay, simple layout, carousel, sonner, and menu entrypoints and runs strict type-check plus an optimized production build.
+- Failure coverage: `test:build-all`, `test:package-validator`, `test:dependency-contract`, and `test:variants` reject missing project/export sets, absent export targets, wrong package identity, undeclared runtime imports, and variant class regressions before consumers run.
+- Verified: `pnpm install --frozen-lockfile`; `pnpm --dir packages/angular install --frozen-lockfile`; `pnpm --dir packages/react/@examples/nextjs install --frozen-lockfile` (all lockfiles unchanged by this task).
+- Verified: `pnpm --dir packages/angular test:build-all` (6/6), `test:package-validator` (15/15), `test:release` (5/5), `test:dependency-contract` (3/3), `test:public-api` (3/3), and `test:variants` (3/3).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular test:libraries` (2/2 source contracts and 22/22 focused browser tests).
+- Verified: `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-10.0`; explicit plain and `tw` `validate:package` runs each passed with 71 projects and 287 packed files; `pnpm --dir packages/angular verify:consumers --release-dir release` installed 429 packages per isolated consumer, passed both strict type-checks and both production builds, and confirmed incompatible required peers fail installation.
+- Packed artifacts: `egose-shadcn-theme-ng-0.0.0-angular-10.0.tgz` SHA-256 `7cd5176629778f5530a4889410efa4234cd6f9a27e474cfd14d3b0d4e3710307`; `egose-shadcn-theme-ng-tw-0.0.0-angular-10.0.tgz` SHA-256 `622354787570c08a0029bb654563302bcda1b91b6d1273755e6ebd504e99f9e6` (ignored generated output under `packages/angular/release/`).
+- Verified: Actionlint 1.7.12 with ShellCheck integration disabled, targeted Prettier, and `git diff --check`; no `CHANGELOG.md`, React source/config, or lockfile edits.
+- Follow-up: none.
+
+Completion evidence (ANGULAR-FINAL installed-runtime closure):
+
+- Changed: `packages/angular/test/isolated-consumers.mjs` now installs `@angular/platform-server` only in each temporary consumer and runs a minimal Node `renderApplication` check against the package imported from the exact tarball.
+- Verified: both fresh consumers rendered an installed `HlmButtonModule` button and asserted the runtime class identity: plain includes `inline-flex` and excludes `tw:inline-flex`; prefixed includes `tw:inline-flex` and excludes unprefixed `inline-flex`.
+- Verified: the same fresh consumers passed strict peer installation, `tsc --noEmit`, and optimized production builds before runtime rendering; the incompatible Angular 21 installation still failed with a peer diagnostic.
+- Integration defect fixed: the standard example used removed `@ng-icons/lucide` export `lucideGithub`; replacing it with current export `lucideCode` restored `pnpm --dir packages/angular/@examples/standard test:ci` (2/2).
 
 Priority: P1
 
@@ -510,7 +657,21 @@ Acceptance criteria:
 
 ### Task ANGULAR-SEC-01: Triage Angular Dependency and Supply-Chain Risk
 
-Status: pending
+Status: completed
+
+Completion evidence:
+
+- Changed: `packages/angular/package.json`, `packages/angular/@examples/standard/package.json`, `packages/angular/pnpm-workspace.yaml`, `packages/angular/pnpm-lock.yaml`, `packages/angular/SECURITY.md`, compatibility assertions/documentation, and the existing Angular path in `.github/workflows/test.yml`.
+- Remediation: upgraded direct Angular tooling to 22.1.x, Spartan to 1.3.2, ng-packagr to 22.1.1, and ng-icons to 35.0.1 before applying the documented `fast-uri@3.1.5` override. The override has an owner, upstream advisory, 2026-09-23 review deadline, removal criteria, and required regression checks.
+- Audit: the baseline contained 43 high and 2 critical records. After direct upgrades and the override, `pnpm audit --prod --audit-level high` reports no known vulnerabilities. The remaining full-lock audit contains 37 high and 2 critical records (34 unique advisories), all development-only; `packages/angular/SECURITY.md` classifies every advisory by build-tool/example/consumer/runtime surface and records owner, rationale, reachability, and review date. No high/critical shipped-runtime advisory remains.
+- CI: pull requests run pinned `actions/dependency-review-action` with `fail-on-severity: high`; the Angular job runs the high-threshold production audit after frozen installation. Existing React steps and behavior are unchanged.
+- Verified: `pnpm --dir packages/angular install --frozen-lockfile`; `pnpm --dir packages/angular audit:production` (zero advisories); full `pnpm audit --json` triage (37 high, 2 critical, all dev-only).
+- Verified: `pnpm --dir packages/angular test:dependency-contract` (3/3), `test:build-all` (6/6), `test:package-validator` (15/15), `test:public-api` (3/3), `test:variants` (3/3), and `test:release` (5/5).
+- Verified: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular test:libraries` (2/2 source contracts and 22/22 browser tests).
+- Verified: `pnpm --dir packages/angular bundle` (71/71 projects); `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-sec-01.0` (both variants, 71 projects and 287 packed files each); `pnpm --dir packages/angular verify:consumers --release-dir release` (both fresh consumers installed 319 packages with zero npm vulnerabilities, type-checked, and production-built; incompatible peers rejected).
+- Packed artifacts: `egose-shadcn-theme-ng-0.0.0-angular-sec-01.0.tgz` SHA-256 `65b712938e19f737a9b5de1c64f737fefe0557d01140cc0a2d309c157cf75c5f`; `egose-shadcn-theme-ng-tw-0.0.0-angular-sec-01.0.tgz` SHA-256 `6bebfbe3f023e8f7685d077eac52de33f9c5225e552761901c0dd5190d5b0df8` (ignored generated output under `packages/angular/release/`).
+- Verified: `ASDF_ACTIONLINT_VERSION=1.7.12 actionlint -shellcheck=`, targeted Prettier, and `git diff --check`; `CHANGELOG.md`, React sources/configuration, and non-Angular lockfiles are unchanged by this task.
+- Follow-up: remove the `fast-uri` override when upstream Angular devkit dependency paths resolve a patched release; review all accepted build-only findings by 2026-09-23.
 
 Priority: P1
 
@@ -551,7 +712,37 @@ Acceptance criteria:
 
 ### Task ANGULAR-FINAL: Independently Review Both Angular Release Candidates
 
-Status: pending
+Status: completed
+
+Prior independent review evidence (superseded by the closure below):
+
+- Assigned agent/session: independent package review on 2026-08-23 local time; prior completion notes and pre-existing generated artifacts were not used as evidence.
+- Checkout constraint: the candidate implementation existed as uncommitted work, so discarding it for a literal clean checkout would not review the requested candidate. The current dirty worktree was preserved, `pnpm --dir packages/angular install --frozen-lockfile` reported the workspace already up to date, and all release stages/tarballs were freshly replaced by the prepare-only command.
+- Small defects corrected during review: `packages/angular/README.md` now names the tested Spartan version as `1.3.2`; `projects/radio-group/src/lib/hlm-radio-indicator.ts` fixes two malformed `group-data-[disabled=true]` utilities so the prefixed transform emits valid `tw:group-data-[disabled=true]:...` tokens.
+- Prepared without publishing: `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-final.0` completed two serial 71-project builds, exact stage validation, and packing. No `npm publish` command ran.
+- Packed artifact: `egose-shadcn-theme-ng-0.0.0-angular-final.0.tgz`, 178788 bytes, SHA-256 `a3957c0137c28b057cce419ab53fcecbea186ac710617fef2a792762a896c9ac`, 287 files.
+- Packed artifact: `egose-shadcn-theme-ng-tw-0.0.0-angular-final.0.tgz`, 180162 bytes, SHA-256 `94695f959d1640af97fbbf89620898891a9127dd28a5a80980c041f5e7d406ea`, 287 files.
+- Metadata/artifacts: both candidates use version `0.0.0-angular-final.0`, Apache-2.0 root license content, author `Junmin Ahn`, correct package names, 71 exact exports with existing runtime/declaration targets, complete declared runtime dependencies/peers, and no placeholders, credential patterns, cross-variant self-imports, source maps, source-map references, or leaked `exports.json`.
+- Isolated consumers: `pnpm --dir packages/angular verify:consumers --release-dir release` installed each exact tarball with strict peer resolution into fresh `/tmp` applications (319 packages, zero vulnerabilities each), then passed strict `tsc --noEmit` and optimized production builds (plain 283.86 kB, `tw` 285.18 kB); an Angular 21 installation failed with the expected peer diagnostic.
+- Source component verification: `CHROME_BIN=~/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell pnpm --dir packages/angular test:libraries` passed 2 source-contract and 22 focused browser tests covering representative source component rendering, form behavior, deterministic ID replay, server-platform DOM behavior, and lifecycle cleanup. One initial aggregate run had a transient Chrome spec-loader failure at `dropdown-menu`; the isolated suite and a complete aggregate rerun both passed.
+- Release safety: `pnpm --dir packages/angular test:release` passed 5/5, including opaque/redacted shell-like OTP handling, registry failure classification, second-variant failure preventing both publishes, prepare-only two-tarball output, absolute `cwd`/`shell: false`, and CLI nonzero failure. `test:build-all` passed 6/6 fail-fast cases.
+- Additional verification: `test:package-validator` 15/15, `test:variants` 3/3, `test:dependency-contract` 3/3, `test:public-api` 3/3, `audit:production` zero known vulnerabilities, exact root-license comparison for both stages, and `git diff --check` passed.
+- Blocker: exact-tarball consumers currently stop after strict type-check and optimized compilation; they do not execute or render either installed package. The source hydration check does not perform actual Angular SSR plus browser hydration. Therefore representative installed plain/`tw` rendering and the ANGULAR-07 server-render-plus-hydration criterion remain unverified.
+- Result: packaging, metadata, dependency, identity, prefix, source-map, fail-fast, atomicity, credential-safety, and source component checks pass, but ANGULAR-FINAL cannot complete while the P1 hydration/render integration gap remains.
+- Follow-up: add a fresh-consumer runtime harness that server-renders and hydrates representative components from each exact tarball, asserts no hydration diagnostics, and checks plain versus `tw:` DOM classes; then rerun ANGULAR-FINAL.
+
+Completion evidence (resumed independent review):
+
+- Hydration closure: independently inspected and ran the real Node `renderApplication` plus Chrome `provideClientHydration` path. Server markup contained Angular hydration metadata; Chrome reported 3 components and 21 nodes hydrated with 0 skipped; the original input node was reused and generated ID, label, hint, and `aria-describedby` relationships stayed identical.
+- Installed runtime closure: extended the temporary consumer harness to server-render `HlmButtonModule` from each exact installed tarball. Both renders produced the expected text and variant-specific class (`inline-flex` only for plain, `tw:inline-flex` only for `tw`).
+- Fresh source/component gates: `test:build-all` 6/6, `test:package-validator` 15/15, `test:variants` 3/3, `test:dependency-contract` 3/3, `test:public-api` 3/3, `test:release` 5/5, `test:libraries` 2/2 source contracts plus 22/22 browser tests, standard example `test:ci` 2/2, and production audit zero known vulnerabilities.
+- Fresh release: `pnpm --dir packages/angular prepare:release --version 0.0.0-angular-final.1` completed two serial 71-project builds, validation, and packing without publishing.
+- Packed artifact: `egose-shadcn-theme-ng-0.0.0-angular-final.1.tgz`, 178976 bytes, SHA-256 `7f7e626676e592497f7d770a7f9aa608b96bf23d18c6b0a10e6c4f39b71a2ac5`, 287 files.
+- Packed artifact: `egose-shadcn-theme-ng-tw-0.0.0-angular-final.1.tgz`, 180310 bytes, SHA-256 `372c04d84c1155a2e1bc91c0066eb4fd692395c834736074471e9c88a73f2df2`, 287 files.
+- Exact artifact validation: both stages contain the correct name/version/license/author, 71 valid runtime/declaration exports, complete dependency metadata, correct plain/`tw` self-identity and representative classes, and no placeholders, credentials, source maps/references, leaked `exports.json`, or unexpected files.
+- Exact consumer verification: each tarball installed 321 packages with strict peer resolution and zero vulnerabilities in a fresh `/tmp` application, passed strict type-check and optimized production build (plain 283.86 kB, `tw` 285.18 kB), then passed installed-package SSR rendering; Angular 21 remained correctly rejected.
+- Result: all ANGULAR-FINAL acceptance criteria pass and no Angular P0/P1 task remains incomplete or blocked. Generated `dist`, release stages, and tarballs remain ignored and uncommitted.
+- Follow-up: none.
 
 Priority: P0
 
@@ -634,6 +825,17 @@ Shared files requiring one owner at a time:
 - Pull-request CI uses frozen installs and validates both exact tarballs serially.
 - High/critical dependency risk is remediated or explicitly owned and time-bounded.
 - An independent reviewer records commands, checksums, sizes, and results.
+
+## Overall Completion Evidence
+
+- Completed: all 12 task items are `completed`; no P0/P1 item remains pending or blocked.
+- Final review: `test:build-all` 6/6, `test:package-validator` 15/15, `test:variants` 3/3, `test:dependency-contract` 3/3, `test:public-api` 3/3, and `test:release` 5/5 passed.
+- Browser verification: `test:libraries` passed 2/2 source contracts and 22/22 focused browser tests, including real Node SSR plus browser hydration; the standard example `test:ci` passed 2/2.
+- Supply-chain verification: `pnpm --dir packages/angular install --frozen-lockfile` passed and `pnpm --dir packages/angular audit:production` reported no known vulnerabilities.
+- Final plain artifact: `egose-shadcn-theme-ng-0.0.0-angular-final.1.tgz`, 178976 bytes, SHA-256 `7f7e626676e592497f7d770a7f9aa608b96bf23d18c6b0a10e6c4f39b71a2ac5`.
+- Final prefixed artifact: `egose-shadcn-theme-ng-tw-0.0.0-angular-final.1.tgz`, 180310 bytes, SHA-256 `372c04d84c1155a2e1bc91c0066eb4fd692395c834736074471e9c88a73f2df2`.
+- Artifact and consumer result: both 71-project/287-file candidates passed exact-package validation, strict isolated installation, type-checking, production builds, and installed-package SSR rendering without publication.
+- Scope check: `git diff --check` passed; `CHANGELOG.md`, React source/configuration, generated `dist`, release stages, and tarballs were not added to the tracked change set.
 
 ## Completion Evidence Template
 

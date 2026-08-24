@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@egose/shadcn-theme-ng/alpha": ["./projects/alpha/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/beta": ["./projects/beta/src/public-api.ts"]
+    }
+  }
+}

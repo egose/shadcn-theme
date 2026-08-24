@@ -1,12 +1,26 @@
-import { type ExistingProvider, InjectionToken, type Type, inject } from '@angular/core';
-import type { HlmToggleGroup } from './hlm-toggle-group';
+import {
+  type ExistingProvider,
+  InjectionToken,
+  type InputSignal,
+  type InputSignalWithTransform,
+  type Type,
+  inject,
+} from '@angular/core';
+import type { NumberInput } from '@angular/cdk/coercion';
+import type { ToggleVariants } from '@egose/shadcn-theme-ng/toggle';
 
-export const HlmToggleGroupToken = new InjectionToken<HlmToggleGroup>('HlmToggleGroupToken');
+export interface HlmToggleGroupContext {
+  readonly variant: InputSignal<ToggleVariants['variant']>;
+  readonly size: InputSignal<ToggleVariants['size']>;
+  readonly spacing: InputSignalWithTransform<number, NumberInput>;
+}
 
-export function injectHlmToggleGroup(): HlmToggleGroup {
+export const HlmToggleGroupToken = new InjectionToken<HlmToggleGroupContext>('HlmToggleGroupToken');
+
+export function injectHlmToggleGroup(): HlmToggleGroupContext {
   return inject(HlmToggleGroupToken);
 }
 
-export function provideHlmToggleGroup(toggleGroup: Type<HlmToggleGroup>): ExistingProvider {
+export function provideHlmToggleGroup(toggleGroup: Type<HlmToggleGroupContext>): ExistingProvider {
   return { provide: HlmToggleGroupToken, useExisting: toggleGroup };
 }
