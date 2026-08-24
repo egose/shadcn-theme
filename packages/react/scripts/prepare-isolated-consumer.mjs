@@ -31,7 +31,7 @@ await writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
 const install = spawnSync(
   'pnpm',
-  ['install', '--offline', '--ignore-workspace', '--config.lockfile=false', '--ignore-scripts'],
+  ['install', '--prefer-offline', '--ignore-workspace', '--no-frozen-lockfile', '--ignore-scripts'],
   { cwd: consumerDirectory, encoding: 'utf8' },
 );
 assert.equal(install.status, 0, `${install.stdout}\n${install.stderr}`.trim());

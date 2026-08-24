@@ -86,7 +86,7 @@ jobs:
       run: pnpm install --frozen-lockfile --ignore-workspace
       working-directory: packages/react/test-fixtures/isolated-consumer
 
-    - name: Install React tarball offline
+    - name: Install React tarball in isolated consumer
       run: pnpm prepare:consumer
       working-directory: packages/react
 
