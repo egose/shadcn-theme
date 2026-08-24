@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BrnMenu } from '@spartan-ng/brain/menu';
+import { CdkMenu } from '@angular/cdk/menu';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { type VariantProps, cva } from 'class-variance-authority';
 import type { ClassValue } from 'clsx';
@@ -25,7 +25,7 @@ type MenuVariants = VariantProps<typeof menuVariants>;
   host: {
     '[class]': '_computedClass()',
   },
-  hostDirectives: [BrnMenu],
+  hostDirectives: [CdkMenu],
   template: ` <ng-content /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

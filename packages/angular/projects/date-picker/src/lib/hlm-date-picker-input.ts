@@ -21,6 +21,8 @@ import { injectHlmDatePickerConfig } from './hlm-date-picker.token';
       hlmInputGroupInput
       [value]="_inputValue()"
       [id]="inputId()"
+      [attr.aria-label]="ariaLabel()"
+      [attr.aria-describedby]="ariaDescribedby()"
       [placeholder]="placeholder()"
       [disabled]="_disabled()"
       [forceInvalid]="forceInvalid()"
@@ -58,6 +60,9 @@ import { injectHlmDatePickerConfig } from './hlm-date-picker.token';
 })
 export class HlmDatePickerInput<T> extends BrnDateInput<T> implements BrnDatePickerTriggerBase {
   private readonly _config = injectHlmDatePickerConfig<T>();
+
+  public readonly ariaLabel = input<string | undefined>(undefined);
+  public readonly ariaDescribedby = input<string | null>(null);
 
   /**
    * Parses input text into a date value. Return `null` for invalid

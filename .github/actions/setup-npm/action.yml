@@ -1,6 +1,11 @@
 name: Setup NPM Packages
 description: Setup required NPM packages
 
+inputs:
+  context:
+    description: Package context to install
+    required: true
+
 runs:
   using: composite
   steps:
@@ -14,26 +19,23 @@ runs:
         ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
   - name: Install Root NPM packages
-    run: |
-      pnpm install --no-frozen-lockfile
+    run: pnpm install --frozen-lockfile
     shell: bash
 
   - name: Install Package React NPM packages
-    run: pnpm install --no-frozen-lockfile
+    if: inputs.context == 'react'
+    run: pnpm install --frozen-lockfile
     shell: bash
     working-directory: packages/react
 
   - name: Install Package Angular NPM packages
-    run: pnpm install --no-frozen-lockfile
+    if: inputs.context == 'angular'
+    run: pnpm install --frozen-lockfile
     shell: bash
     working-directory: packages/angular
 
   - name: Install Nextjs app NPM packages
-    run: pnpm install --no-frozen-lockfile
+    if: inputs.context == 'react'
+    run: pnpm install --frozen-lockfile
     shell: bash
     working-directory: packages/react/@examples/nextjs
-
-  - name: Install Angular app NPM packages
-    run: pnpm install --no-frozen-lockfile
-    shell: bash
-    working-directory: packages/angular/@examples/standard

@@ -1,4 +1,5 @@
-import { Component, input, output, computed, signal, viewChild, TemplateRef } from '@angular/core';
+import { Component, input, output, computed, signal, viewChild, TemplateRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ClassValue } from 'clsx';
@@ -14,7 +15,7 @@ import { EgLayoutSimpleMobileMenuGroup } from './mobile-menu-group';
 // Updated interface for left/right menu items
 export interface MenuItem {
   label: string;
-  icon?: any;
+  icon?: string;
   link?: string; // optional router link
   action?: () => void; // optional click handler
   class?: string; // optional per-item CSS/Tailwind classes
@@ -49,13 +50,14 @@ const commonLinkClasses =
   templateUrl: './layout.html',
 })
 export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
+  private readonly destroyRef = inject(DestroyRef);
   hlm = hlm;
   menuIcon = lucideMenu;
 
   sidebarEnabled = input<boolean>(false);
   sidebarTitle = input<string>('Menu');
-  sidebarContent = input<TemplateRef<any> | undefined>();
-  userMenuTrigger = input<TemplateRef<any> | undefined>();
+  sidebarContent = input<TemplateRef<unknown> | undefined>();
+  userMenuTrigger = input<TemplateRef<unknown> | undefined>();
 
   /** Menu data inputs */
   leftMenus = input<MenuItem[]>([]);
@@ -86,7 +88,7 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   loading = input<boolean>(false);
   searchPlaceholderText = input<string>('Select an page');
   searchEmptyText = input<string>('No pages found');
-  searchOptionTemplate = input<TemplateRef<any>>();
+  searchOptionTemplate = input<TemplateRef<unknown>>();
   searchLoaderFn = input<(params: TParams) => Promise<TItem[]>>();
   searchTransformValueToSearch = input<(value: TItem) => string>();
 
@@ -159,9 +161,12 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   isMobile = signal(false);
 
   constructor(private breakpointObserver: BreakpointObserver) {
-    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result) => {
-      this.isMobile.set(result.matches);
-    });
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        this.isMobile.set(result.matches);
+      });
   }
 
   toggleMobileMenu() {

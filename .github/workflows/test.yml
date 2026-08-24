@@ -1,6 +1,8 @@
 name: Test
 
-on: push
+on:
+  push:
+  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,20 +12,152 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  dependency-review:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+    - name: Review dependency changes
+      uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294
+      with:
+        fail-on-severity: high
+
+  react:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
+      with:
+        context: react
+
+    - name: Verify frozen React lockfile
+      run: git diff --exit-code -- packages/react/pnpm-lock.yaml
+
+    - name: React typecheck
+      run: pnpm typecheck
+      working-directory: packages/react
+
+    - name: React lint
+      run: pnpm lint
+      working-directory: packages/react
+
+    - name: React unit tests
+      run: pnpm test
+      working-directory: packages/react
+
+    - name: React bundle
+      run: pnpm bundle
+      working-directory: packages/react
+
+    - name: Stage React package
+      run: pnpm prepare:package
+      working-directory: packages/react
+
+    - name: Test React artifact validator
+      run: pnpm test:package-validator
+      working-directory: packages/react
+
+    - name: Validate staged React ESM, CommonJS, and declarations
+      run: pnpm validate:package
+      working-directory: packages/react
+
+    - name: Validate React client boundaries
+      run: pnpm test:client-boundaries
+      working-directory: packages/react
+
+    - name: Validate React RSC utilities and dialog-manager barrel
+      run: pnpm test:rsc
+      working-directory: packages/react
+
+    - name: Pack staged React package
+      run: pnpm pack:package
+      working-directory: packages/react
+
+    - name: Install isolated consumer dependencies
+      run: pnpm install --frozen-lockfile --ignore-workspace
+      working-directory: packages/react/test-fixtures/isolated-consumer
+
+    - name: Install React tarball in isolated consumer
+      run: pnpm prepare:consumer
+      working-directory: packages/react
+
+    - name: Build isolated consumer
+      run: pnpm build:consumer
+      working-directory: packages/react
+
+    - name: Test isolated consumer
+      run: pnpm test:consumer
+      working-directory: packages/react
 
     - name: Nextjs Lint & Build
       run: |
         pnpm lint
         pnpm build
       working-directory: packages/react/@examples/nextjs
+
+  angular:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+      with:
+        context: angular
+
+    - name: Verify frozen Angular lockfiles
+      run: git diff --exit-code -- pnpm-lock.yaml packages/angular/pnpm-lock.yaml
+
+    - name: Audit shipped Angular dependencies
+      run: pnpm audit:production
+      working-directory: packages/angular
+
+    - name: Validate Angular project set and build failure handling
+      run: pnpm test:build-all
+      working-directory: packages/angular
+
+    - name: Run targeted Angular source tests
+      run: |
+        pnpm test:libraries
+        pnpm test:dependency-contract
+        pnpm test:public-api
+        pnpm test:variants
+      working-directory: packages/angular
+
+    - name: Test Angular package validation regressions
+      run: pnpm test:package-validator
+      working-directory: packages/angular
+
+    - name: Test Angular release script
+      run: pnpm test:release
+      working-directory: packages/angular
+
+    - name: Build, validate, and pack Angular variants serially
+      run: pnpm prepare:release --version 0.0.0-ci
+      working-directory: packages/angular
+
+    - name: Validate preserved plain and tw packages
+      run: |
+        pnpm validate:package --workspace . --package release/staged/plain --variant plain
+        pnpm validate:package --workspace . --package release/staged/tw --variant tw
+      working-directory: packages/angular
+
+    - name: Build fresh consumers from exact Angular tarballs
+      run: pnpm verify:consumers --release-dir release
+      working-directory: packages/angular
+
+    - name: Verify Angular lockfiles remain unchanged
+      run: git diff --exit-code -- pnpm-lock.yaml packages/angular/pnpm-lock.yaml

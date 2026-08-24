@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
-import _kebabCase from 'lodash-es/kebabCase';
-import _isString from 'lodash-es/isString';
+import _kebabCase from 'lodash-es/kebabCase.js';
+import _isString from 'lodash-es/isString.js';
 import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';

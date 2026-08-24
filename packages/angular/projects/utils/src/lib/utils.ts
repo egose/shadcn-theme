@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   DestroyRef,
   effect,
@@ -16,9 +16,13 @@ export function hlm(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const elementClassManagers = new WeakMap<HTMLElement, ElementClassManager>();
-let globalObserver: MutationObserver | null = null;
-const observedElements = new Set<HTMLElement>();
+const documentClassStates = new WeakMap<Document, DocumentClassState>();
+
+interface DocumentClassState {
+  document: Document;
+  managers: Map<HTMLElement, ElementClassManager>;
+  observer: MutationObserver | null;
+}
 
 interface ElementClassManager {
   element: HTMLElement;
@@ -31,6 +35,8 @@ interface ElementClassManager {
   transitionsSuppressed: boolean;
   previousTransition: string;
   previousTransitionPriority: string;
+  state: DocumentClassState;
+  view: Window | null;
 }
 
 let sourceCounter = 0;
@@ -39,12 +45,14 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
   runInInjectionContext(options.injector ?? inject(Injector), () => {
     const elementRef = options.elementRef ?? inject(ElementRef);
     const platformId = inject(PLATFORM_ID);
+    const document = inject(DOCUMENT);
     const destroyRef = inject(DestroyRef);
     const baseClasses = inject(new HostAttributeToken('class'), { optional: true });
 
     const element = elementRef.nativeElement;
     const sourceId = sourceCounter++;
-    let manager = elementClassManagers.get(element);
+    const state = getDocumentState(document);
+    let manager = state.managers.get(element);
 
     if (!manager) {
       const initialBaseClasses = new Set<string>();
@@ -64,13 +72,14 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
         transitionsSuppressed: false,
         previousTransition: '',
         previousTransitionPriority: '',
+        state,
+        view: document.defaultView,
       };
-      elementClassManagers.set(element, manager);
+      state.managers.set(element, manager);
 
-      setupGlobalObserver(platformId);
-      observedElements.add(element);
+      observeManagedElement(state, element, platformId, document);
 
-      if (isPlatformBrowser(platformId)) {
+      if (isPlatformBrowser(platformId) && manager.view) {
         manager.previousTransition = element.style.getPropertyValue('transition');
         manager.previousTransitionPriority = element.style.getPropertyPriority('transition');
         element.style.setProperty('transition', 'none', 'important');
@@ -92,7 +101,7 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
 
       if (manager!.transitionsSuppressed) {
         manager!.transitionsSuppressed = false;
-        manager!.restoreRafId = requestAnimationFrame(() => {
+        manager!.restoreRafId = manager!.view!.requestAnimationFrame(() => {
           manager!.restoreRafId = null;
           restoreTransitionSuppression(manager!);
         });
@@ -101,7 +110,7 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
 
     destroyRef.onDestroy(() => {
       if (manager!.restoreRafId !== null) {
-        cancelAnimationFrame(manager!.restoreRafId);
+        manager!.view?.cancelAnimationFrame(manager!.restoreRafId);
         manager!.restoreRafId = null;
       }
 
@@ -113,7 +122,7 @@ export function classes(computed: () => ClassValue[] | string, options: ClassesO
       manager!.sources.delete(sourceId);
 
       if (manager!.sources.size === 0) {
-        cleanupManager(element);
+        cleanupManager(manager!);
       } else {
         updateElement(manager!);
       }
@@ -132,44 +141,60 @@ function restoreTransitionSuppression(manager: ElementClassManager): void {
   }
 }
 
-function setupGlobalObserver(platformId: object): void {
-  if (isPlatformBrowser(platformId) && !globalObserver) {
-    globalObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const element = mutation.target as HTMLElement;
-          const manager = elementClassManagers.get(element);
+function getDocumentState(document: Document): DocumentClassState {
+  let state = documentClassStates.get(document);
+  if (!state) {
+    state = { document, managers: new Map(), observer: null };
+    documentClassStates.set(document, state);
+  }
+  return state;
+}
 
-          if (manager && observedElements.has(element)) {
-            if (manager.isUpdating) continue;
+function observeManagedElement(
+  state: DocumentClassState,
+  element: HTMLElement,
+  platformId: object,
+  document: Document,
+): void {
+  const MutationObserver = (document.defaultView as (Window & typeof globalThis) | null)?.MutationObserver;
+  if (isPlatformBrowser(platformId) && MutationObserver) {
+    if (!state.observer) {
+      state.observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const element = mutation.target as HTMLElement;
+            const manager = state.managers.get(element);
 
-            const currentClasses = toClassList(element.className);
-            const allSourceClasses = new Set<string>();
+            if (manager) {
+              if (manager.isUpdating) continue;
 
-            for (const source of manager.sources.values()) {
-              for (const className of source.classes) {
-                allSourceClasses.add(className);
+              const currentClasses = toClassList(element.className);
+              const allSourceClasses = new Set<string>();
+
+              for (const source of manager.sources.values()) {
+                for (const className of source.classes) {
+                  allSourceClasses.add(className);
+                }
               }
-            }
 
-            manager.baseClasses.clear();
+              manager.baseClasses.clear();
 
-            for (const className of currentClasses) {
-              if (!allSourceClasses.has(className)) {
-                manager.baseClasses.add(className);
+              for (const className of currentClasses) {
+                if (!allSourceClasses.has(className)) {
+                  manager.baseClasses.add(className);
+                }
               }
-            }
 
-            updateElement(manager);
+              updateElement(manager);
+            }
           }
         }
-      }
-    });
+      });
+    }
 
-    globalObserver.observe(document, {
+    state.observer.observe(element, {
       attributes: true,
       attributeFilter: ['class'],
-      subtree: true,
     });
   }
 }
@@ -215,13 +240,26 @@ function updateElement(manager: ElementClassManager): void {
   manager.isUpdating = false;
 }
 
-function cleanupManager(element: HTMLElement): void {
-  observedElements.delete(element);
-  elementClassManagers.delete(element);
+function cleanupManager(manager: ElementClassManager): void {
+  const { element, state } = manager;
+  state.managers.delete(element);
 
-  if (observedElements.size === 0 && globalObserver) {
-    globalObserver.disconnect();
-    globalObserver = null;
+  if (state.observer) {
+    state.observer.disconnect();
+    if (state.managers.size === 0) {
+      state.observer = null;
+    } else {
+      for (const managedElement of state.managers.keys()) {
+        state.observer.observe(managedElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      }
+    }
+  }
+
+  if (state.managers.size === 0) {
+    documentClassStates.delete(state.document);
   }
 }
 

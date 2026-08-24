@@ -1,6 +1,7 @@
+'use client';
+
 import React from 'react';
-import _get from 'lodash-es/get';
-import _startCase from 'lodash-es/startCase';
+import _get from 'lodash-es/get.js';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '../../utils/ui';
 

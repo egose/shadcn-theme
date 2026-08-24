@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { UserCircle } from 'lucide-react';
 import {
@@ -6,16 +8,11 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { cn } from '../../utils/ui';
-import type { MenuItem, UserMenuSection } from './types';
+import type { UserMenuSection } from './types';
 
 export function UserMenus({
   sections,
@@ -32,7 +29,10 @@ export function UserMenus({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {trigger ?? (
-          <button className="flex items-center justify-center p-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full cursor-pointer">
+          <button
+            type="button"
+            className="flex items-center justify-center p-2 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-full cursor-pointer"
+          >
             <UserCircle />
           </button>
         )}
@@ -57,6 +57,7 @@ export function UserMenus({
                           </LinkComponent>
                         ) : (
                           <button
+                            type="button"
                             onClick={item.action}
                             className={cn('w-full text-left cursor-pointer', item.className)}
                           >

@@ -38,8 +38,8 @@ export class EgLayoutSimpleSidebar {
   public readonly viewchildSheetRef = viewChild(BrnSheet);
   side = input<'top' | 'bottom' | 'left' | 'right' | undefined>('left');
   title = input<string | undefined>('');
-  content = input<TemplateRef<any> | undefined>();
-  contentContext = input<any>();
+  content = input<TemplateRef<unknown> | undefined>();
+  contentContext = input<object | null>(null);
 
   constructor() {
     effect(() => {});

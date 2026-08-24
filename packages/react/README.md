@@ -21,7 +21,7 @@ npm install react react-dom react-hook-form sonner
 | `react-hook-form` | `^7.54.2`              |
 | `sonner`          | `^2.0.7`               |
 
-The package also depends on `tailwindcss` (v4 or higher recommended) — consumers are expected to wire the Tailwind setup themselves.
+Tailwind CSS is consumer-side setup rather than a package peer. Tailwind CSS v4 or higher is recommended.
 
 ### Tailwind / global setup
 
@@ -30,6 +30,8 @@ The components ship precompiled Tailwind class strings (no `tw:` prefix). Config
 ## Import forms
 
 The package is **deep-import only** — every component/hook/util/layout is its own entry. Import by subpath; do NOT import from the package root (`@egose/shadcn-theme` alone resolves to nothing).
+
+Each public subpath is condition-aware: ESM `import` resolves its `.mjs` runtime and `.d.mts` declarations, while CommonJS `require` resolves its `.js` runtime and `.d.ts` declarations. Always use the package subpaths below rather than importing physical files from the installed package.
 
 | Surface      | Import path                                     |
 | ------------ | ----------------------------------------------- |
@@ -42,7 +44,7 @@ The package is **deep-import only** — every component/hook/util/layout is its 
 
 ### React Server Components
 
-Every emitted module starts with a `"use client";` directive, so this package is only consumable from client components. If you import these into a Next.js Server Component (e.g. an `app/` route file), the bundler will force it onto the client. Import and render from a component marked `"use client"` to keep the boundary explicit.
+Pure utility entries such as `utils/ui`, `utils/date`, and `utils/time` are server-safe and can be imported directly by React Server Components. Hook, context, interactive, and browser-dependent entries carry a `"use client";` boundary in both ESM and CommonJS builds. The `components/widgets/dialog-manager` barrel is one of these client entries: a Server Component may render `DialogManagerProvider`, but `useDialog`, event callbacks, and imperative dialog calls belong in your own component marked `"use client"`.
 
 ## Quick start
 
@@ -54,16 +56,17 @@ import { FormTextInput } from '@egose/shadcn-theme/components/form/text-input';
 import { useClipboard } from '@egose/shadcn-theme/hooks/use-clipboard';
 import { cn } from '@egose/shadcn-theme/utils/ui';
 import SimpleLayout from '@egose/shadcn-theme/layouts/simple';
+import Link from 'next/link';
 
 export function Demo() {
   const { copy } = useClipboard();
 
   return (
-    <SimpleLayout>
+    <SimpleLayout aslink={Link}>
       <Button variant="primary" size="default" onClick={() => copy('hello')}>
         Copy
       </Button>
-      <FormTextInput name="title" label="Title" rules={{ required: true }} />
+      <FormTextInput name="title" label="Title" required />
     </SimpleLayout>
   );
 }
@@ -71,20 +74,20 @@ export function Demo() {
 
 ## Selected exports
 
-| Surface         | Example import                                               | Exported names                                                                          |
-| --------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| Button          | `@egose/shadcn-theme/components/ui/button`                   | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`                    |
-| `cn` helper     | `@egose/shadcn-theme/utils/ui`                               | `cn`                                                                                    |
-| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`                    | `useClipboard`                                                                          |
-| Form text input | `@egose/shadcn-theme/components/form/text-input`             | `FormTextInput`, `FormTextInputProps`                                                   |
-| Page header     | `@egose/shadcn-theme/components/widgets/page-header`         | `PageHeader`, `PageHeaderProps`                                                         |
-| Action menu     | `@egose/shadcn-theme/components/widgets/action-menu`         | `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`                                       |
-| Confirm dialog  | `@egose/shadcn-theme/components/widgets/confirmation-dialog` | `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`              |
-| Simple layout   | `@egose/shadcn-theme/layouts/simple`                         | `SimpleLayout` (default export)                                                         |
-| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                       | `SidebarLayout` (default), `setLayoutHeader`, `headerStore`, `ISidebarData`, `INavUser` |
-| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager`      | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogContext`              |
+| Surface         | Example import                                               | Exported names                                                                       |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Button          | `@egose/shadcn-theme/components/ui/button`                   | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`                 |
+| `cn` helper     | `@egose/shadcn-theme/utils/ui`                               | `cn`                                                                                 |
+| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`                    | `useClipboard`                                                                       |
+| Form text input | `@egose/shadcn-theme/components/form/text-input`             | `FormTextInput`, `FormTextInputProps`                                                |
+| Page header     | `@egose/shadcn-theme/components/widgets/page-header`         | `PageHeader`, `PageHeaderProps`                                                      |
+| Action menu     | `@egose/shadcn-theme/components/widgets/action-menu`         | `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`                                    |
+| Confirm dialog  | `@egose/shadcn-theme/components/widgets/confirmation-dialog` | `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`           |
+| Simple layout   | `@egose/shadcn-theme/layouts/simple`                         | `SimpleLayout` (default), `SimpleLayoutProps`, `MenuItem`, `UserMenuSection` (types) |
+| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                       | `SidebarLayout` (default), `useLayoutHeader`, `ISidebarData`, `INavUser`             |
+| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager`      | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogCancellationError` |
 
-The full list of public modules lives under `dist/components/`, `dist/hooks/`, `dist/utils/`, and `dist/layouts/`; the `exports` map in `package.json` enumerates the supported subpaths.
+The installed package exposes public modules through the `components/`, `hooks/`, `utils/`, and `layouts/` subpaths. Its `exports` map is authoritative; physical package files are not public import paths.
 
 ## License
 

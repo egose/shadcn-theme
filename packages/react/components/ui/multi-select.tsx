@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Command as CommandPrimitive } from 'cmdk';
@@ -251,7 +253,7 @@ MultiSelectorTrigger.displayName = 'MultiSelectorTrigger';
 const MultiSelectorInput = forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, disabled: disabledProp, ...props }, ref) => {
+>(({ className, disabled: disabledProp, ...props }, _ref) => {
   const { setOpen, inputValue, setInputValue, activeIndex, setActiveIndex, ref: inputRef, disabled } = useMultiSelect();
 
   return (

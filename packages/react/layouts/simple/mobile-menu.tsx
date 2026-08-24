@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { cn } from '../../utils/ui';
 import type { UserMenuSection } from './types';
@@ -12,7 +14,7 @@ export function MobileMenu({ sections, aslink, onClick }: MobileMenuProps) {
   const LinkComponent = aslink ?? 'a';
 
   return (
-    <div className="w-full bg-white p-2 space-y-4">
+    <nav aria-label="Mobile navigation" className="w-full bg-white p-2 space-y-4">
       {sections.map((section, sectionIndex) => (
         <div key={section.label ?? sectionIndex} className="space-y-2">
           {/* Section label */}
@@ -33,6 +35,7 @@ export function MobileMenu({ sections, aslink, onClick }: MobileMenuProps) {
                     </LinkComponent>
                   ) : (
                     <button
+                      type="button"
                       onClick={item.action}
                       className={cn(
                         'block w-full text-left px-3 py-1 rounded hover:bg-gray-100 cursor-pointer',
@@ -51,6 +54,6 @@ export function MobileMenu({ sections, aslink, onClick }: MobileMenuProps) {
           {section.separator && <hr className="my-2" />}
         </div>
       ))}
-    </div>
+    </nav>
   );
 }

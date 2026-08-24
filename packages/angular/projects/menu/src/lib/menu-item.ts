@@ -1,6 +1,6 @@
 import { BooleanInput } from '@angular/cdk/coercion';
+import { CdkMenuItem } from '@angular/cdk/menu';
 import { booleanAttribute, computed, Directive, input } from '@angular/core';
-import { BrnMenuItem } from '@spartan-ng/brain/menu';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 
@@ -13,9 +13,9 @@ import { ClassValue } from 'clsx';
   },
   hostDirectives: [
     {
-      directive: BrnMenuItem,
-      inputs: ['disabled: disabled'],
-      outputs: ['triggered: triggered'],
+      directive: CdkMenuItem,
+      inputs: ['cdkMenuItemDisabled: disabled'],
+      outputs: ['cdkMenuItemTriggered: triggered'],
     },
   ],
 })

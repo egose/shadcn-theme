@@ -45,7 +45,7 @@ import { lucideTriangleAlert } from '@ng-icons/lucide';
     class: 'tw:w-full tw:p-1',
   },
 })
-export class EgConfirmationDiaglog {
+export class EgConfirmationDialog {
   private readonly _dialogRef = inject<BrnDialogRef<boolean>>(BrnDialogRef);
   private readonly _dialogContext = injectBrnDialogContext<{ title: string; description: string }>();
 
@@ -57,13 +57,18 @@ export class EgConfirmationDiaglog {
   }
 }
 
+/** @deprecated Use `EgConfirmationDialog`. The misspelled name will be removed in the next major release. */
+export type EgConfirmationDiaglog = EgConfirmationDialog;
+/** @deprecated Use `EgConfirmationDialog`. The misspelled name will be removed in the next major release. */
+export const EgConfirmationDiaglog = EgConfirmationDialog;
+
 @Injectable({ providedIn: 'root' })
 export class EgConfirmationDialogService {
   constructor(private hlmDialogService: HlmDialogService) {}
 
   showConfirmationDialog({ title, description }: { title: string; description: string }) {
     return new Promise<boolean>((resolve) => {
-      const dialogRef = this.hlmDialogService.open<boolean>(EgConfirmationDiaglog, {
+      const dialogRef = this.hlmDialogService.open<boolean>(EgConfirmationDialog, {
         context: { title, description },
         contentClass: '',
       });

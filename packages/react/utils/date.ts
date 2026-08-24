@@ -1,5 +1,5 @@
 import { isEqual } from 'date-fns/isEqual';
-import _isNil from 'lodash-es/isNil';
+import _isNil from 'lodash-es/isNil.js';
 
 /**
  * Compare two dates by value, treating `null` and `undefined` as equivalent.

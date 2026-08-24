@@ -48,7 +48,7 @@ export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
           [defaultFocusedDate]="_mutableDate() ?? defaultFocusedDate()"
           [min]="min()"
           [max]="max()"
-          [disabled]="_disabled()"
+          [disabled]="disabledState()"
           (dateChange)="_handleChange($event)"
         />
         <ng-content select="[hlmDatePickerFooter]" />
@@ -77,6 +77,9 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
     transform: booleanAttribute,
   });
 
+  /** Additional interaction lock that does not write to a reactive form control. */
+  public readonly wrapperDisabled = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
+
   /** The selected value. */
   public readonly date = input<T>();
 
@@ -98,10 +101,10 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
 
   protected readonly _popoverState = signal<BrnOverlayState | null>(null);
 
-  protected readonly _disabled = linkedSignal(this.disabled);
+  private readonly _formDisabled = signal(false);
 
   /** @internal The disabled state as a readonly signal */
-  public readonly disabledState = this._disabled.asReadonly();
+  public readonly disabledState = computed(() => this.disabled() || this.wrapperDisabled() || this._formDisabled());
 
   public readonly formattedDate = computed(() => {
     const date = this._mutableDate();
@@ -126,7 +129,7 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
   }
 
   protected _handleChange(value: T | undefined) {
-    if (this._disabled()) return;
+    if (this.disabledState()) return;
     this.updateDate(value ?? null);
 
     if (this.autoCloseOnSelect()) {
@@ -141,7 +144,7 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
    * is parsing user-entered values while typing.
    */
   public updateDate(value: T | null) {
-    if (this._disabled()) return;
+    if (this.disabledState()) return;
     const transformedDate = value != null ? this.transformDate()(value) : undefined;
 
     this._mutableDate.set(transformedDate);
@@ -167,7 +170,7 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    this._disabled.set(isDisabled);
+    this._formDisabled.set(isDisabled);
   }
 
   public open() {

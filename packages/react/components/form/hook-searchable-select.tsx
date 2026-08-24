@@ -1,7 +1,7 @@
+'use client';
+
 import React from 'react';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
-import _kebabCase from 'lodash-es/kebabCase';
-import _isNil from 'lodash-es/isNil';
 
 import { cn } from '../../utils/ui';
 import { FormError } from './error';
@@ -32,7 +32,7 @@ export function HookFormSearchableSelect<T extends FieldValues>({
         control={control}
         name={name}
         rules={rules}
-        render={({ field: { onChange, onBlur, value } }) => {
+        render={({ field: { onChange, value } }) => {
           return (
             <FormSearchableSelect
               id={id}

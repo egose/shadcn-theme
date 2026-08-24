@@ -7,8 +7,6 @@ const libsUiDir = path.join(rootDir, 'libs', 'ui');
 const angularJsonPath = path.join(rootDir, 'angular.json');
 const tsconfigPath = path.join(rootDir, 'tsconfig.json');
 const tsconfigBuildPath = path.join(rootDir, 'tsconfig.build.json');
-const buildSupportProjectNames = ['icon'];
-
 const preservedExistingProjectNames = new Set([
   'accordion',
   'alert',
@@ -273,13 +271,7 @@ for (const name of mirroredProjectNames) {
   overwriteFile(path.join(projectSrcRoot, 'public-api.ts'), publicApiTemplate(name, indexSource));
 }
 
-const publishableProjectNames = fs
-  .readdirSync(projectsDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .sort();
-
-const mirroredBuildNames = [...libsUiNames.filter((name) => publishableProjectNames.includes(name)), ...buildSupportProjectNames].sort();
+const publishableProjectNames = readJson(path.join(rootDir, 'publishable-projects.json'));
 
 const angularJson = readJson(angularJsonPath);
 for (const name of publishableProjectNames) {
@@ -299,7 +291,7 @@ for (const key of Object.keys(tsconfig.compilerOptions.paths)) {
   }
 }
 
-for (const name of mirroredBuildNames) {
+for (const name of publishableProjectNames) {
   tsconfig.compilerOptions.paths[`@egose/shadcn-theme-ng/${name}`] = [`./projects/${name}/src/public-api.ts`];
 }
 
@@ -307,7 +299,7 @@ const tsconfigBuild = {
   extends: './tsconfig.json',
   compilerOptions: {
     paths: Object.fromEntries(
-      mirroredBuildNames.map((name) => [`@egose/shadcn-theme-ng/${name}`, [`./dist/${name}`]]),
+      publishableProjectNames.map((name) => [`@egose/shadcn-theme-ng/${name}`, [`./dist/${name}`]]),
     ),
   },
 };

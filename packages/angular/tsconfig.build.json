@@ -45,6 +45,7 @@
       "@egose/shadcn-theme-ng/kbd": ["./dist/kbd"],
       "@egose/shadcn-theme-ng/label": ["./dist/label"],
       "@egose/shadcn-theme-ng/layout-simple": ["./dist/layout-simple"],
+      "@egose/shadcn-theme-ng/menu": ["./dist/menu"],
       "@egose/shadcn-theme-ng/menubar": ["./dist/menubar"],
       "@egose/shadcn-theme-ng/native-select": ["./dist/native-select"],
       "@egose/shadcn-theme-ng/navigation-menu": ["./dist/navigation-menu"],

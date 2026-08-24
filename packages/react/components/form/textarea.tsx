@@ -1,19 +1,21 @@
+'use client';
+
 import React, { TextareaHTMLAttributes, useRef } from 'react';
-import _isFunction from 'lodash-es/isFunction';
-import _kebabCase from 'lodash-es/kebabCase';
+import _isFunction from 'lodash-es/isFunction.js';
+import _kebabCase from 'lodash-es/kebabCase.js';
 import { cn } from '../../utils/ui';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 
-interface InputProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface FormTextareaInputProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const inputClass = '';
 
-export interface FormTextareaProps extends InputProps {
+export interface FormTextareaProps extends FormTextareaInputProps {
   id?: string;
   name: string;
   label?: string;
-  inputProps?: InputProps & { ref?: any };
+  inputProps?: FormTextareaInputProps & { ref?: React.Ref<HTMLTextAreaElement> };
   classNames?: {
     wrapper?: string;
     label?: string;

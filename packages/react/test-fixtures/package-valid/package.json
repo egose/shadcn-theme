@@ -1,0 +1,52 @@
+{
+  "name": "@fixture/valid-package",
+  "version": "1.2.3",
+  "description": "Package validator fixture",
+  "license": "Apache-2.0",
+  "author": "Fixture Author",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://example.test/fixture.git"
+  },
+  "files": [
+    "entry.js",
+    "entry.mjs",
+    "entry.d.mts",
+    "entry.d.ts",
+    "features",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./entry.d.mts",
+        "default": "./entry.mjs"
+      },
+      "require": {
+        "types": "./entry.d.ts",
+        "default": "./entry.js"
+      }
+    },
+    "./features/*": {
+      "import": {
+        "types": "./features/*.d.mts",
+        "default": "./features/*.mjs"
+      },
+      "require": {
+        "types": "./features/*.d.ts",
+        "default": "./features/*.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

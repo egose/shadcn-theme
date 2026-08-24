@@ -1,6 +1,6 @@
 import { type NumberInput } from '@angular/cdk/coercion';
 import { CdkMenu } from '@angular/cdk/menu';
-import { Directive, ElementRef, inject, input, numberAttribute, signal } from '@angular/core';
+import { DOCUMENT, DestroyRef, Directive, ElementRef, inject, input, numberAttribute, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { deriveMenuSideFromTransformOrigin, MENU_SIDE, type MenuSide } from '@spartan-ng/brain/core';
 import { classes } from '@egose/shadcn-theme-ng/utils';
@@ -18,6 +18,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmDropdownMenu {
   private readonly _host = inject(CdkMenu);
   private readonly _elementRef = inject(ElementRef<HTMLElement>);
+  private readonly _document = inject(DOCUMENT);
+  private readonly _destroyRef = inject(DestroyRef);
   // The trigger provides its configured side; CDK parents this content's injector under the trigger's.
   private readonly _menuSide = inject(MENU_SIDE, { optional: true });
 
@@ -40,9 +42,12 @@ export class HlmDropdownMenu {
 
   private setSideFromTransformOrigin() {
     const side = this._menuSide?.side() ?? 'bottom';
+    const view = this._document.defaultView;
+    if (!view) return;
     // CDK sets transform-origin on this element synchronously on attach; read it next tick and derive side
-    setTimeout(() => {
+    const timer = view.setTimeout(() => {
       this._side.set(deriveMenuSideFromTransformOrigin(this._elementRef.nativeElement.style.transformOrigin, side));
     });
+    this._destroyRef.onDestroy(() => view.clearTimeout(timer));
   }
 }

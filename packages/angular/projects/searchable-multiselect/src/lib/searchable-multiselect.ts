@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, forwardRef, input, output, signal } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { HlmPopover, HlmPopoverContent, HlmPopoverTrigger } from '@egose/shadcn-theme-ng/popover';
+import { HlmPopover, HlmPopoverContent, HlmPopoverPortal, HlmPopoverTrigger } from '@egose/shadcn-theme-ng/popover';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
@@ -14,7 +14,7 @@ export interface SelectOption {
 @Component({
   selector: 'eg-searchable-multiselect',
   standalone: true,
-  imports: [HlmPopover, HlmPopoverTrigger, HlmPopoverContent, HlmButton, HlmCheckbox],
+  imports: [HlmPopover, HlmPopoverTrigger, HlmPopoverContent, HlmPopoverPortal, HlmButton, HlmCheckbox],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -46,6 +46,7 @@ export interface SelectOption {
               {{ item.label }}
               <button
                 type="button"
+                [disabled]="disabledState()"
                 (click)="removeItem(item.value)"
                 class="tw:bg-transparent tw:border-0 tw:text-gray-600
                        tw:hover:text-red-500 tw:cursor-pointer"
@@ -59,17 +60,31 @@ export interface SelectOption {
 
       <!-- Trigger -->
       <hlm-popover>
-        <button hlmPopoverTrigger hlmButton variant="secondary" appearance="outline" type="button">
+        <button
+          hlmPopoverTrigger
+          hlmButton
+          variant="secondary"
+          appearance="outline"
+          type="button"
+          [id]="id()"
+          [disabled]="disabledState()"
+          [attr.aria-label]="ariaLabel()"
+          [attr.aria-describedby]="ariaDescribedby()"
+        >
           {{ selectedItems().length }} selected
         </button>
 
-        <hlm-popover-content class="tw:w-64 tw:p-2">
+        <hlm-popover-content class="tw:w-64 tw:p-2" *hlmPopoverPortal="let ctx">
           <div class="tw:max-h-60 tw:overflow-auto tw:flex tw:flex-col tw:gap-1">
             @for (option of options(); track option.value) {
               <label
                 class="tw:flex tw:items-center tw:gap-2 tw:cursor-pointer tw:px-2 tw:py-1 tw:rounded-sm tw:hover:bg-secondary"
               >
-                <hlm-checkbox [checked]="isSelected(option.value)" (changed)="toggle(option.value, $event)" />
+                <hlm-checkbox
+                  [checked]="isSelected(option.value)"
+                  [disabled]="disabledState()"
+                  (changed)="toggle(option.value, $event)"
+                />
                 <span class="tw:text-sm">{{ option.label }}</span>
               </label>
             } @empty {
@@ -85,6 +100,11 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   /** Full option list with labels/values */
   options = input<SelectOption[]>([]);
   placeholder = input<string>('Start typing to add…');
+  id = input<string>('');
+  disabled = input<boolean>(false);
+  wrapperDisabled = input<boolean>(false);
+  ariaLabel = input<string | undefined>(undefined);
+  ariaDescribedby = input<string | null>(null);
 
   userClass = input<ClassValue>('', { alias: 'class' });
 
@@ -93,7 +113,8 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   valueChange = output<string[]>();
 
   protected readonly selectedItems = signal<SelectOption[]>([]);
-  protected isDisabled = false;
+  protected readonly formDisabled = signal(false);
+  protected readonly disabledState = computed(() => this.disabled() || this.wrapperDisabled() || this.formDisabled());
   private isFormBound = false;
 
   protected readonly _hostClass = computed(() => hlm(this.userClass()));
@@ -103,6 +124,7 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   }
 
   protected toggle(value: string, checked: boolean): void {
+    if (this.disabledState()) return;
     if (checked) {
       this.addItem(value);
     } else {
@@ -120,6 +142,7 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   }
 
   protected removeItem(value: string): void {
+    if (this.disabledState()) return;
     const updated = this.selectedItems().filter((i) => i.value !== value);
     this.updateValueFromSelected(updated);
   }
@@ -159,6 +182,6 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.isDisabled = isDisabled;
+    this.formDisabled.set(isDisabled);
   }
 }

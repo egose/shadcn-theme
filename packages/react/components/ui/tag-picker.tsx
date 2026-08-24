@@ -1,6 +1,8 @@
+'use client';
+
 import * as React from 'react';
 import { IconPlus, IconX } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '../../utils/ui';
 import { Badge } from './badge';
@@ -30,6 +32,13 @@ export function TagPicker({
 }: TagPickerProps) {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const blurTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (blurTimerRef.current !== null) window.clearTimeout(blurTimerRef.current);
+    };
+  }, []);
 
   const selectedKeys = useMemo(() => new Set(value.map((item) => item.toLocaleLowerCase())), [value]);
   const normalizedInput = normalizeTagName(inputValue);
@@ -111,9 +120,19 @@ export function TagPicker({
             disabled={disabled}
             placeholder={value.length === 0 ? placeholder : ''}
             className="min-w-24 flex-1 border-0 bg-transparent p-0 pl-1 text-sm outline-none placeholder:text-muted-foreground"
-            onFocus={() => setIsFocused(true)}
+            onFocus={() => {
+              if (blurTimerRef.current !== null) {
+                window.clearTimeout(blurTimerRef.current);
+                blurTimerRef.current = null;
+              }
+              setIsFocused(true);
+            }}
             onBlur={() => {
-              window.setTimeout(() => setIsFocused(false), 100);
+              if (blurTimerRef.current !== null) window.clearTimeout(blurTimerRef.current);
+              blurTimerRef.current = window.setTimeout(() => {
+                blurTimerRef.current = null;
+                setIsFocused(false);
+              }, 100);
             }}
             onChange={(event) => setInputValue(event.target.value)}
             onKeyDown={(event) => {

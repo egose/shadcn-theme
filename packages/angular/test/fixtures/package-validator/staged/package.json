@@ -1,0 +1,25 @@
+{
+  "name": "@egose/shadcn-theme-ng",
+  "version": "1.2.3",
+  "description": "Validator fixture",
+  "license": "Apache-2.0",
+  "author": "Fixture Author",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://example.test/fixture.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    "./alpha": {
+      "types": "./alpha/types/alpha.d.ts",
+      "default": "./alpha/fesm2022/alpha.mjs"
+    },
+    "./beta": {
+      "types": "./beta/types/beta.d.ts",
+      "default": "./beta/fesm2022/beta.mjs"
+    }
+  }
+}

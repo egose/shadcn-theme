@@ -1,12 +1,10 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmFormField, HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
-
-let nextId = 0;
 
 @Component({
   selector: 'eg-form-textarea',
@@ -18,7 +16,6 @@ let nextId = 0;
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -26,23 +23,25 @@ let nextId = 0;
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()"
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()"
           >{{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
           }
-        </span>
+        </label>
       }
 
       <textarea
         hlmInput
         [attr.aria-label]="lbl"
-        [id]="cid || id()"
+        [id]="effectiveId()"
         [name]="cnm || name()"
         [formControlName]="cnm"
         [class]="$textareaClass()"
         [placeholder]="placeholder()"
         [readonly]="readonly()"
+        [attr.disabled]="effectiveDisabled() ? '' : null"
+        [ariaDescribedby]="describedBy()"
         [maxlength]="maxlength()"
         [minlength]="minlength()"
         [required]="rqrd"
@@ -51,13 +50,13 @@ let nextId = 0;
       ></textarea>
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
 
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -65,6 +64,9 @@ let nextId = 0;
   `,
 })
 export class EgFormTextarea {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-textarea');
+
   // General props
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -73,8 +75,7 @@ export class EgFormTextarea {
   hint = input<string | undefined>(undefined);
 
   // HTML/textarea attributes
-  id = input<string>(crypto.randomUUID());
-  // id = input<string>(`eg-form-text-input-${nextId++}`);
+  id = input<string | undefined>(undefined);
 
   name = input<string | undefined>(undefined);
   placeholder = input<string>('');
@@ -85,6 +86,23 @@ export class EgFormTextarea {
   required = input<boolean>(false);
   rows = input<string | number | undefined>(3);
   cols = input<string | number | undefined>(undefined);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
+
+  effectiveDisabled(): boolean {
+    return this.disabled() || !!this.formGroupDirective.form.get(this.controlName())?.disabled;
+  }
 
   // Styling classes
   userClass = input<ClassValue>('', { alias: 'class' });

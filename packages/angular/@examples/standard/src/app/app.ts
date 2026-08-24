@@ -3,8 +3,8 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import {
   lucideCircleHelp,
   lucideCircleUser,
+  lucideCode,
   lucideCog,
-  lucideGithub,
   lucideKeyboard,
   lucideLayers,
   lucideLogOut,
@@ -162,7 +162,7 @@ export class App {
     {
       label: 'Resources',
       items: [
-        { label: 'GitHub', icon: lucideGithub, action: () => this.onBilling() },
+        { label: 'GitHub', icon: lucideCode, action: () => this.onBilling() },
         { label: 'Support', icon: lucideCircleHelp, action: () => this.onSupport() },
       ],
       separator: true,

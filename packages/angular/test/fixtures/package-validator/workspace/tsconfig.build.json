@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@egose/shadcn-theme-ng/alpha": ["./dist/alpha"],
+      "@egose/shadcn-theme-ng/beta": ["./dist/beta"]
+    }
+  }
+}

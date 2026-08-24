@@ -1,37 +1,10 @@
-import { Component, Directive, ElementRef, Renderer2, OnChanges, computed, input, Input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-import { HlmFormField, HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmFormField, HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
-
-// NOT USED
-@Directive({
-  selector: '[spreadAttrs]',
-  standalone: true,
-})
-export class SpreadAttrsDirective implements OnChanges {
-  attrs = input<Record<string, any>>({});
-
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-  ) {}
-
-  ngOnChanges() {
-    const obj = this.attrs();
-    for (const [key, value] of Object.entries(obj)) {
-      if (value === null || value === undefined || value === false) {
-        this.renderer.removeAttribute(this.el.nativeElement, key);
-      } else {
-        this.renderer.setAttribute(this.el.nativeElement, key, String(value));
-      }
-    }
-  }
-}
-
-let nextId = 0;
 
 @Component({
   selector: 'eg-form-text-input',
@@ -43,7 +16,6 @@ let nextId = 0;
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -51,24 +23,26 @@ let nextId = 0;
 
     <hlm-form-field>
       @if (lbl) {
-        <span hlmLabel [class]="$labelClass()"
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()"
           >{{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
           }
-        </span>
+        </label>
       }
 
       <input
         hlmInput
         [attr.aria-label]="lbl"
-        [id]="cid || id()"
+        [id]="effectiveId()"
         [name]="cnm || name()"
         [formControlName]="cnm"
         [class]="$inputClass()"
         [type]="type()"
         [placeholder]="placeholder()"
         [readonly]="readonly()"
+        [attr.disabled]="effectiveDisabled() ? '' : null"
+        [ariaDescribedby]="describedBy()"
         [max]="max()"
         [min]="min()"
         [maxlength]="maxlength()"
@@ -80,13 +54,13 @@ let nextId = 0;
       />
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
 
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -94,6 +68,9 @@ let nextId = 0;
   `,
 })
 export class EgFormTextInput {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-text-input');
+
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
   controlName = input<string>('');
@@ -101,8 +78,7 @@ export class EgFormTextInput {
   hint = input<string | undefined>(undefined);
 
   // HTML/input attributes
-  id = input<string>(crypto.randomUUID());
-  // id = input<string>(`eg-form-text-input-${nextId++}`);
+  id = input<string | undefined>(undefined);
 
   name = input<string | undefined>(undefined);
   type = input<string>('text');
@@ -117,6 +93,23 @@ export class EgFormTextInput {
   autocomplete = input<string | undefined>(undefined);
   autofocus = input<boolean>(false);
   required = input<boolean>(false);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
+
+  effectiveDisabled(): boolean {
+    return this.disabled() || !!this.formGroupDirective.form.get(this.controlName())?.disabled;
+  }
 
   // Styling classes
   userClass = input<ClassValue>('', { alias: 'class' });

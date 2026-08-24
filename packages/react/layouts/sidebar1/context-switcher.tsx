@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { ChevronsUpDown, Plus } from 'lucide-react';
 import {
@@ -6,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../../components/ui/sidebar';
@@ -21,6 +22,10 @@ export interface INavContext {
   className?: string;
 }
 
+/**
+ * Selects the active workspace, organization, or tenant. An empty `items`
+ * array is supported and renders nothing until contexts are available.
+ */
 export function ContextSwitcher({
   items,
   title = 'Contexts',
@@ -37,15 +42,22 @@ export function ContextSwitcher({
   onContextSelected?: (context: INavContext) => void;
 }) {
   const { isMobile } = useSidebar();
-  const [activeContext, setActiveContext] = React.useState(items.find((item) => item.active) || items[0]);
+  const [activeContext, setActiveContext] = React.useState<INavContext | undefined>(
+    items.find((item) => item.active) || items[0],
+  );
 
   React.useEffect(() => {
-    if (!items || items.length === 0) return;
+    if (items.length === 0) {
+      setActiveContext(undefined);
+      return;
+    }
     setActiveContext((prev) => {
       const stillExists = items.find((item) => item.name === prev?.name);
       return stillExists ?? items[0];
     });
   }, [items]);
+
+  if (items.length === 0 || !activeContext) return null;
 
   return (
     <SidebarMenu>
@@ -53,6 +65,7 @@ export function ContextSwitcher({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
+              type="button"
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
@@ -86,7 +99,7 @@ export function ContextSwitcher({
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">{title}</DropdownMenuLabel>
 
-            {items.map((item, index) => (
+            {items.map((item) => (
               <DropdownMenuItem
                 key={item.name}
                 onClick={() => {
@@ -105,7 +118,6 @@ export function ContextSwitcher({
                   )}
                 </div>
                 {item.name}
-                {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
 

@@ -58,6 +58,7 @@
       "@egose/shadcn-theme-ng/kbd": ["./projects/kbd/src/public-api.ts"],
       "@egose/shadcn-theme-ng/label": ["./projects/label/src/public-api.ts"],
       "@egose/shadcn-theme-ng/layout-simple": ["./projects/layout-simple/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/menu": ["./projects/menu/src/public-api.ts"],
       "@egose/shadcn-theme-ng/menubar": ["./projects/menubar/src/public-api.ts"],
       "@egose/shadcn-theme-ng/native-select": ["./projects/native-select/src/public-api.ts"],
       "@egose/shadcn-theme-ng/navigation-menu": ["./projects/navigation-menu/src/public-api.ts"],

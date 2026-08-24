@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnInit, computed, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
-import { HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
+import { HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { EgFormField } from '@egose/shadcn-theme-ng/form-field-simple';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
@@ -18,7 +18,6 @@ import { ClassValue } from 'clsx';
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
     @let lbl = label();
-    @let cid = controlId();
     @let cnm = controlName();
     @let err = error();
     @let hnt = hint();
@@ -27,14 +26,16 @@ import { ClassValue } from 'clsx';
     <eg-form-field>
       <div class="tw:flex tw:items-center tw:gap-1">
         <hlm-checkbox
-          [id]="cid || id()"
+          [id]="effectiveId()"
           [name]="cnm || name() || null"
           [formControlName]="cnm"
           [class]="$checkboxClass()"
           [checked]="checked()"
           [required]="rqrd"
+          [wrapperDisabled]="disabled()"
+          [aria-describedby]="describedBy()"
         />
-        <label hlmLabel [for]="id()" [class]="$labelClass()">
+        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()">
           {{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
@@ -43,13 +44,13 @@ import { ClassValue } from 'clsx';
       </div>
 
       @if (err) {
-        <hlm-error [class]="$errorClass()">
+        <hlm-error [id]="errorId()" [class]="$errorClass()">
           {{ err }}
         </hlm-error>
       }
 
       @if (hnt) {
-        <hlm-hint [class]="$hintClass()">
+        <hlm-hint [id]="hintId()" [class]="$hintClass()">
           {{ hnt }}
         </hlm-hint>
       }
@@ -57,6 +58,9 @@ import { ClassValue } from 'clsx';
   `,
 })
 export class EgFormCheckbox {
+  private readonly formGroupDirective = inject(FormGroupDirective);
+  private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-checkbox');
+
   // Classes
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => hlm('', this.userClass()));
@@ -68,11 +72,24 @@ export class EgFormCheckbox {
   error = input<string | undefined>(undefined);
   hint = input<string | undefined>(undefined);
 
-  id = input<string>(crypto.randomUUID());
+  id = input<string | undefined>(undefined);
   name = input<string | undefined>(undefined);
   checked = input<boolean>(false);
   required = input<boolean>(false);
   disabled = input<boolean>(false);
+
+  readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly errorId = computed(() => `${this.effectiveId()}-error`);
+  readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  describedBy(): string | null {
+    const control = this.formGroupDirective.form.get(this.controlName());
+    return this.error() && control?.invalid && (control.dirty || control.touched)
+      ? this.errorId()
+      : this.hint()
+        ? this.hintId()
+        : null;
+  }
 
   // Styling
   checkboxClass = input<string>('');

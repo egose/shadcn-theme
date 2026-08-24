@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
 
@@ -96,7 +98,8 @@ function Carousel({
     api.on('select', onSelect);
 
     return () => {
-      api?.off('select', onSelect);
+      api.off('reInit', onSelect);
+      api.off('select', onSelect);
     };
   }, [api, onSelect]);
 
@@ -161,6 +164,7 @@ function CarouselPrevious({
 
   return (
     <Button
+      type="button"
       data-slot="carousel-previous"
       variant={variant}
       size={size}
@@ -191,6 +195,7 @@ function CarouselNext({
 
   return (
     <Button
+      type="button"
       data-slot="carousel-next"
       variant={variant}
       size={size}

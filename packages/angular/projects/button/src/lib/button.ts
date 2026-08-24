@@ -1,4 +1,4 @@
-import { Component, computed, signal, input } from '@angular/core';
+import { Component, computed, signal, input, type TemplateRef } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { BrnButton } from '@spartan-ng/brain/button';
 import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
@@ -139,7 +139,7 @@ export class HlmButton {
   public readonly size = input<SizeType>('default');
   public readonly appearance = input<AppearanceType>('solid');
   public readonly loading = input<boolean>(false);
-  public readonly icon = input<any | undefined>(undefined);
+  public readonly icon = input<TemplateRef<unknown> | undefined>(undefined);
   public readonly iconPosition = input<'left' | 'right'>('left');
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   public readonly spinnerUserClass = input<ClassValue>('');

@@ -38,71 +38,144 @@
   ],
   "exports": {
     "./components/ui/*": {
-      "types": "./components/ui/*.d.mts",
-      "import": "./components/ui/*.mjs",
-      "require": "./components/ui/*.js"
+      "import": {
+        "types": "./components/ui/*.d.mts",
+        "default": "./components/ui/*.mjs"
+      },
+      "require": {
+        "types": "./components/ui/*.d.ts",
+        "default": "./components/ui/*.js"
+      }
     },
     "./components/ui/extension/*": {
-      "types": "./components/ui/extension/*.d.mts",
-      "import": "./components/ui/extension/*.mjs",
-      "require": "./components/ui/extension/*.js"
+      "import": {
+        "types": "./components/ui/extension/*.d.mts",
+        "default": "./components/ui/extension/*.mjs"
+      },
+      "require": {
+        "types": "./components/ui/extension/*.d.ts",
+        "default": "./components/ui/extension/*.js"
+      }
     },
     "./components/form/*": {
-      "types": "./components/form/*.d.mts",
-      "import": "./components/form/*.mjs",
-      "require": "./components/form/*.js"
+      "import": {
+        "types": "./components/form/*.d.mts",
+        "default": "./components/form/*.mjs"
+      },
+      "require": {
+        "types": "./components/form/*.d.ts",
+        "default": "./components/form/*.js"
+      }
     },
     "./components/widgets/dialog-manager": {
-      "types": "./components/widgets/dialog-manager/index.d.mts",
-      "import": "./components/widgets/dialog-manager/index.mjs",
-      "require": "./components/widgets/dialog-manager/index.js"
+      "import": {
+        "types": "./components/widgets/dialog-manager/index.d.mts",
+        "default": "./components/widgets/dialog-manager/index.mjs"
+      },
+      "require": {
+        "types": "./components/widgets/dialog-manager/index.d.ts",
+        "default": "./components/widgets/dialog-manager/index.js"
+      }
     },
     "./components/widgets/*": {
-      "types": "./components/widgets/*.d.mts",
-      "import": "./components/widgets/*.mjs",
-      "require": "./components/widgets/*.js"
+      "import": {
+        "types": "./components/widgets/*.d.mts",
+        "default": "./components/widgets/*.mjs"
+      },
+      "require": {
+        "types": "./components/widgets/*.d.ts",
+        "default": "./components/widgets/*.js"
+      }
     },
     "./components/widgets/dialog-manager/*": {
-      "types": "./components/widgets/dialog-manager/*.d.mts",
-      "import": "./components/widgets/dialog-manager/*.mjs",
-      "require": "./components/widgets/dialog-manager/*.js"
+      "import": {
+        "types": "./components/widgets/dialog-manager/*.d.mts",
+        "default": "./components/widgets/dialog-manager/*.mjs"
+      },
+      "require": {
+        "types": "./components/widgets/dialog-manager/*.d.ts",
+        "default": "./components/widgets/dialog-manager/*.js"
+      }
     },
     "./hooks/*": {
-      "types": "./hooks/*.d.mts",
-      "import": "./hooks/*.mjs",
-      "require": "./hooks/*.js"
+      "import": {
+        "types": "./hooks/*.d.mts",
+        "default": "./hooks/*.mjs"
+      },
+      "require": {
+        "types": "./hooks/*.d.ts",
+        "default": "./hooks/*.js"
+      }
     },
     "./utils/*": {
-      "types": "./utils/*.d.mts",
-      "import": "./utils/*.mjs",
-      "require": "./utils/*.js"
+      "import": {
+        "types": "./utils/*.d.mts",
+        "default": "./utils/*.mjs"
+      },
+      "require": {
+        "types": "./utils/*.d.ts",
+        "default": "./utils/*.js"
+      }
     },
     "./layouts/simple": {
-      "types": "./layouts/simple/index.d.mts",
-      "import": "./layouts/simple/index.mjs",
-      "require": "./layouts/simple/index.js"
+      "import": {
+        "types": "./layouts/simple/index.d.mts",
+        "default": "./layouts/simple/index.mjs"
+      },
+      "require": {
+        "types": "./layouts/simple/index.d.ts",
+        "default": "./layouts/simple/index.js"
+      }
     },
     "./layouts/simple/*": {
-      "types": "./layouts/simple/*.d.mts",
-      "import": "./layouts/simple/*.mjs",
-      "require": "./layouts/simple/*.js"
+      "import": {
+        "types": "./layouts/simple/*.d.mts",
+        "default": "./layouts/simple/*.mjs"
+      },
+      "require": {
+        "types": "./layouts/simple/*.d.ts",
+        "default": "./layouts/simple/*.js"
+      }
     },
     "./layouts/sidebar1": {
-      "types": "./layouts/sidebar1/index.d.mts",
-      "import": "./layouts/sidebar1/index.mjs",
-      "require": "./layouts/sidebar1/index.js"
+      "import": {
+        "types": "./layouts/sidebar1/index.d.mts",
+        "default": "./layouts/sidebar1/index.mjs"
+      },
+      "require": {
+        "types": "./layouts/sidebar1/index.d.ts",
+        "default": "./layouts/sidebar1/index.js"
+      }
     },
     "./layouts/sidebar1/*": {
-      "types": "./layouts/sidebar1/*.d.mts",
-      "import": "./layouts/sidebar1/*.mjs",
-      "require": "./layouts/sidebar1/*.js"
+      "import": {
+        "types": "./layouts/sidebar1/*.d.mts",
+        "default": "./layouts/sidebar1/*.mjs"
+      },
+      "require": {
+        "types": "./layouts/sidebar1/*.d.ts",
+        "default": "./layouts/sidebar1/*.js"
+      }
     },
     "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "tsc -w",
+    "typecheck": "tsc --noEmit --pretty false",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:package": "pnpm test:package-validator && pnpm prepare:package && pnpm validate:package",
+    "test:client-boundaries": "node --test scripts/prepend-use-client.test.mjs && node scripts/validate-client-boundaries.mjs",
+    "test:rsc": "node scripts/validate-rsc.mjs",
+    "pack:package": "node scripts/pack-package.mjs",
+    "prepare:consumer": "node scripts/prepare-isolated-consumer.mjs",
+    "test:consumer": "pnpm --dir .isolated-consumer test",
+    "build:consumer": "pnpm --dir .isolated-consumer build",
     "bundle": "tsup",
-    "postbundle": "node prepend-use-client.mjs"
+    "postbundle": "node prepend-use-client.mjs",
+    "prepare:package": "cd ../.. && node scripts/publish.mjs --context react --version 0.0.0-test.0 --prepare-only",
+    "validate:package": "node scripts/validate-package.mjs dist",
+    "test:package-validator": "node --test scripts/validate-package.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -126,17 +199,25 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^26.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^10.0.1",
     "esbuild": "^0.28.1",
     "fast-glob": "^3.3.3",
+    "globals": "^17.3.0",
+    "jsdom": "^28.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.81.0",
     "tsup": "^8.5.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "react": "^18.3.1 || ^19.0.0",

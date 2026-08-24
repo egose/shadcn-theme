@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 import { NavMenus } from './nav-menus';
 import { NavUser, INavUser, INavUserMenuItem } from './nav-user';
