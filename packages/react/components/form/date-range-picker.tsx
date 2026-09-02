@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
@@ -36,7 +37,7 @@ export interface FormDateRangePickerProps {
   required?: boolean;
   /** The selected range. Partial ranges and `undefined` are rendered as supplied. */
   value?: DateRange;
-  /** Called once per user selection or clear, with endpoints normalized to local midnight. */
+  /** Called when a pending range is confirmed, with endpoints normalized to local midnight. */
   onChange: (value: DateRange | undefined) => void;
   classNames?: {
     wrapper?: string;
@@ -46,8 +47,8 @@ export interface FormDateRangePickerProps {
 }
 
 /**
- * Controlled date-range picker. Selection is derived exclusively from
- * `value`; mounting and prop changes never invoke `onChange`.
+ * Controlled date-range picker. Calendar changes remain pending until
+ * confirmed with Select; dismissing the popover leaves `value` unchanged.
  */
 export function FormDateRangePicker({
   id,
@@ -58,7 +59,27 @@ export function FormDateRangePicker({
   onChange,
   classNames,
 }: FormDateRangePickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [pendingRange, setPendingRange] = useState<DateRange | undefined>();
   const selectedRange = normalizeRange(value);
+
+  function openPicker() {
+    setPendingRange(selectedRange);
+    setIsOpen(true);
+  }
+
+  function selectPendingDate(date: Date) {
+    const selectedDate = normalizeDate(date);
+    if (!selectedDate) return;
+
+    setPendingRange((currentRange) => {
+      if (!currentRange?.from || currentRange.to) return { from: selectedDate };
+
+      return selectedDate < currentRange.from
+        ? { from: selectedDate, to: currentRange.from }
+        : { from: currentRange.from, to: selectedDate };
+    });
+  }
 
   if (!id) id = _kebabCase(name);
 
@@ -71,12 +92,13 @@ export function FormDateRangePicker({
       )}
 
       <div className={cn('grid gap-2')}>
-        <Popover>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <Button
               variant={selectedRange ? 'secondary' : 'muted'}
               appearance="outline"
               className={cn('min-w-[240px] justify-start text-left font-normal', classNames?.button)}
+              onClick={openPicker}
             >
               <CalendarIcon />
 
@@ -98,10 +120,47 @@ export function FormDateRangePicker({
             <Calendar
               mode="range"
               defaultMonth={selectedRange?.from}
-              selected={selectedRange}
-              onSelect={(dateRange) => onChange(normalizeRange(dateRange))}
+              selected={pendingRange}
+              // Keep DayPicker's visual selection driven by the pending range.
+              onSelect={() => undefined}
+              onDayClick={selectPendingDate}
+              modifiers={{
+                pending_start: pendingRange?.from && !pendingRange.to ? pendingRange.from : undefined,
+              }}
               numberOfMonths={2}
             />
+
+            <div className="flex items-center justify-between gap-3 border-t p-2">
+              <p className="min-w-0 text-sm text-muted-foreground" aria-live="polite">
+                {pendingRange?.from ? (
+                  pendingRange.to ? (
+                    <>
+                      {formatDate(pendingRange.from)} - {formatDate(pendingRange.to)}
+                    </>
+                  ) : (
+                    `${formatDate(pendingRange.from)} - Select an end date`
+                  )
+                ) : (
+                  'Select a start date'
+                )}
+              </p>
+
+              <div className="flex shrink-0 gap-2">
+                <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    onChange(pendingRange);
+                    setIsOpen(false);
+                  }}
+                >
+                  Select
+                </Button>
+              </div>
+            </div>
           </PopoverContent>
         </Popover>
       </div>

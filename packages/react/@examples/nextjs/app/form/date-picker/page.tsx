@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { addDays } from 'date-fns/addDays';
+import type { DateRange } from 'react-day-picker';
 import { Button } from '../../../../../components/ui/button';
 import { FormDatePicker } from '../../../../../components/form/date-picker';
 import { HookFormDatePicker } from '../../../../../components/form/hook-date-picker';
@@ -12,7 +13,9 @@ import { FormDateRangePicker } from '../../../../../components/form/date-range-p
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const validationSchema = z.object({
+  date: z.date().optional(),
   date2: z.date().optional(),
+  dates: z.custom<DateRange>().optional(),
 });
 
 export default function Page() {
@@ -37,8 +40,9 @@ export default function Page() {
                 name="date"
                 label="Select Date"
                 required
-                onChange={(dateRange) => {
-                  console.log('onChange', dateRange);
+                value={methods.watch('date')}
+                onChange={(date) => {
+                  methods.setValue('date', date, { shouldDirty: true });
                 }}
                 disabled={{ before: new Date() }}
               />
@@ -49,8 +53,9 @@ export default function Page() {
                 name="dates"
                 label="Select Date Range"
                 required
-                onChange={(dateRange) => {
-                  console.log('dateRange', dateRange);
+                value={methods.watch('dates')}
+                onChange={(dates) => {
+                  methods.setValue('dates', dates, { shouldDirty: true });
                 }}
               />
             </div>
