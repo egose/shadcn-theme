@@ -220,6 +220,7 @@ import { FormMultiSelect } from '../../../components/form/multi-select';
 import { FormTagPicker } from '../../../components/form/tag-picker';
 import { HookFormCheckbox } from '../../../components/form/hook-checkbox';
 import { HookFormDatePicker } from '../../../components/form/hook-date-picker';
+import { HookFormDateRangePicker } from '../../../components/form/hook-date-range-picker';
 import { HookFormMultiSelect } from '../../../components/form/hook-multi-select';
 import { HookFormNativeSelect } from '../../../components/form/hook-native-select';
 import { HookFormSearchableSelect } from '../../../components/form/hook-searchable-select';
@@ -1651,6 +1652,33 @@ function HookDatePickerFormShowcase() {
   );
 }
 
+function HookDateRangePickerFormShowcase() {
+  const methods = useForm<{ reportingWindow?: DateRange }>({
+    defaultValues: { reportingWindow: { from: new Date() } },
+  });
+
+  return (
+    <ExamplePage
+      title="Hook Date Range Picker"
+      description="Connect date-range selection to react-hook-form with confirmation-based updates and submission."
+    >
+      <ExampleSection title="Reporting window">
+        <FormProvider {...methods}>
+          <form
+            className="space-y-4"
+            onSubmit={methods.handleSubmit((data) =>
+              toast.success('Saved', { description: JSON.stringify(data.reportingWindow) }),
+            )}
+          >
+            <HookFormDateRangePicker name="reportingWindow" label="Reporting window" />
+            <Button type="submit">Save</Button>
+          </form>
+        </FormProvider>
+      </ExampleSection>
+    </ExamplePage>
+  );
+}
+
 function HookMultiSelectFormShowcase() {
   const methods = useForm<{ teams: string[] }>({ defaultValues: { teams: ['ops', 'design'] } });
 
@@ -2121,6 +2149,7 @@ const formShowcases: Record<string, React.ComponentType> = {
   'date-range-picker': DateRangePickerFormShowcase,
   'hook-checkbox': HookCheckboxFormShowcase,
   'hook-date-picker': HookDatePickerFormShowcase,
+  'hook-date-range-picker': HookDateRangePickerFormShowcase,
   'hook-multi-select': HookMultiSelectFormShowcase,
   'hook-native-select': HookNativeSelectFormShowcase,
   'hook-searchable-select': HookSearchableSelectFormShowcase,

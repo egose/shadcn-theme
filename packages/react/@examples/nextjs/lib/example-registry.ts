@@ -247,6 +247,11 @@ export const formExamples: ExampleLink[] = [
     description: 'Date picker integrated with react-hook-form.',
   },
   {
+    title: 'Hook Date Range Picker',
+    url: '/form/hook-date-range-picker',
+    description: 'Date range picker integrated with react-hook-form.',
+  },
+  {
     title: 'Hook Multi Select',
     url: '/form/hook-multi-select',
     description: 'Multi-select chips integrated with react-hook-form state.',
@@ -398,6 +403,7 @@ export const formDynamicSlugs = new Set([
   'date-range-picker',
   'hook-checkbox',
   'hook-date-picker',
+  'hook-date-range-picker',
   'hook-multi-select',
   'hook-native-select',
   'hook-searchable-select',

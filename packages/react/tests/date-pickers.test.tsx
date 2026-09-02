@@ -1,10 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import type { DateRange } from 'react-day-picker';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { describe, expect, it, vi } from 'vitest';
 
 import { FormDatePicker } from '../components/form/date-picker';
 import { FormDateRangePicker } from '../components/form/date-range-picker';
+import { HookFormDateRangePicker } from '../components/form/hook-date-range-picker';
 
 process.env.TZ = 'America/Los_Angeles';
 
@@ -155,5 +157,28 @@ describe('FormDateRangePicker', () => {
       from: new Date(2026, 5, 10),
       to: new Date(2026, 5, 12),
     });
+  });
+});
+
+describe('HookFormDateRangePicker', () => {
+  it('commits the confirmed range to React Hook Form', () => {
+    function TestForm() {
+      const methods = useForm<{ dates?: DateRange }>({ defaultValues: { dates: undefined } });
+      const dates = useWatch({ control: methods.control, name: 'dates' });
+
+      return (
+        <FormProvider {...methods}>
+          <HookFormDateRangePicker name="dates" />
+          <output>{dates?.from ? dates.from.toLocaleDateString('en-US') : 'No range'}</output>
+        </FormProvider>
+      );
+    }
+
+    render(<TestForm />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Select range' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Select$/ }));
+
+    expect(screen.getByText('6/10/2026')).toBeInTheDocument();
   });
 });
