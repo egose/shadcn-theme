@@ -14,8 +14,11 @@ describe('public component behavior', () => {
     );
 
     const button = screen.getByRole('button', { name: /Save changes/ });
+    const spinner = screen.getByRole('status', { name: 'Loading' });
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(spinner).toHaveClass('size-4', 'text-primary-foreground');
+    expect(spinner).not.toHaveClass('bg-primary');
 
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
