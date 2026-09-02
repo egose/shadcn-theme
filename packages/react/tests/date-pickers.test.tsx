@@ -24,15 +24,31 @@ vi.mock('../components/ui/calendar', () => ({
   Calendar: ({
     mode,
     onSelect,
+    onDayClick,
   }: {
     mode: 'single' | 'range';
-    onSelect: (value: Date | DateRange | undefined) => void;
+    onSelect?: (value: Date | undefined) => void;
+    onDayClick?: (date: Date) => void;
   }) => (
     <div>
-      <button type="button" onClick={() => onSelect(mode === 'single' ? selectedSingle : selectedRange)}>
+      <button
+        type="button"
+        onClick={() => {
+          if (mode === 'single') onSelect?.(selectedSingle);
+          else {
+            onDayClick?.(selectedRange.from!);
+            onDayClick?.(selectedRange.to!);
+          }
+        }}
+      >
         Select {mode}
       </button>
-      <button type="button" onClick={() => onSelect(undefined)}>
+      {mode === 'range' && (
+        <button type="button" onClick={() => onDayClick?.(selectedSingle)}>
+          Select range start
+        </button>
+      )}
+      <button type="button" onClick={() => onSelect?.(undefined)}>
         Clear {mode}
       </button>
     </div>
@@ -125,19 +141,19 @@ describe('FormDateRangePicker', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it('emits each user range selection and clear once with local-day normalization', () => {
+  it('emits a pending range only when confirmed', () => {
     const onChange = vi.fn();
     render(<FormDateRangePicker name="reporting-window" value={{ from: undefined }} onChange={onChange} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Select range' }));
+    expect(screen.getByText('Jun 10, 2026 - Jun 12, 2026')).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: /^Select$/ }));
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith({
       from: new Date(2026, 5, 10),
       to: new Date(2026, 5, 12),
     });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Clear range' }));
-    expect(onChange).toHaveBeenCalledTimes(2);
-    expect(onChange).toHaveBeenLastCalledWith(undefined);
   });
 });
