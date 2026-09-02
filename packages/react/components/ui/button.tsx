@@ -164,18 +164,18 @@ function getOutlineFilledClasses(variant: VariantType) {
 
 function getSpinnerClasses(variant: VariantType) {
   const colors: Record<VariantType, string> = {
-    primary: 'bg-primary text-primary-foreground',
-    secondary: 'bg-secondary text-secondary-foreground',
-    action: 'bg-action text-action-foreground',
-    success: 'bg-success text-success-foreground',
-    warning: 'bg-warning text-warning-foreground',
-    danger: 'bg-danger text-danger-foreground',
-    info: 'bg-info text-info-foreground',
-    light: 'bg-light text-light-foreground',
-    dark: 'bg-dark text-dark-foreground',
-    accent: 'bg-accent text-accent-foreground',
-    destructive: 'bg-destructive text-destructive-foreground',
-    muted: 'bg-muted text-muted-foreground',
+    primary: 'text-primary-foreground',
+    secondary: 'text-secondary-foreground',
+    action: 'text-action-foreground',
+    success: 'text-success-foreground',
+    warning: 'text-warning-foreground',
+    danger: 'text-danger-foreground',
+    info: 'text-info-foreground',
+    light: 'text-light-foreground',
+    dark: 'text-dark-foreground',
+    accent: 'text-accent-foreground',
+    destructive: 'text-destructive-foreground',
+    muted: 'text-muted-foreground',
     link: 'text-primary',
     ghost: 'text-light-foreground',
   };
@@ -255,7 +255,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <div className="relative inline-flex items-center justify-center w-full">
             <span className="invisible">{children}</span>
             <span className="absolute inset-0 flex items-center justify-center">
-              <Spinner size="medium" className={cn(spinnerClasses, 'animate-spin')} />
+              <Spinner size="small" className={cn('size-4', spinnerClasses)} />
             </span>
           </div>
         ) : (
