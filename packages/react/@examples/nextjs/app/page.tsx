@@ -1,29 +1,29 @@
 import Link from 'next/link';
-import { componentExamples, formExamples, realExampleExamples, widgetExamples } from '../lib/example-registry';
+import { componentsSection, formSection, realExamplesSection, widgetsSection } from '../lib/sections';
 
 const sections = [
   {
     title: 'Components',
     href: '/components',
-    count: componentExamples.length,
+    count: componentsSection.entries.length,
     description: 'Browse the full UI component surface with focused usage examples.',
   },
   {
     title: 'Form',
     href: '/form',
-    count: formExamples.length,
+    count: formSection.entries.length,
     description: 'See controlled, uncontrolled, and react-hook-form integrations side by side.',
   },
   {
     title: 'Widgets',
     href: '/widgets',
-    count: widgetExamples.length,
+    count: widgetsSection.entries.length,
     description: 'Explore higher-level interaction helpers built on top of the primitives.',
   },
   {
     title: 'Real Examples',
     href: '/real-examples',
-    count: realExampleExamples.length,
+    count: realExamplesSection.entries.length,
     description: 'See complete, task-oriented demos that combine multiple components into a realistic workflow.',
   },
 ];

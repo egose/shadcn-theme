@@ -25,7 +25,7 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
 import {
   Command,
   CommandDialog,
@@ -36,7 +36,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '../../../../../components/ui/command';
+} from '@egose/shadcn-theme/components/ui/command';
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react';
 import { useState } from 'react';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';

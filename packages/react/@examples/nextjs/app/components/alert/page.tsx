@@ -1,8 +1,8 @@
 'use client';
 
 import _startCase from 'lodash-es/startCase';
-import { Alert, AlertTitle, AlertDescription } from '../../../../../components/ui/alert';
-import { BasicAlert } from '../../../../../components/ui/basic-alert';
+import { Alert, AlertTitle, AlertDescription } from '@egose/shadcn-theme/components/ui/alert';
+import { BasicAlert } from '@egose/shadcn-theme/components/ui/basic-alert';
 import {
   IconCircleCheck,
   IconInfoCircle,
@@ -32,8 +32,6 @@ const variants = [
   'link',
   'ghost',
 ] as const;
-
-const appearances = ['solid', 'light'] as const;
 
 export default function Page() {
   return (

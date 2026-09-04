@@ -1,7 +1,7 @@
 'use client';
 
 import _startCase from 'lodash-es/startCase';
-import { Badge } from '../../../../../components/ui/badge';
+import { Badge } from '@egose/shadcn-theme/components/ui/badge';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const variants = [

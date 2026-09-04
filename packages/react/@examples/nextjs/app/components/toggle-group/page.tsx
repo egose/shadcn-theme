@@ -1,6 +1,6 @@
 'use client';
 
-import { ToggleGroup, ToggleGroupItem } from '../../../../../components/ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from '@egose/shadcn-theme/components/ui/toggle-group';
 import { Bold, Italic, Underline } from 'lucide-react';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 

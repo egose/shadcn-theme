@@ -98,9 +98,11 @@ jobs:
       run: pnpm test:consumer
       working-directory: packages/react
 
-    - name: Nextjs Lint & Build
+    - name: Nextjs example typecheck, lint, test & build (serial)
       run: |
+        pnpm typecheck
         pnpm lint
+        pnpm test
         pnpm build
       working-directory: packages/react/@examples/nextjs
 

@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+- '@repo-toolkit/publish-package@0.25.0'

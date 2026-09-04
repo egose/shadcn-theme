@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import { DownloadIcon, RotateCcwIcon, StarIcon } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
-import { PageHeader } from '../../../../../components/widgets/page-header';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { PageHeader } from '@egose/shadcn-theme/components/widgets/page-header';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

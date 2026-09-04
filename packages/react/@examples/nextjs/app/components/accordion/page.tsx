@@ -1,6 +1,11 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../../../../../components/ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@egose/shadcn-theme/components/ui/accordion';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

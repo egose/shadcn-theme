@@ -1,6 +1,6 @@
 'use client';
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../../../../components/ui/resizable';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@egose/shadcn-theme/components/ui/resizable';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

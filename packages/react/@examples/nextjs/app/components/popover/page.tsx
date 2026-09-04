@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '../../../../../components/ui/button';
-import { Input } from '../../../../../components/ui/input';
-import { Label } from '../../../../../components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../../../../../components/ui/popover';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { Input } from '@egose/shadcn-theme/components/ui/input';
+import { Label } from '@egose/shadcn-theme/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@egose/shadcn-theme/components/ui/popover';
 import { ExamplePage, ExampleInline, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

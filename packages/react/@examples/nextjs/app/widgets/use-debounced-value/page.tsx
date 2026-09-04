@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Input } from '../../../../../components/ui/input';
-import { Badge } from '../../../../../components/ui/badge';
-import { useDebouncedValue } from '../../../../../hooks/use-debounced-value';
+import { Input } from '@egose/shadcn-theme/components/ui/input';
+import { Badge } from '@egose/shadcn-theme/components/ui/badge';
+import { useDebouncedValue } from '@egose/shadcn-theme/hooks/use-debounced-value';
 import { ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 const ALL_ITEMS = [
@@ -110,9 +110,12 @@ export default function Page() {
             </li>
             <li>
               After <code className="rounded bg-muted px-1 py-0.5 text-xs">{`{delay}ms`}</code> without changes, the
-              debounced value updates.
+              debounced value updates to the latest input.
             </li>
-            <li>The filtered list re-renders once per pause — never per keystroke.</li>
+            <li>
+              The page re-renders on every keystroke (see the raw badge), but the list content derives only from the
+              debounced value, so the visible results change at most once per pause.
+            </li>
           </ol>
         </ExampleStack>
       </ExampleSection>

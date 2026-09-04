@@ -3,9 +3,9 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../../../../../components/ui/button';
-import { FormSearchableSelect } from '../../../../../components/form/searchable-select';
-import { HookFormSearchableSelect } from '../../../../../components/form/hook-searchable-select';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { FormSearchableSelect } from '@egose/shadcn-theme/components/form/searchable-select';
+import { HookFormSearchableSelect } from '@egose/shadcn-theme/components/form/hook-searchable-select';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const validationSchema = z.object({

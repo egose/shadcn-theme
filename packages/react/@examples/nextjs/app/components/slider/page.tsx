@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Slider } from '../../../../../components/ui/slider';
+import { Slider } from '@egose/shadcn-theme/components/ui/slider';
 import { ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 export default function Page() {

@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { toast } from 'sonner';
 import { ImageIcon } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
-import { ImagePreviewDialog } from '../../../../../components/widgets/image-preview-dialog';
-import { useDialog } from '../../../../../components/widgets/dialog-manager';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { ImagePreviewDialog } from '@egose/shadcn-theme/components/widgets/image-preview-dialog';
+import { useDialog } from '@egose/shadcn-theme/components/widgets/dialog-manager';
 import { ExampleGrid, ExampleInline, ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const photos = [
@@ -53,10 +54,13 @@ export default function Page() {
               onClick={() => openImage(photo)}
               className="group relative aspect-video overflow-hidden rounded-xl border bg-muted"
             >
-              <img
+              {/* Static export serves images unoptimized; see next.config.ts. */}
+              <Image
                 src={photo.src}
                 alt={photo.alt}
-                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover transition-transform group-hover:scale-105"
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                 <span className="inline-flex items-center gap-2 rounded-full bg-background/90 px-3 py-1.5 text-xs font-medium">

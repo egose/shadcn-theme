@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox } from '../../../../../components/ui/checkbox';
+import { Checkbox } from '@egose/shadcn-theme/components/ui/checkbox';
 import {
   Field,
   FieldContent,
@@ -8,8 +8,8 @@ import {
   FieldGroup,
   FieldLabel,
   FieldTitle,
-} from '../../../../../components/ui/field';
-import { Label } from '../../../../../components/ui/label';
+} from '@egose/shadcn-theme/components/ui/field';
+import { Label } from '@egose/shadcn-theme/components/ui/label';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

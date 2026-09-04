@@ -1,6 +1,10 @@
 'use client';
 
-import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from '../../../../../components/ui/native-select';
+import {
+  NativeSelect,
+  NativeSelectOptGroup,
+  NativeSelectOption,
+} from '@egose/shadcn-theme/components/ui/native-select';
 import { ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 export default function Page() {

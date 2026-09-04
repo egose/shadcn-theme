@@ -10,8 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../../../../../components/ui/alert-dialog';
-import { Button } from '../../../../../components/ui/button';
+} from '@egose/shadcn-theme/components/ui/alert-dialog';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
 import { ExampleInline, ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

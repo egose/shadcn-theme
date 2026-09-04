@@ -1,10 +1,10 @@
 'use client';
 
-import { FormProvider, useForm } from '../../../../../node_modules/react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../../../../../components/ui/button';
-import { HookFormTextarea } from '../../../../../components/form/hook-textarea';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { HookFormTextarea } from '@egose/shadcn-theme/components/form/hook-textarea';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const validationSchema = z.object({

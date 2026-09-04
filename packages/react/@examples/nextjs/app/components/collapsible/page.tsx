@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Button } from '../../../../../components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../../../../../components/ui/collapsible';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@egose/shadcn-theme/components/ui/collapsible';
 import { ChevronsUpDown } from 'lucide-react';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
