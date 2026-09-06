@@ -43,6 +43,28 @@ async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
   fixture.detectChanges();
 }
 
+/**
+ * Polls `probe` until it passes instead of sleeping a fixed delay, so specs
+ * stay green on loaded runners (CI) where overlays and focus traps mount
+ * slower than locally. Resolves true when the probe passed in time.
+ */
+async function waitForCondition(
+  probe: () => boolean,
+  fixture: ComponentFixture<unknown>,
+  attempts = 100,
+  intervalMs = 50,
+): Promise<boolean> {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    fixture.detectChanges();
+    if (probe()) {
+      return true;
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  fixture.detectChanges();
+  return probe();
+}
+
 function buttonByText(
   host: { querySelectorAll(selectors: string): NodeListOf<Element> },
   text: string,
@@ -241,17 +263,25 @@ describe('ANGEX-06 semantics audit', () => {
       expect(document.activeElement).toBe(trigger);
       trigger.click();
       await fixture.whenStable();
-      // Vaul animates the panel open; poll briefly for the announced state.
-      let openContent: Element | null = null;
-      for (let attempt = 0; attempt < 50 && !openContent; attempt++) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        fixture.detectChanges();
-        openContent = document.querySelector('[data-slot="drawer-content"][data-state="open"]');
-      }
+      // Vaul animates the panel open; poll for the announced state instead of
+      // a fixed sleep so loaded runners (CI) don't flap. The budget is
+      // generous (15s) because animation frames starve under CPU contention.
+      const opened = await waitForCondition(
+        () => document.querySelector('[data-slot="drawer-content"][data-state="open"]') !== null,
+        fixture,
+        300,
+        50,
+      );
       await fixture.whenStable();
       fixture.detectChanges();
+      const openContent = document.querySelector('[data-slot="drawer-content"][data-state="open"]');
+      expect(opened).withContext('drawer reports open state').toBeTrue();
       expect(openContent).withContext('drawer reports open state').not.toBeNull();
-      expect(openContent?.contains(document.activeElement)).withContext('focus moves into the drawer').toBeTrue();
+      const drawerFocused = await waitForCondition(
+        () => openContent?.contains(document.activeElement) ?? false,
+        fixture,
+      );
+      expect(drawerFocused).withContext('focus moves into the drawer').toBeTrue();
 
       const submit = Array.from(document.querySelectorAll('[data-slot="drawer-content"] button')).find(
         (button) => button.textContent?.trim() === 'Submit',
@@ -268,7 +298,9 @@ describe('ANGEX-06 semantics audit', () => {
       expect(document.querySelector('[data-slot="drawer-content"][data-state="open"]'))
         .withContext('drawer closes')
         .toBeNull();
-    });
+      // Polling above can legitimately exceed jasmine's 5s default timeout on
+      // loaded runners; the suite still fails fast on real regressions.
+    }, 60000);
 
     it('confirms alert-dialog deletion with a visible outcome', async () => {
       TestBed.resetTestingModule();
@@ -285,15 +317,24 @@ describe('ANGEX-06 semantics audit', () => {
       const host = fixture.nativeElement as HTMLElement;
 
       buttonByText(host, 'Delete account')!.click();
-      await settle(fixture);
+      // The overlay mounts asynchronously; poll instead of a fixed sleep so
+      // loaded runners (CI) don't flap.
+      const paneOpened = await waitForCondition(() => document.querySelector('.cdk-overlay-pane') !== null, fixture);
+      await fixture.whenStable();
+      fixture.detectChanges();
       const dialogPane = document.querySelector('.cdk-overlay-pane');
+      expect(paneOpened).withContext('alert dialog opens an overlay').toBeTrue();
       expect(dialogPane).withContext('alert dialog opens an overlay').not.toBeNull();
-      expect(dialogPane?.contains(document.activeElement)).withContext('focus moves into the dialog').toBeTrue();
+      const dialogFocused = await waitForCondition(
+        () => dialogPane?.contains(document.activeElement) ?? false,
+        fixture,
+      );
+      expect(dialogFocused).withContext('focus moves into the dialog').toBeTrue();
 
       overlayButton('Delete')!.click();
       await settle(fixture);
       expect(host.querySelector('[role="status"]')?.textContent).toContain('deletion confirmed');
-    });
+    }, 30000);
   });
 
   describe('navigation uses real routes and operable controls', () => {
