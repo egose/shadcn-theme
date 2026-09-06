@@ -131,6 +131,10 @@ jobs:
       run: pnpm test:build-all
       working-directory: packages/angular
 
+    - name: Install repo-local headless browser for Angular library tests
+      run: pnpm install:browser
+      working-directory: packages/angular
+
     - name: Run targeted Angular source tests
       run: |
         pnpm test:libraries

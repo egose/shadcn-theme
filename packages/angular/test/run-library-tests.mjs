@@ -83,7 +83,16 @@ for (const project of targets) {
   const hydrationServer = project === 'form-text-input' ? await startHydrationServer() : undefined;
   const result = spawnSync(
     'pnpm',
-    ['exec', 'ng', 'test', project, '--watch=false', '--browsers=ChromeHeadless', '--progress=false'],
+    [
+      'exec',
+      'ng',
+      'test',
+      project,
+      '--watch=false',
+      '--browsers=ChromeHeadlessNoSandbox',
+      '--karma-config=test/karma.conf.js',
+      '--progress=false',
+    ],
     {
       cwd: new URL('..', import.meta.url),
       stdio: 'inherit',

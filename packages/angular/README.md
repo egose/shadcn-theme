@@ -68,6 +68,18 @@ manual releases, but its value is never logged.
 
 ## Source tests
 
+Headless-test prerequisite (local and CI): the Karma suites need a
+Chrome-compatible binary. The repository-supported setup downloads it into
+the repo-local `.puppeteer-cache/` directory:
+
+```bash
+pnpm --dir packages/angular install:browser
+```
+
+Alternatively, set `CHROME_BIN` to any Chrome/Chromium binary yourself
+(`test/karma.conf.js` honors a pre-set `CHROME_BIN`, then falls back to a
+system Chrome).
+
 Focused library tests are intentionally separate from staged-package and artifact validation:
 
 ```bash
