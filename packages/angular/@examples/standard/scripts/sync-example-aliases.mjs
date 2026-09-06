@@ -99,7 +99,10 @@ export function renderGeneratedModule(projects) {
   lines.push('');
   lines.push('export const EXAMPLE_PUBLIC_MODULES: Record<ExamplePublicSubpath, Record<string, unknown>> = {');
   for (const project of projects) {
-    lines.push(`  '${project}': ${toIdentifier(project)} as unknown as Record<string, unknown>,`);
+    // Match prettier `quoteProps: as-needed` so the generated file is stable
+    // under formatting: only quote keys that are not valid IdentifierNames.
+    const key = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(project) ? project : `'${project}'`;
+    lines.push(`  ${key}: ${toIdentifier(project)} as unknown as Record<string, unknown>,`);
   }
   lines.push('};');
   lines.push('');

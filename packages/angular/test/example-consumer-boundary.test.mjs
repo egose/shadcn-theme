@@ -45,12 +45,17 @@ test('example aliases are generated from publishable-projects.json and target so
   const anchor = '"paths": {';
   const start = tsconfig.indexOf(anchor);
   assert.notEqual(start, -1, 'example tsconfig.json must declare source aliases');
-  const expectedBlock = renderPathsBlock(projects);
-  assert(tsconfig.includes(expectedBlock), 'example tsconfig paths are stale: run `pnpm sync:aliases`');
+  // Compare whitespace-insensitively so prettier line-wrapping (printWidth
+  // 120) does not count as stale. `renderPathsBlock` remains the single
+  // writer; its content must match regardless of formatting.
+  const normalized = tsconfig.replace(/\s+/g, '');
+  const expectedBlock = renderPathsBlock(projects).replace(/\s+/g, '');
+  assert(normalized.includes(expectedBlock), 'example tsconfig paths are stale: run `pnpm sync:aliases`');
 
   // Every alias must resolve to package source, never to stale dist output.
   for (const project of projects) {
-    assert(tsconfig.includes(`"${PLAIN_PACKAGE}/${project}": ["${aliasTarget(project)}"]`));
+    const expectedAlias = `"${PLAIN_PACKAGE}/${project}":["${aliasTarget(project)}"]`.replace(/\s+/g, '');
+    assert(normalized.includes(expectedAlias), `alias for ${project} is stale: run \`pnpm sync:aliases\``);
     assert(!tsconfig.includes(`"./dist/${project}"`), `alias for ${project} must not consume stale dist`);
   }
 
