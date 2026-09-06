@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import {
   HlmTable,
   HlmTBody,
@@ -14,16 +15,25 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-table-page',
-  imports: [HlmTable, HlmTableContainer, HlmTHead, HlmTBody, HlmTFoot, HlmTr, HlmTh, HlmTd, HlmCaption, HlmButton],
+  imports: [
+    DemoHeaderComponent,
+    HlmTable,
+    HlmTableContainer,
+    HlmTHead,
+    HlmTBody,
+    HlmTFoot,
+    HlmTr,
+    HlmTh,
+    HlmTd,
+    HlmCaption,
+    HlmButton,
+  ],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Table</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          A table reads better when it sits inside a small dashboard context with summary metrics and row-level meaning.
-          This makes spacing, density, and alignment easier to evaluate.
-        </p>
-      </div>
+      <app-demo-header
+        title="Table"
+        description="A data table with caption, header, body, and footer, shown with invoice records and summary metrics."
+      />
 
       <div class="tw:space-y-6">
         <div class="tw:grid tw:gap-4 sm:tw:grid-cols-3">
@@ -45,19 +55,26 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
           <div class="tw:mb-6 tw:flex tw:flex-col tw:gap-4 sm:tw:flex-row sm:tw:items-end sm:tw:justify-between">
             <div>
               <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.24em] tw:text-slate-500">Collections</p>
-              <h4 class="tw:mt-2 tw:text-xl tw:font-semibold tw:text-slate-950">Recent invoices</h4>
+              <h3 class="tw:mt-2 tw:text-xl tw:font-semibold tw:text-slate-950">Recent invoices</h3>
               <p class="tw:mt-1 tw:text-sm tw:text-slate-500">
                 A denser example with status, owner, payment method, and totals.
               </p>
             </div>
 
             <div class="tw:flex tw:gap-2">
-              <button hlmButton variant="secondary" appearance="outline" type="button">Export</button>
-              <button hlmButton type="button">Create invoice</button>
+              <button hlmButton variant="secondary" appearance="outline" type="button" (click)="exportInvoices()">
+                Export
+              </button>
+              <button hlmButton type="button" (click)="createInvoice()">Create invoice</button>
             </div>
           </div>
 
-          <div hlmTableContainer>
+          <p role="status" class="tw:mb-4 tw:text-sm tw:text-slate-600">{{ tableMessage() }}</p>
+
+          <!-- Intentional horizontal scroll demo: the container keeps the six-column table
+            usable at 320px. hlmTableContainer carries an unprefixed overflow-x-auto that this
+            tw:-prefixed example does not generate, so the call site restates it explicitly. -->
+          <div hlmTableContainer class="tw:max-w-full tw:overflow-x-auto">
             <table hlmTable>
               <caption hlmCaption>
                 Last six invoices synced from the billing dashboard.
@@ -105,6 +122,16 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
   `,
 })
 export class TablePage {
+  readonly tableMessage = signal('Showing the 6 most recent invoices.');
+
+  exportInvoices() {
+    this.tableMessage.set('Export started: 6 invoices will download as CSV.');
+  }
+
+  createInvoice() {
+    this.tableMessage.set('New draft invoice INV-2407 created and added to the queue.');
+  }
+
   readonly invoices = [
     {
       code: 'INV-2401',

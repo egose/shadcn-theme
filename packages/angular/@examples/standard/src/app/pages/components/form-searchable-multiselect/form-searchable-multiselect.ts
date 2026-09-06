@@ -1,25 +1,34 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EgFormSearchableMultiselect } from '@egose/shadcn-theme-ng/form-searchable-multiselect';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 
 @Component({
   selector: 'app-form-searchable-multiselect-page',
-  imports: [EgFormSearchableMultiselect],
+  imports: [DemoHeaderComponent, ReactiveFormsModule, EgFormSearchableMultiselect],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Searchable Multiselect</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Reactive-form bound searchable multiselect.</p>
+    <app-demo-header
+      title="Form Searchable Multiselect"
+      description="Reactive-form multiselect with typeahead search, label, and hint."
+    />
 
-    <div class="tw:w-[300px]">
+    <form class="tw:w-full tw:max-w-sm" [formGroup]="form">
       <eg-form-searchable-multiselect
         label="Tags"
         placeholder="Add tags..."
         hint="Search and select."
+        controlName="tags"
         [options]="[
           { label: 'Angular', value: 'angular' },
           { label: 'React', value: 'react' },
           { label: 'Vue', value: 'vue' },
         ]"
       />
-    </div>
+    </form>
   `,
 })
-export class FormSearchableMultiselectPage {}
+export class FormSearchableMultiselectPage {
+  readonly form = new FormGroup({
+    tags: new FormControl<string[]>([], { nonNullable: true }),
+  });
+}

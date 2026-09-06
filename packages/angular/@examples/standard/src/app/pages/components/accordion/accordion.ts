@@ -8,10 +8,14 @@ import {
   HlmAccordionTrigger,
 } from '@egose/shadcn-theme-ng/accordion';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 
 @Component({
   selector: 'app-accordion',
   imports: [
+    DemoHeaderComponent,
+    DemoSectionComponent,
     HlmAccordion,
     HlmAccordionItem,
     HlmAccordionTrigger,
@@ -22,60 +26,55 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
   ],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Accordion</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Accordions read better when they answer a focused set of questions instead of feeling like generic placeholder
-          copy. This page now shows two believable content patterns.
-        </p>
-      </div>
+      <app-demo-header
+        title="Accordion"
+        description="Vertically stacked disclosure panels: each trigger expands or collapses its own content region while the trigger keeps an accessible expanded state."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-2">
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">FAQ</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Standard example review</h4>
-          </div>
-
-          <div hlmAccordion class="tw:mt-5">
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+          kicker="FAQ"
+          title="Billing questions"
+        >
+          <div hlmAccordion>
             @for (item of faqItems; track item.title) {
               <div hlmAccordionItem>
-                <h3 class="contents">
+                <h4 class="contents">
                   <button hlmAccordionTrigger>
                     {{ item.title }}
                     <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
                   </button>
-                </h3>
+                </h4>
                 <hlm-accordion-content>
                   <p class="tw:text-sm tw:leading-7 tw:text-slate-600">{{ item.body }}</p>
                 </hlm-accordion-content>
               </div>
             }
           </div>
-        </article>
+        </app-demo-section>
 
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Workflow</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">How the polish pass works</h4>
-          </div>
-
-          <div hlmAccordion class="tw:mt-5">
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+          kicker="Workflow"
+          title="Publishing a documentation page"
+        >
+          <div hlmAccordion>
             @for (item of workflowItems; track item.title) {
               <div hlmAccordionItem>
-                <h3 class="contents">
+                <h4 class="contents">
                   <button hlmAccordionTrigger>
                     {{ item.title }}
                     <ng-icon name="lucideChevronDown" hlm hlmAccIcon />
                   </button>
-                </h3>
+                </h4>
                 <hlm-accordion-content>
                   <p class="tw:text-sm tw:leading-7 tw:text-slate-600">{{ item.body }}</p>
                 </hlm-accordion-content>
               </div>
             }
           </div>
-        </article>
+        </app-demo-section>
       </div>
     </section>
   `,
@@ -83,31 +82,31 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 export class AccordionPage {
   readonly faqItems = [
     {
-      title: 'Why did the newer demos feel off?',
-      body: 'Most of them were using very thin placeholder content, so the components looked sparse even when the primitives were correct.',
+      title: 'When does the monthly plan renew?',
+      body: 'Plans renew on the first day of each billing cycle, and payment method changes apply to the next renewal.',
     },
     {
-      title: 'What changed first?',
-      body: 'The example shell was updated so every routed page rendered in a better-framed showcase area instead of a centered projection slot.',
+      title: 'Can I switch plans mid-cycle?',
+      body: 'Yes. Upgrades take effect immediately with prorated pricing; downgrades take effect at the next renewal.',
     },
     {
-      title: 'What is the goal of the current pass?',
-      body: 'Make each component page read like real product UI while still preserving a compact QA surface for variants and states.',
+      title: 'How do I export my invoices?',
+      body: 'Open the billing settings and choose “Export invoices” to download a CSV of every completed payment.',
     },
   ];
 
   readonly workflowItems = [
     {
-      title: 'Inspect the current example',
-      body: 'Identify whether the component is actually broken or just being undersold by weak content and layout.',
+      title: 'Draft the page',
+      body: 'Create the page in the workspace and write the first version in the editor.',
     },
     {
-      title: 'Use a realistic scenario',
-      body: 'Replace demo-only text with settings, dashboards, forms, alerts, and review flows that feel believable.',
+      title: 'Request review',
+      body: 'Assign a reviewer; they can comment inline and approve or request changes.',
     },
     {
-      title: 'Keep a compact QA surface',
-      body: 'Where needed, retain a smaller matrix or palette so variants are still easy to scan without overwhelming the page.',
+      title: 'Publish',
+      body: 'Once approved, publish to make the page visible to every workspace member.',
     },
   ];
 }

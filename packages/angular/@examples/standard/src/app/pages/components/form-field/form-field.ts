@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HlmButtonModule, HlmButton } from '@egose/shadcn-theme-ng/button';
 import { ChangeDetectionStrategy, Component, computed, signal, inject, ViewChild } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmAutocomplete } from '@egose/shadcn-theme-ng/autocomplete';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
@@ -35,6 +36,21 @@ import { lucideCheck, lucideInfo } from '@ng-icons/lucide';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { toast } from 'ngx-sonner';
 
+/** Typed contract for the onboarding profile form value. */
+export interface ProfileFormValue {
+  name: string;
+  email: string;
+  password: string;
+  age: number | null;
+  birthday: Date | null;
+  about: string;
+  gender: string;
+  country: string;
+  hobbies: string[];
+  members: string[];
+  agreed: boolean;
+}
+
 @Component({
   imports: [
     CommonModule,
@@ -51,7 +67,7 @@ import { toast } from 'ngx-sonner';
     <hlm-toaster position="top-right" [closeButton]="true" [richColors]="true" />
     <hlm-dialog-header>
       <h3 hlmDialogTitle>Form data</h3>
-      <p hlmDialogDescription>Preview form data to submit</p>
+      <p hlmDialogDescription>Review the submitted form data, then save or cancel.</p>
     </hlm-dialog-header>
 
     <div class="tw:mt-2 tw:p-4 tw:border tw:rounded-md tw:bg-gray-50">
@@ -59,32 +75,28 @@ import { toast } from 'ngx-sonner';
     </div>
 
     <hlm-dialog-footer>
-      <button hlmButton variant="secondary" appearance="outline" (click)="close(true)">Cancel</button>
-      <button hlmButton variant="primary" (click)="save()">Save changes</button>
+      <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
+      <button hlmButton type="button" variant="primary" (click)="save()">Save changes</button>
     </hlm-dialog-footer>
   `,
   host: {
     class: 'tw:flex tw:flex-col tw:gap-4',
   },
 })
-class ConfirmationDiaglog {
+class FormDataPreviewDialog {
   private readonly _dialogRef = inject<BrnDialogRef<boolean>>(BrnDialogRef);
-  private readonly _dialogContext = injectBrnDialogContext<{ formData: Record<string, any> }>();
+  private readonly _dialogContext = injectBrnDialogContext<{ formData: ProfileFormValue }>();
 
-  protected readonly _formData = this._dialogContext.formData;
+  protected readonly _formData: ProfileFormValue = this._dialogContext.formData;
 
-  public close(confirm: boolean) {
-    this._dialogRef.close(confirm);
+  /** Cancel closes without saving; the form keeps its values. */
+  public cancel() {
+    this._dialogRef.close(false);
   }
 
+  /** Save closes with confirmation; the page records the saved value. */
   public save() {
-    toast.success('Form saved', {
-      description: 'The form data is successfully saved!',
-      action: {
-        label: 'Undo',
-        onClick: () => console.log('Undo'),
-      },
-    });
+    this._dialogRef.close(true);
   }
 }
 
@@ -93,6 +105,7 @@ class ConfirmationDiaglog {
   standalone: true,
   imports: [
     CommonModule,
+    DemoHeaderComponent,
     ReactiveFormsModule,
     HlmButtonModule,
     HlmAlertModule,
@@ -112,19 +125,16 @@ class ConfirmationDiaglog {
   providers: [provideIcons({ lucideInfo })],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-4xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Form Field</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          This page is the strongest end-to-end form example in the gallery, so it now presents the inputs inside a more
-          product-like onboarding flow instead of a raw field dump.
-        </p>
-      </div>
+      <app-demo-header
+        title="Form Field"
+        description="An onboarding profile form composed from the packaged form wrappers, with field-level validation, an async save, a data preview dialog, and a confirmation-guarded reset."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.4fr)_20rem]">
         <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm sm:tw:p-8">
           <div hlmAlert variant="info" class="tw:mb-6">
             <ng-icon hlm hlmAlertIcon name="lucideInfo" />
-            <h4 hlmAlertTitle>Complete your profile</h4>
+            <h3 hlmAlertTitle>Complete your profile</h3>
             <p hlmAlertDescription>
               Use this page to review how the packaged form wrappers behave in a realistic onboarding flow.
             </p>
@@ -166,14 +176,14 @@ class ConfirmationDiaglog {
                 placeholder="Enter your age"
                 controlName="age"
                 [error]="getError('age')"
-                max="100"
+                max="120"
                 hint="Age must be between 1 and 120"
               ></eg-form-text-input>
 
               <eg-form-date-picker
                 label="Date of Birth"
                 controlName="birthday"
-                pickerClass="tw:w-[280px]"
+                pickerClass="tw:w-full tw:max-w-[280px]"
                 [min]="minDate"
                 [max]="maxDate"
                 placeholder="Pick a date"
@@ -238,37 +248,43 @@ class ConfirmationDiaglog {
             </div>
 
             <div class="tw:flex tw:flex-wrap tw:gap-2 tw:pt-2">
-              <button type="submit" hlmButton [disabled]="form.invalid || loading">
-                {{ loading ? 'Submitting...' : 'Submit profile' }}
+              <button type="submit" hlmButton [disabled]="form.invalid || loading()">
+                {{ loading() ? 'Submitting...' : 'Submit profile' }}
               </button>
               <button type="button" hlmButton variant="warning" variantType="outline" (click)="onReset()">Reset</button>
             </div>
           </form>
+
+          <p data-testid="save-status" role="status" aria-live="polite" class="tw:mt-4 tw:text-sm tw:text-slate-700">
+            @if (savedProfile(); as saved) {
+              Profile saved for {{ saved.name }} ({{ saved.email }}).
+            }
+          </p>
         </article>
 
         <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
           <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Why it works</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Form wrappers in context</h4>
+            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">What to check</p>
+            <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Form wrappers in context</h3>
           </div>
 
           <div class="tw:space-y-3">
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
               <p class="tw:text-sm tw:font-medium tw:text-slate-900">Mixed field types</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                Text, select, date picker, checkbox, and multiselect all share one rhythm.
+                Text, select, date picker, checkbox, and multiselect fields share one layout.
               </p>
             </div>
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
               <p class="tw:text-sm tw:font-medium tw:text-slate-900">Validation feedback</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                Error, hint, and required states remain easy to review in a realistic layout.
+                Error, hint, and required states appear inline beneath each field.
               </p>
             </div>
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
               <p class="tw:text-sm tw:font-medium tw:text-slate-900">Submission flow</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                The dialog preview and confirmation reset still exercise the supporting components.
+                Submitting opens a data preview dialog; resetting asks for confirmation first.
               </p>
             </div>
           </div>
@@ -323,22 +339,29 @@ export class FormFieldPage {
     { label: 'Strickland', value: 'strickland' },
   ];
 
-  form = this.fb.group({
+  form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
-    birthday: [null, Validators.required],
+    age: this.fb.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(120)]),
+    birthday: this.fb.control<Date | null>(null, Validators.required),
     about: ['', [Validators.required, Validators.minLength(20)]],
     gender: ['', Validators.required],
     country: ['ca', Validators.required],
-    hobbies: [[], Validators.required],
-    members: [[this.memberOptions[0].value, this.memberOptions[1].value], Validators.required],
+    hobbies: this.fb.nonNullable.control<string[]>([], Validators.required),
+    members: this.fb.nonNullable.control<string[]>(
+      [this.memberOptions[0].value, this.memberOptions[1].value],
+      Validators.required,
+    ),
     agreed: [false, Validators.requiredTrue],
   });
 
-  submitted = false;
-  loading = false;
+  /** Visible submission state; driven by the simulated async save, never toggled synchronously. */
+  readonly loading = signal(false);
+  /** Last confirmed save; displayed in the page's live status region. */
+  readonly savedProfile = signal<ProfileFormValue | null>(null);
+  /** Simulated round-trip latency; tests lower this. */
+  submitLatencyMs = 300;
 
   getError(controlName: string): string | undefined {
     const control = this.form.get(controlName);
@@ -365,21 +388,31 @@ export class FormFieldPage {
 
   onSubmit() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-    this.loading = true;
-    this.loading = false;
-    this.submitted = true;
+    if (this.form.invalid || this.loading()) return;
 
-    const dialogRef = this._hlmDialogService.open(ConfirmationDiaglog, {
-      context: {
-        formData: this.form.value,
-      },
-      contentClass: 'tw:w-full',
-    });
+    const value = this.form.getRawValue();
+    this.loading.set(true);
 
-    dialogRef.closed$.subscribe((confirm) => {
-      console.log('Confirmation:', confirm);
+    void this._saveProfile(value).then(() => {
+      this.loading.set(false);
+      const dialogRef = this._hlmDialogService.open(FormDataPreviewDialog, {
+        context: { formData: value },
+        contentClass: 'tw:w-full tw:max-w-lg',
+      });
+
+      dialogRef.closed$.subscribe((confirmed) => {
+        if (confirmed !== true) return;
+        this.savedProfile.set(value);
+        toast.success('Profile saved', {
+          description: `${value.name}'s profile was saved successfully.`,
+        });
+      });
     });
+  }
+
+  /** Simulated async save; resolves after `submitLatencyMs`. */
+  protected _saveProfile(_value: ProfileFormValue): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, this.submitLatencyMs));
   }
 
   async onReset() {
@@ -388,9 +421,9 @@ export class FormFieldPage {
       description: 'Do you really want to reset the form?',
     });
 
-    console.log('confirmed', confirmed);
+    if (confirmed !== true) return;
 
     this.form.reset();
-    this.submitted = false;
+    this.savedProfile.set(null);
   }
 }

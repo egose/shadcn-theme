@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmKbd, HlmKbdGroup } from '@egose/shadcn-theme-ng/kbd';
 
 @Component({
   selector: 'app-kbd-page',
-  imports: [HlmKbd, HlmKbdGroup],
+  imports: [DemoHeaderComponent, HlmKbd, HlmKbdGroup],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Kbd</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Keyboard shortcut display.</p>
+    <app-demo-header title="Kbd" description="Keyboard shortcut display." />
     <kbd hlmKbdGroup class="tw:gap-1">
       <kbd hlmKbd>Ctrl</kbd>
       <kbd hlmKbd>+</kbd>

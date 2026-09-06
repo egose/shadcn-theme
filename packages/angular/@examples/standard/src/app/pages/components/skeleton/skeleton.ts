@@ -1,26 +1,24 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmSkeleton } from '@egose/shadcn-theme-ng/skeleton';
 
 @Component({
   selector: 'app-skeleton-page',
-  imports: [HlmSkeleton],
+  imports: [DemoHeaderComponent, HlmSkeleton],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Skeleton</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Skeletons are easiest to evaluate when they mimic a real loading screen. This page shows profile, chart, and
-          list placeholders instead of a single floating avatar row.
-        </p>
-      </div>
+      <app-demo-header
+        title="Skeleton"
+        description="Placeholder blocks that mirror a loading screen: profile header, metric cards, chart, and activity list."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <article class="tw:space-y-6 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
           <div class="tw:flex tw:items-center tw:gap-4">
             <hlm-skeleton class="tw:h-14 tw:w-14 tw:rounded-full" />
             <div class="tw:flex tw:flex-1 tw:flex-col tw:gap-2">
-              <hlm-skeleton class="tw:h-4 tw:w-40" />
-              <hlm-skeleton class="tw:h-4 tw:w-64" />
+              <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-40" />
+              <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-64" />
             </div>
           </div>
 
@@ -47,7 +45,7 @@ import { HlmSkeleton } from '@egose/shadcn-theme-ng/skeleton';
         <article class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Loading feed</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Activity list placeholder</h4>
+            <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Activity list placeholder</h3>
           </div>
 
           @for (item of [1, 2, 3, 4]; track item) {
@@ -56,7 +54,7 @@ import { HlmSkeleton } from '@egose/shadcn-theme-ng/skeleton';
             >
               <hlm-skeleton class="tw:h-10 tw:w-10 tw:rounded-full" />
               <div class="tw:flex tw:flex-1 tw:flex-col tw:gap-2">
-                <hlm-skeleton class="tw:h-4 tw:w-32" />
+                <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-32" />
                 <hlm-skeleton class="tw:h-4 tw:w-full" />
                 <hlm-skeleton class="tw:h-4 tw:w-2/3" />
               </div>

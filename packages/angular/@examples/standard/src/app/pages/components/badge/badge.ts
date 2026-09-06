@@ -1,20 +1,19 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoMatrixComponent } from '../../../shared/demo-matrix';
 import { CommonModule } from '@angular/common';
 import { HlmBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '@egose/shadcn-theme-ng/badge';
 
 @Component({
   selector: 'app-badge-sample',
   standalone: true,
-  imports: [CommonModule, HlmBadge],
+  imports: [DemoHeaderComponent, DemoMatrixComponent, CommonModule, HlmBadge],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Badge</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Badges feel more useful when they annotate cards, queues, and health states. This page keeps a compact variant
-          matrix but leads with realistic product surfaces.
-        </p>
-      </div>
+      <app-demo-header
+        title="Badge"
+        description="Status labels that annotate cards, queues, and lists, plus an exhaustive variant, size, and appearance matrix."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div class="tw:grid tw:gap-6 lg:tw:grid-cols-2">
@@ -62,15 +61,10 @@ import { HlmBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '
           </article>
         </div>
 
-        <aside class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-          <h4 class="tw:text-lg tw:font-semibold tw:text-slate-900">Variant matrix</h4>
-          <p class="tw:mt-2 tw:text-sm tw:leading-6 tw:text-slate-600">
-            A smaller matrix is still useful for quick visual QA.
-          </p>
-
+        <app-demo-matrix title="Variant matrix" description="Every variant across appearance and size.">
           @for (appearance of appearances; track appearance) {
             <div class="tw:mt-5 tw:space-y-3">
-              <h5 class="tw:text-sm tw:font-medium tw:capitalize tw:text-slate-700">{{ appearance }}</h5>
+              <h4 class="tw:text-sm tw:font-medium tw:capitalize tw:text-slate-700">{{ appearance }}</h4>
               @for (size of sizes; track size) {
                 <div class="tw:space-y-2">
                   <p class="tw:text-xs tw:uppercase tw:tracking-[0.16em] tw:text-slate-500">{{ size }}</p>
@@ -83,12 +77,12 @@ import { HlmBadge, BadgeVariantType, BadgeSizeType, BadgeAppearanceType } from '
               }
             </div>
           }
-        </aside>
+        </app-demo-matrix>
       </div>
     </section>
   `,
 })
-export class Badgeage {
+export class BadgePage {
   variants: BadgeVariantType[] = [
     'primary',
     'secondary',

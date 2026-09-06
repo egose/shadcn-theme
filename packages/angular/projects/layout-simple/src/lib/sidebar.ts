@@ -15,7 +15,7 @@ import { HlmSheetImports } from '@egose/shadcn-theme-ng/sheet';
     @let _title = title();
     @let _content = content();
 
-    <hlm-sheet [side]="side() ?? 'left'">
+    <hlm-sheet id="eg-layout-simple-sidebar" [side]="side() ?? 'left'">
       <hlm-sheet-content *brnSheetContent="let ctx" class="tw:gap-0">
         @if (_title) {
           <hlm-sheet-header>

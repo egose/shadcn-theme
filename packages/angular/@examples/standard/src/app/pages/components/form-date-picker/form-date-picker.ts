@@ -1,16 +1,30 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 
 @Component({
   selector: 'app-form-date-picker-page',
-  imports: [EgFormDatePicker],
+  imports: [DemoHeaderComponent, ReactiveFormsModule, EgFormDatePicker],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Date Picker</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Date picker with label, error, hint.</p>
+    <app-demo-header
+      title="Form Date Picker"
+      description="Reactive-form date picker wrapper that renders label, hint, and validation error."
+    />
 
-    <div class="tw:w-[300px]">
-      <eg-form-date-picker label="Birthdate" placeholder="Pick a date" hint="YYYY-MM-DD" [required]="true" />
-    </div>
+    <form class="tw:w-full tw:max-w-sm" [formGroup]="form">
+      <eg-form-date-picker
+        label="Birthdate"
+        placeholder="Pick a date"
+        hint="YYYY-MM-DD"
+        controlName="birthdate"
+        [required]="true"
+      />
+    </form>
   `,
 })
-export class FormDatePickerPage {}
+export class FormDatePickerPage {
+  readonly form = new FormGroup({
+    birthdate: new FormControl<Date | null>(null),
+  });
+}

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmAvatar, HlmAvatarFallback, HlmAvatarGroup } from '@egose/shadcn-theme-ng/avatar';
 
 @Component({
   selector: 'app-avatar-page',
-  imports: [HlmAvatar, HlmAvatarFallback, HlmAvatarGroup],
+  imports: [DemoHeaderComponent, HlmAvatar, HlmAvatarFallback, HlmAvatarGroup],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Avatar</h3>
-    <p class="tw:text-gray-500 tw:mb-4">User profile images.</p>
+    <app-demo-header title="Avatar" description="User profile images." />
     <div hlmAvatarGroup class="tw:gap-2">
       <hlm-avatar>
         <span hlmAvatarFallback>AB</span>

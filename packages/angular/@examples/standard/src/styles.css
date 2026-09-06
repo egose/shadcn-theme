@@ -1,3 +1,9 @@
+/* ANGEX-07 consumer boundary (source mode): this stylesheet imports Tailwind
+   with the `tw` prefix and scans package *source* (`../../../projects`) so
+   local development exercises real `tw:` utilities without consuming stale
+   `dist` output. The installed-tarball entry below is honored only when the
+   exact published package is present; plain versus `-tw` output claims come
+   from `pnpm verify:consumers --release-dir release` in packages/angular. */
 @import 'tailwindcss' prefix(tw);
 @import 'tw-animate-css' prefix(tw);
 @source "../node_modules/@egose/shadcn-theme-ng";
@@ -173,11 +179,11 @@
 }
 
 @layer components {
-  eg-layout-simple main > div {
+  .eg-layout-simple-main-content {
     @apply tw:w-full tw:items-start tw:justify-start;
   }
 
-  eg-layout-simple main > div > * {
+  .eg-layout-simple-main-content > * {
     @apply tw:block tw:w-full tw:max-w-none tw:self-stretch;
   }
 }

@@ -135,6 +135,7 @@ jobs:
       run: |
         pnpm test:libraries
         pnpm test:dependency-contract
+        pnpm test:example-boundary
         pnpm test:public-api
         pnpm test:variants
       working-directory: packages/angular
@@ -146,6 +147,16 @@ jobs:
     - name: Test Angular release script
       run: pnpm test:release
       working-directory: packages/angular
+
+    - name: Install repo-local headless browser for the Angular standard example
+      run: pnpm install:browser
+      working-directory: packages/angular/@examples/standard
+
+    - name: Build and test Angular standard example (serial, before release checks)
+      run: |
+        pnpm build
+        pnpm test:ci
+      working-directory: packages/angular/@examples/standard
 
     - name: Build, validate, and pack Angular variants serially
       run: pnpm prepare:release --version 0.0.0-ci

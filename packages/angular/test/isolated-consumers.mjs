@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
-import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,6 +57,8 @@ async function writeConsumer(directory, packageName, tarball) {
     '@angular/build': '22.1.5',
     '@angular/cli': '22.1.5',
     '@angular/compiler-cli': '22.1.3',
+    '@tailwindcss/postcss': '^4.1.13',
+    tailwindcss: '4.3.3',
     typescript: '6.0.3',
   };
   await writeFile(
@@ -75,9 +78,21 @@ async function writeConsumer(directory, packageName, tarball) {
             architect: {
               build: {
                 builder: '@angular/build:application',
-                options: { browser: 'src/main.ts', tsConfig: 'tsconfig.json', index: 'src/index.html' },
+                options: {
+                  browser: 'src/main.ts',
+                  tsConfig: 'tsconfig.json',
+                  index: 'src/index.html',
+                  styles: ['src/styles.css'],
+                },
                 configurations: {
-                  production: { optimization: true, outputHashing: 'all', sourceMap: false },
+                  production: {
+                    // Critical-CSS inlining moves above-fold rules into
+                    // index.html; keep styles in the emitted stylesheet so the
+                    // ANGEX-07 prefix-identity assertions below read one artifact.
+                    optimization: { scripts: true, styles: { minify: true, inlineCritical: false }, fonts: true },
+                    outputHashing: 'all',
+                    sourceMap: false,
+                  },
                 },
                 defaultConfiguration: 'production',
               },
@@ -110,6 +125,15 @@ async function writeConsumer(directory, packageName, tarball) {
     )}\n`,
   );
   await writeFile(path.join(directory, 'src/index.html'), '<app-root></app-root>\n');
+  // ANGEX-07: the consumer stylesheet scans the exact installed tarball so the
+  // production build proves Tailwind scanning and prefix semantics for each
+  // variant independently (plain: unprefixed utilities; -tw: retained tw:).
+  const isTw = packageName.endsWith('-tw');
+  await writeFile(
+    path.join(directory, 'src/styles.css'),
+    `@import "tailwindcss"${isTw ? ' prefix(tw)' : ''};\n@source "../node_modules/${packageName}";\n`,
+  );
+  await writeFile(path.join(directory, '.postcssrc.json'), `${JSON.stringify({ plugins: { '@tailwindcss/postcss': {} } }, null, 2)}\n`);
   await writeFile(
     path.join(directory, 'src/render.mjs'),
     `import '@angular/compiler';
@@ -152,11 +176,15 @@ import { HlmButtonModule } from '${packageName}/button';
 import { HlmCarouselModule } from '${packageName}/carousel';
 import { HlmDialogModule } from '${packageName}/dialog';
 import { EgFormTextInput } from '${packageName}/form-text-input';
+import { HlmInput } from '${packageName}/input';
 import { EgLayoutSimple } from '${packageName}/layout-simple';
 import { HlmMenuModule } from '${packageName}/menu';
+import { HlmSheetModule } from '${packageName}/sheet';
 import { HlmToasterModule } from '${packageName}/sonner';
+import { HlmTableModule } from '${packageName}/table';
+import { HlmTabsModule } from '${packageName}/tabs';
 
-const linkedSurface = [HlmCarouselModule, HlmDialogModule, EgFormTextInput, EgLayoutSimple, HlmToasterModule];
+const linkedSurface = [HlmCarouselModule, HlmDialogModule, EgFormTextInput, HlmInput, EgLayoutSimple, HlmSheetModule, HlmTableModule, HlmTabsModule, HlmToasterModule];
 void linkedSurface;
 
 @Component({
@@ -172,6 +200,24 @@ bootstrapApplication(App);
   );
 }
 
+async function assertConsumerStyles(consumer, packageName) {
+  const browserDirectory = path.join(consumer, 'dist', 'consumer', 'browser');
+  const entries = await readdir(browserDirectory);
+  const stylesheets = entries.filter((entry) => entry.endsWith('.css'));
+  assert(stylesheets.length > 0, `isolated ${packageName} consumer emitted no stylesheet`);
+  const css = (
+    await Promise.all(stylesheets.map((entry) => readFile(path.join(browserDirectory, entry), 'utf8')))
+  ).join('\n');
+  if (packageName.endsWith('-tw')) {
+    assert(css.includes('tw\\:inline-flex'), `isolated ${packageName} stylesheet lost the tw: prefix identity`);
+    assert(!css.includes('.inline-flex'), `isolated ${packageName} stylesheet leaked unprefixed utilities`);
+  } else {
+    assert(css.includes('.inline-flex'), `isolated ${packageName} stylesheet lost unprefixed utilities`);
+    assert(!css.includes('tw:'), `isolated ${packageName} stylesheet leaked tw: utilities`);
+  }
+  console.log(`Verified isolated ${packageName} stylesheet prefix identity`);
+}
+
 const preparedRelease = releaseDirectory();
 const temporaryRoot = await mkdtemp(path.join(tmpdir(), 'shadcn-theme-ng-consumers-'));
 try {
@@ -182,6 +228,7 @@ try {
     run('npm', ['install', '--strict-peer-deps', '--ignore-scripts'], consumer);
     run('npm', ['run', 'typecheck'], consumer);
     run('npm', ['run', 'build'], consumer);
+    await assertConsumerStyles(consumer, packageName);
     run('npm', ['run', 'render'], consumer);
     console.log(`Verified isolated ${packageName} consumer`);
   }

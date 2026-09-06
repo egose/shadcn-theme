@@ -21,6 +21,9 @@
         [icon]="menuIconTemplate"
         iconPosition="left"
         class="tw:bg-transparent! tw:border-gray-400! tw:hover:border-gray-500!"
+        [attr.aria-label]="sidebarToggleLabel()"
+        [attr.aria-expanded]="sidebarOpen()"
+        aria-controls="eg-layout-simple-sidebar"
         (click)="openSidebar()"
       ></button>
       }
@@ -107,6 +110,9 @@
     <button
       (click)="toggleMobileMenu()"
       class="tw:md:hidden tw:p-2 tw:text-gray-700 tw:hover:text-primary tw:focus:outline-none tw:cursor-pointer"
+      [attr.aria-label]="mobileMenuLabel()"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-controls="eg-layout-simple-mobile-menu"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -163,25 +169,25 @@
   }
 
   <!-- Mobile menu -->
-  @if (isMobile() && mobileMenuOpen) {
-  <div class="tw:w-full tw:border-none">
+  @if (isMobile() && mobileMenuOpen()) {
+  <div id="eg-layout-simple-mobile-menu" class="tw:w-full tw:border-none" (keydown.escape)="closeMobileMenu()">
     @if (_topMenuItems.length > 0) {
-    <eg-layout-simple-mobile-menu-group [items]="_topMenuItems" (itemClick)="toggleMobileMenu()" />
+    <eg-layout-simple-mobile-menu-group [items]="_topMenuItems" (itemClick)="closeMobileMenu()" />
     } @for (group of _topSecondaryGroups; track group.label) { @if (group.items && group.items.length > 0) {
     <eg-layout-simple-mobile-menu-group
       [items]="group.items"
       [label]="group.label"
-      (itemClick)="toggleMobileMenu()"
+      (itemClick)="closeMobileMenu()"
     ></eg-layout-simple-mobile-menu-group>
     } }
 
-    <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="toggleMobileMenu()" />
+    <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="closeMobileMenu()" />
 
     @for (group of _leftMenuGroups; track $index) { @if (group.items && group.items.length > 0) {
     <eg-layout-simple-mobile-menu-group
       [items]="group.items"
       [label]="group.label"
-      (itemClick)="toggleMobileMenu()"
+      (itemClick)="closeMobileMenu()"
     ></eg-layout-simple-mobile-menu-group>
     } } @if ((_topMenus.length > 0 || _leftMenuGroups.length > 0) && _userMenus.length > 0) {
     <hr class="tw:border-gray-300 tw:my-2" />
@@ -189,7 +195,7 @@
     <eg-layout-simple-mobile-menu-group
       [items]="section.items"
       [label]="section.label"
-      (itemClick)="toggleMobileMenu()"
+      (itemClick)="closeMobileMenu()"
     ></eg-layout-simple-mobile-menu-group>
 
     @if (section.separator) {
@@ -201,7 +207,7 @@
   <!-- Main content -->
   <main [class]="_contentClass()">
     @if (!loading()) {
-    <div class="tw:flex tw:items-center tw:justify-center tw:h-full">
+    <div class="tw:flex tw:items-center tw:justify-center tw:h-full eg-layout-simple-main-content">
       <ng-content />
     </div>
     }

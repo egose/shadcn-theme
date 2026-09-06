@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { BrnTabsImports } from '@spartan-ng/brain/tabs';
 import { HlmTabsImports } from '@egose/shadcn-theme-ng/tabs';
 
 @Component({
   selector: 'app-tabs-page',
-  imports: [BrnTabsImports, HlmTabsImports],
+  imports: [DemoHeaderComponent, BrnTabsImports, HlmTabsImports],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Tabs</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Switch between panels of content.</p>
+    <app-demo-header title="Tabs" description="Switch between panels of content." />
 
-    <div hlmTabs tab="account" class="tw:w-[400px]">
+    <div hlmTabs tab="account" class="tw:w-full tw:max-w-md">
       <div hlmTabsList class="tw:grid tw:grid-cols-2">
         <button hlmTabsTrigger value="account" type="button">Account</button>
         <button hlmTabsTrigger value="password" type="button">Password</button>

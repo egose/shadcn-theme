@@ -30,6 +30,7 @@ yarn-error.log
 
 # Miscellaneous
 /.angular/cache
+/.puppeteer-cache
 .sass-cache/
 /connect.lock
 /coverage
@@ -40,3 +41,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+.angular
+.puppeteer-cache

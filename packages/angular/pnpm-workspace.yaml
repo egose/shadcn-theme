@@ -9,3 +9,6 @@ allowBuilds:
   lmdb: false
   msgpackr-extract: false
   nx: false
+  # puppeteer's postinstall Chrome download stays disabled; the standard
+  # example installs its repo-local headless browser via `pnpm install:browser`.
+  puppeteer: false

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideCircleAlert,
@@ -24,7 +26,16 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
 @Component({
   selector: 'spartan-alert-variants-showcase',
   standalone: true,
-  imports: [HlmAlertDescription, HlmAlert, HlmAlertIcon, HlmAlertTitle, NgIcon, EgBasicAlert],
+  imports: [
+    DemoHeaderComponent,
+    DemoSectionComponent,
+    HlmAlertDescription,
+    HlmAlert,
+    HlmAlertIcon,
+    HlmAlertTitle,
+    NgIcon,
+    EgBasicAlert,
+  ],
   providers: [
     provideIcons({
       lucideCircleCheck,
@@ -41,23 +52,19 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
   ],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Alert</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Alerts are easier to review when the page highlights a few believable operational messages instead of showing
-          every variant in one overwhelming wall.
-        </p>
-      </div>
+      <app-demo-header
+        title="Alert"
+        description="Inline status messages with icon, title, and description, shown across solid and light appearances."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div class="tw:space-y-6">
-          <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
-            <h4 class="tw:text-lg tw:font-semibold tw:text-slate-900">System messages</h4>
-            <p class="tw:mt-2 tw:text-sm tw:leading-6 tw:text-slate-600">
-              Curated examples show spacing, icon balance, and copy hierarchy much more clearly.
-            </p>
-
-            <div class="tw:mt-5 tw:grid tw:gap-4">
+          <app-demo-section
+            class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+            title="System messages"
+            description="Curated examples show spacing, icon balance, and copy hierarchy on a light surface."
+          >
+            <div class="tw:grid tw:gap-4">
               @for (alert of featuredAlerts; track alert.title) {
                 <div hlmAlert [variant]="alert.variant" [appearance]="alert.appearance">
                   <ng-icon hlm hlmAlertIcon [name]="getIconName(alert.variant)" />
@@ -66,11 +73,13 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
                 </div>
               }
             </div>
-          </article>
+          </app-demo-section>
 
-          <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-            <h4 class="tw:text-lg tw:font-semibold tw:text-slate-900">Quick palette</h4>
-            <div class="tw:mt-4 tw:grid tw:gap-3">
+          <app-demo-section
+            class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+            title="Quick palette"
+          >
+            <div class="tw:grid tw:gap-3">
               @for (variant of variants; track variant) {
                 <div class="tw:grid tw:gap-2 sm:tw:grid-cols-2">
                   <div hlmAlert [variant]="variant" appearance="solid">
@@ -86,19 +95,15 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
                 </div>
               }
             </div>
-          </article>
+          </app-demo-section>
         </div>
 
-        <aside
-          class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-6 tw:text-white"
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-6 tw:text-white"
+          title="Basic alerts"
+          kicker="Companion component"
+          tone="dark"
         >
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-400">
-              Companion component
-            </p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold">Basic alerts</h4>
-          </div>
-
           <div class="tw:grid tw:gap-3">
             @for (alert of compactAlerts; track alert.title) {
               <eg-basic-alert
@@ -109,7 +114,7 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
               />
             }
           </div>
-        </aside>
+        </app-demo-section>
       </div>
     </section>
   `,
@@ -120,20 +125,19 @@ export class AlertPage {
   featuredAlerts = [
     {
       title: 'Deployment ready for review',
-      description: 'All example routes now compile and the visual shell has been normalized.',
+      description: 'Release 2.4.0 passed all checks and is waiting for final approval.',
       variant: 'success' as VariantType,
       appearance: 'solid' as const,
     },
     {
-      title: 'A few demos still need another polish pass',
-      description: 'Input and select-adjacent pages benefit from stronger context and less placeholder copy.',
+      title: 'Usage is approaching the plan limit',
+      description: 'This workspace has used 90% of its monthly event quota.',
       variant: 'warning' as VariantType,
       appearance: 'light' as const,
     },
     {
-      title: 'Sidebar package has a separate compiler warning',
-      description:
-        'The current example build still reports a missing structural directive import in the sidebar project.',
+      title: 'Payment method could not be verified',
+      description: 'The card on file was declined; update billing details to avoid an interruption.',
       variant: 'danger' as VariantType,
       appearance: 'light' as const,
     },
@@ -141,14 +145,14 @@ export class AlertPage {
 
   compactAlerts = [
     {
-      title: 'Info update',
-      description: 'The standard example now uses a stronger content shell.',
+      title: 'Trial started',
+      description: 'The 14-day trial began today; add a payment method any time.',
       variant: 'info' as VariantType,
       appearance: 'light' as const,
     },
     {
-      title: 'Accent note',
-      description: 'Newer package demos feel more intentional after the page-level pass.',
+      title: 'New workspace member',
+      description: 'A collaborator accepted the invite and joined this workspace.',
       variant: 'accent' as VariantType,
       appearance: 'solid' as const,
     },

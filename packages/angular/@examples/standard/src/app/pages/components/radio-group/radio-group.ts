@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmRadioGroup, HlmRadio, HlmRadioIndicator } from '@egose/shadcn-theme-ng/radio-group';
 
 @Component({
   selector: 'app-radio-group-page',
-  imports: [HlmRadioGroup, HlmRadio, HlmRadioIndicator],
+  imports: [DemoHeaderComponent, HlmRadioGroup, HlmRadio, HlmRadioIndicator],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Radio Group</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A set of checkable buttons.</p>
+    <app-demo-header title="Radio Group" description="A set of checkable buttons." />
     <div hlmRadioGroup class="tw:flex tw:flex-col tw:gap-2">
       <label class="tw:flex tw:items-center tw:gap-2">
         <hlm-radio value="opt1"><hlm-radio-indicator /></hlm-radio>

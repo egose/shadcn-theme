@@ -1,19 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmItemImports } from '@egose/shadcn-theme-ng/item';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-item-page',
-  imports: [HlmItemImports, HlmButton],
+  imports: [DemoHeaderComponent, HlmItemImports, HlmButton],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Item</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Item primitives work best in stacked lists with media, metadata, actions, and separators. This gives the
-          layout enough structure to judge spacing and alignment.
-        </p>
-      </div>
+      <app-demo-header
+        title="Item"
+        description="Item primitives work best in stacked lists with media, metadata, actions, and separators. This gives the layout enough structure to judge spacing and alignment."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div
@@ -51,8 +49,17 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
                 <div hlmItemFooter class="tw:mt-4">
                   <span class="tw:text-sm tw:text-slate-500">Updated {{ task.updated }}</span>
                   <div hlmItemActions>
-                    <button hlmButton variant="secondary" appearance="outline" size="sm" type="button">Review</button>
-                    <button hlmButton size="sm" type="button">Open</button>
+                    <button
+                      hlmButton
+                      variant="secondary"
+                      appearance="outline"
+                      size="sm"
+                      type="button"
+                      (click)="note('Review started for: ' + task.title)"
+                    >
+                      Review
+                    </button>
+                    <button hlmButton size="sm" type="button" (click)="note('Opened: ' + task.title)">Open</button>
                   </div>
                 </div>
               </div>
@@ -66,10 +73,8 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
         <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
           <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">
-              Composition notes
-            </p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Why this example feels better</h4>
+            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">What to check</p>
+            <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Row composition notes</h3>
           </div>
 
           <div class="tw:space-y-3">
@@ -94,31 +99,41 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
           </div>
         </aside>
       </div>
+
+      @if (itemMessage()) {
+        <p role="status" class="tw:text-sm tw:text-slate-600">{{ itemMessage() }}</p>
+      }
     </section>
   `,
 })
 export class ItemPage {
+  readonly itemMessage = signal<string | null>(null);
+
+  note(message: string) {
+    this.itemMessage.set(message);
+  }
+
   readonly tasks = [
     {
       initials: 'IG',
-      title: 'Input group polish',
-      description: 'Replace minimal samples with pricing, URL, and message-composer scenarios.',
+      title: 'Wire up customer import',
+      description: 'Map CSV columns to customer fields and validate the first batch.',
       status: 'In review',
       owner: 'J. Hahn',
       updated: '8 minutes ago',
     },
     {
       initials: 'SB',
-      title: 'Sidebar context pass',
-      description: 'Show grouped navigation, badges, and inset content in a dashboard shell.',
+      title: 'Review payout schedule',
+      description: 'Confirm the next two payout dates with finance before lock.',
       status: 'Ready',
       owner: 'N. Chen',
       updated: '22 minutes ago',
     },
     {
       initials: 'EM',
-      title: 'Empty state refinement',
-      description: 'Add actionable states so the component reads like product UI instead of a placeholder card.',
+      title: 'Draft renewal reminder email',
+      description: 'Prepare the 30-day renewal notice for accounts on annual plans.',
       status: 'Done',
       owner: 'A. Patel',
       updated: '1 hour ago',

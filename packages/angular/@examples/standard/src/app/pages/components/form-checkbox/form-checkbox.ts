@@ -1,16 +1,29 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EgFormCheckbox } from '@egose/shadcn-theme-ng/form-checkbox';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 
 @Component({
   selector: 'app-form-checkbox-page',
-  imports: [EgFormCheckbox],
+  imports: [DemoHeaderComponent, ReactiveFormsModule, EgFormCheckbox],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Checkbox</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Checkbox wrapper with label, error, hint.</p>
+    <app-demo-header
+      title="Form Checkbox"
+      description="Reactive-form checkbox wrapper that renders label, hint, and required-state error."
+    />
 
-    <div class="tw:w-[300px]">
-      <eg-form-checkbox label="Accept terms and conditions" hint="Required to continue." [required]="true" />
-    </div>
+    <form class="tw:w-full tw:max-w-sm" [formGroup]="form">
+      <eg-form-checkbox
+        label="Accept terms and conditions"
+        hint="Required to continue."
+        controlName="agreed"
+        [required]="true"
+      />
+    </form>
   `,
 })
-export class FormCheckboxPage {}
+export class FormCheckboxPage {
+  readonly form = new FormGroup({
+    agreed: new FormControl(false, { nonNullable: true, validators: [Validators.requiredTrue] }),
+  });
+}

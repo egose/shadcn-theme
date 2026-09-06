@@ -1,16 +1,30 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EgFormTextarea } from '@egose/shadcn-theme-ng/form-textarea';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 
 @Component({
   selector: 'app-form-textarea-page',
-  imports: [EgFormTextarea],
+  imports: [DemoHeaderComponent, ReactiveFormsModule, EgFormTextarea],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Form Textarea</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Textarea wrapper with label, error, hint.</p>
+    <app-demo-header
+      title="Form Textarea"
+      description="Reactive-form textarea wrapper that renders label, hint, and validation error around a textarea."
+    />
 
-    <div class="tw:w-[300px]">
-      <eg-form-textarea label="Bio" placeholder="Tell us about yourself" hint="Markdown supported." rows="4" />
-    </div>
+    <form class="tw:w-full tw:max-w-md" [formGroup]="form">
+      <eg-form-textarea
+        label="Bio"
+        placeholder="Tell us about yourself"
+        hint="Markdown supported."
+        controlName="bio"
+        rows="4"
+      />
+    </form>
   `,
 })
-export class FormTextareaPage {}
+export class FormTextareaPage {
+  readonly form = new FormGroup({
+    bio: new FormControl('', { nonNullable: true }),
+  });
+}

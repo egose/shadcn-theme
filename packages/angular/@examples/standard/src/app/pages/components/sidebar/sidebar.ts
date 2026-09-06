@@ -1,43 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
 
 @Component({
   selector: 'app-sidebar-page',
-  imports: [HlmSidebarImports],
+  imports: [DemoHeaderComponent, HlmSidebarImports],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Sidebar</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          The sidebar package is much easier to evaluate when it lives inside a believable app shell with grouped links,
-          badges, search, and an inset content area.
-        </p>
-      </div>
+      <app-demo-header
+        title="Sidebar"
+        description="A collapsible app sidebar with grouped navigation, badges, search, and an inset content area."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[18rem_minmax(0,1fr)]">
         <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
           <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Showcase notes</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Why the old demo felt off</h4>
+            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">What to check</p>
+            <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Sidebar behavior notes</h3>
           </div>
 
           <div class="tw:space-y-3">
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Too little structure</p>
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Collapse trigger</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                Two buttons inside a bare column did not communicate the component system.
+                Use the trigger in the header row to collapse the sidebar to icons and expand it again.
               </p>
             </div>
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-              <p class="tw:text-sm tw:font-medium tw:text-slate-900">No grouped navigation</p>
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Groups and badges</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                Badges, sections, and nested items make the spacing rules much easier to inspect.
+                Group labels, counts, and nested items keep their alignment in both expanded and collapsed modes.
               </p>
             </div>
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Missing inset context</p>
+              <p class="tw:text-sm tw:font-medium tw:text-slate-900">Inset content</p>
               <p class="tw:mt-1 tw:text-sm tw:leading-6 tw:text-slate-600">
-                The content area should show how the sidebar behaves inside a dashboard layout.
+                The inset panel shows how the main content area resizes around the sidebar.
               </p>
             </div>
           </div>
@@ -54,20 +52,32 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
                   <p class="tw:text-sm tw:font-semibold">Egose Studio</p>
                   <p class="tw:text-xs tw:text-sidebar-foreground/70">Quality review workspace</p>
                 </div>
-                <button hlmSidebarTrigger type="button"></button>
+                <button hlmSidebarTrigger type="button" [srOnlyText]="'Collapse demo sidebar'"></button>
               </div>
-              <input hlmSidebarInput placeholder="Search workspace" />
+              <input hlmSidebarInput placeholder="Search workspace" aria-label="Search workspace" />
             </div>
 
             <div hlmSidebarContent class="tw:gap-4 tw:p-3">
               <div hlmSidebarGroup class="tw:relative">
                 <div hlmSidebarGroupLabel>Primary</div>
-                <button hlmSidebarGroupAction type="button">+</button>
+                <button
+                  hlmSidebarGroupAction
+                  type="button"
+                  aria-label="Add item to the Primary group"
+                  (click)="select('Add item to Primary')"
+                >
+                  +
+                </button>
                 <div hlmSidebarGroupContent>
                   <ul hlmSidebarMenu>
                     @for (item of primaryItems; track item.label) {
                       <li hlmSidebarMenuItem>
-                        <button hlmSidebarMenuButton type="button" [isActive]="item.active">
+                        <button
+                          hlmSidebarMenuButton
+                          type="button"
+                          [isActive]="selectedItem() === item.label"
+                          (click)="select(item.label)"
+                        >
                           <span>{{ item.label }}</span>
                         </button>
                         @if (item.badge) {
@@ -87,7 +97,13 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
                   <ul hlmSidebarMenu>
                     @for (team of teamItems; track team.label) {
                       <li hlmSidebarMenuItem>
-                        <button hlmSidebarMenuButton type="button" size="lg">
+                        <button
+                          hlmSidebarMenuButton
+                          type="button"
+                          size="lg"
+                          [isActive]="selectedItem() === team.label"
+                          (click)="select(team.label)"
+                        >
                           <span
                             class="tw:flex tw:h-8 tw:w-8 tw:items-center tw:justify-center tw:rounded-xl tw:bg-sidebar-accent tw:text-xs tw:font-semibold"
                           >
@@ -109,7 +125,7 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
                   <ul hlmSidebarMenuSub>
                     @for (activity of recentActivity; track activity.title) {
                       <li hlmSidebarMenuSubItem>
-                        <button hlmSidebarMenuSubButton type="button">
+                        <button hlmSidebarMenuSubButton type="button" (click)="select(activity.title)">
                           <span>{{ activity.title }}</span>
                         </button>
                       </li>
@@ -120,7 +136,13 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
             </div>
 
             <div hlmSidebarFooter class="tw:border-t tw:border-sidebar-border/60 tw:p-4">
-              <button hlmSidebarMenuButton type="button" variant="outline" size="lg">
+              <button
+                hlmSidebarMenuButton
+                type="button"
+                variant="outline"
+                size="lg"
+                (click)="select('Upgrade workspace')"
+              >
                 <span>Upgrade workspace</span>
               </button>
             </div>
@@ -131,11 +153,15 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
               <div>
                 <p class="tw:text-sm tw:font-semibold tw:text-slate-900">Release overview</p>
                 <p class="tw:text-sm tw:text-slate-500">
-                  A realistic inset area makes the sidebar proportions easier to judge.
+                  The inset area shows how content and filters behave next to the sidebar.
                 </p>
               </div>
-              <button hlmSidebarTrigger type="button"></button>
+              <button hlmSidebarTrigger type="button" [srOnlyText]="'Toggle demo sidebar'"></button>
             </div>
+
+            <p role="status" class="tw:px-6 tw:pt-3 tw:text-sm tw:text-slate-500">
+              {{ sidebarMessage() }}
+            </p>
 
             <div class="tw:grid tw:flex-1 tw:gap-4 tw:p-6 lg:tw:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
               <section class="tw:space-y-4 tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-5">
@@ -144,7 +170,7 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
                     <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">
                       Current sprint
                     </p>
-                    <h5 class="tw:mt-1 tw:text-lg tw:font-semibold tw:text-slate-900">Standard examples refresh</h5>
+                    <h4 class="tw:mt-1 tw:text-lg tw:font-semibold tw:text-slate-900">Mobile onboarding revamp</h4>
                   </div>
                   <span
                     class="tw:rounded-full tw:bg-emerald-100 tw:px-3 tw:py-1 tw:text-xs tw:font-medium tw:text-emerald-700"
@@ -154,15 +180,15 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
 
                 <div class="tw:grid tw:gap-3 sm:tw:grid-cols-3">
                   <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-                    <p class="tw:text-xs tw:text-slate-500">Pages reviewed</p>
+                    <p class="tw:text-xs tw:text-slate-500">Stories planned</p>
                     <p class="tw:mt-2 tw:text-2xl tw:font-semibold tw:text-slate-950">18</p>
                   </div>
                   <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-                    <p class="tw:text-xs tw:text-slate-500">Needs polish</p>
+                    <p class="tw:text-xs tw:text-slate-500">In review</p>
                     <p class="tw:mt-2 tw:text-2xl tw:font-semibold tw:text-slate-950">4</p>
                   </div>
                   <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
-                    <p class="tw:text-xs tw:text-slate-500">Ready to ship</p>
+                    <p class="tw:text-xs tw:text-slate-500">Done</p>
                     <p class="tw:mt-2 tw:text-2xl tw:font-semibold tw:text-slate-950">12</p>
                   </div>
                 </div>
@@ -176,7 +202,7 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
               </section>
 
               <section class="tw:space-y-3 tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-5">
-                <h5 class="tw:text-base tw:font-semibold tw:text-slate-900">Review queue</h5>
+                <h4 class="tw:text-base tw:font-semibold tw:text-slate-900">Review queue</h4>
                 @for (review of reviewQueue; track review.title) {
                   <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
                     <div class="tw:flex tw:items-start tw:justify-between tw:gap-4">
@@ -201,11 +227,19 @@ import { HlmSidebarImports } from '@egose/shadcn-theme-ng/sidebar';
   `,
 })
 export class SidebarPage {
+  readonly selectedItem = signal('Overview');
+  readonly sidebarMessage = signal('Overview is selected in the demo sidebar.');
+
+  select(label: string) {
+    this.selectedItem.set(label);
+    this.sidebarMessage.set(`${label} is selected in the demo sidebar.`);
+  }
+
   readonly primaryItems = [
-    { label: 'Overview', active: true, badge: '12' },
-    { label: 'Components', active: false, badge: '8' },
-    { label: 'Reviews', active: false, badge: '3' },
-    { label: 'Releases', active: false, badge: '' },
+    { label: 'Overview', badge: '12' },
+    { label: 'Components', badge: '8' },
+    { label: 'Reviews', badge: '3' },
+    { label: 'Releases', badge: '' },
   ];
 
   readonly teamItems = [
@@ -215,25 +249,25 @@ export class SidebarPage {
   ];
 
   readonly recentActivity = [
-    { title: 'Button variants refreshed' },
-    { title: 'Carousel spacing updated' },
-    { title: 'Empty states under review' },
+    { title: 'Quarterly planning doc shared' },
+    { title: 'Pricing page updated' },
+    { title: 'Support macros in review' },
   ];
 
   readonly reviewQueue = [
     {
-      title: 'Input group examples',
-      description: 'Replace isolated controls with pricing, URL, and composer scenarios.',
+      title: 'Checkout form defects',
+      description: 'Card validation fails for AMEX numbers in Safari.',
       status: 'Active',
     },
     {
-      title: 'Sidebar density audit',
-      description: 'Check label truncation and badge alignment in collapsed mode.',
+      title: 'Onboarding drop-off report',
+      description: 'Weekly funnel numbers for the signup flow.',
       status: 'Queued',
     },
     {
-      title: 'Empty state hierarchy',
-      description: 'Ensure headings, descriptions, and CTAs read well across light and dark surfaces.',
+      title: 'Invoice export request',
+      description: 'Customer asked for a CSV export of all 2026 invoices.',
       status: 'Done',
     },
   ];

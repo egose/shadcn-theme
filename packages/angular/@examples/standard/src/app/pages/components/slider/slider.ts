@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { BrnSlider } from '@spartan-ng/brain/slider';
 import { HlmSlider } from '@egose/shadcn-theme-ng/slider';
 
 @Component({
   selector: 'app-slider-page',
-  imports: [BrnSlider, HlmSlider],
+  imports: [DemoHeaderComponent, BrnSlider, HlmSlider],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Slider</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A numeric range slider.</p>
+    <app-demo-header title="Slider" description="A numeric range slider with its visible label bound to the thumb." />
 
-    <hlm-slider class="tw:w-[300px]" />
+    <div class="tw:grid tw:w-full tw:max-w-sm tw:gap-2">
+      <label id="volume-label" class="tw:text-sm tw:font-medium tw:text-slate-700">Volume</label>
+      <hlm-slider class="tw:w-full" aria-labelledby="volume-label" />
+    </div>
   `,
 })
 export class SliderPage {}

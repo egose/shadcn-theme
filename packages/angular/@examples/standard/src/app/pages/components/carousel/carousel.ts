@@ -1,36 +1,35 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
 
 @Component({
   selector: 'app-carousel-page',
-  imports: [HlmCarouselImports],
+  imports: [DemoHeaderComponent, DemoSectionComponent, HlmCarouselImports],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Carousel</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          A carousel needs surrounding content to feel intentional. This version shows slide progress, supporting copy,
-          and cards with enough visual weight to judge spacing and motion.
-        </p>
-      </div>
+      <app-demo-header
+        title="Carousel"
+        description="Horizontally scrollable card track with previous/next controls and a live slide counter."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1fr)_20rem]">
         <article
           class="tw:rounded-[28px] tw:border tw:border-slate-800 tw:bg-slate-950 tw:p-6 tw:text-white tw:shadow-sm"
         >
-          <div class="tw:mb-6 tw:flex tw:flex-col tw:gap-4 sm:tw:flex-row sm:tw:items-end sm:tw:justify-between">
-            <div>
-              <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.24em] tw:text-slate-400">Featured</p>
-              <h4 class="tw:mt-2 tw:text-xl tw:font-semibold">Release story highlights</h4>
-              <p class="tw:mt-2 tw:max-w-xl tw:text-sm tw:leading-6 tw:text-slate-300">
-                The carousel keeps large content blocks readable while still letting users scan multiple cards quickly.
-              </p>
-            </div>
-
-            <hlm-carousel-slide-display [slideClass]="'tw:text-sm tw:font-medium tw:text-slate-300'" />
+          <div class="tw:mb-6">
+            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.24em] tw:text-slate-400">Featured</p>
+            <h3 class="tw:mt-2 tw:text-xl tw:font-semibold">Support playbook highlights</h3>
+            <p class="tw:mt-2 tw:max-w-xl tw:text-sm tw:leading-6 tw:text-slate-300">
+              Featured guides for the support team, with reading time and publication status.
+            </p>
           </div>
 
           <hlm-carousel class="tw:block tw:w-full">
+            <!-- The slide display must live inside hlm-carousel: it injects the carousel instance. -->
+            <div class="tw:mb-4 tw:flex tw:justify-end">
+              <hlm-carousel-slide-display [slideClass]="'tw:text-sm tw:font-medium tw:text-slate-300'" />
+            </div>
             <div hlmCarouselContent class="tw:-ml-2">
               @for (slide of slides; track slide.title) {
                 <div hlmCarouselItem class="tw:basis-full tw:pl-2 lg:tw:basis-1/2">
@@ -46,7 +45,7 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
                       </div>
 
                       <div class="tw:space-y-3">
-                        <h5 class="tw:text-xl tw:font-semibold tw:tracking-tight">{{ slide.title }}</h5>
+                        <h4 class="tw:text-xl tw:font-semibold tw:tracking-tight">{{ slide.title }}</h4>
                         <p class="tw:text-sm tw:leading-6 tw:text-slate-300">{{ slide.description }}</p>
                       </div>
                     </div>
@@ -79,14 +78,11 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
           </hlm-carousel>
         </article>
 
-        <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">
-              Why this demo works better
-            </p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">The component has context now</h4>
-          </div>
-
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+          kicker="Evaluation notes"
+          title="What to check"
+        >
           <div class="tw:space-y-3">
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4">
               <p class="tw:text-sm tw:font-medium tw:text-slate-900">Readable slide width</p>
@@ -107,7 +103,7 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
               </p>
             </div>
           </div>
-        </aside>
+        </app-demo-section>
       </div>
     </section>
   `,
@@ -115,40 +111,36 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
 export class CarouselPage {
   readonly slides = [
     {
-      kicker: 'Design system',
-      title: 'Refine the standard examples before release',
-      description:
-        'Audit spacing, hierarchy, and realistic content so newly added components feel intentional instead of experimental.',
+      kicker: 'Billing',
+      title: 'Resolve a failed renewal payment',
+      description: 'Steps for retrying a declined card, updating details, and confirming that service is restored.',
       duration: '4 min read',
       status: 'In review',
-      category: 'UI quality',
+      category: 'Payments',
     },
     {
-      kicker: 'Forms',
-      title: 'Document empty and loading states with stronger examples',
-      description:
-        'Show states that users actually hit in production, including empty results, onboarding prompts, and follow-up actions.',
+      kicker: 'Accounts',
+      title: 'Recover access for a locked-out member',
+      description: 'How to verify identity, reset credentials, and re-enable two-factor authentication safely.',
       duration: '6 min read',
       status: 'Ready',
-      category: 'Patterns',
+      category: 'Accounts',
     },
     {
-      kicker: 'Navigation',
-      title: 'Revisit sidebar density across mobile and desktop',
-      description:
-        'Use badges, grouped sections, and inset content to make the component read like a real dashboard shell.',
+      kicker: 'Triage',
+      title: 'Escalate a ticket to engineering',
+      description: 'When and how to hand a conversation over to engineering, including the detail reviewers expect.',
       duration: '3 min read',
       status: 'Scheduled',
-      category: 'Layout',
+      category: 'Workflow',
     },
     {
-      kicker: 'Feedback',
-      title: 'Make carousels easier to evaluate at a glance',
-      description:
-        'Include slide counters and stronger card surfaces so reviewers can judge the interaction without guessing intent.',
+      kicker: 'Satisfaction',
+      title: 'Follow up after a resolved conversation',
+      description: 'Timing, tone, and the survey link to include when closing a support thread.',
       duration: '5 min read',
       status: 'Published',
-      category: 'Interaction',
+      category: 'Customer care',
     },
   ];
 }

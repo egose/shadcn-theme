@@ -37,7 +37,6 @@ export const EG_SWITCH_VALUE_ACCESSOR = {
     <brn-switch
       [class]="_computedClass()"
       [checked]="checked()"
-      @ts-ignore
       (changed)="handleChange($event)"
       (touched)="_onTouched?.()"
       [disabled]="_disabled()"

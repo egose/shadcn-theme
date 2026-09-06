@@ -1,23 +1,22 @@
 import { Component } from '@angular/core';
-import { BrnHoverCardImports } from '@spartan-ng/brain/hover-card';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmHoverCardImports } from '@egose/shadcn-theme-ng/hover-card';
 
 @Component({
   selector: 'app-hover-card-page',
-  imports: [BrnHoverCardImports, HlmHoverCardImports],
+  imports: [DemoHeaderComponent, HlmHoverCardImports],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Hover Card</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Hover a trigger to reveal additional content.</p>
+    <app-demo-header title="Hover Card" description="Hover a link to reveal a preview card. The trigger is a real external link, not a placeholder anchor." />
 
     <div hlmHoverCard>
       <a
-        href="#"
+        href="https://nextjs.org"
         hlmHoverCardTrigger
         class="tw:cursor-pointer tw:underline tw:text-blue-600 tw:hover:text-blue-800"
       >
-        Hover me
+        Next.js
       </a>
-      <hlm-hover-card-content class="tw:w-80">
+      <hlm-hover-card-content *hlmHoverCardPortal class="tw:w-80">
         <div class="tw:flex tw:gap-4">
           <div>
             <p class="tw:font-semibold">@nextjs</p>

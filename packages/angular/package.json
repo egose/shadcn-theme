@@ -24,6 +24,7 @@
     "test:source-exports": "node --test test/source-exports.test.mjs",
     "test:build-all": "node --test test/build-all.test.mjs",
     "test:dependency-contract": "node --test test/dependency-contract.test.mjs",
+    "test:example-boundary": "node --test test/example-consumer-boundary.test.mjs",
     "test:public-api": "node --test test/public-api.test.mjs",
     "test:package-validator": "node --test test/validate-package.test.mjs",
     "test:release": "node --test test/release.test.mjs",

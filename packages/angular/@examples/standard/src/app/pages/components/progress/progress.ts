@@ -1,26 +1,24 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmProgress, HlmProgressIndicator } from '@egose/shadcn-theme-ng/progress';
 
 @Component({
   selector: 'app-progress-page',
-  imports: [HlmProgress, HlmProgressIndicator],
+  imports: [DemoHeaderComponent, HlmProgress, HlmProgressIndicator],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Progress</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Progress bars are easier to judge when they appear in groups with labels, numbers, and a clear sense of task
-          state instead of a single anonymous value.
-        </p>
-      </div>
+      <app-demo-header
+        title="Progress"
+        description="Determinate progress indicators with labelled values, grouped into a checklist and a summary card."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <article class="tw:space-y-5 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">
-              Release checklist
+              Setup checklist
             </p>
-            <h4 class="tw:mt-2 tw:text-xl tw:font-semibold tw:text-slate-950">Standard example refresh</h4>
+            <h3 class="tw:mt-2 tw:text-xl tw:font-semibold tw:text-slate-950">Workspace setup checklist</h3>
           </div>
 
           <div class="tw:space-y-5">
@@ -45,7 +43,7 @@ import { HlmProgress, HlmProgressIndicator } from '@egose/shadcn-theme-ng/progre
         <article class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Snapshot</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Overall completion</h4>
+            <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Overall completion</h3>
           </div>
 
           <div class="tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-white tw:p-5">
@@ -66,7 +64,7 @@ import { HlmProgress, HlmProgressIndicator } from '@egose/shadcn-theme-ng/progre
             </hlm-progress>
 
             <p class="tw:mt-4 tw:text-sm tw:leading-6 tw:text-slate-600">
-              The surrounding copy and metrics make it much easier to tell whether the bar feels appropriately weighted.
+              The summary bar aggregates the checklist values into one percentage.
             </p>
           </div>
         </article>
@@ -77,18 +75,18 @@ import { HlmProgress, HlmProgressIndicator } from '@egose/shadcn-theme-ng/progre
 export class ProgressPage {
   readonly steps = [
     {
-      label: 'Shell polish',
-      description: 'Header, search, sidebar, and gallery framing are in place.',
+      label: 'Connect data source',
+      description: 'Attach a warehouse or database connection.',
       value: 100,
     },
     {
-      label: 'Sparse demos',
-      description: 'Upgrade weak pages with stronger product-like scenarios.',
+      label: 'Invite the team',
+      description: 'At least three members have joined the workspace.',
       value: 72,
     },
     {
-      label: 'Final QA',
-      description: 'Run another visual pass for spacing and tone consistency.',
+      label: 'Configure alerts',
+      description: 'Enable anomaly alerts for key metrics.',
       value: 38,
     },
   ];
