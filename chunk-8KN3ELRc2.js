@@ -1,0 +1,1 @@
+import{O as H,Pn as gd,h as D}from"./chunk-BkE_jlx-.js";var i=class t{appId=D(gd);nextId=0;generate(e){return`${e}-${this.appId}-${this.nextId++}`}static ɵfac=function(o){return new(o||t)};static ɵprov=H({token:t,factory:t.ɵfac,providedIn:`root`})};export{i as t};

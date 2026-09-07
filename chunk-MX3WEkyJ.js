@@ -1,0 +1,1 @@
+import{z as Ji}from"./chunk-BkE_jlx-.js";import{n as et}from"./chunk-DNmirxej.js";var r=class t{constructor(){et(()=>`bg-muted rounded-md block motion-safe:animate-pulse`)}static ɵfac=function(s){return new(s||t)};static ɵdir=Ji({type:t,selectors:[[``,`hlmSkeleton`,``],[`hlm-skeleton`]],hostAttrs:[`data-slot`,`skeleton`]})};export{r as t};
