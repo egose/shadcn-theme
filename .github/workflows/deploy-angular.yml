@@ -15,7 +15,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
@@ -30,7 +30,26 @@ jobs:
     - name: Angular Build 📦
       run: |
         pnpm build
+        # GitHub Pages routing contract (ANGEX-08): every registered route is
+        # prerendered to static HTML (`prerender: true` in angular.json,
+        # discovered from the Router config derived from the typed catalog
+        # registry), so deep links load directly. The redirect roots (`/`,
+        # `/components`, `/examples`) and unknown URLs reuse the CSR shell: the client
+        # router redirects the roots into the gallery and renders the
+        # intentional not-found page for anything else.
+        cp dist/angular/browser/index.csr.html dist/angular/browser/index.html
+        cp dist/angular/browser/index.csr.html dist/angular/browser/404.html
+        cp dist/angular/browser/index.csr.html dist/angular/browser/components/index.html
+        cp dist/angular/browser/index.csr.html dist/angular/browser/examples/index.html
         touch dist/angular/browser/.nojekyll
+      working-directory: packages/angular/@examples/standard
+
+    - name: Deployment smoke checks 🔍
+      # Registry-derived checks against the production build output (root,
+      # every catalog route incl. /components/menu, first example when Wave 4
+      # adds one, unknown-URL fallback). Runs serially before deploy so a
+      # routing regression fails the deployment, not the site.
+      run: pnpm smoke:deploy
       working-directory: packages/angular/@examples/standard
 
     - name: Angular Deploy 🚀

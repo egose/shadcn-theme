@@ -1,14 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import { Card, CardContent } from '../../../../../components/ui/card';
+import { Card, CardContent } from '@egose/shadcn-theme/components/ui/card';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from '../../../../../components/ui/carousel';
+} from '@egose/shadcn-theme/components/ui/carousel';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

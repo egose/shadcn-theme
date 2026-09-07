@@ -1,13 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-confirmation-dialog-page',
-  imports: [HlmButton],
+  imports: [DemoHeaderComponent, HlmButton],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Confirmation Dialog</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A convenience service for confirm prompts.</p>
+    <app-demo-header title="Confirmation Dialog" description="A convenience service for confirm prompts." />
 
     <button hlmButton variant="primary" type="button" (click)="ask()">Ask confirmation</button>
     @if (result() !== null) {

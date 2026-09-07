@@ -14,6 +14,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -37,7 +38,15 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              // GitHub Pages routing contract (ANGEX-08): prerender every
+              // registered route to static HTML so deep links load directly.
+              // The route set is discovered from the Router config, which is
+              // derived from the typed registry in `src/app/catalog/catalog.ts`
+              // — there is no second slug list. Unknown URLs fall back to
+              // `404.html` (copied from `index.html` at deploy time) so the
+              // client router renders the intentional not-found page.
+              "prerender": true
             },
             "development": {
               "optimization": false,
@@ -66,6 +75,7 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "assets": [
               {
                 "glob": "**/*",

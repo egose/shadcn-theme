@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { toast } from 'sonner';
-import { Button } from '../../../../../components/ui/button';
-import { ConfirmationDialog } from '../../../../../components/widgets/confirmation-dialog';
-import { useDialog } from '../../../../../components/widgets/dialog-manager';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { ConfirmationDialog } from '@egose/shadcn-theme/components/widgets/confirmation-dialog';
+import { useDialog } from '@egose/shadcn-theme/components/widgets/dialog-manager';
 import { ExampleInline, ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 export default function Page() {

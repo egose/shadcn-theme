@@ -15,7 +15,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from '../../../../../components/ui/context-menu';
+} from '@egose/shadcn-theme/components/ui/context-menu';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

@@ -2,10 +2,10 @@
 
 import * as React from 'react';
 import { BellIcon, MoonIcon, PaletteIcon, UserIcon } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
-import { Switch } from '../../../../../components/ui/switch';
-import { Label } from '../../../../../components/ui/label';
-import { ContentSidebar } from '../../../../../components/widgets/content-sidebar';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { Switch } from '@egose/shadcn-theme/components/ui/switch';
+import { Label } from '@egose/shadcn-theme/components/ui/label';
+import { ContentSidebar } from '@egose/shadcn-theme/components/widgets/content-sidebar';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

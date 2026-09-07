@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmButtonGroupImports } from '@egose/shadcn-theme-ng/button-group';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-button-group-page',
-  imports: [HlmButtonGroupImports, HlmButton],
+  imports: [DemoHeaderComponent, HlmButtonGroupImports, HlmButton],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Button Group</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A grouped cluster of buttons.</p>
+    <app-demo-header title="Button Group" description="A grouped cluster of buttons." />
 
     <div hlmButtonGroup class="tw:inline-flex">
       <button hlmButton variant="secondary" appearance="outline">Left</button>

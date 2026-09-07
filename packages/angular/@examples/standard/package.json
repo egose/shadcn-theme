@@ -7,14 +7,38 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:ci": "ng test --watch=false --browsers=ChromeHeadless --progress=false"
+    "test:ci": "node scripts/test-ci.mjs",
+    "smoke:deploy": "node scripts/deployment-smoke.mjs",
+    "install:browser": "puppeteer browsers install chrome-headless-shell",
+    "sync:aliases": "node scripts/sync-example-aliases.mjs"
   },
   "private": true,
+  "dependencies": {
+    "@angular/cdk": "22.1.3",
+    "@angular/common": "22.1.3",
+    "@angular/compiler": "22.1.3",
+    "@angular/core": "22.1.3",
+    "@angular/forms": "22.1.3",
+    "@angular/platform-browser": "22.1.3",
+    "@angular/platform-server": "22.1.3",
+    "@angular/router": "22.1.3",
+    "@angular/ssr": "22.1.3",
+    "@ng-icons/core": "35.0.1",
+    "@ng-icons/lucide": "^35.0.1",
+    "@ng-icons/tabler-icons": "^35.0.1",
+    "@spartan-ng/brain": "1.3.2",
+    "ngx-scrollbar": "^19.1.5",
+    "ngx-sonner": "^3.1.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
   "devDependencies": {
     "@angular/build": "22.1.5",
     "@angular/cli": "22.1.5",
+    "@puppeteer/browsers": "^3.2.2",
     "@tailwindcss/postcss": "^4.1.13",
     "postcss": "^8.5.19",
+    "puppeteer": "25.10.0",
     "tw-animate-css": "^1.3.8"
   }
 }

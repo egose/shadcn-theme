@@ -7,7 +7,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '../../../../../components/ui/combobox';
+} from '@egose/shadcn-theme/components/ui/combobox';
 import { ExampleInline, ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 const frameworks = ['Next.js', 'SvelteKit', 'Nuxt.js', 'Remix', 'Astro'] as const;

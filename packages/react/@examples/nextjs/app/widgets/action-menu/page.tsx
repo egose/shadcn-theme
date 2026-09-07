@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { toast } from 'sonner';
-import { MoreHorizontalIcon, PencilIcon, SquarePenIcon, Trash2Icon } from 'lucide-react';
-import { Button } from '../../../../../components/ui/button';
-import { ActionMenu } from '../../../../../components/widgets/action-menu';
+import { MoreHorizontalIcon, PencilIcon, SquarePenIcon } from 'lucide-react';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { ActionMenu } from '@egose/shadcn-theme/components/widgets/action-menu';
 import { ExampleInline, ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

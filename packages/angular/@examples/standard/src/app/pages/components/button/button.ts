@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoMatrixComponent } from '../../../shared/demo-matrix';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { HlmButton, AppearanceType, VariantType, SizeType } from '@egose/shadcn-theme-ng/button';
 import { NgIcon } from '@ng-icons/core';
 import { tablerBrandAngular } from '@ng-icons/tabler-icons';
@@ -6,16 +10,13 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
 @Component({
   selector: 'app-button',
   standalone: true,
-  imports: [HlmButton, NgIcon],
+  imports: [DemoHeaderComponent, DemoMatrixComponent, DemoSectionComponent, HlmButton, NgIcon, RouterLink],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Button</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Buttons are one of the most visible primitives, so this page now leads with realistic action groups and keeps
-          the full variant matrix as a secondary QA tool.
-        </p>
-      </div>
+      <app-demo-header
+        title="Button"
+        description="Action buttons across variants, appearances, sizes, and states; the secondary panel lists the full variant matrix."
+      />
 
       <ng-template #iconTemplate>
         <ng-icon [svg]="icon" size="20px" />
@@ -23,15 +24,12 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div class="tw:grid tw:gap-6 lg:tw:grid-cols-2">
-          <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
-            <div>
-              <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">
-                Primary actions
-              </p>
-              <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Release controls</h4>
-            </div>
-
-            <div class="tw:mt-5 tw:flex tw:flex-wrap tw:gap-3">
+          <app-demo-section
+            class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+            kicker="Primary actions"
+            title="Release controls"
+          >
+            <div class="tw:flex tw:flex-wrap tw:gap-3">
               <button hlmButton variant="primary" [icon]="iconTemplate" type="button">Ship update</button>
               <button hlmButton variant="secondary" appearance="outline" type="button">Preview</button>
               <button hlmButton variant="muted" appearance="outline-filled" type="button">Save draft</button>
@@ -41,17 +39,15 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
               <button hlmButton variant="warning" appearance="outline" type="button">Request review</button>
               <button hlmButton variant="danger" appearance="outline-filled" type="button">Archive</button>
             </div>
-          </article>
+          </app-demo-section>
 
-          <article
+          <app-demo-section
             class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-6 tw:text-white tw:shadow-sm"
+            kicker="States"
+            title="Loading, icon, and compact sizes"
+            tone="dark"
           >
-            <div>
-              <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-400">States</p>
-              <h4 class="tw:mt-2 tw:text-lg tw:font-semibold">Loading, icon, and compact sizes</h4>
-            </div>
-
-            <div class="tw:mt-5 tw:flex tw:flex-wrap tw:gap-3">
+            <div class="tw:flex tw:flex-wrap tw:gap-3">
               <button hlmButton variant="light" [loading]="true" type="button">Publishing</button>
               <button hlmButton variant="accent" [icon]="iconTemplate" iconPosition="right" type="button">
                 Continue
@@ -62,21 +58,19 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
             </div>
 
             <div class="tw:mt-5 tw:flex tw:flex-wrap tw:gap-3">
-              <a hlmButton variant="link" appearance="solid">Documentation</a>
+              <a hlmButton variant="link" appearance="solid" routerLink="/components">Documentation</a>
               <button hlmButton variant="dark" [disabled]="true" type="button">Disabled</button>
             </div>
-          </article>
+          </app-demo-section>
         </div>
 
-        <aside class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-          <h4 class="tw:text-lg tw:font-semibold tw:text-slate-900">Variant QA matrix</h4>
-          <p class="tw:mt-2 tw:text-sm tw:leading-6 tw:text-slate-600">
-            Keep the exhaustive checks, but don’t let them define the whole page.
-          </p>
-
+        <app-demo-matrix
+          title="Variant QA matrix"
+          description="Every variant across appearance, size, disabled, loading, and icon placement."
+        >
           @for (section of sections; track section.title) {
             <div class="tw:mt-5 tw:space-y-3">
-              <h5 class="tw:text-sm tw:font-medium tw:text-slate-700">{{ section.title }}</h5>
+              <h4 class="tw:text-sm tw:font-medium tw:text-slate-700">{{ section.title }}</h4>
               <div class="tw:flex tw:flex-wrap tw:gap-2">
                 @for (v of variants; track v) {
                   <button
@@ -86,7 +80,7 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
                     [size]="section.size ?? 'default'"
                     [disabled]="section.disabled || false"
                     [loading]="section.loading || false"
-                    [icon]="section.icon ? iconTemplate : null"
+                    [icon]="section.icon ? iconTemplate : undefined"
                     [iconPosition]="section.iconPosition || 'left'"
                     type="button"
                   >
@@ -96,7 +90,7 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
               </div>
             </div>
           }
-        </aside>
+        </app-demo-matrix>
       </div>
     </section>
   `,

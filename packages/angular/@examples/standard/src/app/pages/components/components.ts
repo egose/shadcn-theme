@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { catalogEntriesByKind } from '../../catalog/catalog';
 
 @Component({
   selector: 'app-components',
@@ -16,19 +17,23 @@ import { RouterOutlet } from '@angular/router';
               Component gallery with real page spacing
             </h1>
             <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-              Each route renders a packaged @egose/shadcn-theme-ng component inside a polished shell so new additions are
-              easier to judge in context.
+              Each route renders a packaged @egose/shadcn-theme-ng component with realistic page spacing so
+              behavior is easier to judge in context.
             </p>
           </div>
 
           <div class="tw:grid tw:gap-3 sm:tw:grid-cols-2">
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:px-4 tw:py-3">
               <p class="tw:text-xs tw:font-medium tw:text-slate-500">Navigation</p>
-              <p class="tw:mt-1 tw:text-sm tw:text-slate-700">Browse categories from the top bar or search directly.</p>
+              <p class="tw:mt-1 tw:text-sm tw:text-slate-700" data-testid="component-demo-count">
+                Browse all {{ demoCount }} component demos from the top bar or search directly.
+              </p>
             </div>
             <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:px-4 tw:py-3">
-              <p class="tw:text-xs tw:font-medium tw:text-slate-500">Focus</p>
-              <p class="tw:mt-1 tw:text-sm tw:text-slate-700">Pages now render full-width instead of floating in the middle.</p>
+              <p class="tw:text-xs tw:font-medium tw:text-slate-500">Viewing</p>
+              <p class="tw:mt-1 tw:text-sm tw:text-slate-700">
+                Every demo adapts to narrow screens with responsive max-width constraints.
+              </p>
             </div>
           </div>
         </div>
@@ -40,4 +45,8 @@ import { RouterOutlet } from '@angular/router';
     </section>
   `,
 })
-export class ComponentsLayout {}
+export class ComponentsLayout {
+  // Displayed in the header; derived from the registry so the count can never
+  // drift from the real route/menu/search data.
+  protected readonly demoCount = catalogEntriesByKind('component').length;
+}

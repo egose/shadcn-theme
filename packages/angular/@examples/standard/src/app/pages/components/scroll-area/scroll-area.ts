@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { HlmScrollArea } from '@egose/shadcn-theme-ng/scroll-area';
 
 @Component({
   selector: 'app-scroll-area-page',
-  imports: [NgScrollbar, HlmScrollArea],
+  imports: [DemoHeaderComponent, NgScrollbar, HlmScrollArea],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Scroll Area</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Custom scrollbars.</p>
+    <app-demo-header title="Scroll Area" description="Custom scrollbars." />
 
-    <ng-scrollbar hlm class="tw:h-[200px] tw:w-[350px] tw:rounded-md tw:border tw:p-4">
+    <ng-scrollbar hlm class="tw:h-[200px] tw:w-full tw:max-w-sm tw:rounded-md tw:border tw:p-4">
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
         magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

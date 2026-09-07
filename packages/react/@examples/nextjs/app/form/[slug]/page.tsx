@@ -1,17 +1,18 @@
 import { notFound } from 'next/navigation';
-import { FormShowcase } from '../../../components/showcases';
-import { formDynamicSlugs } from '../../../lib/example-registry';
+
+import { DynamicShowcase } from '../../../components/dynamic-showcase';
+import { formSection } from '../../../lib/sections';
 
 export function generateStaticParams() {
-  return Array.from(formDynamicSlugs).map((slug) => ({ slug }));
+  return formSection.dynamicSlugs.map((slug) => ({ slug }));
 }
 
 export default async function Page({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
   const { slug } = await params;
 
-  if (!formDynamicSlugs.has(slug)) {
+  if (!formSection.dynamicSlugs.includes(slug)) {
     notFound();
   }
 
-  return <FormShowcase slug={slug} />;
+  return <DynamicShowcase section={formSection} slug={slug} />;
 }

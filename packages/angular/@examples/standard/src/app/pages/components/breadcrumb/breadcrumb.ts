@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmBreadcrumbImports } from '@egose/shadcn-theme-ng/breadcrumb';
 
 @Component({
   selector: 'app-breadcrumb-page',
-  imports: [HlmBreadcrumbImports],
+  imports: [DemoHeaderComponent, HlmBreadcrumbImports],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Breadcrumb</h3>
-    <p class="tw:text-gray-500 tw:mb-4">Navigation trail.</p>
+    <app-demo-header title="Breadcrumb" description="Navigation trail." />
 
-    <nav hlmBreadcrumb>
+    <nav hlmBreadcrumb aria-label="Page sections">
       <ol hlmBreadcrumbList>
         <li hlmBreadcrumbItem>
-          <a hlmBreadcrumbLink href="/">Home</a>
+          <a hlmBreadcrumbLink link="/">Home</a>
         </li>
         <li hlmBreadcrumbSeparator></li>
         <li hlmBreadcrumbItem>
-          <a hlmBreadcrumbLink href="/components">Components</a>
+          <a hlmBreadcrumbLink link="/components">Components</a>
         </li>
         <li hlmBreadcrumbSeparator></li>
         <li hlmBreadcrumbItem>

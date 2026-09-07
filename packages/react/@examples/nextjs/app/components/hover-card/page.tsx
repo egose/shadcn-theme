@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '../../../../../components/ui/button';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../../../../components/ui/hover-card';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@egose/shadcn-theme/components/ui/hover-card';
 import { ExampleInline, ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

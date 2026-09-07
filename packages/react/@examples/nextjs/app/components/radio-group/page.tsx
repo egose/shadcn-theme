@@ -1,7 +1,7 @@
 'use client';
 
-import { Label } from '../../../../../components/ui/label';
-import { RadioGroup, RadioGroupItem } from '../../../../../components/ui/radio-group';
+import { Label } from '@egose/shadcn-theme/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@egose/shadcn-theme/components/ui/radio-group';
 import { ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 export default function Page() {

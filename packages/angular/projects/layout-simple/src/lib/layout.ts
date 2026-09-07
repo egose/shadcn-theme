@@ -1,7 +1,18 @@
-import { Component, input, output, computed, signal, viewChild, TemplateRef, DestroyRef, inject } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  output,
+  computed,
+  signal,
+  viewChild,
+  TemplateRef,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ClassValue } from 'clsx';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMenu } from '@ng-icons/lucide';
@@ -25,6 +36,13 @@ export interface MenuGroup {
   label?: string;
   items: MenuItem[];
 }
+
+/**
+ * Single viewport contract for the shell: below Tailwind's `md` (768px) breakpoint the
+ * mobile menu trigger replaces all desktop navigation rows. CSS (`tw:hidden tw:md:flex`)
+ * and runtime rendering both derive from this one boundary.
+ */
+export const EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT = '(max-width: 767.98px)';
 
 const commonLinkGroupClasses = 'tw:hidden tw:md:flex tw:space-x-4 tw:items-center';
 const commonLinkClasses =
@@ -57,6 +75,10 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   sidebarEnabled = input<boolean>(false);
   sidebarTitle = input<string>('Menu');
   sidebarContent = input<TemplateRef<unknown> | undefined>();
+  /** Accessible name for the icon-only sidebar trigger. */
+  sidebarToggleLabel = input<string>('Open navigation sidebar');
+  /** Accessible name for the icon-only mobile menu trigger. */
+  mobileMenuLabel = input<string>('Open navigation menu');
   userMenuTrigger = input<TemplateRef<unknown> | undefined>();
 
   /** Menu data inputs */
@@ -111,13 +133,13 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   protected readonly _computedRightClass = computed(() => hlm(commonLinkGroupClasses, this.rightMenuClass()));
   protected readonly _computedTopClass = computed(() =>
     hlm(
-      'tw:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-2 tw:bg-gray-50 tw:border-b tw:border-gray-200',
+      'tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-2 tw:bg-gray-50 tw:border-b tw:border-gray-200',
       this.topMenuClass(),
     ),
   );
   protected readonly _computedTopSecondaryClass = computed(() =>
     hlm(
-      'tw:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-1.5 tw:bg-gray-100/60 tw:border-b tw:border-gray-200',
+      'tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-1.5 tw:bg-gray-100/60 tw:border-b tw:border-gray-200',
       this.topMenuClass(),
     ),
   );
@@ -157,20 +179,46 @@ export class EgLayoutSimple<TItem, TParams extends object = { search: string }> 
   );
 
   /** Mobile menu state */
-  mobileMenuOpen = false;
+  protected readonly mobileMenuOpen = signal(false);
   isMobile = signal(false);
+  /** Expanded state of the sidebar sheet, kept in sync with BrnSheet state changes. */
+  protected readonly sidebarOpen = signal(false);
 
   constructor(private breakpointObserver: BreakpointObserver) {
     this.breakpointObserver
-      .observe([Breakpoints.Handset])
+      .observe([EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         this.isMobile.set(result.matches);
       });
+
+    effect(() => {
+      // Desktop navigation replaces the mobile menu above the breakpoint, so an
+      // open mobile menu must not cross the boundary into desktop layout.
+      if (!this.isMobile() && this.mobileMenuOpen()) {
+        this.mobileMenuOpen.set(false);
+      }
+    });
+
+    effect((onCleanup) => {
+      const sheet = this.viewchildSheetRef()?.viewchildSheetRef();
+      if (!sheet) return;
+      this.sidebarOpen.set(sheet.stateComputed() === 'open');
+      const subscriptions = [
+        sheet.stateChanged.subscribe((state: string) => this.sidebarOpen.set(state === 'open')),
+        // Escape/backdrop closes complete the dialog without a 'closed' state emission.
+        sheet.closed.subscribe(() => this.sidebarOpen.set(false)),
+      ];
+      onCleanup(() => subscriptions.forEach((subscription) => subscription.unsubscribe()));
+    });
   }
 
   toggleMobileMenu() {
-    this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.mobileMenuOpen.update((open) => !open);
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen.set(false);
   }
 
   onSearchOptionChange(value: TItem) {

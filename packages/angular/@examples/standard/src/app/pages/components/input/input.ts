@@ -1,73 +1,115 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-input-page',
-  imports: [HlmInput, HlmButton],
+  imports: [DemoHeaderComponent, DemoSectionComponent, HlmInput, HlmButton],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Input</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Inputs look more trustworthy when they appear inside realistic account and filter forms instead of a bare list
-          of field types.
-        </p>
-      </div>
+      <app-demo-header
+        title="Input"
+        description="Text, email, password, and disabled inputs shown inside an account form and a compact filter panel."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Profile form</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Account details</h4>
-          </div>
-
-          <div class="tw:mt-5 tw:grid tw:gap-4 sm:tw:grid-cols-2">
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+          kicker="Profile form"
+          title="Account details"
+        >
+          <div class="tw:grid tw:gap-4 sm:tw:grid-cols-2">
             <label class="tw:grid tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">First name</span>
-              <input hlmInput placeholder="Jane" value="Jane" />
+              <input
+                hlmInput
+                placeholder="Jane"
+                [value]="firstName()"
+                (input)="firstName.set($any($event.target).value)"
+              />
             </label>
             <label class="tw:grid tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Last name</span>
-              <input hlmInput placeholder="Hahn" value="Hahn" />
+              <input
+                hlmInput
+                placeholder="Hahn"
+                [value]="lastName()"
+                (input)="lastName.set($any($event.target).value)"
+              />
             </label>
             <label class="tw:grid tw:gap-2 sm:tw:col-span-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Email address</span>
-              <input hlmInput type="email" placeholder="jane@egose.dev" value="jane@egose.dev" />
+              <input
+                hlmInput
+                type="email"
+                placeholder="jane@egose.dev"
+                [value]="email()"
+                (input)="email.set($any($event.target).value)"
+              />
             </label>
             <label class="tw:grid tw:gap-2 sm:tw:col-span-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Password</span>
-              <input hlmInput type="password" value="password" />
+              <input hlmInput type="password" aria-label="Password" value="password" />
             </label>
           </div>
 
           <div class="tw:mt-5 tw:flex tw:justify-end tw:gap-2">
-            <button hlmButton variant="secondary" appearance="outline" type="button">Cancel</button>
-            <button hlmButton type="button">Save changes</button>
-          </div>
-        </article>
-
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
-          <div>
-            <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Filters</p>
-            <h4 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Search and disabled states</h4>
+            <button hlmButton variant="secondary" appearance="outline" type="button" (click)="discard()">Cancel</button>
+            <button hlmButton type="button" (click)="save()">Save changes</button>
           </div>
 
-          <div class="tw:mt-5 tw:grid tw:gap-4">
-            <input hlmInput placeholder="Search by component name" value="alert" />
-            <input hlmInput placeholder="Invite code" value="STD-2026-QA" />
-            <input hlmInput placeholder="Disabled input" disabled value="Coming soon" />
+          @if (accountMessage()) {
+            <p role="status" class="tw:mt-4 tw:text-sm tw:text-slate-600">{{ accountMessage() }}</p>
+          }
+        </app-demo-section>
+
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+          kicker="Filters"
+          title="Search and disabled states"
+        >
+          <div class="tw:grid tw:gap-4">
+            <label class="tw:grid tw:gap-2">
+              <span class="tw:text-sm tw:font-medium tw:text-slate-700">Filter components</span>
+              <input hlmInput placeholder="Search by component name" value="alert" />
+            </label>
+            <label class="tw:grid tw:gap-2">
+              <span class="tw:text-sm tw:font-medium tw:text-slate-700">Invite code</span>
+              <input hlmInput placeholder="Invite code" value="STD-2026-QA" />
+            </label>
+            <label class="tw:grid tw:gap-2">
+              <span class="tw:text-sm tw:font-medium tw:text-slate-700">Release status</span>
+              <input hlmInput placeholder="Disabled input" disabled value="Coming soon" />
+            </label>
           </div>
 
           <div class="tw:mt-5 tw:rounded-2xl tw:border tw:border-dashed tw:border-slate-300 tw:bg-white tw:p-4">
             <p class="tw:text-sm tw:leading-7 tw:text-slate-600">
-              Seeing inputs in both full forms and compact filters makes spacing, placeholder tone, and disabled styling
-              much easier to review.
+              Inputs appear in both full forms and compact filters, showing spacing, placeholder tone, and disabled
+              styling side by side.
             </p>
           </div>
-        </article>
+        </app-demo-section>
       </div>
     </section>
   `,
 })
-export class InputPage {}
+export class InputPage {
+  readonly firstName = signal('Jane');
+  readonly lastName = signal('Hahn');
+  readonly email = signal('jane@egose.dev');
+  readonly accountMessage = signal<string | null>(null);
+
+  save() {
+    this.accountMessage.set(`Account details saved for ${this.firstName()} ${this.lastName()} (${this.email()}).`);
+  }
+
+  discard() {
+    this.firstName.set('Jane');
+    this.lastName.set('Hahn');
+    this.email.set('jane@egose.dev');
+    this.accountMessage.set('Edits discarded; the account form was reset to its saved values.');
+  }
+}

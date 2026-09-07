@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../../components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../../../components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@egose/shadcn-theme/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@egose/shadcn-theme/components/ui/tabs';
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
 
 export default function Page() {

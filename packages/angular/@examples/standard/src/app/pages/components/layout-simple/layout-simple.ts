@@ -1,23 +1,26 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { EgLayoutSimple } from '@egose/shadcn-theme-ng/layout-simple';
 
 @Component({
   selector: 'app-layout-simple-page',
-  imports: [EgLayoutSimple],
+  imports: [DemoHeaderComponent, EgLayoutSimple],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Layout (Simple)</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A complete app shell: header, menus, content, optional sidebar.</p>
+    <app-demo-header
+      title="Layout Simple"
+      description="A complete app shell: header, menus, content, optional sidebar."
+    />
 
     <div class="tw:tw-rounded-md tw:border tw:overflow-hidden tw:h-[400px]">
       <eg-layout-simple
         [sidebarEnabled]="true"
         sidebarTitle="Menu"
         [leftMenus]="[
-          { label: 'Home', link: '#' },
-          { label: 'Docs', link: '#' },
-          { label: 'About', link: '#' },
+          { label: 'Buttons', link: '/components/button' },
+          { label: 'Forms', link: '/components/form-field' },
+          { label: 'Cards', link: '/components/card' },
         ]"
-        [rightMenus]="[{ label: 'Login', link: '#' }]"
+        [rightMenus]="[{ label: 'Tables', link: '/components/table' }]"
         logo=""
         logoLink="/"
       >

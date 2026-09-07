@@ -2,7 +2,7 @@
 
 import { IconInbox } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
-import { Button } from '../../../../../components/ui/button';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
 import { ExamplePage, ExampleSection, ExampleInline } from '@/components/showcase-shell';
 
 const variants = [

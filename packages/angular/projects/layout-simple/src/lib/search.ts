@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, signal, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HlmPopover, HlmPopoverContent, HlmPopoverTrigger } from '@egose/shadcn-theme-ng/popover';
+import { HlmPopover, HlmPopoverContent, HlmPopoverPortal, HlmPopoverTrigger } from '@egose/shadcn-theme-ng/popover';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -14,7 +14,16 @@ export interface AutocompleteOption<T = unknown> {
 
 @Component({
   selector: 'eg-generic-autocomplete',
-  imports: [FormsModule, HlmPopover, HlmPopoverTrigger, HlmPopoverContent, HlmInput, HlmButton, NgIcon],
+  imports: [
+    FormsModule,
+    HlmPopover,
+    HlmPopoverTrigger,
+    HlmPopoverContent,
+    HlmPopoverPortal,
+    HlmInput,
+    HlmButton,
+    NgIcon,
+  ],
   providers: [provideIcons({ lucideSearch })],
   template: `
     <hlm-popover>
@@ -30,7 +39,7 @@ export interface AutocompleteOption<T = unknown> {
         <span class="tw:truncate">{{ placeholderText() }}</span>
       </button>
 
-      <hlm-popover-content class="tw:w-64 tw:p-2">
+      <hlm-popover-content *hlmPopoverPortal class="tw:w-64 tw:p-2">
         <input
           hlmInput
           [ngModel]="search()"

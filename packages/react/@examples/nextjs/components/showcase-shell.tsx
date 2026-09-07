@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '../../../utils/ui';
+import { cn } from '@egose/shadcn-theme/utils/ui';
 
 export function ExamplePage({
   title,

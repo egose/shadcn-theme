@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { HlmSeparator } from '@egose/shadcn-theme-ng/separator';
 
 @Component({
   selector: 'app-separator-page',
-  imports: [HlmSeparator],
+  imports: [DemoHeaderComponent, HlmSeparator],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Separator</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A line to separate content.</p>
+    <app-demo-header title="Separator" description="A line to separate content." />
     <div class="tw:w-full">
       <div class="tw:text-sm tw:mb-2">Top content</div>
       <hlm-separator />

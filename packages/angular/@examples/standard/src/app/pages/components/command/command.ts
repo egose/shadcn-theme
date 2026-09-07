@@ -1,16 +1,20 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@egose/shadcn-theme-ng/command';
 
 @Component({
   selector: 'app-command-page',
-  imports: [BrnCommandImports, HlmCommandImports],
+  imports: [DemoHeaderComponent, BrnCommandImports, HlmCommandImports],
   template: `
-    <h3 class="tw:text-2xl tw:font-bold tw:mb-2">Command</h3>
-    <p class="tw:text-gray-500 tw:mb-4">A search/quick-action palette.</p>
+    <app-demo-header
+      title="Command"
+      description="A search/quick-action palette with its search field labelled for assistive technology."
+    />
 
-    <div hlmCommand class="tw:w-[400px] tw:rounded-md tw:border tw:shadow-md">
-      <hlm-command-input placeholder="Type a command or search..." />
+    <div hlmCommand class="tw:w-full tw:max-w-md tw:rounded-md tw:border tw:shadow-md">
+      <label for="command-search" class="tw:sr-only">Search commands</label>
+      <hlm-command-input inputId="command-search" placeholder="Type a command or search..." />
       <div hlmCommandList class="tw:max-h-[300px]">
         <div hlmCommandEmpty>No results found.</div>
         <div hlmCommandGroup>

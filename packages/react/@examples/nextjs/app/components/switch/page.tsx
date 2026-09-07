@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Label } from '../../../../../components/ui/label';
-import { Switch } from '../../../../../components/ui/switch';
+import { Label } from '@egose/shadcn-theme/components/ui/label';
+import { Switch } from '@egose/shadcn-theme/components/ui/switch';
 import { ExamplePage, ExampleSection, ExampleStack } from '@/components/showcase-shell';
 
 export default function Page() {

@@ -1,33 +1,36 @@
 import { Component } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
 
 @Component({
   selector: 'app-basic-alert-page',
-  imports: [EgBasicAlert],
+  imports: [DemoHeaderComponent, DemoSectionComponent, EgBasicAlert],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Basic Alert</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          The simpler alert component works well for stacked notifications, inbox states, and short workflow guidance.
-        </p>
-      </div>
+      <app-demo-header
+        title="Basic Alert"
+        description="A compact alert with title and description, suited to stacked notifications and short status messages."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-2">
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
-          <h4 class="tw:text-lg tw:font-semibold tw:text-slate-900">Light appearance</h4>
-          <div class="tw:mt-4 tw:grid tw:gap-3">
+        <app-demo-section
+          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+          title="Light appearance"
+        >
+          <div class="tw:grid tw:gap-3">
             @for (alert of lightAlerts; track alert.title) {
               <eg-basic-alert [variant]="alert.variant" [title]="alert.title" [description]="alert.description" />
             }
           </div>
-        </article>
+        </app-demo-section>
 
-        <article
+        <app-demo-section
           class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-6 tw:text-white tw:shadow-sm"
+          title="Solid appearance"
+          tone="dark"
         >
-          <h4 class="tw:text-lg tw:font-semibold">Solid appearance</h4>
-          <div class="tw:mt-4 tw:grid tw:gap-3">
+          <div class="tw:grid tw:gap-3">
             @for (alert of solidAlerts; track alert.title) {
               <eg-basic-alert
                 [variant]="alert.variant"
@@ -37,7 +40,7 @@ import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
               />
             }
           </div>
-        </article>
+        </app-demo-section>
       </div>
     </section>
   `,
@@ -46,18 +49,18 @@ export class BasicAlertPage {
   readonly lightAlerts = [
     {
       variant: 'info',
-      title: 'Examples synced',
-      description: 'The current workspace includes the latest standard-demo updates.',
+      title: 'Backup completed',
+      description: 'The nightly workspace backup finished at 02:00 UTC.',
     },
     {
       variant: 'success',
-      title: 'Build passed',
-      description: 'The Angular standard example compiled successfully after the latest changes.',
+      title: 'Invite accepted',
+      description: 'A new member joined the workspace from your invite link.',
     },
     {
       variant: 'warning',
-      title: 'Visual QA pending',
-      description: 'A few route pages still deserve one more pass for consistency.',
+      title: 'Trial ending soon',
+      description: 'The workspace trial ends in 3 days; add a payment method to continue.',
     },
   ] as const;
 

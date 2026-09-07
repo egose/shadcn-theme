@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { DemoHeaderComponent } from '../../../shared/demo-header';
 import {
   HlmCard,
   HlmCardAction,
@@ -13,6 +14,7 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
 @Component({
   selector: 'app-card-page',
   imports: [
+    DemoHeaderComponent,
     HlmCard,
     HlmCardAction,
     HlmCardHeader,
@@ -24,29 +26,34 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
   ],
   template: `
     <section class="tw:space-y-8">
-      <div class="tw:max-w-3xl tw:space-y-3">
-        <h3 class="tw:text-2xl tw:font-bold tw:text-slate-950">Card</h3>
-        <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-          Cards are most useful when they carry hierarchy, utility actions, and meaningful content density. These
-          examples show the same primitive in dashboard, review, and summary contexts.
-        </p>
-      </div>
+      <app-demo-header
+        title="Card"
+        description="Content containers with header, action, content, and footer slots, shown as a status board, a pricing panel, and a summary stack."
+      />
 
       <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div class="tw:grid tw:gap-6 lg:tw:grid-cols-2">
           <article hlmCard class="tw:border-slate-200 tw:bg-white tw:shadow-sm">
             <div hlmCardHeader>
-              <button hlmCardAction hlmButton variant="secondary" appearance="outline" size="sm" type="button">
+              <button
+                hlmCardAction
+                hlmButton
+                variant="secondary"
+                appearance="outline"
+                size="sm"
+                type="button"
+                (click)="note('Draft status confirmed: 4 items still in review.')"
+              >
                 Draft
               </button>
-              <div hlmCardTitle>Release readiness</div>
-              <div hlmCardDescription>Track the final review items before shipping the refreshed examples.</div>
+              <div hlmCardTitle>Sprint readiness</div>
+              <div hlmCardDescription>Track the remaining review items before the sprint closes.</div>
             </div>
 
             <div hlmCardContent class="tw:space-y-4">
               <div class="tw:grid tw:grid-cols-3 tw:gap-3">
                 <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4">
-                  <p class="tw:text-xs tw:text-slate-500">Components</p>
+                  <p class="tw:text-xs tw:text-slate-500">In scope</p>
                   <p class="tw:mt-2 tw:text-2xl tw:font-semibold tw:text-slate-950">68</p>
                 </div>
                 <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4">
@@ -69,8 +76,18 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
             <div hlmCardFooter class="tw:gap-2 tw:justify-between">
               <span class="tw:text-sm tw:text-slate-500">Last updated 12 minutes ago</span>
               <div class="tw:flex tw:gap-2">
-                <button hlmButton variant="secondary" appearance="outline" type="button">Review</button>
-                <button hlmButton variant="primary" type="button">Ship changes</button>
+                <button
+                  hlmButton
+                  variant="secondary"
+                  appearance="outline"
+                  type="button"
+                  (click)="note('Sprint board opened for review.')"
+                >
+                  Review
+                </button>
+                <button hlmButton variant="primary" type="button" (click)="note('Sprint changes shipped to staging.')">
+                  Ship changes
+                </button>
               </div>
             </div>
           </article>
@@ -108,8 +125,18 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
             </div>
 
             <div hlmCardFooter class="tw:gap-2 tw:flex-col sm:tw:flex-row sm:tw:justify-between">
-              <button hlmButton variant="light" type="button">Start trial</button>
-              <button hlmButton variant="secondary" appearance="outline" type="button">Compare plans</button>
+              <button hlmButton variant="light" type="button" (click)="note('Trial started: 14 days remaining.')">
+                Start trial
+              </button>
+              <button
+                hlmButton
+                variant="secondary"
+                appearance="outline"
+                type="button"
+                (click)="note('Plan comparison opened below.')"
+              >
+                Compare plans
+              </button>
             </div>
           </article>
         </div>
@@ -135,31 +162,49 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
           </div>
 
           <div hlmCardFooter class="tw:justify-end">
-            <button hlmButton variant="secondary" appearance="outline" type="button">Open report</button>
+            <button
+              hlmButton
+              variant="secondary"
+              appearance="outline"
+              type="button"
+              (click)="note('Review report summary refreshed just now.')"
+            >
+              Open report
+            </button>
           </div>
         </article>
+
+        @if (cardMessage()) {
+          <p role="status" class="tw:text-sm tw:text-slate-600 xl:tw:col-span-2">{{ cardMessage() }}</p>
+        }
       </div>
     </section>
   `,
 })
 export class CardPage {
+  readonly cardMessage = signal<string | null>(null);
+
+  note(message: string) {
+    this.cardMessage.set(message);
+  }
+
   readonly premiumFeatures = ['Unlimited review boards', 'Shared component audits', 'Release checklists'];
 
   readonly summaries = [
     {
-      label: 'Examples refreshed',
+      label: 'Completed issues',
       value: '18',
-      description: 'Pages updated to show realistic spacing, actions, and hierarchy.',
+      description: 'Cards, tables, and banners completed this sprint.',
     },
     {
       label: 'Open follow-ups',
       value: '4',
-      description: 'A few demos still need another polish pass for edge-case states.',
+      description: 'Items waiting on a reviewer before they can close.',
     },
     {
       label: 'Team confidence',
       value: 'High',
-      description: 'The cards now communicate package quality much more clearly in review.',
+      description: 'Reviewers report the sprint is on track to finish on time.',
     },
   ];
 }

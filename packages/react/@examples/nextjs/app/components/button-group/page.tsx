@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Button } from '../../../../../components/ui/button';
-import { ButtonGroup } from '../../../../../components/ui/button-group';
+import { Button } from '@egose/shadcn-theme/components/ui/button';
+import { ButtonGroup } from '@egose/shadcn-theme/components/ui/button-group';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '../../../../../components/ui/dropdown-menu';
+} from '@egose/shadcn-theme/components/ui/dropdown-menu';
 import {
   ArchiveIcon,
   ArrowLeftIcon,
