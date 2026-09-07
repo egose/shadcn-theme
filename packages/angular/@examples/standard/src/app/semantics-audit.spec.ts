@@ -1,4 +1,4 @@
-import { provideZonelessChangeDetection, signal } from '@angular/core';
+import { ApplicationRef, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { BrnDialogRef } from '@spartan-ng/brain/dialog';
@@ -54,14 +54,19 @@ async function waitForCondition(
   attempts = 100,
   intervalMs = 50,
 ): Promise<boolean> {
+  const appRef = TestBed.inject(ApplicationRef);
   for (let attempt = 0; attempt < attempts; attempt++) {
-    fixture.detectChanges();
+    // Tick the whole application: overlay content (dialog/drawer panels)
+    // attaches to the ApplicationRef outside the fixture subtree, so
+    // fixture.detectChanges() alone never re-checks it — and the scheduled
+    // zoneless ticks it relies on starve under CPU contention (CI).
+    appRef.tick();
     if (probe()) {
       return true;
     }
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
-  fixture.detectChanges();
+  appRef.tick();
   return probe();
 }
 
@@ -263,20 +268,27 @@ describe('ANGEX-06 semantics audit', () => {
       expect(document.activeElement).toBe(trigger);
       trigger.click();
       await fixture.whenStable();
-      // Vaul animates the panel open; poll for the announced state instead of
-      // a fixed sleep so loaded runners (CI) don't flap. The budget is
-      // generous (15s) because animation frames starve under CPU contention.
+      // The overlay subtree (dialog/drawer panels) attaches to the
+      // ApplicationRef outside the fixture tree, and the zoneless ticks that
+      // would re-check its OnPush host bindings starve under CPU contention
+      // (CI). So probe state the overlay writes synchronously via the DOM
+      // (spartan sets data-state on the pane in the dialog-ref constructor)
+      // instead of the content host binding, which needs a subtree check.
       const opened = await waitForCondition(
-        () => document.querySelector('[data-slot="drawer-content"][data-state="open"]') !== null,
+        () =>
+          document
+            .querySelector('[data-slot="drawer-content"]')
+            ?.closest('.cdk-overlay-pane')
+            ?.getAttribute('data-state') === 'open',
         fixture,
         300,
         50,
       );
       await fixture.whenStable();
       fixture.detectChanges();
-      const openContent = document.querySelector('[data-slot="drawer-content"][data-state="open"]');
+      const openContent = document.querySelector('[data-slot="drawer-content"]');
       expect(opened).withContext('drawer reports open state').toBeTrue();
-      expect(openContent).withContext('drawer reports open state').not.toBeNull();
+      expect(openContent).withContext('drawer content renders in the overlay').not.toBeNull();
       const drawerFocused = await waitForCondition(
         () => openContent?.contains(document.activeElement) ?? false,
         fixture,
@@ -294,10 +306,13 @@ describe('ANGEX-06 semantics audit', () => {
         (button) => button.textContent?.trim() === 'Cancel',
       ) as HTMLButtonElement;
       cancel.click();
-      await settle(fixture);
-      expect(document.querySelector('[data-slot="drawer-content"][data-state="open"]'))
-        .withContext('drawer closes')
-        .toBeNull();
+      // Close tears down through exit animations, which also starve under
+      // load; poll for removal instead of a fixed sleep.
+      const closed = await waitForCondition(
+        () => document.querySelector('[data-slot="drawer-content"]') === null,
+        fixture,
+      );
+      expect(closed).withContext('drawer closes').toBeTrue();
       // Polling above can legitimately exceed jasmine's 5s default timeout on
       // loaded runners; the suite still fails fast on real regressions.
     }, 60000);
