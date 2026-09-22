@@ -13,13 +13,16 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
         description="Item primitives work best in stacked lists with media, metadata, actions, and separators. This gives the layout enough structure to judge spacing and alignment."
       />
 
-      <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <div class="tw:grid tw:min-w-0 tw:grid-cols-1 tw:gap-6 xl:tw:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <div
           hlmItemGroup
-          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-5 tw:shadow-sm sm:tw:p-6"
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-5 tw:shadow-sm sm:tw:p-6"
         >
           @for (task of tasks; track task.title; let last = $last) {
-            <article hlmItem class="tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4 sm:tw:p-5">
+            <article
+              hlmItem
+              class="tw:min-w-0 tw:max-w-full tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4 sm:tw:p-5"
+            >
               <div
                 hlmItemMedia
                 class="tw:h-11 tw:w-11 tw:rounded-2xl tw:bg-slate-900 tw:text-sm tw:font-semibold tw:text-white"
@@ -46,9 +49,9 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
                   </span>
                 </div>
 
-                <div hlmItemFooter class="tw:mt-4">
-                  <span class="tw:text-sm tw:text-slate-500">Updated {{ task.updated }}</span>
-                  <div hlmItemActions>
+                <div hlmItemFooter class="tw:mt-4 tw:min-w-0 tw:flex-wrap">
+                  <span class="tw:min-w-0 tw:break-words tw:text-sm tw:text-slate-500">Updated {{ task.updated }}</span>
+                  <div hlmItemActions class="tw:min-w-0 tw:flex-wrap">
                     <button
                       hlmButton
                       variant="secondary"
@@ -71,7 +74,9 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
           }
         </div>
 
-        <aside class="tw:space-y-4 tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
+        <aside
+          class="tw:min-w-0 tw:max-w-full tw:space-y-4 tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+        >
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">What to check</p>
             <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Row composition notes</h3>

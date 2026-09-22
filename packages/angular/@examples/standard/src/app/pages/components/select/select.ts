@@ -13,18 +13,20 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
         description="Selects are more useful to evaluate when paired with labels and grouped into simple settings or filtering flows."
       />
 
-      <div class="tw:grid tw:gap-6 xl:tw:grid-cols-2">
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm">
+      <div class="tw:grid tw:min-w-0 tw:grid-cols-1 tw:gap-6 xl:tw:grid-cols-2">
+        <article
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm"
+        >
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Settings</p>
             <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Workspace preferences</h3>
           </div>
 
-          <div class="tw:mt-5 tw:grid tw:gap-4 sm:tw:grid-cols-2">
-            <label class="tw:grid tw:gap-2">
+          <div class="tw:mt-5 tw:grid tw:min-w-0 tw:gap-4 sm:tw:grid-cols-2">
+            <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Priority</span>
-              <div hlmSelect class="tw:inline-flex">
-                <hlm-select-trigger class="tw:w-full">
+              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+                <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Choose priority" />
                 </hlm-select-trigger>
                 <hlm-select-content>
@@ -35,10 +37,10 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
               </div>
             </label>
 
-            <label class="tw:grid tw:gap-2">
+            <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Owner</span>
-              <div hlmSelect class="tw:inline-flex">
-                <hlm-select-trigger class="tw:w-full">
+              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+                <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Assign owner" />
                 </hlm-select-trigger>
                 <hlm-select-content>
@@ -51,17 +53,19 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
           </div>
         </article>
 
-        <article class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6">
+        <article
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+        >
           <div>
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Simple example</p>
             <h3 class="tw:mt-2 tw:text-lg tw:font-semibold tw:text-slate-900">Basic option list</h3>
           </div>
 
-          <div class="tw:mt-5 tw:w-full tw:max-w-xs">
-            <label class="tw:grid tw:gap-2">
+          <div class="tw:mt-5 tw:w-full tw:min-w-0 tw:max-w-full sm:tw:max-w-xs">
+            <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Fruit</span>
-              <div hlmSelect class="tw:inline-flex">
-                <hlm-select-trigger class="tw:w-full">
+              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+                <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Select a fruit" />
                 </hlm-select-trigger>
                 <hlm-select-content>

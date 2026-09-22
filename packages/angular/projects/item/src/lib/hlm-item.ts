@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { injectHlmItemConfig } from './hlm-item-token';
 
 const itemVariants = cva(
-  'tw:[a]:hover:bg-muted tw:rounded-md tw:border tw:text-sm tw:group/item tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:flex tw:w-full tw:flex-wrap tw:items-center tw:transition-colors tw:duration-100 tw:outline-none tw:focus-visible:ring-[3px] tw:[a]:transition-colors',
+  'tw:[a]:hover:bg-muted tw:rounded-md tw:border tw:text-sm tw:group/item tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:flex tw:w-full tw:min-w-0 tw:max-w-full tw:flex-wrap tw:items-center tw:transition-colors tw:duration-100 tw:outline-none tw:focus-visible:ring-[3px] tw:[a]:transition-colors',
   {
     variants: {
       variant: {

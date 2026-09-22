@@ -34,7 +34,7 @@ export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
   providers: [HLM_DATE_PICKER_VALUE_ACCESSOR, provideBrnDatePicker(HlmDatePicker), provideBrnLabelable(HlmDatePicker)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnFieldControl],
-  host: { class: 'block' },
+  host: { class: 'tw:block tw:w-full tw:min-w-0 tw:max-w-full' },
   template: `
     <hlm-popover sideOffset="5" [state]="_popoverState()" (stateChanged)="_onStateChange($event)">
       <ng-content />

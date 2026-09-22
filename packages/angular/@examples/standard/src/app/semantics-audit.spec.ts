@@ -390,39 +390,50 @@ describe('ANGEX-06 semantics audit', () => {
     it('names sidebar icon-only controls and records selection', async () => {
       TestBed.resetTestingModule();
       // The sidebar renders its navigation inside a mobile sheet below its
-      // breakpoint (the headless suite runs narrow); force the desktop branch
-      // so the demo navigation is in the DOM for these assertions.
+      // breakpoint (the headless suite runs narrow at 320px, so the desktop
+      // `hidden md:flex` container stays `display:none` and its buttons cannot
+      // receive focus). Force the desktop branch in JS and override the
+      // `md:` visibility in CSS so the demo navigation is focusable here.
       spyOn(window, 'matchMedia').and.returnValue({
         matches: false,
         addEventListener: () => {},
         removeEventListener: () => {},
       } as unknown as MediaQueryList);
-      await TestBed.configureTestingModule({
-        imports: [SidebarPage],
-        providers: [provideZonelessChangeDetection(), provideRouter([])],
-      }).compileComponents();
-      const fixture = TestBed.createComponent(SidebarPage);
-      fixture.detectChanges();
-      const host = fixture.nativeElement as HTMLElement;
+      const narrowOverride = document.createElement('style');
+      narrowOverride.textContent =
+        '[data-slot="sidebar-container"],hlm-sidebar{display:block!important;visibility:visible!important}' +
+        '[data-slot="sidebar-gap"]{display:none!important}';
+      document.head.appendChild(narrowOverride);
+      try {
+        await TestBed.configureTestingModule({
+          imports: [SidebarPage],
+          providers: [provideZonelessChangeDetection(), provideRouter([])],
+        }).compileComponents();
+        const fixture = TestBed.createComponent(SidebarPage);
+        fixture.detectChanges();
+        const host = fixture.nativeElement as HTMLElement;
 
-      const triggers = Array.from(host.querySelectorAll('button[data-slot="sidebar-trigger"]'));
-      expect(triggers.length).toBeGreaterThanOrEqual(2);
-      const names = triggers.map((trigger) => trigger.textContent?.trim());
-      names.forEach((name) => expect(name).withContext('sidebar trigger has a name').toBeTruthy());
-      expect(new Set(names).size).withContext('sidebar triggers are distinct').toBe(names.length);
+        const triggers = Array.from(host.querySelectorAll('button[data-slot="sidebar-trigger"]'));
+        expect(triggers.length).toBeGreaterThanOrEqual(2);
+        const names = triggers.map((trigger) => trigger.textContent?.trim());
+        names.forEach((name) => expect(name).withContext('sidebar trigger has a name').toBeTruthy());
+        expect(new Set(names).size).withContext('sidebar triggers are distinct').toBe(names.length);
 
-      const groupAction = host.querySelector('button[data-slot="sidebar-group-action"]');
-      expect(groupAction?.getAttribute('aria-label')).toContain('Primary');
+        const groupAction = host.querySelector('button[data-slot="sidebar-group-action"]');
+        expect(groupAction?.getAttribute('aria-label')).toContain('Primary');
 
-      expectAllControlsNamed(host, 'sidebar search');
-      expectNoPlaceholderAnchors(host, 'sidebar');
+        expectAllControlsNamed(host, 'sidebar search');
+        expectNoPlaceholderAnchors(host, 'sidebar');
 
-      const components = buttonByText(host, 'Components')!;
-      components.focus();
-      expect(document.activeElement).toBe(components);
-      components.click();
-      fixture.detectChanges();
-      expect(host.querySelector('[role="status"]')?.textContent).toContain('Components is selected');
+        const components = buttonByText(host, 'Components')!;
+        components.focus();
+        expect(document.activeElement).toBe(components);
+        components.click();
+        fixture.detectChanges();
+        expect(host.querySelector('[role="status"]')?.textContent).toContain('Components is selected');
+      } finally {
+        narrowOverride.remove();
+      }
     });
 
     it('keeps breadcrumb and pagination on real, operable targets', async () => {

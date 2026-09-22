@@ -11,9 +11,11 @@ import { HlmDatePickerImports } from '@egose/shadcn-theme-ng/date-picker';
       description="A text input with a calendar popover; committed dates are mirrored into the input field."
     />
 
-    <div class="tw:grid tw:w-full tw:max-w-xs tw:gap-2">
-      <label for="date-picker-input" class="tw:text-sm tw:font-medium tw:text-slate-700">Appointment date</label>
-      <hlm-date-picker class="tw:w-full">
+    <div class="tw:grid tw:w-full tw:min-w-0 tw:max-w-full tw:gap-2 sm:tw:max-w-xs">
+      <label for="date-picker-input" class="tw:min-w-0 tw:break-words tw:text-sm tw:font-medium tw:text-slate-700"
+        >Appointment date</label
+      >
+      <hlm-date-picker class="tw:w-full tw:min-w-0 tw:max-w-full">
         <hlm-date-picker-input inputId="date-picker-input" placeholder="Pick a date" ariaLabel="Appointment date" />
       </hlm-date-picker>
     </div>

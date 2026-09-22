@@ -12,7 +12,7 @@ import { DemoHeaderComponent } from '../../../shared/demo-header';
       description="Reactive-form date picker wrapper that renders label, hint, and validation error."
     />
 
-    <form class="tw:w-full tw:max-w-sm" [formGroup]="form">
+    <form class="tw:w-full tw:min-w-0 tw:max-w-full sm:tw:max-w-sm" [formGroup]="form">
       <eg-form-date-picker
         label="Birthdate"
         placeholder="Pick a date"
