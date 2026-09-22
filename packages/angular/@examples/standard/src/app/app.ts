@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import {
   lucideCircleHelp,
   lucideCircleUser,
@@ -11,16 +13,15 @@ import {
   lucidePlus,
   lucideUser,
 } from '@ng-icons/lucide';
-import { EgLayoutSimple, MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
+import {
+  EgLayoutSimple,
+  type FlyoutMenuGroup,
+  type MenuItem,
+  type UserMenuSection,
+} from '@egose/shadcn-theme-ng/layout-simple';
 import { catalogEntriesByKind, catalogLink, catalogMenuGroups } from './catalog/catalog';
 
 type DemoRoute = { label: string; link: string; group: string };
-
-/** First registered real example, so shell navigation never hard-codes an example slug. */
-function firstExampleLink(): string {
-  const first = catalogEntriesByKind('example')[0];
-  return first ? catalogLink(first) : '/examples/pricing';
-}
 
 // Menu groups, search options, and counts are all derived from the single
 // typed registry in `catalog/catalog.ts` (ANGEX-04). Adding or renaming a
@@ -36,24 +37,45 @@ function firstExampleLink(): string {
 export class App {
   private readonly router = inject(Router);
 
-  protected title = 'angular';
+  readonly logoPath = 'assets/logo.png';
 
-  iconPath = 'assets/logo.png';
-
-  leftMenus: MenuItem[] = [
-    { label: 'Home', link: '/' },
-    { label: 'Components', link: '/components/button' },
-    { label: 'Examples', link: firstExampleLink() },
+  readonly primaryNavigation: MenuItem[] = [
+    { label: 'Home', link: '/home' },
+    { label: 'Components', link: '/components', activeMatch: 'prefix' },
+    { label: 'Examples', link: '/examples', activeMatch: 'prefix' },
   ];
 
-  topSecondaryMenus = catalogMenuGroups('component');
+  /**
+   * Section-aware fly-out navigation, derived from the active URL:
+   * hidden on Home (`[]` collapses the shell row), component groups under
+   * `/components`, and example groups under `/examples`. Computed so the
+   * zoneless shell refreshes on every navigation.
+   */
+  private readonly currentUrl = signal(this.router.url);
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => this.currentUrl.set(event.urlAfterRedirects));
+  }
+
+  readonly flyoutNavigationGroups = computed<FlyoutMenuGroup[]>(() => {
+    const url = this.currentUrl();
+    const groups = url.startsWith('/examples')
+      ? catalogMenuGroups('example')
+      : url.startsWith('/components')
+        ? catalogMenuGroups('component')
+        : [];
+    return groups;
+  });
 
   /** Examples navigation groups, derived from the `example` registry kind. */
   exampleMenuGroups = catalogMenuGroups('example');
 
-  rightMenus: MenuItem[] = [];
-
-  menus = [
+  readonly userMenuSections: UserMenuSection[] = [
     {
       label: 'Explore',
       items: [
@@ -87,7 +109,7 @@ export class App {
     },
   ];
 
-  footerMenus = [
+  readonly footerNavigation: MenuItem[] = [
     { label: 'Buttons', link: '/components/button' },
     { label: 'Forms', link: '/components/form-field' },
     { label: 'Tables', link: '/components/table' },
@@ -103,7 +125,7 @@ export class App {
     group: entry.category,
   }));
 
-  demoToSearch = (value: DemoRoute) => `${value.group} ${value.label}`;
+  readonly searchResultLabel = (value: DemoRoute) => `${value.group} ${value.label}`;
 
   loadDemoRoutes = async ({ search }: { search: string }): Promise<DemoRoute[]> => {
     const query = search.trim().toLowerCase();
@@ -119,7 +141,7 @@ export class App {
       .slice(0, 8);
   };
 
-  onSearchOptionChange(value: DemoRoute) {
+  navigateToSearchResult(value: DemoRoute) {
     void this.router.navigateByUrl(value.link);
   }
 }

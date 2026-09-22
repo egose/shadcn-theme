@@ -13,6 +13,7 @@ import { catalogEntriesByKind, catalogLink } from '../../catalog/catalog';
 @Component({
   selector: 'app-examples',
   imports: [RouterOutlet, RouterLink],
+  styles: ':host { display: block; width: 100%; }',
   template: `
     <section class="tw:mx-auto tw:w-full tw:max-w-7xl tw:space-y-6">
       <div class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:shadow-sm sm:tw:p-8">

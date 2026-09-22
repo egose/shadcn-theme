@@ -124,18 +124,18 @@ content renders in a flex row with the optional `icon()` template on the `left`/
 
 ### `HlmButton` — `button[hlmButton], a[hlmButton]`
 
-| Input                          | Type                                | Default     | Description                                                                                                    |
-| ------------------------------ | ----------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
-| `variant`                      | `VariantType`                       | `'primary'` | Color tone (15 values, see below).                                                                             |
-| `size`                         | `SizeType`                          | `'default'` | Height/padding scale (13 values, see below).                                                                   |
-| `appearance`                   | `AppearanceType`                    | `'solid'`   | `'solid'`, `'outline'` (white bg + tone border/text), `'outline-filled'` (outline + fills with tone on hover). |
-| `loading`                      | `boolean`                           | `false`     | Shows the spinner overlay; sets `aria-busy`, forces `disabled`, adds `pointer-events-none`.                    |
-| `icon`                         | `TemplateRef<unknown> \| undefined` | `undefined` | Icon template rendered beside the label.                                                                       |
-| `iconPosition`                 | `'left' \| 'right'`                 | `'left'`    | Which side the `icon()` renders on.                                                                            |
-| `disabled`                     | `boolean`                           | `false`     | Disables the control (also forwarded to `BrnButton`).                                                          |
-| `type`                         | `'button' \| 'submit' \| 'reset'`   | `'button'`  | Native button type (reflected as `type` attr).                                                                 |
-| `class` (alias of `userClass`) | `ClassValue`                        | `''`        | Extra classes merged via `hlm()`.                                                                              |
-| `spinnerUserClass`             | `ClassValue`                        | `''`        | Extra classes for the loading `<hlm-spinner>` (merged over the per-tone spinner color).                        |
+| Input                          | Type                                | Default     | Description                                                                                                                |
+| ------------------------------ | ----------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `variant`                      | `VariantType`                       | `'primary'` | Semantic color tone, plus legacy `default`, `outline`, `link`, and `ghost` variants (15 values).                           |
+| `size`                         | `SizeType`                          | `'default'` | Height/padding scale (13 values, see below).                                                                               |
+| `appearance`                   | `AppearanceType`                    | `'solid'`   | `'solid'`, `'outline'` (theme background + tone border/text), `'outline-filled'` (fills on hover), `'ghost'`, or `'link'`. |
+| `loading`                      | `boolean`                           | `false`     | Shows the spinner overlay; sets `aria-busy`, forces `disabled`, adds `pointer-events-none`.                                |
+| `icon`                         | `TemplateRef<unknown> \| undefined` | `undefined` | Icon template rendered beside the label.                                                                                   |
+| `iconPosition`                 | `'left' \| 'right'`                 | `'left'`    | Which side the `icon()` renders on.                                                                                        |
+| `disabled`                     | `boolean`                           | `false`     | Disables the control (also forwarded to `BrnButton`).                                                                      |
+| `type`                         | `'button' \| 'submit' \| 'reset'`   | `'button'`  | Native button type (reflected as `type` attr).                                                                             |
+| `class` (alias of `userClass`) | `ClassValue`                        | `''`        | Extra classes merged via `hlm()`.                                                                                          |
+| `spinnerUserClass`             | `ClassValue`                        | `''`        | Extra classes for the loading `<hlm-spinner>` (defaults to the button's current text color).                               |
 
 | Method     | Signature                         | Description                         |
 | ---------- | --------------------------------- | ----------------------------------- |
@@ -147,7 +147,15 @@ content renders in a flex row with the optional `icon()` template on the `left`/
 `size` values: `xs` · `sm` · `default` · `lg` · `icon` · `icon-xs` · `icon-sm` · `icon-lg` ·
 `compact-xs` · `compact-sm` · `compact-default` · `compact-lg` · `compact-icon`.
 
-`appearance` values: `solid` · `outline` · `outline-filled`.
+`appearance` values: `solid` · `outline` · `outline-filled` · `ghost` · `link`.
+
+Prefer a semantic `variant` with an independent `appearance`, for example
+`variant="success" appearance="ghost"` or `variant="danger" appearance="link"`.
+`ghost` is transparent with a subtle tone-colored hover background; `link` is transparent
+with an underline on hover. Both have no border or shadow.
+Legacy `variant="outline"`, `variant="link"`, and `variant="ghost"` remain supported;
+`default` remains an alias for the primary color. The legacy ghost variant retains its
+light-colored hover treatment.
 
 ### `HlmBtn` — `button[hlmBtn], a[hlmBtn]`
 
@@ -278,6 +286,8 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
     <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
       <button hlmButton variant="success" appearance="outline">Outline</button>
       <button hlmButton variant="destructive" appearance="outline-filled">Outline-filled (hover me)</button>
+      <button hlmButton variant="success" appearance="ghost">Ghost</button>
+      <button hlmButton variant="danger" appearance="link">Link appearance</button>
       <button hlmButton size="icon" aria-label="Create">
         <ng-icon hlm name="lucidePlus" />
       </button>
@@ -399,10 +409,71 @@ export class ButtonFormComponent {
 
 ## Theming / CSS variables
 
-Class-based `cva` theming over shadcn tokens; no component-specific CSS variables. Extend with
-`class`, `[spinnerUserClass]` for the loader tint, `setClass()` for imperative tweaks, or reuse
-`buttonVariants()` for custom hosts. Outline math (border/text/hover fills per tone, including
-matching spinner colors) is centralized in the component's private helpers.
+Buttons use shared semantic Tailwind color tokens, so the consumer controls their palette in
+global CSS. Define each tone and its `-foreground` partner: `primary`, `secondary`, `success`,
+`warning`, `danger`, `info`, `light`, `dark`, `accent`, `destructive`, and `muted`. Also provide
+`background` for outline surfaces and `ring` for keyboard focus.
+
+For example, add these mappings to your Tailwind v4 stylesheet (alongside the package source
+scan described in the package README):
+
+```css
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-background: hsl(var(--background));
+  --color-ring: hsl(var(--ring));
+  /* Map the remaining semantic tones in the same way. */
+}
+
+:root {
+  --primary: #228be6;
+  --primary-foreground: #ffffff;
+  --success: #28a745;
+  --success-foreground: #ffffff;
+  --background: 0 0% 100%;
+  --ring: 0 0% 3.9%;
+}
+
+.dark {
+  --primary: #74c0fc;
+  --primary-foreground: #102a43;
+  --success: #75b798;
+  --success-foreground: #0a3622;
+  --background: 0 0% 3.9%;
+  --ring: 0 0% 83.1%;
+}
+
+.brand-theme {
+  --primary: #7950f2;
+  --primary-foreground: #ffffff;
+}
+```
+
+The semantic palette variables above contain complete CSS colors; `background` and `ring`
+use HSL channels with `hsl(...)` mappings. `@theme inline` ensures a `.dark` or `.brand-theme`
+ancestor can override colors for just its subtree. The example app's `src/styles.css` supplies
+the full light/dark palette. Keep the existing `prefix(tw)` import when using the `-tw` package;
+the `@theme` token names stay unprefixed.
+
+```html
+<section class="brand-theme">
+  <button hlmButton variant="primary" appearance="outline">Branded outline</button>
+  <button hlmButton variant="success" appearance="ghost">Save changes</button>
+</section>
+```
+
+Adding a CSS token such as `--color-brand` does **not** register `variant="brand"`;
+variant names remain a fixed typed API. Customize an existing semantic token or supply
+utility classes through `class` instead.
+
+`class` overrides are merged after the variant/appearance styles; `setClass()` appends
+imperative overrides. The loading spinner inherits the button's resolved text color, and
+`spinnerUserClass` can override it. For custom hosts, use
+`hlm(buttonVariants({ variant: 'success', appearance: 'outline' }), customClasses)`;
+the shared variant function includes all appearance styles.
 
 ## Related subpaths
 

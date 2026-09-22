@@ -156,7 +156,7 @@ import { EgLayoutSimple, MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
   standalone: true,
   imports: [EgLayoutSimple, ...HlmButtonImports],
   template: \`
-    <eg-layout-simple [leftMenus]="items">
+    <eg-layout-simple brandName="My workspace" [primaryNavigation]="items">
       <button hlmBtn variant="primary">Click</button>
     </eg-layout-simple>
   \`,

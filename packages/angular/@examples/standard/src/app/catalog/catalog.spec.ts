@@ -87,6 +87,8 @@ describe('catalog registry', () => {
     const flow: CatalogEntry = {
       slug: 'pricing',
       title: 'Pricing',
+      description: 'Compare plans and choose a subscription.',
+      icon: CATALOG_ENTRIES[0].icon,
       category: 'Examples',
       kind: 'example',
       load: () => Promise.resolve(class {}),

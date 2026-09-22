@@ -1,232 +1,260 @@
-<ng-template #menuIconTemplate>
-  <ng-icon [svg]="menuIcon" size="20px" class="tw:[&_svg]:w-[inherit]! tw:[&_svg]:h-[inherit]!" />
-</ng-template>
-
+@if (sidebarEnabled()) {
 <eg-layout-simple-sidebar
+  [panelId]="sidebarId"
   [title]="sidebarTitle()"
   [content]="sidebarContent()"
-  [contentContext]="{ close: closeSidebar.bind(this) }"
+  [contentContext]="sidebarContext"
 />
+}
 
-<div class="tw:flex tw:flex-col tw:min-h-screen">
-  <!-- Header -->
-  <header [class]="_headerClass()">
-    <div class="tw:flex tw:items-center tw:space-x-4">
+<div
+  [class]="hlm('tw:relative tw:isolate tw:flex tw:min-w-0 tw:flex-col tw:bg-background tw:text-foreground', fullHeight() && 'tw:min-h-dvh')"
+>
+  <a
+    [href]="'#' + mainId"
+    (click)="focusContent($event)"
+    class="tw:sr-only tw:focus:not-sr-only tw:focus:absolute tw:focus:left-4 tw:focus:top-2 tw:focus:z-50 tw:focus:rounded-lg tw:focus:bg-background tw:focus:px-4 tw:focus:py-3 tw:focus:text-foreground tw:focus:outline-2 tw:focus:outline-ring"
+    >{{ skipLinkText() }}</a
+  >
+
+  <header [class]="headerClasses()">
+    <div class="tw:flex tw:min-w-0 tw:flex-1 tw:items-center tw:gap-3 tw:md:flex-none tw:md:flex-wrap">
       @if (sidebarEnabled()) {
       <button
-        hlmButton
-        variant="secondary"
-        appearance="outline"
-        size="icon"
-        [icon]="menuIconTemplate"
-        iconPosition="left"
-        class="tw:bg-transparent! tw:border-gray-400! tw:hover:border-gray-500!"
+        type="button"
+        [class]="iconButtonClasses"
         [attr.aria-label]="sidebarToggleLabel()"
         [attr.aria-expanded]="sidebarOpen()"
-        aria-controls="eg-layout-simple-sidebar"
+        [attr.aria-controls]="sidebarId"
         (click)="openSidebar()"
-      ></button>
+      >
+        <ng-icon [svg]="sidebarIcon" size="20px" aria-hidden="true" />
+      </button>
       }
-
-      <div class="logo">
-        <a [routerLink]="logoLink()">
-          <img [src]="logo()" alt="Logo" [class]="_logoClass()" />
-        </a>
-      </div>
-      <!-- Left menus (desktop) -->
-      <nav [class]="_computedLeftClass()">
-        @for (item of leftMenus(); track item.label) { @if (item.link) {
-        <a [routerLink]="item.link" [class]="hlm(_computedLeftLinkClass(), item.class || '')"> {{ item.label }} </a>
-        } @else {
-        <button type="button" (click)="item.action?.()" [class]="hlm(_computedLeftLinkClass(), item.class || '')">
-          {{ item.label }}
+      <a
+        [routerLink]="logoLink()"
+        [attr.aria-label]="brandName() + ' home'"
+        class="tw:flex tw:min-h-11 tw:min-w-0 tw:items-center tw:gap-2.5 tw:rounded-lg tw:pr-2 tw:text-foreground tw:no-underline tw:focus-visible:outline-2 tw:focus-visible:outline-offset-2 tw:focus-visible:outline-ring"
+      >
+        @if (logo()) { <img [src]="logo()" alt="" [class]="logoClasses()" /> }
+        <span class="tw:truncate tw:text-base tw:font-semibold tw:tracking-tight">{{ brandName() }}</span>
+      </a>
+      <nav aria-label="Primary navigation" [class]="primaryNavigationClasses()">
+        @for (item of primaryNavigation(); track $index) {
+        <eg-layout-navigation-item [item]="item" [itemClass]="navigationItemClass()" />
+        } @for (group of navigationGroups(); track $index) {
+        <button
+          type="button"
+          [hlmDropdownMenuTrigger]="groupMenu"
+          class="tw:flex tw:min-h-11 tw:items-center tw:gap-2 tw:rounded-lg tw:px-3 tw:text-sm tw:font-medium tw:cursor-pointer tw:hover:bg-foreground/5 tw:focus-visible:outline-2 tw:focus-visible:outline-ring"
+        >
+          {{ group.label || 'More' }} <ng-icon [svg]="chevronIcon" size="14px" aria-hidden="true" />
         </button>
-        } } @for (group of leftMenuGroups(); track $index) {
-        <div class="tw:relative tw:group">
-          <button
-            type="button"
-            class="tw:text-left tw:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline tw:py-1 tw:flex tw:items-center tw:gap-1"
-          >
-            {{ group.label ?? 'Menu' }}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="tw:h-3 tw:w-3"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          <div
-            class="tw:absolute tw:left-0 tw:top-full tw:mt-1 tw:hidden tw:group-hover:flex tw:flex-col tw:min-w-[12rem] tw:bg-popover tw:text-popover-foreground tw:border tw:border-gray-200 tw:rounded-md tw:shadow-md tw:py-1 tw:z-50"
-          >
-            @if (group.label) {
-            <div class="tw:px-3 tw:py-1 tw:text-xs tw:font-semibold tw:text-muted-foreground">{{ group.label }}</div>
-            } @for (item of group.items; track item.label) { @if (item.link) {
+        <ng-template #groupMenu>
+          <div hlmDropdownMenu class="tw:w-60">
+            @for (item of group.items; track $index) { @if (item.link && !item.disabled) {
             <a
+              hlmDropdownMenuItem
               [routerLink]="item.link"
-              [class]="hlm('tw:px-3 tw:py-1.5 tw:text-sm tw:no-underline tw:hover:bg-secondary tw:cursor-pointer', item.class || '')"
+              routerLinkActive="tw:bg-foreground/10 tw:font-semibold"
+              [routerLinkActiveOptions]="navigationMatchOptions(item)"
+              ariaCurrentWhenActive="page"
+              [class]="hlm('tw:min-h-11 tw:gap-2 tw:no-underline', item.class)"
             >
-              {{ item.label }}
+              @if (item.icon) { <ng-icon [svg]="item.icon" size="1rem" aria-hidden="true" /> } {{ item.label }}
             </a>
             } @else {
             <button
               type="button"
+              hlmDropdownMenuItem
+              [disabled]="item.disabled || !item.action"
+              [class]="hlm('tw:min-h-11 tw:gap-2', item.class)"
               (click)="item.action?.()"
-              [class]="hlm('tw:px-3 tw:py-1.5 tw:text-sm tw:text-left tw:hover:bg-secondary tw:cursor-pointer tw:bg-transparent tw:border-0 tw:w-full', item.class || '')"
             >
-              {{ item.label }}
+              @if (item.icon) { <ng-icon [svg]="item.icon" size="1rem" aria-hidden="true" /> } {{ item.label }}
             </button>
             } }
           </div>
-        </div>
+        </ng-template>
         }
       </nav>
     </div>
 
-    <!-- Right menus (desktop) -->
-    <nav [class]="_computedRightClass()">
-      @if (searchEnabled()) {
-      <eg-generic-autocomplete
-        [loaderFn]="searchLoaderFn()"
-        [transformValueToSearch]="searchTransformValueToSearch()"
-        [placeholderText]="searchPlaceholderText()"
-        [emptyText]="searchEmptyText()"
-        (optionChange)="onSearchOptionChange($event)"
-      ></eg-generic-autocomplete>
-      } @for (item of rightMenus(); track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" [class]="hlm(_computedRightLinkClass(), item.class || '')"> {{ item.label }} </a>
-      } @else {
-      <button type="button" (click)="item.action?.()" [class]="hlm(_computedRightLinkClass(), item.class || '')">
-        {{ item.label }}
-      </button>
-      } } @let uMenus = userMenus(); @if (uMenus && uMenus.length > 0) {
-      <eg-layout-simple-user-menu [menus]="uMenus" [menuTrigger]="userMenuTrigger()" />
+    <div class="tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-3">
+      @if (searchEnabled() && !isMobile()) { <ng-container [ngTemplateOutlet]="searchTemplate" /> } @if
+      (utilityNavigation().length) {
+      <nav aria-label="Utility navigation" [class]="utilityNavigationClasses()">
+        @for (item of utilityNavigation(); track $index) {
+        <eg-layout-navigation-item [item]="item" [itemClass]="navigationItemClass()" />
+        }
+      </nav>
+      } @if (userMenuSections().length) {
+      <eg-layout-simple-user-menu
+        [sections]="userMenuSections()"
+        [triggerTemplate]="userMenuTrigger()"
+        [triggerLabel]="userMenuLabel()"
+      />
       }
-    </nav>
+    </div>
 
-    <!-- Mobile menu button -->
     <button
+      #mobileMenuTrigger
+      type="button"
       (click)="toggleMobileMenu()"
-      class="tw:md:hidden tw:p-2 tw:text-gray-700 tw:hover:text-primary tw:focus:outline-none tw:cursor-pointer"
-      [attr.aria-label]="mobileMenuLabel()"
+      [class]="hlm(iconButtonClasses, 'tw:md:hidden')"
+      [attr.aria-label]="mobileMenuOpen() ? mobileMenuCloseLabel() : mobileMenuLabel()"
       [attr.aria-expanded]="mobileMenuOpen()"
-      aria-controls="eg-layout-simple-mobile-menu"
+      [attr.aria-controls]="mobileMenuId"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="tw:h-6 tw:w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
+      <ng-icon [svg]="mobileMenuOpen() ? closeIcon : menuIcon" size="20px" aria-hidden="true" />
     </button>
   </header>
 
-  @let _topMenus = leftMenus().concat(rightMenus()); @let _userMenus = userMenus(); @let _leftMenuGroups =
-  leftMenuGroups(); @let _topMenuItems = topMenus(); @let _topSecondaryGroups = topSecondaryMenus();
-
-  <!-- Top menus (desktop) -->
-  @if (_topMenuItems.length > 0) {
-  <nav [class]="_computedTopClass()">
-    @for (item of _topMenuItems; track item.label) { @if (item.link) {
-    <a [routerLink]="item.link" [class]="hlm(_computedTopLinkClass(), item.class || '')"> {{ item.label }} </a>
-    } @else {
-    <span [class]="hlm(_computedTopLinkClass(), item.class || '')">{{ item.label }}</span>
-    } }
-  </nav>
-  }
-
-  <!-- Top secondary menus (desktop) — second row showing items grouped by parent label -->
-  @if (_topSecondaryGroups.length > 0) {
-  <nav [class]="_computedTopSecondaryClass()">
-    @for (group of _topSecondaryGroups; track group.label) {
-    <span class="tw:flex tw:flex-wrap tw:items-center tw:gap-x-3">
-      @if (group.label) {
-      <span class="tw:text-xs tw:font-semibold tw:uppercase tw:text-muted-foreground">{{ group.label }}</span>
-      } @for (item of group.items; track item.label) { @if (item.link) {
-      <a
-        [routerLink]="item.link"
-        [class]="hlm(_computedTopLinkClass(), 'tw:text-xs tw:hover:underline', item.class || '')"
-      >
-        {{ item.label }}
-      </a>
-      } @else {
-      <button
-        type="button"
-        (click)="item.action?.()"
-        [class]="hlm(_computedTopLinkClass(), 'tw:text-xs tw:hover:underline', item.class || '')"
-      >
-        {{ item.label }}
-      </button>
-      } }
-    </span>
+  @if (sectionNavigation().length) {
+  <nav aria-label="Section navigation" [class]="sectionNavigationClasses()">
+    @for (item of sectionNavigation(); track $index) {
+    <eg-layout-navigation-item [item]="item" [itemClass]="navigationItemClass()" />
     }
   </nav>
-  }
-
-  <!-- Mobile menu -->
-  @if (isMobile() && mobileMenuOpen()) {
-  <div id="eg-layout-simple-mobile-menu" class="tw:w-full tw:border-none" (keydown.escape)="closeMobileMenu()">
-    @if (_topMenuItems.length > 0) {
-    <eg-layout-simple-mobile-menu-group [items]="_topMenuItems" (itemClick)="closeMobileMenu()" />
-    } @for (group of _topSecondaryGroups; track group.label) { @if (group.items && group.items.length > 0) {
-    <eg-layout-simple-mobile-menu-group
-      [items]="group.items"
-      [label]="group.label"
-      (itemClick)="closeMobileMenu()"
-    ></eg-layout-simple-mobile-menu-group>
-    } }
-
-    <eg-layout-simple-mobile-menu-group [items]="_topMenus" (itemClick)="closeMobileMenu()" />
-
-    @for (group of _leftMenuGroups; track $index) { @if (group.items && group.items.length > 0) {
-    <eg-layout-simple-mobile-menu-group
-      [items]="group.items"
-      [label]="group.label"
-      (itemClick)="closeMobileMenu()"
-    ></eg-layout-simple-mobile-menu-group>
-    } } @if ((_topMenus.length > 0 || _leftMenuGroups.length > 0) && _userMenus.length > 0) {
-    <hr class="tw:border-gray-300 tw:my-2" />
-    } @for (section of userMenus(); track section.label) {
-    <eg-layout-simple-mobile-menu-group
-      [items]="section.items"
-      [label]="section.label"
-      (itemClick)="closeMobileMenu()"
-    ></eg-layout-simple-mobile-menu-group>
-
-    @if (section.separator) {
-    <hr class="tw:border-gray-300 tw:my-2" />
-    } }
-  </div>
-  }
-
-  <!-- Main content -->
-  <main [class]="_contentClass()">
-    @if (!loading()) {
-    <div class="tw:flex tw:items-center tw:justify-center tw:h-full eg-layout-simple-main-content">
-      <ng-content />
+  } @if (flyoutNavigationGroups().length && !isMobile()) {
+  <eg-layout-flyout-navbar
+    class="tw:hidden tw:md:block"
+    [groups]="flyoutNavigationGroups()"
+    [label]="flyoutNavigationLabel()"
+    [closeLabel]="flyoutCloseLabel()"
+    [navbarClass]="flyoutNavigationClass()"
+    [panelClass]="flyoutPanelClass()"
+    [itemClass]="navigationItemClass()"
+  />
+  } @if (secondaryNavigationGroups().length) {
+  <nav aria-label="Secondary navigation" [class]="secondaryNavigationClasses()" tabindex="0">
+    @for (group of secondaryNavigationGroups(); track $index; let first = $first) {
+    <div
+      [class]="hlm('tw:flex tw:shrink-0 tw:items-center tw:gap-1', !first && 'tw:border-l tw:border-border tw:pl-5')"
+    >
+      @if (group.label) {
+      <span class="tw:mr-2 tw:text-xs tw:font-semibold tw:text-foreground/75 tw:whitespace-nowrap"
+        >{{ group.label }}</span
+      >
+      } @for (item of group.items; track $index) {
+      <eg-layout-navigation-item
+        [item]="item"
+        [itemClass]="hlm('tw:rounded-full tw:whitespace-nowrap', navigationItemClass())"
+      />
+      }
     </div>
     }
-    <div [class]="_contentBottomClass()"></div>
+  </nav>
+  } @if (isMobile() && mobileMenuOpen()) {
+  <nav
+    [id]="mobileMenuId"
+    aria-label="Mobile navigation"
+    (keydown.escape)="closeMobileMenu(true); $event.stopPropagation()"
+    class="tw:md:hidden tw:max-h-[70dvh] tw:overflow-y-auto tw:overscroll-contain tw:space-y-4 tw:border-b tw:border-border tw:bg-background tw:p-4"
+  >
+    @if (searchEnabled()) { <ng-container [ngTemplateOutlet]="searchTemplate" /> }
+    <eg-layout-simple-mobile-menu-group [items]="primaryNavigation()" (itemSelected)="closeMobileMenu(true)" />
+    @for (group of navigationGroups(); track $index) {
+    <eg-layout-simple-mobile-menu-group
+      [items]="group.items"
+      [label]="group.label"
+      (itemSelected)="closeMobileMenu(true)"
+    />
+    }
+    <eg-layout-simple-mobile-menu-group [items]="sectionNavigation()" (itemSelected)="closeMobileMenu(true)" />
+    @for (group of flyoutNavigationGroups(); track $index) {
+    <details class="tw:group/flyout tw:rounded-xl tw:border tw:border-border tw:bg-foreground/3">
+      <summary
+        class="tw:flex tw:min-h-11 tw:list-none tw:items-center tw:justify-between tw:gap-2 tw:rounded-xl tw:px-3 tw:py-3 tw:text-sm tw:font-semibold tw:cursor-pointer tw:focus-visible:outline-2 tw:focus-visible:outline-ring tw:[&::-webkit-details-marker]:hidden"
+      >
+        <span class="tw:flex tw:items-center tw:gap-2">
+          @if (group.icon) { <ng-icon [svg]="group.icon" size="1rem" aria-hidden="true" /> } {{ group.label }}
+        </span>
+        <ng-icon
+          [svg]="chevronIcon"
+          size="14px"
+          aria-hidden="true"
+          class="tw:shrink-0 tw:group-open/flyout:rotate-180"
+        />
+      </summary>
+      <div class="tw:space-y-2 tw:border-t tw:border-border tw:p-2">
+        @if (group.description) {
+        <p class="tw:px-3 tw:py-2 tw:text-sm tw:text-foreground/75">{{ group.description }}</p>
+        } @for (item of group.items; track $index) {
+        <eg-layout-navigation-item
+          [item]="item"
+          appearance="card"
+          [itemClass]="navigationItemClass()"
+          (selected)="closeMobileMenu(true)"
+        />
+        }
+      </div>
+    </details>
+    } @for (group of secondaryNavigationGroups(); track $index) {
+    <eg-layout-simple-mobile-menu-group
+      [items]="group.items"
+      [label]="group.label"
+      (itemSelected)="closeMobileMenu(true)"
+    />
+    }
+    <eg-layout-simple-mobile-menu-group [items]="utilityNavigation()" (itemSelected)="closeMobileMenu(true)" />
+    @if (userMenuSections().length) {
+    <div class="tw:space-y-4 tw:border-t tw:border-border tw:pt-4">
+      @for (section of userMenuSections(); track $index) {
+      <eg-layout-simple-mobile-menu-group
+        [items]="section.items"
+        [label]="section.label"
+        (itemSelected)="closeMobileMenu(true)"
+      />
+      }
+    </div>
+    }
+  </nav>
+  }
+
+  <main #mainContent [id]="mainId" tabindex="-1" [attr.aria-busy]="loading()" [class]="contentClasses()">
+    @if (loading()) {
+    <div
+      role="status"
+      class="tw:flex tw:min-h-48 tw:flex-1 tw:items-center tw:justify-center tw:gap-3 tw:text-sm tw:text-foreground/75"
+    >
+      <span
+        aria-hidden="true"
+        class="tw:size-5 tw:rounded-full tw:border-2 tw:border-border tw:border-t-foreground tw:motion-safe:animate-spin"
+      ></span>
+      {{ loadingText() }}
+    </div>
+    }
+    <div
+      [hidden]="loading()"
+      [style.display]="loading() ? 'none' : null"
+      class="tw:w-full tw:min-w-0 eg-layout-simple-main-content"
+    >
+      <ng-content />
+    </div>
   </main>
 
   @if (footerEnabled()) {
-  <footer [class]="_footerClass()">
-    <nav [class]="_computedFooterMenuClass()">
-      @for (item of footerMenus(); track item.label) { @if (item.link) {
-      <a [routerLink]="item.link" [class]="hlm(_computedFooterLinkClass(), item.class || '')"> {{ item.label }} </a>
-      } @else {
-      <button type="button" (click)="item.action?.()" [class]="hlm(_computedFooterLinkClass(), item.class || '')">
-        {{ item.label }}
-      </button>
-      } }
+  <footer [class]="footerClasses()">
+    @if (footerText()) {
+    <p>{{ footerText() }}</p>
+    } @if (footerNavigation().length) {
+    <nav aria-label="Footer navigation" class="tw:flex tw:flex-wrap tw:items-center tw:gap-1">
+      @for (item of footerNavigation(); track $index) { <eg-layout-navigation-item [item]="item" /> }
     </nav>
-
-    <div class="tw:mt-2 tw:text-center">{{ footerContent() }}</div>
+    }
   </footer>
   }
 </div>
+
+<ng-template #searchTemplate>
+  <eg-layout-search
+    [loader]="searchLoader()"
+    [resultLabel]="searchResultLabel()"
+    [placeholder]="searchPlaceholder()"
+    [emptyText]="searchEmptyText()"
+    [errorText]="searchErrorText()"
+    [resultTemplate]="searchResultTemplate()"
+    (resultSelected)="selectSearchResult($event)"
+  />
+</ng-template>

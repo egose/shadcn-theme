@@ -1,8 +1,8 @@
-import { Component, input, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { provideIcons } from '@ng-icons/core';
 import { lucideUser } from '@ng-icons/lucide';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 import {
@@ -14,25 +14,21 @@ import {
   HlmDropdownMenuTrigger,
 } from '@egose/shadcn-theme-ng/dropdown-menu';
 import { NgIcon } from '@ng-icons/core';
+import { navigationMatchOptions, type MenuItem } from './navigation';
 
 // Interface for menu items
-export interface UserMenuItem {
-  label: string;
-  icon?: string;
-  action?: () => void;
-  link?: string;
-  class?: string;
-}
+export type UserMenuItem = MenuItem;
 
 // Interface for menu sections
 export interface UserMenuSection {
   label?: string;
   separator?: boolean;
-  items?: UserMenuItem[];
+  items?: readonly UserMenuItem[];
 }
 
 @Component({
   selector: 'eg-layout-simple-user-menu',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     HlmDropdownMenu,
@@ -44,6 +40,7 @@ export interface UserMenuSection {
     HlmButton,
     NgIcon,
     RouterLink,
+    RouterLinkActive,
   ],
   providers: [
     provideIcons({
@@ -52,49 +49,57 @@ export interface UserMenuSection {
   ],
   template: `
     <ng-template #iconTemplate>
-      <ng-icon [svg]="lucideUser" size="1.5rem" class="tw:[&_svg]:w-[inherit]! tw:[&_svg]:h-[inherit]!" />
+      <ng-icon [svg]="userIcon" size="1.25rem" aria-hidden="true" />
     </ng-template>
 
-    @let _menuTrigger = menuTrigger();
+    @let customTrigger = triggerTemplate();
 
     <div class="tw:flex tw:w-full tw:items-center tw:justify-center">
-      @if (_menuTrigger) {
+      @if (customTrigger) {
         <button
           type="button"
           [hlmDropdownMenuTrigger]="menu"
-          class="tw:cursor-pointer tw:bg-transparent tw:border-0 tw:p-0"
+          [attr.aria-label]="triggerLabel()"
+          class="tw:min-h-11 tw:min-w-11 tw:rounded-full tw:cursor-pointer tw:bg-transparent tw:border-0 tw:p-0 tw:focus-visible:outline-2 tw:focus-visible:outline-offset-2 tw:focus-visible:outline-ring"
         >
-          <ng-container *ngTemplateOutlet="_menuTrigger" />
+          <ng-container *ngTemplateOutlet="customTrigger" />
         </button>
       } @else {
         <button
           hlmButton
-          variant="primary"
+          type="button"
+          variant="secondary"
+          appearance="outline"
           size="icon"
           [hlmDropdownMenuTrigger]="menu"
           [icon]="iconTemplate"
-          class="tw:rounded-full tw:border tw:border-gray-400"
+          [attr.aria-label]="triggerLabel()"
+          class="tw:size-11 tw:rounded-full tw:border tw:border-border tw:text-foreground"
         ></button>
       }
 
       <ng-template #menu>
         <div hlmDropdownMenu class="tw:w-56">
-          @for (section of menus(); track section) {
+          @for (section of sections(); track $index) {
             @if (section.label) {
               <div hlmDropdownMenuLabel>{{ section.label }}</div>
             }
             @if (section.items?.length) {
               <div hlmDropdownMenuGroup>
                 @for (item of section.items; track item) {
-                  @if (item.link) {
+                  @if (item.link && !item.disabled) {
                     <a
                       hlmDropdownMenuItem
                       [routerLink]="item.link"
-                      [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                      routerLinkActive="tw:bg-foreground/10 tw:font-semibold"
+                      [routerLinkActiveOptions]="navigationMatchOptions(item)"
+                      ariaCurrentWhenActive="page"
+                      [class]="hlm('tw:min-h-11 tw:cursor-pointer tw:no-underline', item.class)"
                     >
                       @if (item.icon) {
                         <ng-icon
                           [svg]="item.icon"
+                          aria-hidden="true"
                           size="1rem"
                           [class]="
                             hlm(
@@ -109,12 +114,15 @@ export interface UserMenuSection {
                   } @else {
                     <button
                       hlmDropdownMenuItem
+                      type="button"
+                      [disabled]="item.disabled || !item.action"
                       (click)="item.action?.()"
-                      [class]="hlm('tw:cursor-pointer tw:no-underline', item.class)"
+                      [class]="hlm('tw:min-h-11 tw:cursor-pointer tw:no-underline', item.class)"
                     >
                       @if (item.icon) {
                         <ng-icon
                           [svg]="item.icon"
+                          aria-hidden="true"
                           size="1rem"
                           [class]="
                             hlm(
@@ -140,9 +148,11 @@ export interface UserMenuSection {
   `,
 })
 export class EgLayoutSimpleUserMenu {
-  hlm = hlm;
-  lucideUser = lucideUser;
+  protected readonly hlm = hlm;
+  protected readonly navigationMatchOptions = navigationMatchOptions;
+  protected readonly userIcon = lucideUser;
 
-  menus = input<UserMenuSection[]>([]);
-  menuTrigger = input<TemplateRef<unknown> | undefined>();
+  readonly sections = input<readonly UserMenuSection[]>([]);
+  readonly triggerTemplate = input<TemplateRef<unknown>>();
+  readonly triggerLabel = input('Open account menu');
 }

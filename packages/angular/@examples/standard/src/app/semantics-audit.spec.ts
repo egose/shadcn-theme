@@ -628,13 +628,13 @@ describe('ANGEX-06 semantics audit', () => {
       app.openRepository();
       expect(openSpy).toHaveBeenCalledWith('https://github.com/egose/shadcn-theme', '_blank', 'noopener');
 
-      const sections = app.menus;
-      const github = sections.flatMap((section) => section.items).find((item) => item.label === 'GitHub');
+      const sections = app.userMenuSections;
+      const github = sections.flatMap((section) => section.items ?? []).find((item) => item.label === 'GitHub');
       expect(typeof github?.action)
         .withContext('GitHub keeps an external action')
         .toBe('function');
       const linked = sections
-        .flatMap((section) => section.items)
+        .flatMap((section) => section.items ?? [])
         .filter((item) => item.link)
         .map((item) => item.link as string);
       expect(linked.length).toBeGreaterThan(0);

@@ -2,11 +2,13 @@ import { Routes } from '@angular/router';
 import { catalogChildRoutes } from './catalog/catalog';
 import { ComponentsLayout } from './pages/components/components';
 import { ExamplesLayout } from './pages/examples/examples';
+import { HomePage } from './pages/home/home';
 import { NotFoundPage } from './pages/not-found/not-found';
 
 // Child routes, menu groups, and search options are all derived from the
 // typed registry in `catalog/catalog.ts`; do not hand-maintain path lists here.
 export const routes: Routes = [
+  { path: 'home', component: HomePage },
   {
     path: 'components',
     component: ComponentsLayout,
@@ -29,7 +31,7 @@ export const routes: Routes = [
       { path: '**', component: NotFoundPage },
     ],
   },
-  { path: '', redirectTo: 'components/button', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   // Intentional root wildcard for any other unknown URL.
   { path: '**', component: NotFoundPage },
 ];

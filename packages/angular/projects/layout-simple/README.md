@@ -1,217 +1,10 @@
-# Layout Simple (`@egose/shadcn-theme-ng/layout-simple`)
+# Simple application layout
 
-Application shell (header / nav rows / mobile menu / sidebar sheet / main / footer) plus its building blocks. This is an egose-specific composition — not a one-to-one shadcn/ui port — assembled from this library's own primitives (`button`, `dropdown-menu`, `sheet`, `popover`, `input`) plus Angular CDK `BreakpointObserver` and Angular Router links. It gives you a responsive top-bar layout with desktop nav rows, a hamburger-driven mobile menu below the `md` breakpoint, an optional sidebar sheet, header search autocomplete, a user dropdown menu, and a footer.
+A responsive Angular shell with branded header, keyboard-accessible navigation, async page search, optional sidebar, and footer. Colors use the consumer's `background`, `foreground`, `border`, and `ring` theme tokens. Navigation has visible active and focus states, and controls have 44px minimum touch targets.
 
-Ships as `@egose/shadcn-theme-ng/layout-simple` and `@egose/shadcn-theme-ng-tw/layout-simple` (tw: variant). See the [package README](../../README.md) for installation, peer dependencies, Tailwind setup, and testing. Do not publish this project directory independently.
+Import standalone components from `@egose/shadcn-theme-ng/layout-simple`, or `@egose/shadcn-theme-ng-tw/layout-simple` for Tailwind's `tw:` prefix. See the [package README](../../README.md) for installation and styling setup. Configure Angular Router (`provideRouter`) before using the shell.
 
-## Installation
-
-```bash
-# Plain Tailwind (no prefix):
-npm install @egose/shadcn-theme-ng
-
-# Or the tw:-prefixed variant:
-npm install @egose/shadcn-theme-ng-tw
-```
-
-Peer dependencies are inherited from the package root (see [package README](../../README.md)). This subpath itself declares `@angular/common`, `@angular/core` as peers plus a `tslib` runtime dependency; at runtime it also imports `@egose/shadcn-theme-ng/button`, `.../dropdown-menu`, `.../sheet`, `.../popover`, `.../input`, `@spartan-ng/brain/sheet`, `@angular/cdk/layout`, and `@angular/router`, so install the package (which carries those sibling subpaths) and keep `RouterModule` available in your app. No extra install step is needed beyond the package install above.
-
-## Imports
-
-Real exported symbols (from `src/public-api.ts` → `lib/layout`, `lib/user-menu`, `lib/search`):
-
-```ts
-import {
-  // layout.ts
-  EgLayoutSimple, // component: eg-layout-simple
-  MenuItem, // interface { label, icon?, link?, action?, class? }
-  MenuGroup, // interface { label?, items: MenuItem[] }
-  EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT, // '(max-width: 767.98px)'
-  // user-menu.ts
-  EgLayoutSimpleUserMenu, // component: eg-layout-simple-user-menu
-  UserMenuItem, // interface { label, icon?, action?, link?, class? }
-  UserMenuSection, // interface { label?, separator?, items?: UserMenuItem[] }
-  // search.ts
-  EgGenericAutocomplete, // component: eg-generic-autocomplete
-  AutocompleteOption, // interface { label, value, raw? }
-} from '@egose/shadcn-theme-ng/layout-simple';
-```
-
-> Surprise: unlike most subpaths, `layout-simple` exposes **no `*Imports` array and no `*Module`**. Import the standalone component classes directly.
->
-> Note: `EgLayoutSimpleSidebar` (`eg-layout-simple-sidebar`) and `EgLayoutSimpleMobileMenuGroup` (`eg-layout-simple-mobile-menu-group`) exist in `src/lib/` but are **not** re-exported from `src/public-api.ts` (which only exports `lib/layout`, `lib/user-menu`, `lib/search`), so they are internal building blocks used _through_ `EgLayoutSimple` — not importable from `@egose/shadcn-theme-ng/layout-simple`.
-
-Standalone usage:
-
-```ts
-import { Component } from '@angular/core';
-import { EgLayoutSimple, type MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
-
-@Component({
-  selector: 'app-shell',
-  standalone: true,
-  imports: [EgLayoutSimple],
-  template: `
-    <eg-layout-simple [leftMenus]="items">
-      <p>Page content</p>
-    </eg-layout-simple>
-  `,
-})
-export class ShellComponent {
-  readonly items: MenuItem[] = [{ label: 'Home', link: '/' }];
-}
-```
-
-For the `tw:` build, swap the specifier to `@egose/shadcn-theme-ng-tw/layout-simple`. Symbol names are identical.
-
-## Anatomy / Structure
-
-```html
-<eg-layout-simple
-  [leftMenus]="leftMenus"
-  [leftMenuGroups]="leftMenuGroups"
-  [rightMenus]="rightMenus"
-  [topMenus]="topMenus"
-  [topSecondaryMenus]="topSecondaryMenus"
-  [userMenus]="userMenus"
-  [sidebarEnabled]="true"
-  [searchEnabled]="true"
-  [footerEnabled]="true"
->
-  <!-- projected page content -->
-  <router-outlet />
-</eg-layout-simple>
-
-<!-- building blocks used THROUGH eg-layout-simple (EgLayoutSimpleUserMenu and EgGenericAutocomplete are also importable directly; the sidebar and mobile-menu-group are internal) -->
-<eg-layout-simple-user-menu [menus]="userMenus" [menuTrigger]="triggerTpl" />
-<eg-generic-autocomplete [loaderFn]="loader" [transformValueToSearch]="toLabel" (optionChange)="onPick($event)" />
-```
-
-| Class                                                    | Selector                             | Role                                                                                                                                             |
-| -------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `EgLayoutSimple`                                         | `eg-layout-simple`                   | Full shell: header (logo, left/right nav, search, user menu, mobile trigger), desktop top rows, mobile menu, `<main>` content projection, footer |
-| `EgLayoutSimpleSidebar` (internal, not exported)         | `eg-layout-simple-sidebar`           | Sheet-based sidebar (`hlm-sheet`, `BrnSheet`); opened via shell's sidebar trigger                                                                |
-| `EgLayoutSimpleUserMenu`                                 | `eg-layout-simple-user-menu`         | Avatar/dropdown user menu built on `hlmDropdownMenu`                                                                                             |
-| `EgGenericAutocomplete`                                  | `eg-generic-autocomplete`            | Header search: popover + input + async option list                                                                                               |
-| `EgLayoutSimpleMobileMenuGroup` (internal, not exported) | `eg-layout-simple-mobile-menu-group` | One labeled group inside the mobile menu                                                                                                         |
-
-Single viewport contract: below Tailwind's `md` (768px) breakpoint — `EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT = '(max-width: 767.98px)'` — the hamburger trigger replaces all desktop nav rows. Both the CSS (`tw:hidden tw:md:flex`) and the runtime `isMobile()` signal derive from this one boundary, and an open mobile menu auto-closes when crossing back to desktop.
-
-## API reference
-
-### `MenuItem` / `MenuGroup` interfaces
-
-| Field             | Type                    | Notes                                                                                                   |
-| ----------------- | ----------------------- | ------------------------------------------------------------------------------------------------------- |
-| `MenuItem.label`  | `string` (required)     | Item text; also used as `@for` track key                                                                |
-| `MenuItem.icon`   | `string` (optional)     | `ng-icon` svg payload                                                                                   |
-| `MenuItem.link`   | `string` (optional)     | Router link; when set the item renders as `<a [routerLink]>`, otherwise as `<button>` invoking `action` |
-| `MenuItem.action` | `() => void` (optional) | Click handler for non-link items                                                                        |
-| `MenuItem.class`  | `string` (optional)     | Per-item extra classes merged via `hlm()`                                                               |
-| `MenuGroup.label` | `string` (optional)     | Group heading; falls back to `'Menu'` for desktop dropdown triggers                                     |
-| `MenuGroup.items` | `MenuItem[]` (required) | Group children                                                                                          |
-
-### `EgLayoutSimple` (`eg-layout-simple`, generic `<TItem, TParams extends object = { search: string }>`)
-
-Inputs (all `input()` signals):
-
-| Input                                       | Type / Default                          | Notes                                                                       |
-| ------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------- |
-| `sidebarEnabled`                            | `boolean`, `false`                      | Shows the sidebar sheet trigger                                             |
-| `sidebarTitle`                              | `string`, `'Menu'`                      | Sheet title                                                                 |
-| `sidebarContent`                            | `TemplateRef \| undefined`              | Sheet body; context provides `{ close }`                                    |
-| `sidebarToggleLabel`                        | `string`, `'Open navigation sidebar'`   | `aria-label` of the sidebar trigger                                         |
-| `mobileMenuLabel`                           | `string`, `'Open navigation menu'`      | `aria-label` of the hamburger trigger                                       |
-| `userMenuTrigger`                           | `TemplateRef \| undefined`              | Custom user-menu trigger; default is a round avatar button                  |
-| `leftMenus`                                 | `MenuItem[]`, `[]`                      | Desktop header-left links                                                   |
-| `leftMenuGroups`                            | `MenuGroup[]`, `[]`                     | Desktop header-left hover dropdown groups                                   |
-| `rightMenus`                                | `MenuItem[]`, `[]`                      | Desktop header-right links                                                  |
-| `topMenus`                                  | `MenuItem[]`, `[]`                      | Desktop second-row nav (spans left+right on mobile)                         |
-| `topSecondaryMenus`                         | `MenuGroup[]`, `[]`                     | Desktop third-row grouped nav                                               |
-| `userMenus`                                 | `UserMenuSection[]`, `[]`               | User dropdown sections (also flattened into the mobile menu)                |
-| `logo`                                      | `string`, `'assets/logo.png'`           | Logo `img src`                                                              |
-| `logoLink`                                  | `string`, `'/'`                         | Logo router link                                                            |
-| `logoClass` (`logoClass`)                   | `ClassValue`, `''`                      | Merged over base `tw:h-10`                                                  |
-| `headerClass` (`headerClass`)               | `ClassValue`, `''`                      | Merged over header bar classes                                              |
-| `contentClass` (`contentClass`)             | `ClassValue`, `''`                      | Merged over `tw:p-4 tw:flex tw:flex-col tw:flex-1`                          |
-| `contentBottomClass` (`contentBottomClass`) | `ClassValue`, `''`                      | Merged over `tw:flex-1` spacer                                              |
-| `leftMenuClass` (alias `leftClass`)         | `ClassValue`, `''`                      | Header-left `<nav>` container                                               |
-| `rightMenuClass` (alias `rightClass`)       | `ClassValue`, `''`                      | Header-right `<nav>` container                                              |
-| `topMenuClass` (alias `topClass`)           | `ClassValue`, `''`                      | Both top-row containers (secondary row reuses this input)                   |
-| `leftLinkClass`                             | `ClassValue`, `''`                      | Header-left link/button                                                     |
-| `rightLinkClass`                            | `ClassValue`, `''`                      | Header-right link/button                                                    |
-| `topLinkClass`                              | `ClassValue`, `''`                      | Top-row link/button                                                         |
-| `searchEnabled`                             | `boolean`, `false`                      | Shows `eg-generic-autocomplete` in the header                               |
-| `loading`                                   | `boolean`, `false`                      | When `true`, `<ng-content>` is hidden (skeleton/spinner state owned by you) |
-| `searchPlaceholderText`                     | `string`, `'Select an page'`            | Passed through as `placeholderText` (note upstream default typo "an page")  |
-| `searchEmptyText`                           | `string`, `'No pages found'`            | Passed through as `emptyText`                                               |
-| `searchOptionTemplate`                      | `TemplateRef \| undefined`              | Accepted but currently unused by the template                               |
-| `searchLoaderFn`                            | `(params: TParams) => Promise<TItem[]>` | Passed through as `loaderFn`                                                |
-| `searchTransformValueToSearch`              | `(value: TItem) => string`              | Passed through as `transformValueToSearch`                                  |
-| `footerEnabled`                             | `boolean`, `false`                      | Shows the footer                                                            |
-| `footerMenus`                               | `MenuItem[]`, `[]`                      | Footer links                                                                |
-| `footerMenuClass`                           | `ClassValue`, `''`                      | Footer `<nav>` container                                                    |
-| `footerLinkClass`                           | `ClassValue`, `''`                      | Footer link/button                                                          |
-| `footerContent`                             | `string`, `'© 2024 My Company'`        | Centered footer line                                                        |
-| `footerClass`                               | `ClassValue`, `''`                      | Footer container                                                            |
-
-Outputs / state / methods:
-
-| Member                             | Kind                                | Notes                                                                                      |
-| ---------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------ |
-| `searchOptionChange`               | `output<TItem>()`                   | Re-emits the autocomplete's `optionChange`                                                 |
-| `isMobile`                         | `signal<boolean>` (public, mutable) | Set by `BreakpointObserver`; mobile menu renders only when `true`                          |
-| `toggleMobileMenu()`               | method                              | Flips the mobile menu                                                                      |
-| `closeMobileMenu()`                | method                              | Closes the mobile menu (also wired to `Escape` and every mobile item click)                |
-| `onSearchOptionChange(value)`      | method                              | Forwards to `searchOptionChange`; wire `(optionChange)` through it when composing manually |
-| `openSidebar()` / `closeSidebar()` | methods                             | Delegate to the `EgLayoutSimpleSidebar` view child                                         |
-| `viewchildSheetRef`                | `viewChild(EgLayoutSimpleSidebar)`  | The sidebar instance; `sidebarOpen` (protected signal) mirrors its `BrnSheet` state        |
-
-### `EgLayoutSimpleUserMenu` (`eg-layout-simple-user-menu`)
-
-| Input         | Type / Default             | Notes                                                                                                                                                                         |
-| ------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `menus`       | `UserMenuSection[]`, `[]`  | Sections; each renders an optional `hlmDropdownMenuLabel`, a `hlmDropdownMenuGroup` of link/button items, and an optional `hlmDropdownMenuSeparator` when `separator` is true |
-| `menuTrigger` | `TemplateRef \| undefined` | Custom trigger; default is a round `hlmButton` avatar with `lucideUser`                                                                                                       |
-
-`UserMenuSection = { label?: string; separator?: boolean; items?: UserMenuItem[] }`; `UserMenuItem = { label: string; icon?: string; action?: () => void; link?: string; class?: string }`.
-
-### `EgGenericAutocomplete` (`eg-generic-autocomplete`, generic `<TItem, TParams extends object = { search: string }>`)
-
-| Member                   | Kind   | Type / Default                                                                   | Notes                                                                                                                                                                |
-| ------------------------ | ------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `placeholderText`        | input  | `string`, `'Select an option'`                                                   | Trigger + input placeholder                                                                                                                                          |
-| `emptyText`              | input  | `string`, `'No options found'`                                                   | Empty-list text                                                                                                                                                      |
-| `loaderFn`               | input  | `((params: TParams) => Promise<TItem[]>) \| undefined`, default `async () => []` | Called once in the constructor with `{ search: '' }`; result cached into `options`. Typing filters client-side only — the loader is **not** re-invoked per keystroke |
-| `transformValueToSearch` | input  | `((value: TItem) => string) \| undefined`, default `String(value)`               | Maps an item to its searchable/display label                                                                                                                         |
-| `search`                 | signal | `string`                                                                         | Current filter text (`ngModel`-bound)                                                                                                                                |
-| `options`                | signal | `TItem[]`                                                                        | Loader result                                                                                                                                                        |
-| `optionChange`           | output | `TItem`                                                                          | Emitted by `select()`; clears `search`                                                                                                                               |
-| `select(opt)`            | method |                                                                                  | Emits `optionChange` and resets `search`                                                                                                                             |
-
-### `EgLayoutSimpleSidebar` (`eg-layout-simple-sidebar`, internal — not exported, used through `EgLayoutSimple`)
-
-| Member                         | Kind                  | Type / Default                                                          | Notes                                                  |
-| ------------------------------ | --------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------ |
-| `side`                         | input                 | `'top' \| 'bottom' \| 'left' \| 'right' \| undefined`, default `'left'` | Forwarded to `hlm-sheet` (`[side]="side() ?? 'left'"`) |
-| `title`                        | input                 | `string \| undefined`, `''`                                             | `hlmSheetTitle`; hidden when falsy                     |
-| `content`                      | input                 | `TemplateRef \| undefined`                                              | Body; rendered with `contentContext()`                 |
-| `contentContext`               | input                 | `object \| null`, `null`                                                | Template context (shell passes `{ close }`)            |
-| `viewchildSheetRef`            | `viewChild(BrnSheet)` |                                                                         | Underlying brain sheet                                 |
-| `openSheet()` / `closeSheet()` | methods               |                                                                         | `open()` / `close()` on the brain sheet                |
-
-### `EgLayoutSimpleMobileMenuGroup` (`eg-layout-simple-mobile-menu-group`, internal — not exported, used through `EgLayoutSimple`)
-
-| Member              | Kind   | Type / Default              | Notes                                 |
-| ------------------- | ------ | --------------------------- | ------------------------------------- |
-| `label`             | input  | `string \| undefined`, `''` | Section heading; hidden when falsy    |
-| `items`             | input  | `MenuItem[] \| undefined`   | Nothing renders when empty            |
-| `itemClick`         | output | `MenuItem`                  | Emitted after `item.action?.()` runs  |
-| `handleClick(item)` | method |                             | Runs `action`, then emits `itemClick` |
-
-## Examples
-
-### 1. Minimal shell with router outlet
+## Basic usage
 
 ```ts
 import { Component } from '@angular/core';
@@ -219,280 +12,183 @@ import { RouterOutlet } from '@angular/router';
 import { EgLayoutSimple, type MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
 
 @Component({
-  selector: 'app-shell',
-  standalone: true,
   imports: [EgLayoutSimple, RouterOutlet],
   template: `
-    <eg-layout-simple [leftMenus]="leftMenus" [rightMenus]="rightMenus">
+    <eg-layout-simple
+      brandName="Acme workspace"
+      [primaryNavigation]="navigation"
+      [footerEnabled]="true"
+      footerText="Acme workspace"
+    >
       <router-outlet />
     </eg-layout-simple>
   `,
 })
-export class ShellComponent {
-  readonly leftMenus: MenuItem[] = [
-    { label: 'Dashboard', link: '/' },
-    { label: 'Orders', link: '/orders' },
-  ];
-  readonly rightMenus: MenuItem[] = [{ label: 'Docs', link: '/docs' }];
-}
-```
-
-### 2. Dropdown groups, top rows, footer
-
-```ts
-import { Component } from '@angular/core';
-import { EgLayoutSimple, type MenuItem, type MenuGroup } from '@egose/shadcn-theme-ng/layout-simple';
-
-@Component({
-  selector: 'app-shell-full',
-  standalone: true,
-  imports: [EgLayoutSimple],
-  template: `
-    <eg-layout-simple
-      [leftMenus]="leftMenus"
-      [leftMenuGroups]="leftGroups"
-      [topMenus]="topMenus"
-      [topSecondaryMenus]="topSecondary"
-      [footerEnabled]="true"
-      [footerMenus]="footerMenus"
-      footerContent="© 2026 Acme Inc."
-    >
-      <h1 class="tw:text-xl tw:font-semibold">Page content</h1>
-    </eg-layout-simple>
-  `,
-})
-export class ShellFullComponent {
-  readonly leftMenus: MenuItem[] = [{ label: 'Home', link: '/' }];
-  readonly leftGroups: MenuGroup[] = [
-    {
-      label: 'Products',
-      items: [
-        { label: 'Overview', link: '/products' },
-        { label: 'Pricing', link: '/pricing' },
-        { label: 'Changelog', action: () => console.log('changelog') },
-      ],
-    },
-  ];
-  readonly topMenus: MenuItem[] = [
-    { label: 'Announcements', link: '/announcements' },
-    { label: 'Status', link: '/status' },
-  ];
-  readonly topSecondary: MenuGroup[] = [
-    {
-      label: 'Guides',
-      items: [
-        { label: 'Quickstart', link: '/guides/quickstart' },
-        { label: 'Migration', link: '/guides/migration' },
-      ],
-    },
-  ];
-  readonly footerMenus: MenuItem[] = [
-    { label: 'Privacy', link: '/privacy' },
-    { label: 'Terms', link: '/terms' },
+export class App {
+  readonly navigation: MenuItem[] = [
+    { label: 'Home', link: '/' },
+    { label: 'Projects', link: '/projects', activeMatch: 'prefix' },
+    { label: 'Reports', disabled: true },
   ];
 }
 ```
 
-### 3. Sidebar sheet with custom content
+## Navigation model
 
-```ts
-import { Component, TemplateRef, viewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { EgLayoutSimple, type MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
+`MenuItem` is shared by every navigation surface, including `UserMenuItem`:
 
-@Component({
-  selector: 'app-shell-sidebar',
-  standalone: true,
-  imports: [EgLayoutSimple, RouterLink],
-  template: `
-    <ng-template #sidebarBody let-close="close">
-      <nav class="tw:flex tw:flex-col tw:gap-1 tw:p-4">
-        <a routerLink="/" (click)="close()" class="tw:px-2 tw:py-1.5 tw:text-sm">Home</a>
-        <a routerLink="/settings" (click)="close()" class="tw:px-2 tw:py-1.5 tw:text-sm">Settings</a>
-        <button type="button" (click)="close()" class="tw:px-2 tw:py-1.5 tw:text-sm tw:text-left">Close</button>
-      </nav>
-    </ng-template>
+| Field                               | Meaning                                                           |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| `label: string`                     | Visible link/action text                                          |
+| `description?: string`              | Supporting text in desktop and mobile fly-out cards               |
+| `link?: string`                     | Internal router URL; takes precedence over `action`               |
+| `action?: () => void`               | Button callback when there is no link                             |
+| `icon?: string`                     | SVG data such as `lucideHome` from `@ng-icons/lucide`             |
+| `activeMatch?: 'exact' \| 'prefix'` | Exact path by default; query parameters and fragments are ignored |
+| `disabled?: boolean`                | Prevents navigation and activation                                |
+| `class?: string`                    | Per-item classes                                                  |
 
-    <eg-layout-simple
-      [sidebarEnabled]="true"
-      sidebarTitle="Navigation"
-      [sidebarContent]="sidebarBody"
-      [leftMenus]="leftMenus"
-    >
-      <p>Content beside a sheet sidebar.</p>
-    </eg-layout-simple>
-  `,
-})
-export class ShellSidebarComponent {
-  readonly leftMenus: MenuItem[] = [{ label: 'Home', link: '/' }];
-}
-```
+An item without a link or action renders as disabled. `MenuGroup` contains an optional `label` and required readonly `items`. `UserMenuSection` has optional `label`, `items`, and `separator` (a desktop dropdown separator).
 
-Programmatic control via the view child:
+### Shell inputs
 
-```ts
-import { Component, viewChild } from '@angular/core';
-import { EgLayoutSimple } from '@egose/shadcn-theme-ng/layout-simple';
+| Input                                               | Default / purpose                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------- |
+| `primaryNavigation`                                 | `[]`; main header destinations                                            |
+| `navigationGroups`                                  | `[]`; header dropdown groups, operated by click or keyboard               |
+| `utilityNavigation`                                 | `[]`; header utility actions                                              |
+| `sectionNavigation`                                 | `[]`; navigation row below the header                                     |
+| `secondaryNavigationGroups`                         | `[]`; horizontally scrollable grouped navigation                          |
+| `flyoutNavigationGroups`                            | `[]`; category navbar with wide card panels; `readonly FlyoutMenuGroup[]` |
+| `flyoutNavigationLabel` / `flyoutCloseLabel`        | `'Fly-out navigation'` / `'Close navigation panel'`; accessible labels    |
+| `userMenuSections`                                  | `[]`; desktop account dropdown and mobile account section                 |
+| `brandName`                                         | `'Workspace'`; visible name and accessible home-link label                |
+| `logo` / `logoLink`                                 | `''` / `'/'`; optional decorative image and brand destination             |
+| `fullHeight`                                        | `true`; minimum viewport height; set `false` for embedded previews        |
+| `loading` / `loadingText`                           | `false` / `'Loading content…'`; busy state with visible status            |
+| `skipLinkText`                                      | `'Skip to content'`; keyboard shortcut to the main landmark               |
+| `sidebarEnabled`                                    | `false`; adds a sidebar trigger                                           |
+| `sidebarTitle`                                      | `'Navigation'`                                                            |
+| `sidebarContent`                                    | `TemplateRef<unknown>` with a `close` context function                    |
+| `sidebarToggleLabel`                                | `'Open navigation sidebar'`                                               |
+| `mobileMenuLabel` / `mobileMenuCloseLabel`          | `'Open navigation menu'` / `'Close navigation menu'`                      |
+| `userMenuTrigger` / `userMenuLabel`                 | Optional trigger template / `'Open account menu'`                         |
+| `footerEnabled` / `footerText` / `footerNavigation` | `false` / `''` / `[]`                                                     |
 
-@Component({
-  selector: 'app-shell-programmatic',
-  standalone: true,
-  imports: [EgLayoutSimple],
-  template: `
-    <eg-layout-simple #shell [sidebarEnabled]="true">
-      <button type="button" (click)="shell.openSidebar()">Open sidebar</button>
-      <button type="button" (click)="shell.closeSidebar()">Close sidebar</button>
-      <button type="button" (click)="shell.toggleMobileMenu()">Toggle mobile menu</button>
-    </eg-layout-simple>
-  `,
-})
-export class ShellProgrammaticComponent {
-  readonly shell = viewChild.required(EgLayoutSimple);
-}
-```
+Style hooks accept `ClassValue`: `logoClass`, `headerClass`, `contentClass`, `primaryNavigationClass`, `utilityNavigationClass`, `sectionNavigationClass`, `secondaryNavigationClass`, `flyoutNavigationClass`, `flyoutPanelClass`, `navigationItemClass`, and `footerClass`. Per-item classes also work on mobile.
 
-### 4. Header search (async loader) + user menu
+Below 768px, desktop navigation is replaced by a scrollable mobile disclosure. It includes page search and all navigation destinations. Escape and item selection close it and return focus to its trigger; routing and resizing to desktop also close it. Multiple shells generate distinct content and panel IDs. `EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT` exposes the breakpoint contract; Tailwind's `md` breakpoint must match it.
 
-Note the loader runs once with `{ search: '' }`; typing filters the cached list client-side.
-
-```ts
-import { Component, signal } from '@angular/core';
-import { EgLayoutSimple, type MenuItem, type UserMenuSection } from '@egose/shadcn-theme-ng/layout-simple';
-
-interface DocPage {
-  title: string;
-  path: string;
-}
-
-const PAGES: DocPage[] = [
-  { title: 'Getting started', path: '/docs/getting-started' },
-  { title: 'Theming', path: '/docs/theming' },
-  { title: 'Dark mode', path: '/docs/dark-mode' },
-];
-
-@Component({
-  selector: 'app-shell-search',
-  standalone: true,
-  imports: [EgLayoutSimple],
-  template: `
-    <eg-layout-simple
-      [leftMenus]="leftMenus"
-      [searchEnabled]="true"
-      [searchLoaderFn]="loader"
-      [searchTransformValueToSearch]="toLabel"
-      searchPlaceholderText="Search docs"
-      searchEmptyText="No docs found"
-      [userMenus]="userMenus"
-      (searchOptionChange)="onPick($event)"
-    >
-      <p>Selected: {{ selected()?.title ?? 'nothing yet' }}</p>
-    </eg-layout-simple>
-  `,
-})
-export class ShellSearchComponent {
-  readonly leftMenus: MenuItem[] = [{ label: 'Docs', link: '/docs' }];
-  readonly selected = signal<DocPage | undefined>(undefined);
-  readonly userMenus: UserMenuSection[] = [
-    {
-      label: 'ada@example.com',
-      items: [{ label: 'Profile', link: '/profile' }],
-      separator: true,
-    },
-    {
-      items: [{ label: 'Log out', action: () => console.log('logout') }],
-    },
-  ];
-
-  readonly loader = async () => PAGES;
-  readonly toLabel = (page: DocPage) => page.title;
-
-  onPick(page: DocPage): void {
-    this.selected.set(page);
-  }
-}
-```
-
-Custom avatar trigger:
+The sidebar is a modal sheet with focus handling from Spartan/CDK. Its body scrolls independently of its header and close button. Use `#shell` with `shell.openSidebar()` / `shell.closeSidebar()` for programmatic control:
 
 ```html
-<ng-template #avatar>
-  <img src="assets/me.png" alt="Account" class="tw:h-8 tw:w-8 tw:rounded-full" />
-</ng-template>
-
-<eg-layout-simple [userMenus]="userMenus" [userMenuTrigger]="avatar">
-  <p>Content</p>
+<eg-layout-simple [sidebarEnabled]="true" [sidebarContent]="sidebar">
+  <h1>Dashboard</h1>
 </eg-layout-simple>
+<ng-template #sidebar let-close="close">
+  <a routerLink="/projects" (click)="close()">Projects</a>
+</ng-template>
 ```
 
-### 5. Loading state and class customization
+## Dropdown / fly-out navbar
 
-```ts
-import { Component, signal } from '@angular/core';
-import { EgLayoutSimple, type MenuItem } from '@egose/shadcn-theme-ng/layout-simple';
-
-@Component({
-  selector: 'app-shell-loading',
-  standalone: true,
-  imports: [EgLayoutSimple],
-  template: `
-    <eg-layout-simple
-      [leftMenus]="leftMenus"
-      [loading]="loading()"
-      headerClass="tw:bg-white"
-      contentClass="tw:max-w-5xl tw:mx-auto tw:w-full"
-      [leftLinkClass]="'tw:font-medium'"
-    >
-      @if (loading()) {
-        <p class="tw:text-sm tw:text-muted-foreground">Loading…</p>
-      } @else {
-        <p>Real content (projected only when loading is false).</p>
-      }
-    </eg-layout-simple>
-    <button type="button" (click)="loading.set(!loading())">Toggle loading</button>
-  `,
-})
-export class ShellLoadingComponent {
-  readonly loading = signal(true);
-  readonly leftMenus: MenuItem[] = [{ label: 'Home', link: '/' }];
-}
-```
-
-> `loading` hides `<ng-content>` but does not render a spinner itself — you own the loading UI (either inside the projected content slot boundary or outside the shell).
-
-### 6. Using the building blocks standalone
-
-Only the exported building blocks (`EgLayoutSimpleUserMenu`, `EgGenericAutocomplete`) can be imported directly. The sidebar and mobile-menu-group are internal to `EgLayoutSimple` and render through its inputs (`sidebarEnabled`/`sidebarContent`, `leftMenus`/`topMenus`/`userMenus`).
+`flyoutNavigationGroups` adds a category navbar below the header/section navigation. Each trigger opens a shell-width panel with a responsive two- or three-column grid of cards. Cards support the same routes, actions, disabled state, and active matching as other navigation, plus optional icons and descriptions.
 
 ```ts
 import { Component } from '@angular/core';
-import { EgLayoutSimpleUserMenu, type UserMenuSection } from '@egose/shadcn-theme-ng/layout-simple';
+import { RouterOutlet } from '@angular/router';
+import { lucideLayers, lucideTable } from '@ng-icons/lucide';
+import { EgLayoutSimple, type FlyoutMenuGroup } from '@egose/shadcn-theme-ng/layout-simple';
 
 @Component({
-  selector: 'app-shell-pieces',
-  standalone: true,
-  imports: [EgLayoutSimpleUserMenu],
-  template: ` <eg-layout-simple-user-menu [menus]="userMenus" /> `,
+  imports: [EgLayoutSimple, RouterOutlet],
+  template: `
+    <eg-layout-simple brandName="Acme" [flyoutNavigationGroups]="groups">
+      <router-outlet />
+    </eg-layout-simple>
+  `,
 })
-export class ShellPiecesComponent {
-  readonly userMenus: UserMenuSection[] = [{ items: [{ label: 'Settings', link: '/settings' }] }];
+export class App {
+  readonly groups: FlyoutMenuGroup[] = [
+    {
+      label: 'Explore',
+      description: 'Find the right tools for your next project.',
+      items: [
+        { label: 'Projects', description: 'Plan and organize your work.', icon: lucideLayers, link: '/projects' },
+        { label: 'Reports', description: 'Turn your data into useful insights.', icon: lucideTable, link: '/reports' },
+      ],
+    },
+  ];
 }
 ```
 
-## Accessibility notes
+`FlyoutMenuGroup` extends `MenuGroup` with a required `label`, optional `description`, and optional trigger `icon`. `secondaryNavigationGroups` is still the independent scrollable link strip; both inputs can be used together. `navigationGroups` remains the compact header dropdown. The example app derives its fly-out groups from the active component/example catalog section and hides the row on Home.
 
-- Landmarks: the shell renders `<header>`, two/three desktop `<nav>` rows, `<main>`, and `<footer>` — keep page content inside `<main>` via content projection and give each `<nav>` an `aria-label` via the class inputs only if you restyle; by default the rows share generic navigation semantics.
-- Triggers: the sidebar button exposes `aria-label` (`sidebarToggleLabel`), `aria-expanded` (bound to `sidebarOpen()`), and `aria-controls="eg-layout-simple-sidebar"`; the hamburger exposes `aria-label` (`mobileMenuLabel`), `aria-expanded`, and `aria-controls="eg-layout-simple-mobile-menu"`. Keep the defaults meaningful or override with plain language.
-- Mobile menu closes on `Escape` (`keydown.escape`) and on every item activation.
-- Logo `img` uses `alt="Logo"` — override the asset, and if the logo is decorative consider hiding it; if it is the only home link, the surrounding link text should disambiguate.
-- Search input inherits popover/input keyboard behavior (focus the input, arrow through options, `Enter` to pick).
+- **Pointer:** click a category to open or toggle it; opening another category replaces the panel. Click outside or use the close button to dismiss.
+- **Keyboard:** Enter/Space toggles a trigger; Left/Right/Home/End move among enabled category triggers. Down/Up opens the panel and focuses its first/last enabled card. Tab follows normal document order. Escape returns focus to the trigger. Moving focus outside closes the panel.
+- **Mobile:** below 768px the categories become native expandable sections inside the mobile navigation, retaining icons and descriptions.
+- **State:** selection, route changes, group replacement, and resizing to mobile dismiss the desktop panel. Current categories and destination links have active styling. Empty categories are disabled.
+- **Sizing:** panels overlay page content, are bounded to the shell width, and scroll internally for large catalogs. Avoid `overflow: hidden` on containing elements if the panel should extend past an embedded preview.
 
-## Theming / CSS variables
+## Async search
 
-No theming inputs beyond class overrides. Every region merges your `*Class` input over a sensible default via `hlm()`, so theme tokens (`bg-gray-100`, `text-secondary`, `text-muted-foreground`, …) and dark-mode utilities compose normally.
+```ts
+type Page = { title: string; url: string };
 
-## Related subpaths
+// Members of the consuming component:
+readonly pages: Page[] = [
+  { title: 'Dashboard', url: '/' },
+  { title: 'Projects', url: '/projects' },
+];
+readonly loadPages = async ({ search }: { search: string }): Promise<Page[]> =>
+  this.pages.filter((page) => page.title.toLowerCase().includes(search.toLowerCase()));
+readonly pageLabel = (page: Page) => page.title;
+// Handle selection by navigating with your injected Router.
+```
 
-- `@egose/shadcn-theme-ng/button` (`HlmButton`) — header/sidebar triggers.
-- `@egose/shadcn-theme-ng/dropdown-menu` — powers `EgLayoutSimpleUserMenu`.
-- `@egose/shadcn-theme-ng/sheet` + `@spartan-ng/brain/sheet` — powers `EgLayoutSimpleSidebar`.
-- `@egose/shadcn-theme-ng/popover`, `@egose/shadcn-theme-ng/input` — powers `EgGenericAutocomplete`.
+```html
+<eg-layout-simple
+  [searchEnabled]="true"
+  [searchLoader]="loadPages"
+  [searchResultLabel]="pageLabel"
+  [searchResultTemplate]="result"
+  (searchResultSelected)="router.navigateByUrl($event.url)"
+>
+  <router-outlet />
+</eg-layout-simple>
+<ng-template #result let-page>{{ page.title }}</ng-template>
+```
+
+`LayoutSearchLoader<TItem>` receives `{ search: string }` and resolves to a readonly array. It runs on opening (empty query) and after a 180ms debounce when typing. The loader owns filtering; the component does not filter results a second time. Changing the query, closing, or destroying the search invalidates old responses. Loading, empty, and error states are distinct, with a retry button on failure. Arrow keys move between the search field and result buttons; Enter selects; Escape closes the popover.
+
+Shell search inputs: `searchEnabled`, `searchLoader`, `searchResultLabel`, `searchResultTemplate`, `searchPlaceholder`, `searchEmptyText`, and `searchErrorText`. Selection emits `searchResultSelected`. The template context is `LayoutSearchResultContext<TItem>` (`$implicit: TItem`). Always supply a result label or template for object results.
+
+### Standalone building blocks
+
+- `EgLayoutSearch` (`eg-layout-search`): `loader`, `resultLabel`, `resultTemplate`, `placeholder`, `emptyText`, `errorText`, `loadingText`, `retryText`; emits `resultSelected`.
+- `EgLayoutSimpleUserMenu` (`eg-layout-simple-user-menu`): `sections`, `triggerTemplate`, `triggerLabel`. Custom trigger templates supply non-interactive content; the component provides the button.
+- The sidebar, fly-out navbar, navigation-item renderer, and mobile group are internal components, not public imports.
+
+## Migration from the positional API
+
+| Previous name                                       | New name                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `leftMenus` / `leftMenuGroups`                      | `primaryNavigation` / `navigationGroups`                                       |
+| `rightMenus`                                        | `utilityNavigation`                                                            |
+| `topMenus` / `topSecondaryMenus`                    | `sectionNavigation` / `secondaryNavigationGroups`                              |
+| `userMenus`                                         | `userMenuSections`                                                             |
+| `footerMenus` / `footerContent`                     | `footerNavigation` / `footerText`                                              |
+| `leftClass` / `rightClass` / `topClass`             | `primaryNavigationClass` / `utilityNavigationClass` / `sectionNavigationClass` |
+| `leftLinkClass` / `rightLinkClass` / `topLinkClass` | `navigationItemClass` or per-item `class`                                      |
+| `searchLoaderFn`                                    | `searchLoader`                                                                 |
+| `searchTransformValueToSearch`                      | `searchResultLabel`                                                            |
+| `searchPlaceholderText`                             | `searchPlaceholder`                                                            |
+| `searchOptionTemplate` / `searchOptionChange`       | `searchResultTemplate` / `searchResultSelected`                                |
+| `EgGenericAutocomplete`                             | `EgLayoutSearch`                                                               |
+| User menu `menus` / `menuTrigger`                   | `sections` / `triggerTemplate`                                                 |
+
+`contentBottomClass` and the empty content spacer were removed; use `contentClass` for content sizing. Footer-specific menu/link class inputs were replaced by per-item `class`. The unsupported generic search-parameter cast and unused `AutocompleteOption` type were removed. Search now has a single generic item type. Use public `openSidebar()` / `closeSidebar()` methods instead of reaching into the sheet query.
+
+## Verification
+
+From `packages/angular`: `pnpm test:library layout-simple`. The example at `@examples/standard` exercises source imports and custom search templates; its `pnpm build` also checks prerendering.

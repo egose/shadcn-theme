@@ -4,9 +4,64 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../utils/ui';
 import { Spinner } from './spinner';
 
+// Complete utility names keep every tone discoverable by consumer Tailwind builds.
+const toneTextClasses = {
+  primary: 'text-primary',
+  secondary: 'text-secondary-foreground',
+  action: 'text-action',
+  success: 'text-success',
+  warning: 'text-warning',
+  danger: 'text-danger',
+  info: 'text-info',
+  light: 'text-foreground',
+  dark: 'text-dark',
+  accent: 'text-accent',
+  destructive: 'text-destructive',
+  muted: 'text-muted-foreground',
+  link: 'text-primary',
+  ghost: 'text-light-foreground',
+};
+
+type ToneVariant = keyof typeof toneTextClasses;
+
+const outlineClasses: Record<ToneVariant, string> = {
+  primary: 'border-primary hover:bg-primary/10',
+  secondary: 'border-border hover:bg-secondary/10',
+  action: 'border-action hover:bg-action/10',
+  success: 'border-success hover:bg-success/10',
+  warning: 'border-warning hover:bg-warning/10',
+  danger: 'border-danger hover:bg-danger/10',
+  info: 'border-info hover:bg-info/10',
+  light: 'border-border hover:bg-muted',
+  dark: 'border-dark hover:bg-dark/10',
+  accent: 'border-accent hover:bg-accent/10',
+  destructive: 'border-destructive hover:bg-destructive/10',
+  muted: 'border-muted hover:bg-muted/10',
+  link: '',
+  ghost: '',
+};
+
+const outlineFilledClasses: Record<ToneVariant, string> = {
+  primary: 'hover:bg-primary hover:text-primary-foreground',
+  secondary: 'hover:bg-secondary hover:text-secondary-foreground',
+  action: 'hover:bg-action hover:text-action-foreground',
+  success: 'hover:bg-success hover:text-success-foreground',
+  warning: 'hover:bg-warning hover:text-warning-foreground',
+  danger: 'hover:bg-danger hover:text-danger-foreground',
+  info: 'hover:bg-info hover:text-info-foreground',
+  light: 'hover:bg-light hover:text-light-foreground',
+  dark: 'hover:bg-dark hover:text-dark-foreground',
+  accent: 'hover:bg-accent hover:text-accent-foreground',
+  destructive: 'hover:bg-destructive hover:text-destructive-foreground',
+  muted: 'hover:bg-muted hover:text-muted-foreground',
+  link: 'hover:underline',
+  ghost: 'hover:bg-light',
+};
+
 /**
  * `class-variance-authority` variant resolver backing {@link Button}. Exported
- * so consumers can compose the same class strings elsewhere (e.g. on a `<a>`).
+ * so consumers can compose the same color and appearance styles elsewhere.
+ * Merge the result and consumer overrides with cn() to resolve utility conflicts.
  *
  * @example
  * buttonVariants({ variant: 'primary', size: 'default', appearance: 'solid' })
@@ -83,14 +138,35 @@ const buttonVariants = cva(
       },
       appearance: {
         solid: '',
-        outline: 'bg-background border',
-        'outline-filled': 'bg-background border',
+        outline: 'bg-background border shadow-sm',
+        'outline-filled': 'bg-background border shadow-sm',
+        ghost: 'bg-transparent border-0 shadow-none',
+        link: 'bg-transparent border-0 shadow-none hover:bg-transparent underline-offset-4 hover:underline',
       },
       loading: {
         true: 'pointer-events-none',
         false: null,
       },
     },
+    compoundVariants: (Object.keys(toneTextClasses) as ToneVariant[]).flatMap((variant) => [
+      {
+        variant,
+        appearance: ['outline', 'outline-filled', 'ghost', 'link'] as Array<
+          'outline' | 'outline-filled' | 'ghost' | 'link'
+        >,
+        class: toneTextClasses[variant],
+      },
+      {
+        variant,
+        appearance: ['outline', 'outline-filled', 'ghost'] as Array<'outline' | 'outline-filled' | 'ghost'>,
+        class: outlineClasses[variant],
+      },
+      {
+        variant,
+        appearance: 'outline-filled' as const,
+        class: outlineFilledClasses[variant],
+      },
+    ]),
     defaultVariants: {
       variant: 'primary',
       size: 'default',
@@ -105,13 +181,15 @@ const buttonVariants = cva(
 export type VariantType = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
 /** Size slot for {@link Button} (`xs`, `sm`, `default`, `lg`). */
 export type SizeType = NonNullable<VariantProps<typeof buttonVariants>['size']>;
-/** Visual style (`solid`, `outline`, `outline-filled`). */
+/** Visual treatment independent of color (`solid`, `outline`, `outline-filled`, `ghost`, `link`). */
 export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['appearance']>;
 
 /**
  * Props for the {@link Button} component. Pick `variant`, `size`, and
  * `appearance` to control the visual style, and pass `loading` to swap the
- * label for a spinner. `asChild` (from Radix `Slot`) forwards props onto the
+ * label for a spinner that inherits the button's text color. Consumer className
+ * overrides are merged after all appearance styles. Legacy link and ghost
+ * variants remain supported. `asChild` (from Radix `Slot`) forwards props onto the
  * immediate child instead of rendering a `<button>`.
  */
 export interface ButtonProps
@@ -120,86 +198,6 @@ export interface ButtonProps
   asChild?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
-}
-
-function getOutlineClasses(variant: VariantType) {
-  const colors: Record<VariantType, string> = {
-    primary: 'border-primary text-primary shadow-sm hover:bg-primary/10',
-    secondary: 'border-border text-secondary-foreground shadow-sm hover:bg-secondary/10',
-    action: 'border-action text-action shadow-sm hover:bg-action/10',
-    success: 'border-success text-success shadow-sm hover:bg-success/10',
-    warning: 'border-warning text-warning shadow-sm hover:bg-warning/10',
-    danger: 'border-danger text-danger shadow-sm hover:bg-danger/10',
-    info: 'border-info text-info shadow-sm hover:bg-info/10',
-    light: 'border-border text-foreground shadow-sm hover:bg-muted',
-    dark: 'border-dark text-dark shadow-sm hover:bg-dark/10',
-    accent: 'border-accent text-accent shadow-sm hover:bg-accent/10',
-    destructive: 'border-destructive text-destructive shadow-sm hover:bg-destructive/10',
-    muted: 'border-muted text-muted-foreground shadow-sm hover:bg-muted/10',
-    link: 'text-primary',
-    ghost: 'text-light-foreground',
-  };
-  return colors[variant];
-}
-
-function getOutlineFilledClasses(variant: VariantType) {
-  const colors: Record<VariantType, string> = {
-    primary: 'hover:bg-primary hover:text-primary-foreground',
-    secondary: 'hover:bg-secondary hover:text-secondary-foreground',
-    action: 'hover:bg-action hover:text-action-foreground',
-    success: 'hover:bg-success hover:text-success-foreground',
-    warning: 'hover:bg-warning hover:text-warning-foreground',
-    danger: 'hover:bg-danger hover:text-danger-foreground',
-    info: 'hover:bg-info hover:text-info-foreground',
-    light: 'hover:bg-light hover:text-light-foreground',
-    dark: 'hover:bg-dark hover:text-dark-foreground',
-    accent: 'hover:bg-accent hover:text-accent-foreground',
-    destructive: 'hover:bg-destructive hover:text-destructive-foreground',
-    muted: 'hover:bg-muted hover:text-muted-foreground',
-    link: 'hover:underline',
-    ghost: 'hover:bg-light',
-  };
-  return colors[variant];
-}
-
-function getSpinnerClasses(variant: VariantType) {
-  const colors: Record<VariantType, string> = {
-    primary: 'text-primary-foreground',
-    secondary: 'text-secondary-foreground',
-    action: 'text-action-foreground',
-    success: 'text-success-foreground',
-    warning: 'text-warning-foreground',
-    danger: 'text-danger-foreground',
-    info: 'text-info-foreground',
-    light: 'text-light-foreground',
-    dark: 'text-dark-foreground',
-    accent: 'text-accent-foreground',
-    destructive: 'text-destructive-foreground',
-    muted: 'text-muted-foreground',
-    link: 'text-primary',
-    ghost: 'text-light-foreground',
-  };
-  return colors[variant];
-}
-
-function getOutlineSpinnerClasses(variant: VariantType) {
-  const colors: Record<VariantType, string> = {
-    primary: 'text-primary',
-    secondary: 'text-secondary',
-    action: 'text-action',
-    success: 'text-success',
-    warning: 'text-warning',
-    danger: 'text-danger',
-    info: 'text-info',
-    light: 'text-light',
-    dark: 'text-dark',
-    accent: 'text-accent',
-    destructive: 'text-destructive',
-    muted: 'text-muted-foreground',
-    link: 'text-primary',
-    ghost: 'text-light-foreground',
-  };
-  return colors[variant];
 }
 
 /**
@@ -227,25 +225,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot.Root : 'button';
 
-    const outlineClasses =
-      appearance === 'outline' || appearance === 'outline-filled' ? [getOutlineClasses(variant as VariantType)] : [];
-
-    if (appearance === 'outline-filled') {
-      outlineClasses.push(getOutlineFilledClasses(variant as VariantType));
-    }
-
-    const spinnerClasses =
-      appearance === 'outline' || appearance === 'outline-filled'
-        ? getOutlineSpinnerClasses(variant as VariantType)
-        : getSpinnerClasses(variant as VariantType);
-
     return (
       <Comp
         type="button"
         data-variant={variant}
         data-size={size}
         data-appearance={appearance}
-        className={cn(buttonVariants({ variant, size, appearance, loading, className }), outlineClasses)}
+        className={cn(buttonVariants({ variant, size, appearance, loading }), className)}
         ref={ref}
         aria-busy={loading || undefined}
         disabled={loading || props.disabled}
@@ -255,7 +241,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <div className="relative inline-flex items-center justify-center w-full">
             <span className="invisible">{children}</span>
             <span className="absolute inset-0 flex items-center justify-center">
-              <Spinner size="small" className={cn('size-4', spinnerClasses)} />
+              <Spinner size="small" className="size-4 text-current" />
             </span>
           </div>
         ) : (
