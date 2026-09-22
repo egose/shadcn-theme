@@ -37,9 +37,9 @@ export class HlmFieldDescription implements OnDestroy {
 
   constructor() {
     classes(() => [
-      'text-muted-foreground text-start text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance',
-      'last:mt-0 nth-last-2:-mt-1',
-      '[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4',
+      'tw:text-muted-foreground tw:text-start tw:text-sm tw:[[data-variant=legend]+&]:-mt-1.5 tw:leading-normal tw:font-normal tw:group-has-data-horizontal/field:text-balance',
+      'tw:last:mt-0 tw:nth-last-2:-mt-1',
+      'tw:[&>a:hover]:text-primary tw:[&>a]:underline tw:[&>a]:underline-offset-4',
     ]);
   }
 

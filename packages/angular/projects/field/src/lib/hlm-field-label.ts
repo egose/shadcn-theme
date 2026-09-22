@@ -10,8 +10,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmFieldLabel {
   constructor() {
     classes(() => [
-      'has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border *:data-[slot=field]:p-3 group/field-label peer/field-label flex w-fit',
-      'has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col',
+      'tw:has-data-checked:bg-primary/5 tw:has-data-checked:border-primary/30 tw:dark:has-data-checked:border-primary/20 tw:dark:has-data-checked:bg-primary/10 tw:gap-2 tw:leading-snug tw:group-data-[disabled=true]/field:opacity-50 tw:has-[>[data-slot=field]]:rounded-md tw:has-[>[data-slot=field]]:border tw:*:data-[slot=field]:p-3 tw:group/field-label tw:peer/field-label tw:flex tw:w-fit',
+      'tw:has-[>[data-slot=field]]:w-full tw:has-[>[data-slot=field]]:flex-col',
     ]);
   }
 }

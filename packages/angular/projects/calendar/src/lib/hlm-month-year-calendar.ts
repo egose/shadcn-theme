@@ -20,22 +20,22 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
   ],
   host: { 'data-slot': 'month-year-calendar' },
   template: `
-    <div class="flex flex-col gap-4">
+    <div class="tw:flex tw:flex-col tw:gap-4">
       <!-- Header -->
-      <div class="flex w-full items-center justify-between gap-1.5">
+      <div class="tw:flex tw:w-full tw:items-center tw:justify-between tw:gap-1.5">
         <button
           brnMonthYearCalendarPreviousButton
           hlmBtn
           variant="ghost"
-          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+          class="tw:order-first tw:size-(--cell-size) tw:p-0 tw:select-none tw:aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronLeft" class="rtl:rotate-180" />
+          <ng-icon name="lucideChevronLeft" class="tw:rtl:rotate-180" />
         </button>
 
         <button
           hlmBtn
           variant="ghost"
-          class="h-(--cell-size) py-0 select-none aria-disabled:opacity-50"
+          class="tw:h-(--cell-size) tw:py-0 tw:select-none tw:aria-disabled:opacity-50"
           brnMonthYearCalendarHeader
         >
           {{ _heading() }}
@@ -45,16 +45,16 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           brnMonthYearCalendarNextButton
           hlmBtn
           variant="ghost"
-          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+          class="tw:order-last tw:size-(--cell-size) tw:p-0 tw:select-none tw:aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronRight" class="rtl:rotate-180" />
+          <ng-icon name="lucideChevronRight" class="tw:rtl:rotate-180" />
         </button>
       </div>
 
       <!-- Grid -->
       @switch (_picker.view()) {
         @case ('year') {
-          <div brnMonthYearCalendarGrid class="grid grid-cols-4 gap-2">
+          <div brnMonthYearCalendarGrid class="tw:grid tw:grid-cols-4 tw:gap-2">
             @for (year of _picker.years(); track _dateAdapter.getYear(year)) {
               <button brnMonthYearCalendarYearButton [date]="year" [class]="_btnClass">
                 {{ _i18n.config().formatYear(_dateAdapter.getYear(year)) }}
@@ -63,7 +63,7 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           </div>
         }
         @case ('month') {
-          <div brnMonthYearCalendarGrid class="grid grid-cols-4 gap-2">
+          <div brnMonthYearCalendarGrid class="tw:grid tw:grid-cols-4 tw:gap-2">
             @for (month of _picker.months(); track _dateAdapter.getMonth(month)) {
               <button brnMonthYearCalendarMonthButton [date]="month" [class]="_btnClass">
                 {{ _i18n.config().months()[_dateAdapter.getMonth(month)] }}
@@ -99,17 +99,17 @@ export class HlmMonthYearCalendar<T> {
 
   protected readonly _btnClass = hlm(
     buttonVariants({ variant: 'ghost' }),
-    'data-[today=true]:bg-muted',
-    'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:hover:bg-primary data-[selected=true]:hover:text-primary-foreground',
-    'data-[focused=true]:border-ring data-[focused=true]:ring-ring/50 data-[focused=true]:ring-[3px]',
-    'aria-disabled:pointer-events-none aria-disabled:opacity-50',
-    'h-(--cell-size)',
+    'tw:data-[today=true]:bg-muted',
+    'tw:data-[selected=true]:bg-primary tw:data-[selected=true]:text-primary-foreground tw:data-[selected=true]:hover:bg-primary tw:data-[selected=true]:hover:text-primary-foreground',
+    'tw:data-[focused=true]:border-ring tw:data-[focused=true]:ring-ring/50 tw:data-[focused=true]:ring-[3px]',
+    'tw:aria-disabled:pointer-events-none tw:aria-disabled:opacity-50',
+    'tw:h-(--cell-size)',
   );
 
   constructor() {
     classes(
       () =>
-        'p-3 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(8)] group/calendar bg-background block in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent',
+        'tw:p-3 tw:[--cell-radius:var(--radius-md)] tw:[--cell-size:--spacing(8)] tw:group/calendar tw:bg-background tw:block tw:in-data-[slot=card-content]:bg-transparent tw:in-data-[slot=popover-content]:bg-transparent',
     );
   }
 }

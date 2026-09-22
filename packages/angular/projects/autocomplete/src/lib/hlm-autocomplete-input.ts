@@ -66,6 +66,6 @@ export class HlmAutocompleteInput {
   });
 
   constructor() {
-    classes(() => 'w-auto');
+    classes(() => 'tw:w-auto');
   }
 }

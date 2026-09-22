@@ -7,6 +7,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmItemGroup {
   constructor() {
-    classes(() => 'gap-4 has-data-[size=sm]:gap-2.5 has-data-[size=xs]:gap-2 group/item-group flex w-full flex-col');
+    classes(
+      () =>
+        'tw:gap-4 tw:has-data-[size=sm]:gap-2.5 tw:has-data-[size=xs]:gap-2 tw:group/item-group tw:flex tw:w-full tw:flex-col',
+    );
   }
 }

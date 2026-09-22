@@ -11,7 +11,7 @@ export class HlmKbd {
   constructor() {
     classes(
       () =>
-        "bg-muted text-muted-foreground in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 h-5 w-fit min-w-5 gap-1 rounded-sm px-1 font-sans text-xs font-medium [&_ng-icon:not([class*='text-'])]:text-[length:--spacing(3)] pointer-events-none inline-flex items-center justify-center select-none",
+        "tw:bg-muted tw:text-muted-foreground tw:in-data-[slot=tooltip-content]:bg-background/20 tw:in-data-[slot=tooltip-content]:text-background tw:dark:in-data-[slot=tooltip-content]:bg-background/10 tw:h-5 tw:w-fit tw:min-w-5 tw:gap-1 tw:rounded-sm tw:px-1 tw:font-sans tw:text-xs tw:font-medium tw:[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(3)] tw:pointer-events-none tw:inline-flex tw:items-center tw:justify-center tw:select-none",
     );
   }
 }

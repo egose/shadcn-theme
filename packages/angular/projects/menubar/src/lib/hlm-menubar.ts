@@ -11,6 +11,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmMenubar {
   constructor() {
-    classes(() => 'bg-background h-9 gap-1 rounded-md border p-1 shadow-xs flex items-center');
+    classes(
+      () => 'tw:bg-background tw:h-9 tw:gap-1 tw:rounded-md tw:border tw:p-1 tw:shadow-xs tw:flex tw:items-center',
+    );
   }
 }

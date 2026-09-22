@@ -16,8 +16,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmNavigationMenuList {
   constructor() {
     classes(() => [
-      'gap-0 group flex flex-1 list-none items-center justify-center',
-      'data-[orientation=vertical]:flex-col',
+      'tw:gap-0 tw:group tw:flex tw:flex-1 tw:list-none tw:items-center tw:justify-center',
+      'tw:data-[orientation=vertical]:flex-col',
     ]);
   }
 }

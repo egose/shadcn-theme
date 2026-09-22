@@ -14,7 +14,10 @@ function artifact(id, packageName, variant) {
     publishAccess: 'public',
 
     build({ cwd, stageDir, runner }) {
-      runner.run('pnpm', ['bundle', '--stage', stageDir], { cwd });
+      const args = ['bundle'];
+      if (variant !== 'plain') args.push(variant);
+      args.push('--stage', stageDir);
+      runner.run('pnpm', args, { cwd });
     },
 
     async manifestOverlay({ stageDir }) {

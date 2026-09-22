@@ -42,8 +42,13 @@ import { listVariants } from './hlm-tabs-list';
       <ng-icon name="lucideChevronLeft" />
     </button>
 
-    <div #tabListContainer class="z-[1] flex grow overflow-hidden" (keydown)="_handleKeydown($event)">
-      <div class="relative grow transition-transform" #tabList role="tablist" (cdkObserveContent)="_onContentChanges()">
+    <div #tabListContainer class="tw:z-[1] tw:flex tw:grow tw:overflow-hidden" (keydown)="_handleKeydown($event)">
+      <div
+        class="tw:relative tw:grow tw:transition-transform"
+        #tabList
+        role="tablist"
+        (cdkObserveContent)="_onContentChanges()"
+      >
         <div #tabListInner [class]="_tabListClass()">
           <ng-content />
         </div>
@@ -69,7 +74,7 @@ import { listVariants } from './hlm-tabs-list';
 export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
   constructor() {
     super();
-    classes(() => 'relative flex flex-shrink-0 items-center gap-1 overflow-hidden');
+    classes(() => 'tw:relative tw:flex tw:flex-shrink-0 tw:items-center tw:gap-1 tw:overflow-hidden');
   }
 
   public readonly items = contentChildren(BrnTabsTrigger, { descendants: false });
@@ -88,10 +93,10 @@ export class HlmTabsPaginatedList extends BrnTabsPaginatedList {
   public readonly paginationButtonClass = input<ClassValue>('');
   protected readonly _paginationButtonClass = computed(() =>
     hlm(
-      'relative z-[2] select-none disabled:cursor-default',
+      'tw:relative tw:z-[2] tw:select-none tw:disabled:cursor-default',
       buttonVariants({ variant: 'ghost', size: 'icon-sm' }),
       this.paginationButtonClass(),
-      this.showPaginationControls() ? 'inline-flex' : 'hidden',
+      this.showPaginationControls() ? 'tw:inline-flex' : 'tw:hidden',
     ),
   );
 

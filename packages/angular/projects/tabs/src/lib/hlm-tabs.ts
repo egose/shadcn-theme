@@ -19,6 +19,6 @@ export class HlmTabs {
   public readonly tab = input.required<string>();
 
   constructor() {
-    classes(() => 'group/tabs flex gap-2 data-[orientation=horizontal]:flex-col');
+    classes(() => 'tw:group/tabs tw:flex tw:gap-2 tw:data-[orientation=horizontal]:flex-col');
   }
 }

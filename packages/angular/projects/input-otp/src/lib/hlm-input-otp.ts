@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmInputOtp {
   constructor() {
-    classes(() => 'gap-2 flex items-center has-disabled:opacity-50');
+    classes(() => 'tw:gap-2 tw:flex tw:items-center tw:has-disabled:opacity-50');
   }
 }

@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarHeader {
   constructor() {
-    classes(() => 'gap-2 p-2 flex flex-col');
+    classes(() => 'tw:gap-2 tw:p-2 tw:flex tw:flex-col');
   }
 }

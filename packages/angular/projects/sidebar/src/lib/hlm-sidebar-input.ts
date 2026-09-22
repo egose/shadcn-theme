@@ -12,6 +12,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarInput {
   constructor() {
-    classes(() => 'bg-background h-8 w-full shadow-none');
+    classes(() => 'tw:bg-background tw:h-8 tw:w-full tw:shadow-none');
   }
 }

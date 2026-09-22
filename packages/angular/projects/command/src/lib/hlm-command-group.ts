@@ -18,7 +18,7 @@ export class HlmCommandGroup {
   constructor() {
     classes(
       () =>
-        'text-foreground **:data-[slot=command-group-label]:text-muted-foreground overflow-hidden p-1 **:data-[slot=command-group-label]:px-2 **:data-[slot=command-group-label]:py-1.5 **:data-[slot=command-group-label]:text-xs **:data-[slot=command-group-label]:font-medium block data-hidden:hidden',
+        'tw:text-foreground tw:**:data-[slot=command-group-label]:text-muted-foreground tw:overflow-hidden tw:p-1 tw:**:data-[slot=command-group-label]:px-2 tw:**:data-[slot=command-group-label]:py-1.5 tw:**:data-[slot=command-group-label]:text-xs tw:**:data-[slot=command-group-label]:font-medium tw:block tw:data-hidden:hidden',
     );
   }
 }

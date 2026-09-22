@@ -16,6 +16,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmInputOtpSeparator {
   constructor() {
-    classes(() => "[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] flex items-center");
+    classes(() => "tw:[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] tw:flex tw:items-center");
   }
 }

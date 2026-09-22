@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmKbdGroup {
   constructor() {
-    classes(() => 'gap-1 inline-flex items-center');
+    classes(() => 'tw:gap-1 tw:inline-flex tw:items-center');
   }
 }

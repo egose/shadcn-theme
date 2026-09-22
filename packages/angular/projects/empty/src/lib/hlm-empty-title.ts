@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmEmptyTitle {
   constructor() {
-    classes(() => 'text-lg font-medium tracking-tight');
+    classes(() => 'tw:text-lg tw:font-medium tw:tracking-tight');
   }
 }

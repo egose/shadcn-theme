@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmItemActions {
   constructor() {
-    classes(() => 'gap-2 flex items-center');
+    classes(() => 'tw:gap-2 tw:flex tw:items-center');
   }
 }

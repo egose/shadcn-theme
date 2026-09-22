@@ -34,7 +34,7 @@ import type { ClassValue } from 'clsx';
       [forceInvalid]="forceInvalid()"
     >
       <ng-content />
-      <ng-icon name="lucideChevronDown" class="text-muted-foreground text-[length:--spacing(4)]" />
+      <ng-icon name="lucideChevronDown" class="tw:text-muted-foreground tw:text-[length:--spacing(4)]" />
     </button>
   `,
 })
@@ -44,7 +44,9 @@ export class HlmComboboxTrigger {
   public readonly userClass = input<ClassValue>('', {
     alias: 'class',
   });
-  protected readonly _computedClass = computed(() => hlm('data-placeholder:text-muted-foreground', this.userClass()));
+  protected readonly _computedClass = computed(() =>
+    hlm('tw:data-placeholder:text-muted-foreground', this.userClass()),
+  );
 
   public readonly buttonId = input<string>(`hlm-combobox-trigger-${HlmComboboxTrigger._id++}`);
 

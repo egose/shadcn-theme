@@ -28,6 +28,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmAutocomplete {
   constructor() {
-    classes(() => 'block');
+    classes(() => 'tw:block');
   }
 }

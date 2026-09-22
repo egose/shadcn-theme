@@ -3,13 +3,13 @@ import { HlmBtn, provideBrnButtonConfig } from '@egose/shadcn-theme-ng/button';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-const inputGroupAddonVariants = cva('gap-2 text-sm flex items-center shadow-none', {
+const inputGroupAddonVariants = cva('tw:gap-2 tw:text-sm tw:flex tw:items-center tw:shadow-none', {
   variants: {
     size: {
-      xs: "h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 [&>ng-icon:not([class*='text-'])]:text-[length:--spacing(3.5)]",
+      xs: "tw:h-6 tw:gap-1 tw:rounded-[calc(var(--radius)-5px)] tw:px-1.5 tw:[&>ng-icon:not([class*='text-'])]:text-[length:--spacing(3.5)]",
       sm: '',
-      'icon-xs': 'size-6 rounded-[calc(var(--radius)-5px)] p-0 has-[>ng-icon]:p-0',
-      'icon-sm': 'size-8 p-0 has-[>ng-icon]:p-0',
+      'icon-xs': 'tw:size-6 tw:rounded-[calc(var(--radius)-5px)] tw:p-0 tw:has-[>ng-icon]:p-0',
+      'icon-sm': 'tw:size-8 tw:p-0 tw:has-[>ng-icon]:p-0',
     },
   },
   defaultVariants: {

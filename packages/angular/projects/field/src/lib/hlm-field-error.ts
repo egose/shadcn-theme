@@ -85,7 +85,7 @@ export class HlmFieldError implements OnDestroy {
     : null;
 
   constructor() {
-    classes(() => 'text-destructive text-sm font-normal');
+    classes(() => 'tw:text-destructive tw:text-sm tw:font-normal');
   }
 
   ngOnDestroy() {

@@ -17,6 +17,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmResizableGroup {
   constructor() {
-    classes(() => 'group flex h-full w-full data-[panel-group-direction=vertical]:flex-col');
+    classes(() => 'tw:group tw:flex tw:h-full tw:w-full tw:data-[panel-group-direction=vertical]:flex-col');
   }
 }

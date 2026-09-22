@@ -4,12 +4,12 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 import { type VariantProps, cva } from 'class-variance-authority';
 
 export const listVariants = cva(
-  'rounded-lg p-[3px] group-data-horizontal/tabs:h-9 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col',
+  'tw:rounded-lg tw:p-[3px] tw:group-data-horizontal/tabs:h-9 tw:data-[variant=line]:rounded-none tw:group/tabs-list tw:text-muted-foreground tw:inline-flex tw:w-fit tw:items-center tw:justify-center tw:group-data-[orientation=vertical]/tabs:h-fit tw:group-data-[orientation=vertical]/tabs:flex-col',
   {
     variants: {
       variant: {
-        default: 'bg-muted',
-        line: 'gap-1 bg-transparent',
+        default: 'tw:bg-muted',
+        line: 'tw:gap-1 tw:bg-transparent',
       },
     },
     defaultVariants: {

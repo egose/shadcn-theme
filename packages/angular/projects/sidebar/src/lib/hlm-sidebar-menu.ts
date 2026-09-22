@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarMenu {
   constructor() {
-    classes(() => 'gap-1 flex w-full min-w-0 flex-col');
+    classes(() => 'tw:gap-1 tw:flex tw:w-full tw:min-w-0 tw:flex-col');
   }
 }

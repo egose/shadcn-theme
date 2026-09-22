@@ -15,7 +15,7 @@ export class HlmDropdownMenuCheckboxIndicator {
   constructor() {
     classes(
       () =>
-        'absolute end-2 flex items-center justify-center [&_ng-icon]:text-[length:--spacing(4)] pointer-events-none opacity-0 group-data-checked/dropdown-menu-checkbox:opacity-100',
+        'tw:absolute tw:end-2 tw:flex tw:items-center tw:justify-center tw:[&_ng-icon]:text-[length:--spacing(4)] tw:pointer-events-none tw:opacity-0 tw:group-data-checked/dropdown-menu-checkbox:opacity-100',
     );
   }
 }

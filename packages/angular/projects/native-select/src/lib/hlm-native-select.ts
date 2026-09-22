@@ -76,7 +76,7 @@ export class HlmNativeSelect implements ControlValueAccessor {
 
   protected readonly _computedSelectClass = computed(() =>
     hlm(
-      'border-input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 data-[matches-spartan-invalid=true]:ring-destructive/20 dark:data-[matches-spartan-invalid=true]:ring-destructive/40 data-[matches-spartan-invalid=true]:border-destructive dark:data-[matches-spartan-invalid=true]:border-destructive/50 h-9 w-full min-w-0 appearance-none rounded-md border bg-transparent py-1 ps-2.5 pe-8 text-sm shadow-xs transition-[color,box-shadow] select-none focus-visible:ring-3 data-[matches-spartan-invalid=true]:ring-3 data-[size=sm]:h-8 outline-none disabled:pointer-events-none disabled:cursor-not-allowed',
+      'tw:border-input tw:placeholder:text-muted-foreground tw:selection:bg-primary tw:selection:text-primary-foreground tw:dark:bg-input/30 tw:dark:hover:bg-input/50 tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:data-[matches-spartan-invalid=true]:ring-destructive/20 tw:dark:data-[matches-spartan-invalid=true]:ring-destructive/40 tw:data-[matches-spartan-invalid=true]:border-destructive tw:dark:data-[matches-spartan-invalid=true]:border-destructive/50 tw:h-9 tw:w-full tw:min-w-0 tw:appearance-none tw:rounded-md tw:border tw:bg-transparent tw:py-1 tw:ps-2.5 tw:pe-8 tw:text-sm tw:shadow-xs tw:transition-[color,box-shadow] tw:select-none tw:focus-visible:ring-3 tw:data-[matches-spartan-invalid=true]:ring-3 tw:data-[size=sm]:h-8 tw:outline-none tw:disabled:pointer-events-none tw:disabled:cursor-not-allowed',
       this.selectClass(),
     ),
   );
@@ -85,7 +85,7 @@ export class HlmNativeSelect implements ControlValueAccessor {
 
   protected readonly _computedSelectIconClass = computed(() =>
     hlm(
-      'text-muted-foreground end-2.5 top-1/2 -translate-y-1/2 text-[length:--spacing(4)] pointer-events-none absolute select-none',
+      'tw:text-muted-foreground tw:end-2.5 tw:top-1/2 tw:-translate-y-1/2 tw:text-[length:--spacing(4)] tw:pointer-events-none tw:absolute tw:select-none',
       this.selectIconClass(),
     ),
   );
@@ -123,7 +123,7 @@ export class HlmNativeSelect implements ControlValueAccessor {
   protected readonly _spartanInvalid = computed(() => this.forceInvalid() || this._fieldControl?.spartanInvalid());
 
   constructor() {
-    classes(() => 'group/native-select relative w-fit has-[select:disabled]:opacity-50');
+    classes(() => 'tw:group/native-select tw:relative tw:w-fit tw:has-[select:disabled]:opacity-50');
   }
 
   protected _valueChanged(event: Event): void {

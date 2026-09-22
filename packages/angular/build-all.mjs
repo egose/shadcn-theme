@@ -214,18 +214,24 @@ function propertyName(node) {
 }
 
 function callName(node) {
-  if (ts.isIdentifier(node.expression)) return node.expression.text;
+  if (node && ts.isIdentifier(node.expression)) return node.expression.text;
+}
+
+function isSelectionCall(node) {
+  const name = callName(node);
+  return !!name && (/Variants$/.test(name) || /^provide/.test(name));
 }
 
 export function transformJavaScriptClasses(source, bundle = '', fileName = 'artifact.mjs') {
   const sourceFile = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
   const replacements = [];
 
-  function visit(node, classContext = false, templateContext = false) {
+  function visit(node, classContext = false, templateContext = false, selectionContext = false) {
     if (ts.isStringLiteralLike(node)) {
       let updated = node.text;
       if (templateContext) updated = transformTemplateClasses(updated, bundle);
-      else if (classContext || /(?:^|\s)tw:/.test(updated)) updated = transformTailwindClassList(updated, bundle);
+      else if (!selectionContext && (classContext || /(?:^|\s)tw:/.test(updated)))
+        updated = transformTailwindClassList(updated, bundle);
       if (updated !== node.text) {
         replacements.push({ start: node.getStart(sourceFile), end: node.getEnd(), value: JSON.stringify(updated) });
       }
@@ -238,13 +244,26 @@ export function transformJavaScriptClasses(source, bundle = '', fileName = 'arti
       return;
     }
 
-    if (ts.isPropertyAssignment(node)) {
-      const name = propertyName(node.name);
-      visit(node.initializer, classContext || name === 'class', name === 'template');
+    if (ts.isCallExpression(node) && isSelectionCall(node)) {
+      // Variant-selection position (e.g. buttonVariants({ variant: 'outline' })):
+      // string literals are variant keys, not classes. Only class/className
+      // values stay class contexts.
+      ts.forEachChild(node, (child) => visit(child, false, templateContext, true));
       return;
     }
 
-    ts.forEachChild(node, (child) => visit(child, classContext, templateContext));
+    if (ts.isPropertyAssignment(node)) {
+      const name = propertyName(node.name);
+      const isClassValue = name === 'class' || name === 'className';
+      if (name === 'template') {
+        visit(node.initializer, false, true, false);
+        return;
+      }
+      visit(node.initializer, selectionContext ? isClassValue : classContext || isClassValue, false, selectionContext && !isClassValue);
+      return;
+    }
+
+    ts.forEachChild(node, (child) => visit(child, classContext, templateContext, selectionContext));
   }
 
   visit(sourceFile);

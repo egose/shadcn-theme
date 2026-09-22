@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarGroupContent {
   constructor() {
-    classes(() => 'text-sm w-full');
+    classes(() => 'tw:text-sm tw:w-full');
   }
 }

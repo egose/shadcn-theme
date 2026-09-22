@@ -12,7 +12,7 @@ export class HlmSidebarGroupAction {
   constructor() {
     classes(
       () =>
-        'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute end-3 top-3.5 w-5 rounded-md p-0 focus-visible:ring-2 [&>ng-icon]:text-[length:--spacing(4)] flex aspect-square items-center justify-center outline-hidden transition-transform group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 md:after:hidden [&>ng-icon]:shrink-0',
+        'tw:text-sidebar-foreground tw:ring-sidebar-ring tw:hover:bg-sidebar-accent tw:hover:text-sidebar-accent-foreground tw:absolute tw:end-3 tw:top-3.5 tw:w-5 tw:rounded-md tw:p-0 tw:focus-visible:ring-2 tw:[&>ng-icon]:text-[length:--spacing(4)] tw:flex tw:aspect-square tw:items-center tw:justify-center tw:outline-hidden tw:transition-transform tw:group-data-[collapsible=icon]:hidden tw:after:absolute tw:after:-inset-2 tw:md:after:hidden tw:[&>ng-icon]:shrink-0',
     );
   }
 }

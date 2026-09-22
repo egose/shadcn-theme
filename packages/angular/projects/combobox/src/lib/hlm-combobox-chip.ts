@@ -29,7 +29,7 @@ export class HlmComboboxChip {
   constructor() {
     classes(
       () =>
-        'bg-muted text-foreground flex h-[calc(--spacing(5.5))] w-fit items-center justify-center gap-1 rounded-sm px-1.5 text-xs font-medium whitespace-nowrap has-data-[slot=combobox-chip-remove]:pe-0 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50',
+        'tw:bg-muted tw:text-foreground tw:flex tw:h-[calc(--spacing(5.5))] tw:w-fit tw:items-center tw:justify-center tw:gap-1 tw:rounded-sm tw:px-1.5 tw:text-xs tw:font-medium tw:whitespace-nowrap tw:has-data-[slot=combobox-chip-remove]:pe-0 tw:has-disabled:pointer-events-none tw:has-disabled:cursor-not-allowed tw:has-disabled:opacity-50',
     );
   }
 }

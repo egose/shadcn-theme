@@ -11,7 +11,7 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   host: { 'data-slot': 'pagination-ellipsis' },
   template: `
     <ng-icon name="lucideEllipsis" />
-    <span class="sr-only">{{ srOnlyText() }}</span>
+    <span class="tw:sr-only">{{ srOnlyText() }}</span>
   `,
 })
 export class HlmPaginationEllipsis {
@@ -20,7 +20,8 @@ export class HlmPaginationEllipsis {
 
   constructor() {
     classes(
-      () => "size-9 [&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] flex items-center justify-center",
+      () =>
+        "tw:size-9 tw:[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] tw:flex tw:items-center tw:justify-center",
     );
   }
 }

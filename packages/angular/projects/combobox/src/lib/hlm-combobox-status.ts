@@ -9,6 +9,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxStatus {
   constructor() {
-    classes(() => 'text-muted-foreground gap-2 px-3 py-2 text-sm flex w-full items-center justify-center text-center');
+    classes(
+      () =>
+        'tw:text-muted-foreground tw:gap-2 tw:px-3 tw:py-2 tw:text-sm tw:flex tw:w-full tw:items-center tw:justify-center tw:text-center',
+    );
   }
 }

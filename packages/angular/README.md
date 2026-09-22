@@ -61,10 +61,13 @@ Prepare both release candidates without publishing by supplying the intended ver
 pnpm --dir packages/angular prepare:release --version 1.2.3
 ```
 
-This serially builds, validates, and packs the plain and `tw:` variants. The inspectable stages and two exact `.tgz`
-artifacts are written under `packages/angular/release/`. Neither package is published unless both candidates pass every
-step. Publishing is intended to run from protected CI with npm trusted publishing/OIDC; `--otp` remains available for
-manual releases, but its value is never logged.
+This runs `@repo-toolkit/publish-package` with `publish.config.mjs`: it serially
+builds, validates, and packs the plain (`release/plain` → `@egose/shadcn-theme-ng`)
+and `tw:` (`release/tw` → `@egose/shadcn-theme-ng-tw`) variants. The inspectable
+stages and two exact `.tgz` artifacts are written under `packages/angular/release/`.
+Neither package is published unless both candidates pass every step. Publishing is
+intended to run from protected CI with npm trusted publishing/OIDC; `--otp` remains
+available for manual publishes (passed to the toolkit publish command, never logged).
 
 ## Source tests
 
@@ -162,6 +165,55 @@ export class DemoComponent {
   readonly items: MenuItem[] = [];
 }
 ```
+
+## Date picker values
+
+`hlm-date-picker` emits a native JS `Date` (or `null` when cleared) via the `dateChange` output. Read it in the
+controller with `(dateChange)`, a template ref (`picker.value()`), or a form binding (`ngModel`/`formControlName`,
+the picker is a `ControlValueAccessor`):
+
+```html
+<hlm-date-picker (dateChange)="onDate($event)">
+  <hlm-date-picker-input placeholder="Pick a date" />
+</hlm-date-picker>
+```
+
+```ts
+onDate(date: Date | null) {
+  // date is a JS Date, e.g. 2026-09-23T00:00:00 local time (or null on clear)
+}
+```
+
+Unlike the React `FormDatePicker` (which normalizes to local midnight), the Angular picker passes dates through
+untouched by default: calendar clicks usually arrive at local midnight already, but dates typed into the input are
+parsed with `new Date(value)`, where `"YYYY-MM-DD"` means UTC midnight — so the time portion can be non-zero. To
+normalize every value reaching the controller to local midnight, provide a custom config (no library changes needed):
+
+```ts
+import { provideHlmDatePickerConfig } from '@egose/shadcn-theme-ng/date-picker';
+
+@Component({
+  // ...
+  providers: [
+    provideHlmDatePickerConfig({
+      // Strip the time portion, mirroring React's normalizeDate.
+      transformDate: (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+      // Parse typed "YYYY-MM-DD" as a local date instead of new Date(value) (UTC).
+      parseDate: (value: string) => {
+        const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+        if (!match) return null;
+        const date = new Date(+match[1], +match[2] - 1, +match[3]);
+        return isNaN(date.getTime()) ? null : date;
+      },
+    }),
+  ],
+})
+export class MyComponent {}
+```
+
+`transformDate` runs on every path into the model (calendar selection, typed input, `writeValue`), so the controller
+then always sees local-midnight dates. Related: the picker stays open after selection by default; add the
+`autoCloseOnSelect` attribute (or set it in the same config) to close it on select.
 
 ## Working example
 

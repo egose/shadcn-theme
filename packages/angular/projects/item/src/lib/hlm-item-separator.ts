@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmItemSeparator {
   constructor() {
-    classes(() => [hlmSeparatorClass, 'my-2']);
+    classes(() => [hlmSeparatorClass, 'tw:my-2']);
   }
 }

@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxSeparator {
   constructor() {
-    classes(() => 'bg-border -mx-1 my-1 h-px');
+    classes(() => 'tw:bg-border tw:-mx-1 tw:my-1 tw:h-px');
   }
 }

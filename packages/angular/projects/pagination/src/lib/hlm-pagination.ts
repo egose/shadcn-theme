@@ -14,6 +14,6 @@ export class HlmPagination {
   public readonly ariaLabel = input<string>('pagination', { alias: 'aria-label' });
 
   constructor() {
-    classes(() => 'mx-auto flex w-full justify-center');
+    classes(() => 'tw:mx-auto tw:flex tw:w-full tw:justify-center');
   }
 }

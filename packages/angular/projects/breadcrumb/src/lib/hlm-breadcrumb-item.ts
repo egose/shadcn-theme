@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmBreadcrumbItem {
   constructor() {
-    classes(() => 'gap-1.5 inline-flex items-center');
+    classes(() => 'tw:gap-1.5 tw:inline-flex tw:items-center');
   }
 }

@@ -17,6 +17,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCommand {
   constructor() {
-    classes(() => 'bg-popover text-popover-foreground rounded-xl! p-1 flex size-full flex-col overflow-hidden');
+    classes(
+      () =>
+        'tw:bg-popover tw:text-popover-foreground tw:rounded-xl! tw:p-1 tw:flex tw:size-full tw:flex-col tw:overflow-hidden',
+    );
   }
 }

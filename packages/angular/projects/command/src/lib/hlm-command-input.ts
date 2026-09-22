@@ -15,18 +15,18 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   },
   template: `
     <hlm-input-group
-      class="bg-input/30 border-input/30 h-8! rounded-lg! shadow-none! *:data-[slot=input-group-addon]:pl-2!"
+      class="tw:bg-input/30 tw:border-input/30 tw:h-8! tw:rounded-lg! tw:shadow-none! tw:*:data-[slot=input-group-addon]:pl-2!"
     >
       <input
         brnCommandInput
         data-slot="command-input"
-        class="w-full text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+        class="tw:w-full tw:text-sm tw:outline-hidden tw:disabled:cursor-not-allowed tw:disabled:opacity-50"
         [id]="inputId()"
         [placeholder]="placeholder()"
       />
 
       <hlm-input-group-addon>
-        <ng-icon name="lucideSearch" class="shrink-0 text-[length:--spacing(4)] opacity-50" />
+        <ng-icon name="lucideSearch" class="tw:shrink-0 tw:text-[length:--spacing(4)] tw:opacity-50" />
       </hlm-input-group-addon>
     </hlm-input-group>
   `,
@@ -36,6 +36,6 @@ export class HlmCommandInput {
   public readonly placeholder = input<string>('');
 
   constructor() {
-    classes(() => 'p-1 pb-0');
+    classes(() => 'tw:p-1 tw:pb-0');
   }
 }

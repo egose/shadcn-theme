@@ -1,7 +1,8 @@
 import { Directive } from '@angular/core';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 
-export const hlmCode = 'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold';
+export const hlmCode =
+  'tw:relative tw:rounded tw:bg-muted tw:px-[0.3rem] tw:py-[0.2rem] tw:font-mono tw:text-sm tw:font-semibold';
 
 @Directive({
   selector: '[hlmCode]',

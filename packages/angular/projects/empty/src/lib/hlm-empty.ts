@@ -9,7 +9,7 @@ export class HlmEmpty {
   constructor() {
     classes(
       () =>
-        'gap-4 rounded-lg border-dashed p-12 flex w-full min-w-0 flex-1 flex-col items-center justify-center text-center text-balance',
+        'tw:gap-4 tw:rounded-lg tw:border-dashed tw:p-12 tw:flex tw:w-full tw:min-w-0 tw:flex-1 tw:flex-col tw:items-center tw:justify-center tw:text-center tw:text-balance',
     );
   }
 }

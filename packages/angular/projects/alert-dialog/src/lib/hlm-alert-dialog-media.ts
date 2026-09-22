@@ -9,7 +9,7 @@ export class HlmAlertDialogMedia {
   constructor() {
     classes(
       () =>
-        "bg-muted mb-2 inline-flex size-16 items-center justify-center rounded-md sm:group-data-[size=default]/alert-dialog-content:row-span-2 *:[ng-icon:not([class*='text-'])]:text-[length:--spacing(8)]",
+        "tw:bg-muted tw:mb-2 tw:inline-flex tw:size-16 tw:items-center tw:justify-center tw:rounded-md tw:sm:group-data-[size=default]/alert-dialog-content:row-span-2 tw:*:[ng-icon:not([class*='text-'])]:text-[length:--spacing(8)]",
     );
   }
 }

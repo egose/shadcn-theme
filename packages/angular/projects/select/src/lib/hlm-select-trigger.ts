@@ -25,7 +25,7 @@ import type { ClassValue } from 'clsx';
       data-slot="select-trigger"
     >
       <ng-content />
-      <ng-icon name="lucideChevronDown" class="text-muted-foreground text-[length:--spacing(4)] ms-auto" />
+      <ng-icon name="lucideChevronDown" class="tw:text-muted-foreground tw:text-[length:--spacing(4)] tw:ms-auto" />
     </button>
   `,
 })
@@ -35,7 +35,7 @@ export class HlmSelectTrigger {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     hlm(
-      'border-input data-placeholder:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/50 data-[matches-spartan-invalid=true]:ring-destructive/20 dark:data-[matches-spartan-invalid=true]:ring-destructive/40 data-[matches-spartan-invalid=true]:border-destructive dark:data-[matches-spartan-invalid=true]:border-destructive/50 gap-1.5 rounded-md border bg-transparent py-2 ps-2.5 pe-2 text-sm shadow-xs transition-[color,box-shadow] focus-visible:ring-3 data-[matches-spartan-invalid=true]:ring-3 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:gap-1.5 flex w-fit items-center justify-between whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center [&_ng-icon]:pointer-events-none [&_ng-icon]:shrink-0',
+      'tw:border-input tw:data-placeholder:text-muted-foreground tw:dark:bg-input/30 tw:dark:hover:bg-input/50 tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:data-[matches-spartan-invalid=true]:ring-destructive/20 tw:dark:data-[matches-spartan-invalid=true]:ring-destructive/40 tw:data-[matches-spartan-invalid=true]:border-destructive tw:dark:data-[matches-spartan-invalid=true]:border-destructive/50 tw:gap-1.5 tw:rounded-md tw:border tw:bg-transparent tw:py-2 tw:ps-2.5 tw:pe-2 tw:text-sm tw:shadow-xs tw:transition-[color,box-shadow] tw:focus-visible:ring-3 tw:data-[matches-spartan-invalid=true]:ring-3 tw:data-[size=default]:h-9 tw:data-[size=sm]:h-8 tw:*:data-[slot=select-value]:gap-1.5 tw:flex tw:w-fit tw:items-center tw:justify-between tw:whitespace-nowrap tw:outline-none tw:disabled:cursor-not-allowed tw:disabled:opacity-50 tw:*:data-[slot=select-value]:line-clamp-1 tw:*:data-[slot=select-value]:flex tw:*:data-[slot=select-value]:items-center tw:[&_ng-icon]:pointer-events-none tw:[&_ng-icon]:shrink-0',
       this.userClass(),
     ),
   );

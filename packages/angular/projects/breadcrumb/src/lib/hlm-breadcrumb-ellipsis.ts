@@ -14,7 +14,7 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   },
   template: `
     <ng-icon name="lucideEllipsis" />
-    <span class="sr-only">{{ srOnlyText() }}</span>
+    <span class="tw:sr-only">{{ srOnlyText() }}</span>
   `,
 })
 export class HlmBreadcrumbEllipsis {
@@ -22,6 +22,6 @@ export class HlmBreadcrumbEllipsis {
   public readonly srOnlyText = input<string>('More');
 
   constructor() {
-    classes(() => 'size-5 [&>ng-icon]:text-[length:--spacing(4)] flex items-center justify-center');
+    classes(() => 'tw:size-5 tw:[&>ng-icon]:text-[length:--spacing(4)] tw:flex tw:items-center tw:justify-center');
   }
 }

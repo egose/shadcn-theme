@@ -31,6 +31,6 @@ export class HlmBreadcrumbLink {
   public readonly link = input<RouterLink['routerLink']>();
 
   constructor() {
-    classes(() => 'hover:text-foreground transition-colors');
+    classes(() => 'tw:hover:text-foreground tw:transition-colors');
   }
 }

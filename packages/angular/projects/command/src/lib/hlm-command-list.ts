@@ -16,6 +16,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCommandList {
   constructor() {
-    classes(() => 'no-scrollbar max-h-72 scroll-py-1 outline-none overflow-x-hidden overflow-y-auto');
+    classes(() => 'no-scrollbar tw:max-h-72 tw:scroll-py-1 tw:outline-none tw:overflow-x-hidden tw:overflow-y-auto');
   }
 }

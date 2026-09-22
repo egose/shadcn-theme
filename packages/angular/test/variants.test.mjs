@@ -81,6 +81,14 @@ test('JavaScript transformation is syntax-aware and leaves non-class strings unc
   assert.match(transformed, /class=\\"tw:relative tw:flex\\"/);
 });
 
+test('variant selections inside *Variants and provide calls are not treated as classes', () => {
+  const source = `classes(() => ['relative', buttonVariants({ variant: this.isActive() ? 'outline' : 'ghost', size: 'icon' })]);`;
+  assert.equal(transformJavaScriptClasses(source, ''), source);
+  assert.equal(transformJavaScriptClasses(source, 'tw'), source.replace("'relative'", '"tw:relative"'));
+  const provider = `providers: [provideBrnButtonConfig({ variant: 'outline', size: 'icon-sm' })]`;
+  assert.equal(transformJavaScriptClasses(provider, 'tw'), provider);
+});
+
 test('plain and tw artifacts stage independently with runtime and declaration identity', async () => {
   const workspace = await workspaceFixture();
   const stages = path.join(workspace, '..', 'stages');

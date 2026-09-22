@@ -37,6 +37,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxMultiple {
   constructor() {
-    classes(() => 'block');
+    classes(() => 'tw:block');
   }
 }

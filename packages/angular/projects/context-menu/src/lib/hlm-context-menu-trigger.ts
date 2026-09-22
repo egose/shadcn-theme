@@ -46,6 +46,6 @@ export class HlmContextMenuTrigger {
       this._cdkTrigger.menuPosition = this._menuPosition();
     });
 
-    classes(() => 'select-none');
+    classes(() => 'tw:select-none');
   }
 }

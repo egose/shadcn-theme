@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCommandGroupLabel {
   constructor() {
-    classes(() => 'inline-block');
+    classes(() => 'tw:inline-block');
   }
 }

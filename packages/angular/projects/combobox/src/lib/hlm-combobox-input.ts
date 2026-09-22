@@ -34,7 +34,7 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
           [disabled]="comboboxInput.disabled()"
           size="icon-xs"
           variant="ghost"
-          class="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+          class="tw:group-has-data-[slot=combobox-clear]/input-group:hidden tw:data-pressed:bg-transparent"
         >
           <ng-icon name="lucideChevronDown" />
         </button>
@@ -74,6 +74,6 @@ export class HlmComboboxInput {
   });
 
   constructor() {
-    classes(() => 'w-auto');
+    classes(() => 'tw:w-auto');
   }
 }

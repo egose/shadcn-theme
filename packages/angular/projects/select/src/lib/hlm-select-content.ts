@@ -25,14 +25,14 @@ import { HlmSelectScrollUp } from './hlm-select-scroll-up';
   `,
 })
 export class HlmSelectContent {
-  protected readonly _computedListboxClasses = computed(() => hlm('flex flex-col'));
+  protected readonly _computedListboxClasses = computed(() => hlm('tw:flex tw:flex-col'));
 
   public readonly showScroll = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
   constructor() {
     classes(
       () =>
-        'bg-popover no-scrollbar text-popover-foreground data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 ring-foreground/10 max-h-72 min-w-36 flex-col rounded-md shadow-md ring-1 duration-100 relative flex w-(--brn-select-width) overflow-x-hidden overflow-y-auto',
+        'tw:bg-popover no-scrollbar tw:text-popover-foreground tw:data-open:animate-in tw:data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 tw:data-closed:zoom-out-95 tw:data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 tw:ring-foreground/10 tw:max-h-72 tw:min-w-36 tw:flex-col tw:rounded-md tw:shadow-md tw:ring-1 tw:duration-100 tw:relative tw:flex tw:w-(--brn-select-width) tw:overflow-x-hidden tw:overflow-y-auto',
     );
   }
 }

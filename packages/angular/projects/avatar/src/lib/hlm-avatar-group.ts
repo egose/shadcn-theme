@@ -10,7 +10,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmAvatarGroup {
   constructor() {
     classes(
-      () => '*:data-[slot=avatar]:ring-background group/avatar-group flex -space-x-2 *:data-[slot=avatar]:ring-2',
+      () =>
+        'tw:*:data-[slot=avatar]:ring-background tw:group/avatar-group tw:flex tw:-space-x-2 tw:*:data-[slot=avatar]:ring-2',
     );
   }
 }

@@ -9,6 +9,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmBreadcrumbList {
   constructor() {
-    classes(() => 'text-muted-foreground gap-1.5 text-sm sm:gap-2.5 flex flex-wrap items-center wrap-break-word');
+    classes(
+      () =>
+        'tw:text-muted-foreground tw:gap-1.5 tw:text-sm tw:sm:gap-2.5 tw:flex tw:flex-wrap tw:items-center tw:wrap-break-word',
+    );
   }
 }

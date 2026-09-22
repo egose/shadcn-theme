@@ -7,6 +7,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmItemTitle {
   constructor() {
-    classes(() => 'gap-2 text-sm leading-snug font-medium underline-offset-4 line-clamp-1 flex w-fit items-center');
+    classes(
+      () =>
+        'tw:gap-2 tw:text-sm tw:leading-snug tw:font-medium tw:underline-offset-4 tw:line-clamp-1 tw:flex tw:w-fit tw:items-center',
+    );
   }
 }

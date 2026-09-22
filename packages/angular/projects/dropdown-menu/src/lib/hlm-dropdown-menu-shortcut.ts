@@ -9,7 +9,7 @@ export class HlmDropdownMenuShortcut {
   constructor() {
     classes(
       () =>
-        'text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground ml-auto text-xs tracking-widest',
+        'tw:text-muted-foreground tw:group-focus/dropdown-menu-item:text-accent-foreground tw:ml-auto tw:text-xs tw:tracking-widest',
     );
   }
 }

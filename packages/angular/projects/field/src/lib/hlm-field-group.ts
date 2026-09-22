@@ -9,7 +9,7 @@ export class HlmFieldGroup {
   constructor() {
     classes(
       () =>
-        'gap-7 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4 group/field-group @container/field-group flex w-full flex-col',
+        'tw:gap-7 tw:data-[slot=checkbox-group]:gap-3 tw:*:data-[slot=field-group]:gap-4 tw:group/field-group tw:@container/field-group tw:flex tw:w-full tw:flex-col',
     );
   }
 }

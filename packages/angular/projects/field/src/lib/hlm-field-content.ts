@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmFieldContent {
   constructor() {
-    classes(() => 'gap-1 group/field-content flex flex-1 flex-col leading-snug');
+    classes(() => 'tw:gap-1 tw:group/field-content tw:flex tw:flex-1 tw:flex-col tw:leading-snug');
   }
 }

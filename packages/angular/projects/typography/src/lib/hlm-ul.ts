@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 
-export const hlmUl = 'my-6 ml-6 list-disc [&>li]:mt-2';
+export const hlmUl = 'tw:my-6 tw:ml-6 tw:list-disc tw:[&>li]:mt-2';
 
 @Directive({
   selector: '[hlmUl]',

@@ -173,8 +173,8 @@
     "build:consumer": "pnpm --dir .isolated-consumer build",
     "bundle": "tsup",
     "postbundle": "node prepend-use-client.mjs",
-    "prepare:package": "cd ../.. && node scripts/publish.mjs --context react --version 0.0.0-test.0 --prepare-only",
-    "validate:package": "node scripts/validate-package.mjs dist",
+    "prepare:package": "pnpm --dir ../.. exec repo-toolkit-publish-package --config packages/react/publish.config.mjs --version 0.0.0-test.0 --prepare-only",
+    "validate:package": "node scripts/validate-package.mjs release/npm",
     "test:package-validator": "node --test scripts/validate-package.test.mjs"
   },
   "dependencies": {

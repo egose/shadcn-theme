@@ -13,9 +13,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmButtonGroupSeparator {
   constructor() {
     classes(() => [
-      'bg-input relative self-stretch data-horizontal:mx-px data-horizontal:w-auto data-vertical:my-px data-vertical:h-auto',
+      'tw:bg-input tw:relative tw:self-stretch tw:data-horizontal:mx-px tw:data-horizontal:w-auto tw:data-vertical:my-px tw:data-vertical:h-auto',
       // separator classes
-      'shrink-0 data-horizontal:h-px data-vertical:w-px data-vertical:self-stretch',
+      'tw:shrink-0 tw:data-horizontal:h-px tw:data-vertical:w-px tw:data-vertical:self-stretch',
     ]);
   }
 }

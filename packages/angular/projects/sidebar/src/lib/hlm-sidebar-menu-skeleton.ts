@@ -13,11 +13,11 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   },
   template: `
     @if (showIcon()) {
-      <hlm-skeleton data-sidebar="menu-skeleton-icon" class="size-4 rounded-md" />
+      <hlm-skeleton data-sidebar="menu-skeleton-icon" class="tw:size-4 tw:rounded-md" />
     } @else {
       <hlm-skeleton
         data-sidebar="menu-skeleton-text"
-        class="h-4 max-w-(--skeleton-width) flex-1"
+        class="tw:h-4 tw:max-w-(--skeleton-width) tw:flex-1"
         [style.--skeleton-width]="_width"
       />
     }
@@ -28,6 +28,6 @@ export class HlmSidebarMenuSkeleton {
   protected readonly _width = `${Math.floor(Math.random() * 40) + 50}%`;
 
   constructor() {
-    classes(() => 'h-8 gap-2 rounded-md px-2 flex items-center');
+    classes(() => 'tw:h-8 tw:gap-2 tw:rounded-md tw:px-2 tw:flex tw:items-center');
   }
 }

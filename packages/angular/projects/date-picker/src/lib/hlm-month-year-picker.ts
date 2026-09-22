@@ -42,10 +42,10 @@ export const HLM_MONTH_YEAR_PICKER_VALUE_ACCESSOR = {
     <hlm-popover sideOffset="5" [state]="_popoverState()" (stateChanged)="_onStateChange($event)">
       <ng-content />
 
-      <hlm-popover-content class="w-fit p-0" *hlmPopoverPortal="let ctx">
+      <hlm-popover-content class="tw:w-fit tw:p-0" *hlmPopoverPortal="let ctx">
         <ng-content select="[hlmDatePickerHeader]" />
         <hlm-month-year-calendar
-          class="rounded-none border-0"
+          class="tw:rounded-none tw:border-0"
           [date]="_mutableDate()"
           [defaultFocusedDate]="_mutableDate() ?? defaultFocusedDate()"
           [min]="min()"

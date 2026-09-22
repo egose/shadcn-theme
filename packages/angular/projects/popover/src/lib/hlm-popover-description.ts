@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmPopoverDescription {
   constructor() {
-    classes(() => 'text-muted-foreground');
+    classes(() => 'tw:text-muted-foreground');
   }
 }

@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSelectGroup {
   constructor() {
-    classes(() => 'scroll-my-1 p-1');
+    classes(() => 'tw:scroll-my-1 tw:p-1');
   }
 }
