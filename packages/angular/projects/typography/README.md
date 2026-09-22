@@ -208,7 +208,7 @@ export class DemoScale {}
 ### 4. Inline code + blockquote
 
 ```html
-<p hlmP>Run <code hlmCode>ng build my-lib</code> to build, then <code hlmCode>npm publish</code> to release.</p>
+<p hlmP>Run <code hlmCode>ng build my-lib</code> to build, then ship the output.</p>
 <blockquote hlmBlockquote>
   "Design is the silent ambassador of your brand." — pair with a <cite>cite</cite> for attribution.
 </blockquote>
