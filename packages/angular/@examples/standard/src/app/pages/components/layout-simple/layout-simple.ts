@@ -49,7 +49,7 @@ import {
           <span class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-wider tw:text-foreground/75"
             >Workspace overview</span
           >
-          <h2 class="tw:text-2xl tw:font-semibold tw:tracking-tight">A clearer place to work</h2>
+          <h3 class="tw:text-2xl tw:font-semibold tw:tracking-tight">A clearer place to work</h3>
           <p class="tw:max-w-lg tw:text-sm tw:leading-6 tw:text-foreground/75">
             Open Explore components for a card-style fly-out, navigate with the keyboard, or resize the window to
             explore expandable mobile categories.
