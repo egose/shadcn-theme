@@ -58,7 +58,7 @@ import { tablerBrandAngular } from '@ng-icons/tabler-icons';
             </div>
 
             <div class="tw:mt-5 tw:flex tw:flex-wrap tw:gap-3">
-              <a hlmButton variant="link" appearance="solid" routerLink="/components">Documentation</a>
+              <a hlmButton variant="primary" appearance="link" routerLink="/components">Documentation</a>
               <button hlmButton variant="dark" [disabled]="true" type="button">Disabled</button>
             </div>
           </app-demo-section>
@@ -144,6 +144,11 @@ export class ButtonPage {
     { title: 'Outline filled - loading', appearance: 'outline-filled', loading: true },
     { title: 'Outline filled - disabled - loading', appearance: 'outline-filled', disabled: true, loading: true },
     { title: 'Outline filled - compact', appearance: 'outline-filled', size: 'compact-default' },
+
+    { title: 'Ghost', appearance: 'ghost' },
+    { title: 'Ghost - loading', appearance: 'ghost', loading: true },
+    { title: 'Link', appearance: 'link' },
+    { title: 'Link - loading', appearance: 'link', loading: true },
 
     { title: 'Icon (left)', icon: true, iconPosition: 'left' },
     { title: 'Icon (right)', icon: true, iconPosition: 'right' },

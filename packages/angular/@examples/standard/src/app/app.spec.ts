@@ -1,6 +1,8 @@
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { of } from 'rxjs';
 import { App } from './app';
 
 @Component({
@@ -20,6 +22,9 @@ describe('App', () => {
         provideRouter([
           { path: '', redirectTo: 'gallery', pathMatch: 'full' },
           { path: 'gallery', component: RoutedTestPage },
+          { path: 'components/:slug', component: RoutedTestPage },
+          { path: 'examples/:slug', component: RoutedTestPage },
+          { path: 'home', component: RoutedTestPage },
         ]),
       ],
     }).compileComponents();
@@ -60,16 +65,36 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    const sidebarTrigger = compiled.querySelector<HTMLButtonElement>(
-      'button[aria-controls="eg-layout-simple-sidebar"]',
-    );
-    const mobileTrigger = compiled.querySelector<HTMLButtonElement>(
-      'button[aria-controls="eg-layout-simple-mobile-menu"]',
-    );
+    const sidebarTrigger = compiled.querySelector<HTMLButtonElement>('button[aria-controls$="-sidebar"]');
+    const mobileTrigger = compiled.querySelector<HTMLButtonElement>('button[aria-controls$="-mobile-menu"]');
     expect(sidebarTrigger?.getAttribute('aria-label')).withContext('sidebar trigger').toBeTruthy();
     expect(mobileTrigger?.getAttribute('aria-label')).withContext('mobile trigger').toBeTruthy();
     expect(sidebarTrigger!.getAttribute('aria-label')).not.toBe(mobileTrigger!.getAttribute('aria-label'));
     expect(sidebarTrigger?.getAttribute('aria-expanded')).toBe('false');
     expect(mobileTrigger?.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('moves route-aware catalog groups into the fly-out navbar', async () => {
+    TestBed.overrideProvider(BreakpointObserver, {
+      useValue: { observe: () => of({ matches: false, breakpoints: {} }) },
+    });
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/components/button');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(
+      fixture.componentInstance.flyoutNavigationGroups().some((group) => group.label === 'Forms & Inputs'),
+    ).toBeTrue();
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('eg-layout-flyout-navbar')).not.toBeNull();
+    expect(element.querySelector('[aria-label="Secondary navigation"]')).toBeNull();
+    await router.navigateByUrl('/examples/pricing');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.flyoutNavigationGroups().map((group) => group.label)).toEqual(['Product Flows']);
+    await router.navigateByUrl('/home');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.flyoutNavigationGroups()).toEqual([]);
+    expect(element.querySelector('eg-layout-flyout-navbar')).toBeNull();
   });
 });

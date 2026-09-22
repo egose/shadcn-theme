@@ -105,7 +105,9 @@ const ConfirmDialog = createTypedDialog<{ title: string }, boolean>(
 
 - `utils/ui`, `utils/date`, and `utils/time` are safe to call from Server Components. Hook, context, interactive, and browser-dependent entries declare `"use client"` in ESM and CommonJS.
 - The `components/widgets/dialog-manager` barrel is a client entry. A Server Component may render `DialogManagerProvider`; call `useDialog` and pass event callbacks only from your own client component.
-- `Button` accepts `variant`, `size`, `appearance`, `loading`, `icon`, `iconPosition`; see `buttonVariants` for the resolved class string.
+- `Button` accepts `variant`, `size`, `appearance`, `loading`, `icon`, `iconPosition`. Combine semantic colors (including `action`) with `solid`, `outline`, `outline-filled`, `ghost`, or `link` appearances (`VariantStyleType`). Legacy `link`/`ghost` variants remain supported.
+- `buttonVariants` includes all appearance rules; use `cn(buttonVariants({ variant: 'success', appearance: 'outline' }), className)` for custom hosts. Consumer `className` overrides are merged last; loading spinners inherit the button text color.
+- Define palettes with Tailwind v4 `@theme inline` mappings to CSS variables for scoped light/dark or brand themes. CSS tokens customize existing variant names, not the typed variant list. See README's Button colors and appearances section.
 - Form-field wrappers (`components/form/text-input`, `select`, `checkbox`, `date-picker`, `textarea`, …) compose with `react-hook-form` via `inputProps={{ ...register('name', rules) }}`. `HookFormRules<T>` (in `components/form/types`) is the safe `RegisterOptions` subset.
 - Layout `aslink` prop is required — pass your router's `Link` (works for both `to=` and `href=` APIs).
 - `cn` is the single point for class composition; pass `classNames` slots on layouts/form-fields to extend (never override) defaults.

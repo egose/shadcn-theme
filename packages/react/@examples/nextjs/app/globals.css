@@ -12,7 +12,8 @@
    enabled for accessibility (WCAG 1.4.4 / 1.4.10). */
 
 /* See https://tailwindcss.com/docs/theme */
-@theme {
+/* Inline mappings resolve palette overrides on the consuming element, including scoped themes. */
+@theme inline {
   --color-action: var(--action);
   --color-action-foreground: var(--action-foreground);
 

@@ -1,237 +1,230 @@
 import {
+  ChangeDetectionStrategy,
   Component,
+  computed,
+  DestroyRef,
   effect,
+  ElementRef,
+  inject,
   input,
   output,
-  computed,
   signal,
-  viewChild,
   TemplateRef,
-  DestroyRef,
-  inject,
+  viewChild,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ClassValue } from 'clsx';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideMenu } from '@ng-icons/lucide';
+import { _IdGenerator } from '@angular/cdk/a11y';
+import type { ClassValue } from 'clsx';
+import { NgIcon } from '@ng-icons/core';
+import { lucideMenu, lucidePanelLeft, lucideX, lucideChevronDown } from '@ng-icons/lucide';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
-import { HlmButton } from '@egose/shadcn-theme-ng/button';
+import { HlmDropdownMenu, HlmDropdownMenuItem, HlmDropdownMenuTrigger } from '@egose/shadcn-theme-ng/dropdown-menu';
 import { EgLayoutSimpleUserMenu, type UserMenuSection } from './user-menu';
-import { EgGenericAutocomplete } from './search';
+import { EgLayoutSearch, type LayoutSearchLoader, type LayoutSearchResultContext } from './search';
 import { EgLayoutSimpleSidebar } from './sidebar';
 import { EgLayoutSimpleMobileMenuGroup } from './mobile-menu-group';
+import { EgLayoutNavigationItem } from './navigation-item';
+import { EgLayoutFlyoutNavbar } from './flyout-navbar';
+import { navigationMatchOptions, type MenuItem, type MenuGroup, type FlyoutMenuGroup } from './navigation';
 
-// Updated interface for left/right menu items
-export interface MenuItem {
-  label: string;
-  icon?: string;
-  link?: string; // optional router link
-  action?: () => void; // optional click handler
-  class?: string; // optional per-item CSS/Tailwind classes
-}
+export type { MenuItem, MenuGroup, FlyoutMenuGroup } from './navigation';
 
-export interface MenuGroup {
-  label?: string;
-  items: MenuItem[];
-}
-
-/**
- * Single viewport contract for the shell: below Tailwind's `md` (768px) breakpoint the
- * mobile menu trigger replaces all desktop navigation rows. CSS (`tw:hidden tw:md:flex`)
- * and runtime rendering both derive from this one boundary.
- */
+/** Matches Tailwind's default `md` breakpoint. */
 export const EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT = '(max-width: 767.98px)';
 
-const commonLinkGroupClasses = 'tw:hidden tw:md:flex tw:space-x-4 tw:items-center';
-const commonLinkClasses =
-  'tw:text-left tw:text-secondary tw:visited:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline';
-
+/** Responsive application shell. All navigation surfaces share the same item model. */
 @Component({
   selector: 'eg-layout-simple',
-  standalone: true,
   imports: [
     RouterLink,
+    RouterLinkActive,
+    NgTemplateOutlet,
+    NgIcon,
     EgLayoutSimpleUserMenu,
     EgLayoutSimpleSidebar,
     EgLayoutSimpleMobileMenuGroup,
-    EgGenericAutocomplete,
-    HlmButton,
-    NgIcon,
-  ],
-  providers: [
-    provideIcons({
-      lucideMenu,
-    }),
+    EgLayoutSearch,
+    EgLayoutNavigationItem,
+    EgLayoutFlyoutNavbar,
+    HlmDropdownMenu,
+    HlmDropdownMenuItem,
+    HlmDropdownMenuTrigger,
   ],
   templateUrl: './layout.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'tw:block tw:min-w-0' },
 })
-export class EgLayoutSimple<TItem, TParams extends object = { search: string }> {
+export class EgLayoutSimple<TItem = unknown> {
   private readonly destroyRef = inject(DestroyRef);
-  hlm = hlm;
-  menuIcon = lucideMenu;
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly router = inject(Router);
+  private readonly instanceId = inject(_IdGenerator).getId('eg-layout-simple-');
+  protected readonly mainId = `${this.instanceId}-main`;
+  protected readonly mobileMenuId = `${this.instanceId}-mobile-menu`;
+  protected readonly sidebarId = `${this.instanceId}-sidebar`;
+  protected readonly hlm = hlm;
+  protected readonly navigationMatchOptions = navigationMatchOptions;
+  protected readonly menuIcon = lucideMenu;
+  protected readonly sidebarIcon = lucidePanelLeft;
+  protected readonly closeIcon = lucideX;
+  protected readonly chevronIcon = lucideChevronDown;
+  protected readonly mobileMenuTrigger = viewChild<ElementRef<HTMLButtonElement>>('mobileMenuTrigger');
+  protected readonly mainContent = viewChild<ElementRef<HTMLElement>>('mainContent');
+  protected readonly sidebar = viewChild(EgLayoutSimpleSidebar);
 
-  sidebarEnabled = input<boolean>(false);
-  sidebarTitle = input<string>('Menu');
-  sidebarContent = input<TemplateRef<unknown> | undefined>();
-  /** Accessible name for the icon-only sidebar trigger. */
-  sidebarToggleLabel = input<string>('Open navigation sidebar');
-  /** Accessible name for the icon-only mobile menu trigger. */
-  mobileMenuLabel = input<string>('Open navigation menu');
-  userMenuTrigger = input<TemplateRef<unknown> | undefined>();
+  readonly sidebarEnabled = input(false);
+  readonly sidebarTitle = input('Navigation');
+  readonly sidebarContent = input<TemplateRef<unknown>>();
+  readonly sidebarToggleLabel = input('Open navigation sidebar');
+  readonly mobileMenuLabel = input('Open navigation menu');
+  readonly mobileMenuCloseLabel = input('Close navigation menu');
+  readonly userMenuTrigger = input<TemplateRef<unknown>>();
+  readonly userMenuLabel = input('Open account menu');
 
-  /** Menu data inputs */
-  leftMenus = input<MenuItem[]>([]);
-  leftMenuGroups = input<MenuGroup[]>([]);
-  rightMenus = input<MenuItem[]>([]);
-  topMenus = input<MenuItem[]>([]);
-  topSecondaryMenus = input<MenuGroup[]>([]);
-  userMenus = input<UserMenuSection[]>([]);
-  logo = input<string>('assets/logo.png');
-  logoLink = input<string>('/');
+  /** Main header destinations; use `activeMatch: 'prefix'` for whole sections. */
+  readonly primaryNavigation = input<readonly MenuItem[]>([]);
+  readonly navigationGroups = input<readonly MenuGroup[]>([]);
+  readonly utilityNavigation = input<readonly MenuItem[]>([]);
+  readonly sectionNavigation = input<readonly MenuItem[]>([]);
+  readonly secondaryNavigationGroups = input<readonly MenuGroup[]>([]);
+  /** Category navbar with wide card panels; mobile renders expandable groups. */
+  readonly flyoutNavigationGroups = input<readonly FlyoutMenuGroup[]>([]);
+  readonly flyoutNavigationLabel = input('Fly-out navigation');
+  readonly flyoutCloseLabel = input('Close navigation panel');
+  readonly userMenuSections = input<readonly UserMenuSection[]>([]);
+  /** Optional image. Without it, the brand name is shown instead of a broken image. */
+  readonly logo = input('');
+  readonly brandName = input('Workspace');
+  readonly logoLink = input('/');
+  readonly logoClass = input<ClassValue>('');
+  /** Disable for a shell preview embedded inside another page. */
+  readonly fullHeight = input(true);
+  readonly headerClass = input<ClassValue>('');
+  readonly contentClass = input<ClassValue>('');
+  readonly primaryNavigationClass = input<ClassValue>('');
+  readonly utilityNavigationClass = input<ClassValue>('');
+  readonly sectionNavigationClass = input<ClassValue>('');
+  readonly secondaryNavigationClass = input<ClassValue>('');
+  readonly flyoutNavigationClass = input<ClassValue>('');
+  readonly flyoutPanelClass = input<ClassValue>('');
+  readonly navigationItemClass = input<ClassValue>('');
+  readonly loading = input(false);
+  readonly loadingText = input('Loading content…');
+  readonly skipLinkText = input('Skip to content');
 
-  logoClass = input<ClassValue>('', { alias: 'logoClass' });
-  headerClass = input<ClassValue>('', { alias: 'headerClass' });
-  contentClass = input<ClassValue>('', { alias: 'contentClass' });
-  contentBottomClass = input<ClassValue>('', { alias: 'contentBottomClass' });
+  readonly searchEnabled = input(false);
+  readonly searchPlaceholder = input('Search pages…');
+  readonly searchEmptyText = input('No matching pages found.');
+  readonly searchErrorText = input('Search is unavailable. Please try again.');
+  readonly searchResultTemplate = input<TemplateRef<LayoutSearchResultContext<TItem>>>();
+  readonly searchLoader = input<LayoutSearchLoader<TItem>>();
+  readonly searchResultLabel = input<(item: TItem) => string>();
+  readonly searchResultSelected = output<TItem>();
 
-  /** Container class inputs */
-  leftMenuClass = input<ClassValue>('', { alias: 'leftClass' });
-  rightMenuClass = input<ClassValue>('', { alias: 'rightClass' });
-  topMenuClass = input<ClassValue>('', { alias: 'topClass' });
+  readonly footerEnabled = input(false);
+  readonly footerNavigation = input<readonly MenuItem[]>([]);
+  readonly footerText = input('');
+  readonly footerClass = input<ClassValue>('');
 
-  /** Link/button base class inputs */
-  leftLinkClass = input<ClassValue>('', { alias: 'leftLinkClass' });
-  rightLinkClass = input<ClassValue>('', { alias: 'rightLinkClass' });
-  topLinkClass = input<ClassValue>('', { alias: 'topLinkClass' });
-
-  searchEnabled = input<boolean>(false);
-  loading = input<boolean>(false);
-  searchPlaceholderText = input<string>('Select an page');
-  searchEmptyText = input<string>('No pages found');
-  searchOptionTemplate = input<TemplateRef<unknown>>();
-  searchLoaderFn = input<(params: TParams) => Promise<TItem[]>>();
-  searchTransformValueToSearch = input<(value: TItem) => string>();
-
-  public readonly searchOptionChange = output<TItem>();
-
-  protected readonly _logoClass = computed(() => hlm('tw:h-10', this.logoClass()));
-
-  protected readonly _headerClass = computed(() =>
+  protected readonly logoClasses = computed(() =>
+    hlm('tw:h-8 tw:w-auto tw:max-w-40 tw:object-contain', this.logoClass()),
+  );
+  protected readonly headerClasses = computed(() =>
     hlm(
-      'tw:px-4 tw:py-2 tw:flex tw:items-center tw:justify-between tw:bg-gray-100 tw:border-b tw:border-gray-300',
+      'tw:flex tw:min-h-16 tw:flex-wrap tw:items-center tw:justify-between tw:gap-3 tw:border-b tw:border-border tw:bg-background tw:px-4 tw:py-3 tw:sm:px-6',
       this.headerClass(),
     ),
   );
-
-  protected readonly _contentClass = computed(() => hlm('tw:p-4 tw:flex tw:flex-col tw:flex-1', this.contentClass()));
-  protected readonly _contentBottomClass = computed(() => hlm('tw:flex-1', this.contentBottomClass()));
-
-  /** Computed merged classes for containers */
-  protected readonly _computedLeftClass = computed(() => hlm(commonLinkGroupClasses, this.leftMenuClass()));
-  protected readonly _computedRightClass = computed(() => hlm(commonLinkGroupClasses, this.rightMenuClass()));
-  protected readonly _computedTopClass = computed(() =>
+  protected readonly contentClasses = computed(() =>
+    hlm('tw:flex tw:min-w-0 tw:flex-1 tw:flex-col tw:p-4 tw:outline-none tw:sm:p-6', this.contentClass()),
+  );
+  protected readonly primaryNavigationClasses = computed(() =>
+    hlm('tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-1', this.primaryNavigationClass()),
+  );
+  protected readonly utilityNavigationClasses = computed(() =>
+    hlm('tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-1', this.utilityNavigationClass()),
+  );
+  protected readonly sectionNavigationClasses = computed(() =>
     hlm(
-      'tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-2 tw:bg-gray-50 tw:border-b tw:border-gray-200',
-      this.topMenuClass(),
+      'tw:hidden tw:md:flex tw:items-center tw:gap-1 tw:overflow-x-auto tw:border-b tw:border-border tw:bg-background tw:px-4 tw:py-2 tw:sm:px-6',
+      this.sectionNavigationClass(),
     ),
   );
-  protected readonly _computedTopSecondaryClass = computed(() =>
+  protected readonly secondaryNavigationClasses = computed(() =>
     hlm(
-      'tw:hidden tw:md:flex tw:flex-wrap tw:items-center tw:gap-x-4 tw:gap-y-1 tw:px-4 tw:py-1.5 tw:bg-gray-100/60 tw:border-b tw:border-gray-200',
-      this.topMenuClass(),
+      'tw:hidden tw:md:flex tw:items-center tw:gap-5 tw:overflow-x-auto tw:border-b tw:border-border tw:bg-foreground/3 tw:px-4 tw:py-2 tw:sm:px-6',
+      this.secondaryNavigationClass(),
     ),
   );
-
-  /** Computed merged classes for link/button elements */
-  protected readonly _computedLeftLinkClass = computed(() => hlm(commonLinkClasses, this.leftLinkClass()));
-  protected readonly _computedRightLinkClass = computed(() => hlm(commonLinkClasses, this.rightLinkClass()));
-  protected readonly _computedTopLinkClass = computed(() =>
+  protected readonly footerClasses = computed(() =>
     hlm(
-      'tw:text-secondary tw:visited:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline tw:text-sm',
-      this.topLinkClass(),
-    ),
-  );
-
-  mobileMenuItemClass = commonLinkClasses;
-
-  footerEnabled = input<boolean>(false);
-  footerMenus = input<MenuItem[]>([]);
-  footerMenuClass = input<ClassValue>('', { alias: 'footerMenuClass' });
-  footerLinkClass = input<ClassValue>('', { alias: 'footerLinkClass' });
-  footerContent = input<string>('© 2024 My Company');
-  footerClass = input<ClassValue>('', { alias: 'footerClass' });
-
-  protected readonly _footerClass = computed(() =>
-    hlm(
-      'tw:px-4 tw:py-4 tw:bg-gray-100 tw:border-t tw:border-gray-300 tw:text-sm tw:text-gray-600',
+      'tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-x-6 tw:gap-y-2 tw:border-t tw:border-border tw:bg-background tw:px-4 tw:py-4 tw:text-sm tw:text-foreground/75 tw:sm:px-6',
       this.footerClass(),
     ),
   );
-
-  protected readonly _computedFooterMenuClass = computed(() =>
-    hlm('tw:flex tw:flex-wrap tw:justify-center tw:space-x-4', this.footerMenuClass()),
-  );
-
-  protected readonly _computedFooterLinkClass = computed(() =>
-    hlm('tw:text-secondary tw:hover:text-primary tw:cursor-pointer tw:no-underline', this.footerLinkClass()),
-  );
-
-  /** Mobile menu state */
+  protected readonly iconButtonClasses =
+    'tw:inline-flex tw:size-11 tw:shrink-0 tw:items-center tw:justify-center tw:rounded-lg tw:border tw:border-border tw:bg-background tw:text-foreground tw:cursor-pointer tw:hover:bg-foreground/5 tw:focus-visible:outline-2 tw:focus-visible:outline-offset-2 tw:focus-visible:outline-ring';
   protected readonly mobileMenuOpen = signal(false);
-  isMobile = signal(false);
-  /** Expanded state of the sidebar sheet, kept in sync with BrnSheet state changes. */
+  protected readonly isMobile = signal(false);
   protected readonly sidebarOpen = signal(false);
+  protected readonly sidebarContext = { close: () => this.closeSidebar() };
 
-  constructor(private breakpointObserver: BreakpointObserver) {
+  constructor() {
     this.breakpointObserver
       .observe([EG_LAYOUT_SIMPLE_MOBILE_BREAKPOINT])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((result) => {
-        this.isMobile.set(result.matches);
+      .subscribe(({ matches }) => {
+        this.isMobile.set(matches);
+        if (!matches) this.mobileMenuOpen.set(false);
       });
 
-    effect(() => {
-      // Desktop navigation replaces the mobile menu above the breakpoint, so an
-      // open mobile menu must not cross the boundary into desktop layout.
-      if (!this.isMobile() && this.mobileMenuOpen()) {
-        this.mobileMenuOpen.set(false);
+    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        if (this.mobileMenuOpen()) this.closeMobileMenu(true);
+        this.closeSidebar();
       }
     });
 
     effect((onCleanup) => {
-      const sheet = this.viewchildSheetRef()?.viewchildSheetRef();
+      const sheet = this.sidebar()?.sheet();
       if (!sheet) return;
       this.sidebarOpen.set(sheet.stateComputed() === 'open');
       const subscriptions = [
         sheet.stateChanged.subscribe((state: string) => this.sidebarOpen.set(state === 'open')),
-        // Escape/backdrop closes complete the dialog without a 'closed' state emission.
         sheet.closed.subscribe(() => this.sidebarOpen.set(false)),
       ];
       onCleanup(() => subscriptions.forEach((subscription) => subscription.unsubscribe()));
     });
   }
 
-  toggleMobileMenu() {
+  protected toggleMobileMenu(): void {
     this.mobileMenuOpen.update((open) => !open);
   }
 
-  closeMobileMenu() {
+  protected closeMobileMenu(restoreFocus = false): void {
     this.mobileMenuOpen.set(false);
+    if (restoreFocus) this.mobileMenuTrigger()?.nativeElement.focus();
   }
 
-  onSearchOptionChange(value: TItem) {
-    this.searchOptionChange.emit(value);
+  protected selectSearchResult(item: TItem): void {
+    this.closeMobileMenu(true);
+    this.searchResultSelected.emit(item);
   }
 
-  public readonly viewchildSheetRef = viewChild(EgLayoutSimpleSidebar);
-
-  openSidebar() {
-    this.viewchildSheetRef()?.openSheet();
+  protected focusContent(event: Event): void {
+    event.preventDefault();
+    this.mainContent()?.nativeElement.focus();
   }
 
-  closeSidebar() {
-    this.viewchildSheetRef()?.closeSheet();
+  openSidebar(): void {
+    this.closeMobileMenu();
+    this.sidebar()?.open();
+  }
+
+  closeSidebar(): void {
+    this.sidebar()?.close();
   }
 }

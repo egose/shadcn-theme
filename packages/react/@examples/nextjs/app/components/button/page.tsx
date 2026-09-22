@@ -33,7 +33,7 @@ const sizes = [
   'compact-lg',
 ] as const;
 
-const appearances = ['solid', 'outline', 'outline-filled'] as const;
+const appearances = ['solid', 'outline', 'outline-filled', 'ghost', 'link'] as const;
 
 export default function Page() {
   return (

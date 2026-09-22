@@ -2,39 +2,33 @@
   [sidebarEnabled]="true"
   [sidebarTitle]="'Angular Standard'"
   [sidebarContent]="sidebarContent"
-  [leftMenus]="leftMenus"
-  [topSecondaryMenus]="topSecondaryMenus"
-  [rightMenus]="rightMenus"
-  [userMenus]="menus"
+  [primaryNavigation]="primaryNavigation"
+  [flyoutNavigationGroups]="flyoutNavigationGroups()"
+  [userMenuSections]="userMenuSections"
   [userMenuTrigger]="userMenuTrigger"
   [footerEnabled]="true"
-  [footerMenus]="footerMenus"
-  [footerContent]="'Built with @egose/shadcn-theme-ng'"
-  [logo]="iconPath"
+  [footerNavigation]="footerNavigation"
+  footerText="Built with @egose/shadcn-theme-ng"
+  brandName="Angular Standard"
+  [logo]="logoPath"
   [logoClass]="'tw:h-9 tw:w-auto tw:rounded-xl tw:ring-1 tw:ring-black/5'"
-  [headerClass]="'tw:sticky tw:top-0 tw:z-30 tw:border-gray-200 tw:bg-white/90 tw:backdrop-blur'"
-  [contentClass]="'tw:flex-1 tw:bg-slate-100/80 tw:px-4 tw:py-6 sm:tw:px-6 lg:tw:px-8'"
-  [contentBottomClass]="'tw:hidden'"
-  [topClass]="'tw:border-gray-200 tw:bg-white/70 tw:backdrop-blur'"
-  [leftLinkClass]="'tw:text-sm tw:font-medium tw:text-slate-700'"
-  [rightLinkClass]="'tw:text-sm tw:font-medium tw:text-slate-700'"
-  [topLinkClass]="'tw:text-xs tw:font-medium tw:text-slate-600'"
-  [footerClass]="'tw:border-gray-200 tw:bg-white'"
+  [headerClass]="'tw:sticky tw:top-0 tw:z-30 tw:bg-background/95 tw:backdrop-blur'"
+  [contentClass]="'tw:bg-foreground/3 tw:px-4 tw:py-6 tw:sm:px-6 tw:lg:px-8'"
   [searchEnabled]="true"
-  [searchOptionTemplate]="option"
-  [searchLoaderFn]="loadDemoRoutes"
-  [searchTransformValueToSearch]="demoToSearch"
-  [searchPlaceholderText]="'Jump to a component'"
+  [searchResultTemplate]="searchResult"
+  [searchLoader]="loadDemoRoutes"
+  [searchResultLabel]="searchResultLabel"
+  [searchPlaceholder]="'Jump to a component'"
   [searchEmptyText]="'No matching component demos'"
-  (searchOptionChange)="onSearchOptionChange($event)"
+  (searchResultSelected)="navigateToSearchResult($event)"
 >
   <router-outlet />
 </eg-layout-simple>
 
-<ng-template #option let-option>
+<ng-template #searchResult let-result>
   <div class="tw:flex tw:flex-col tw:gap-0.5">
-    <span class="tw:text-xs tw:font-medium tw:text-slate-500">{{ option.group }}</span>
-    <span class="tw:text-sm tw:text-slate-900">{{ option.label }}</span>
+    <span class="tw:text-xs tw:font-medium tw:text-foreground/75">{{ result.group }}</span>
+    <span class="tw:text-sm tw:text-foreground">{{ result.label }}</span>
   </div>
 </ng-template>
 <ng-template #sidebarContent let-close="close">
@@ -98,6 +92,6 @@
     class="tw:inline-flex tw:cursor-pointer tw:select-none tw:items-center tw:gap-2 tw:rounded-full tw:border tw:border-slate-200 tw:bg-white tw:px-3 tw:py-1.5 tw:text-sm tw:font-medium tw:text-slate-700 tw:shadow-sm"
   >
     <span class="tw:inline-flex tw:h-2 tw:w-2 tw:rounded-full tw:bg-emerald-500"></span>
-    Angular Standard
+    Demo
   </span>
 </ng-template>

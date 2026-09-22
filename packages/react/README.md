@@ -72,20 +72,94 @@ export function Demo() {
 }
 ```
 
+## Button colors and appearances
+
+Use `variant` for the semantic color and `appearance` for the visual treatment:
+
+```tsx
+import { Button, buttonVariants } from '@egose/shadcn-theme/components/ui/button';
+import { cn } from '@egose/shadcn-theme/utils/ui';
+
+<Button variant="success" appearance="ghost">Save</Button>
+<Button variant="danger" appearance="link">Delete</Button>
+<Button variant="action" appearance="outline-filled">Publish</Button>
+<a href="/publish" className={cn(buttonVariants({ variant: 'action', appearance: 'outline' }))}>
+  Publish details
+</a>
+```
+
+- **Colors:** `primary`, `secondary`, `action`, `success`, `warning`, `danger`, `info`,
+  `light`, `dark`, `accent`, `destructive`, and `muted`.
+- **Appearances:** `solid`, `outline`, `outline-filled`, `ghost`, and `link` (typed as `VariantStyleType`).
+  Outline buttons use `background`; outline-filled buttons fill with the tone on hover.
+  Ghost buttons are transparent with a hover tint. Link buttons are transparent and underline on hover.
+- Legacy `variant="link"` and `variant="ghost"` remain supported. The legacy ghost variant uses the light hover tone.
+- `className` overrides are merged last. Loading spinners inherit the resolved button text color.
+- `buttonVariants()` includes all appearance rules; merge its result with `cn()` for custom hosts.
+- Secondary and light outline styles use neutral foreground/border tokens for readable text.
+
+### CSS-defined palettes and scoped themes
+
+Map Tailwind v4 colors to complete CSS color values with `@theme inline`. This resolves
+variables on the consuming element, allowing a `.dark` or custom theme ancestor to override
+the palette locally. For example, extend your global stylesheet with:
+
+```css
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-action: var(--action);
+  --color-action-foreground: var(--action-foreground);
+  /* Map the other semantic colors and their -foreground partners similarly. */
+}
+
+:root {
+  --primary: #202020;
+  --primary-foreground: #ffffff;
+  --action: #2563eb;
+  --action-foreground: #ffffff;
+}
+
+.dark {
+  --primary: #eeeeee;
+  --primary-foreground: #202020;
+  --action: #93c5fd;
+  --action-foreground: #172554;
+}
+
+.brand-theme {
+  --action: #7950f2;
+  --action-foreground: #ffffff;
+}
+```
+
+```tsx
+<section className="brand-theme">
+  <Button variant="action" appearance="outline">
+    Branded action
+  </Button>
+</section>
+```
+
+Keep the standard `background`, `foreground`, `border`, and `ring` mappings alongside the
+palette. The Next.js example includes the complete setup; it maps `light` to `secondary`
+and `dark` to `primary`, including their foreground partners. Adding `--color-brand` in CSS
+does not register `variant="brand"`: customize an existing semantic token or use `className`.
+
 ## Selected exports
 
-| Surface         | Example import                                               | Exported names                                                                       |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| Button          | `@egose/shadcn-theme/components/ui/button`                   | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`                 |
-| `cn` helper     | `@egose/shadcn-theme/utils/ui`                               | `cn`                                                                                 |
-| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`                    | `useClipboard`                                                                       |
-| Form text input | `@egose/shadcn-theme/components/form/text-input`             | `FormTextInput`, `FormTextInputProps`                                                |
-| Page header     | `@egose/shadcn-theme/components/widgets/page-header`         | `PageHeader`, `PageHeaderProps`                                                      |
-| Action menu     | `@egose/shadcn-theme/components/widgets/action-menu`         | `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`                                    |
-| Confirm dialog  | `@egose/shadcn-theme/components/widgets/confirmation-dialog` | `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`           |
-| Simple layout   | `@egose/shadcn-theme/layouts/simple`                         | `SimpleLayout` (default), `SimpleLayoutProps`, `MenuItem`, `UserMenuSection` (types) |
-| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                       | `SidebarLayout` (default), `useLayoutHeader`, `ISidebarData`, `INavUser`             |
-| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager`      | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogCancellationError` |
+| Surface         | Example import                                               | Exported names                                                                           |
+| --------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Button          | `@egose/shadcn-theme/components/ui/button`                   | `Button`, `buttonVariants`, `ButtonProps`, `VariantType`, `SizeType`, `VariantStyleType` |
+| `cn` helper     | `@egose/shadcn-theme/utils/ui`                               | `cn`                                                                                     |
+| `useClipboard`  | `@egose/shadcn-theme/hooks/use-clipboard`                    | `useClipboard`                                                                           |
+| Form text input | `@egose/shadcn-theme/components/form/text-input`             | `FormTextInput`, `FormTextInputProps`                                                    |
+| Page header     | `@egose/shadcn-theme/components/widgets/page-header`         | `PageHeader`, `PageHeaderProps`                                                          |
+| Action menu     | `@egose/shadcn-theme/components/widgets/action-menu`         | `ActionMenu`, `ActionMenuProps`, `ActionMenuItem`                                        |
+| Confirm dialog  | `@egose/shadcn-theme/components/widgets/confirmation-dialog` | `ConfirmationDialog`, `ConfirmationDialogArgs`, `ConfirmationDialogResult`               |
+| Simple layout   | `@egose/shadcn-theme/layouts/simple`                         | `SimpleLayout` (default), `SimpleLayoutProps`, `MenuItem`, `UserMenuSection` (types)     |
+| Sidebar layout  | `@egose/shadcn-theme/layouts/sidebar1`                       | `SidebarLayout` (default), `useLayoutHeader`, `ISidebarData`, `INavUser`                 |
+| Dialog manager  | `@egose/shadcn-theme/components/widgets/dialog-manager`      | `DialogManagerProvider`, `useDialog`, `createTypedDialog`, `DialogCancellationError`     |
 
 The installed package exposes public modules through the `components/`, `hooks/`, `utils/`, and `layouts/` subpaths. Its `exports` map is authoritative; physical package files are not public import paths.
 

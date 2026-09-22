@@ -1,55 +1,45 @@
-import { Component, effect, input, viewChild, TemplateRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { BrnSheet } from '@spartan-ng/brain/sheet';
-import { BrnSheetImports } from '@spartan-ng/brain/sheet';
+import { ChangeDetectionStrategy, Component, input, viewChild, TemplateRef } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { BrnSheet, BrnSheetImports } from '@spartan-ng/brain/sheet';
 import { HlmButtonImports } from '@egose/shadcn-theme-ng/button';
-import { HlmLabelImports } from '@egose/shadcn-theme-ng/label';
 import { HlmSheetImports } from '@egose/shadcn-theme-ng/sheet';
 
 @Component({
   selector: 'eg-layout-simple-sidebar',
-  standalone: true,
-  imports: [CommonModule, RouterModule, BrnSheetImports, HlmSheetImports, HlmButtonImports, HlmLabelImports],
+  imports: [NgTemplateOutlet, BrnSheetImports, HlmSheetImports, HlmButtonImports],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @let _title = title();
-    @let _content = content();
-
-    <hlm-sheet id="eg-layout-simple-sidebar" [side]="side() ?? 'left'">
-      <hlm-sheet-content *brnSheetContent="let ctx" class="tw:gap-0">
-        @if (_title) {
-          <hlm-sheet-header>
-            <h3 hlmSheetTitle>{{ _title }}</h3>
-          </hlm-sheet-header>
-        }
-
-        @if (_content) {
-          <ng-container *ngTemplateOutlet="_content; context: contentContext()"></ng-container>
-        }
-
-        <hlm-sheet-footer>
-          <button brnSheetClose hlmButton variant="secondary" appearance="outline-filled">Close</button>
+    <hlm-sheet [id]="panelId()" side="left">
+      <hlm-sheet-content
+        *brnSheetContent="let context"
+        class="tw:flex tw:h-full tw:max-w-[calc(100vw-2rem)] tw:flex-col tw:gap-0"
+      >
+        <hlm-sheet-header class="tw:shrink-0 tw:border-b tw:border-border tw:pr-12">
+          <h2 hlmSheetTitle>{{ title() }}</h2>
+        </hlm-sheet-header>
+        <div class="tw:min-h-0 tw:flex-1 tw:overflow-y-auto tw:overscroll-contain tw:p-4">
+          <ng-container [ngTemplateOutlet]="content() ?? null" [ngTemplateOutletContext]="contentContext()" />
+        </div>
+        <hlm-sheet-footer class="tw:shrink-0 tw:border-t tw:border-border">
+          <button type="button" brnSheetClose hlmButton variant="secondary" appearance="outline">
+            Close navigation
+          </button>
         </hlm-sheet-footer>
       </hlm-sheet-content>
     </hlm-sheet>
   `,
 })
 export class EgLayoutSimpleSidebar {
-  public readonly viewchildSheetRef = viewChild(BrnSheet);
-  side = input<'top' | 'bottom' | 'left' | 'right' | undefined>('left');
-  title = input<string | undefined>('');
-  content = input<TemplateRef<unknown> | undefined>();
-  contentContext = input<object | null>(null);
+  readonly sheet = viewChild(BrnSheet);
+  readonly panelId = input.required<string>();
+  readonly title = input('Navigation');
+  readonly content = input<TemplateRef<unknown>>();
+  readonly contentContext = input<object | null>(null);
 
-  constructor() {
-    effect(() => {});
+  open(): void {
+    this.sheet()?.open();
   }
-
-  openSheet() {
-    this.viewchildSheetRef()?.open();
-  }
-
-  closeSheet() {
-    this.viewchildSheetRef()?.close();
+  close(): void {
+    this.sheet()?.close();
   }
 }

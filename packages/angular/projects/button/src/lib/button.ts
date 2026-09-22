@@ -6,6 +6,64 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { type ClassValue } from 'clsx';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 
+// Keep complete utility names here so consumer Tailwind builds can discover every tone.
+const toneTextClasses = {
+  default: 'tw:text-primary',
+  primary: 'tw:text-primary',
+  secondary: 'tw:text-secondary',
+  success: 'tw:text-success',
+  warning: 'tw:text-warning',
+  danger: 'tw:text-danger',
+  info: 'tw:text-info',
+  light: 'tw:text-light-foreground',
+  dark: 'tw:text-dark',
+  accent: 'tw:text-accent',
+  destructive: 'tw:text-destructive',
+  muted: 'tw:text-muted-foreground',
+  outline: 'tw:text-primary',
+  link: 'tw:text-primary',
+  ghost: 'tw:text-light-foreground',
+};
+
+type ToneVariant = keyof typeof toneTextClasses;
+
+const outlineClasses: Record<ToneVariant, string> = {
+  default: 'tw:border-primary tw:hover:bg-primary/10',
+  primary: 'tw:border-primary tw:hover:bg-primary/10',
+  secondary: 'tw:border-secondary tw:hover:bg-secondary/10',
+  success: 'tw:border-success tw:hover:bg-success/10',
+  warning: 'tw:border-warning tw:hover:bg-warning/10',
+  danger: 'tw:border-danger tw:hover:bg-danger/10',
+  info: 'tw:border-info tw:hover:bg-info/10',
+  light: 'tw:border-light tw:hover:bg-light/10',
+  dark: 'tw:border-dark tw:hover:bg-dark/10',
+  accent: 'tw:border-accent tw:hover:bg-accent/10',
+  destructive: 'tw:border-destructive tw:hover:bg-destructive/10',
+  muted: 'tw:border-muted tw:hover:bg-muted/10',
+  outline: 'tw:border-primary tw:hover:bg-primary/10',
+  link: '',
+  ghost: '',
+};
+
+const outlineFilledClasses: Record<ToneVariant, string> = {
+  default: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
+  primary: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
+  secondary: 'tw:hover:bg-secondary tw:hover:text-secondary-foreground',
+  success: 'tw:hover:bg-success tw:hover:text-success-foreground',
+  warning: 'tw:hover:bg-warning tw:hover:text-warning-foreground',
+  danger: 'tw:hover:bg-danger tw:hover:text-danger-foreground',
+  info: 'tw:hover:bg-info tw:hover:text-info-foreground',
+  light: 'tw:hover:bg-light tw:hover:text-light-foreground',
+  dark: 'tw:hover:bg-dark tw:hover:text-dark-foreground',
+  accent: 'tw:hover:bg-accent tw:hover:text-accent-foreground',
+  destructive: 'tw:hover:bg-destructive tw:hover:text-destructive-foreground',
+  muted: 'tw:hover:bg-muted tw:hover:text-muted-foreground',
+  outline: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
+  link: 'tw:hover:underline',
+  ghost: 'tw:hover:bg-light',
+};
+
+/** Semantic color utilities and appearances. Merge the result with hlm() for custom hosts. */
 export const buttonVariants = cva(
   [
     'tw:cursor-pointer',
@@ -52,7 +110,7 @@ export const buttonVariants = cva(
         destructive:
           'tw:border tw:border-destructive tw:bg-destructive tw:text-destructive-foreground tw:shadow-sm tw:hover:bg-destructive/90',
         muted: 'tw:border tw:border-muted tw:bg-muted tw:text-muted-foreground tw:shadow-sm tw:hover:bg-muted/90',
-        outline: 'tw:border tw:border-primary tw:bg-white tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
+        outline: 'tw:border tw:border-primary tw:bg-background tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
         link: 'tw:text-primary tw:underline-offset-4 tw:hover:underline',
         ghost: 'tw:hover:bg-light tw:hover:text-light-foreground',
       },
@@ -73,14 +131,35 @@ export const buttonVariants = cva(
       },
       appearance: {
         solid: '',
-        outline: 'tw:bg-white tw:border',
-        'outline-filled': 'tw:bg-white tw:border',
+        outline: 'tw:bg-background tw:border tw:shadow-sm',
+        'outline-filled': 'tw:bg-background tw:border tw:shadow-sm',
+        ghost: 'tw:bg-transparent tw:border-0 tw:shadow-none',
+        link: 'tw:bg-transparent tw:border-0 tw:shadow-none tw:hover:bg-transparent tw:underline-offset-4 tw:hover:underline',
       },
       loading: {
         true: 'tw:pointer-events-none',
         false: null,
       },
     },
+    compoundVariants: (Object.keys(toneTextClasses) as ToneVariant[]).flatMap((variant) => [
+      {
+        variant,
+        appearance: ['outline', 'outline-filled', 'ghost', 'link'] as Array<
+          'outline' | 'outline-filled' | 'ghost' | 'link'
+        >,
+        class: toneTextClasses[variant],
+      },
+      {
+        variant,
+        appearance: ['outline', 'outline-filled', 'ghost'] as Array<'outline' | 'outline-filled' | 'ghost'>,
+        class: outlineClasses[variant],
+      },
+      {
+        variant,
+        appearance: 'outline-filled' as const,
+        class: outlineFilledClasses[variant],
+      },
+    ]),
     defaultVariants: {
       variant: 'primary',
       size: 'default',
@@ -134,9 +213,10 @@ export type AppearanceType = NonNullable<ButtonVariants['appearance']>;
   `,
 })
 export class HlmButton {
-  /** Props as signal-based inputs */
+  /** Semantic color token. Legacy default, outline, link, and ghost variants remain supported. */
   public readonly variant = input<VariantType>('primary');
   public readonly size = input<SizeType>('default');
+  /** Visual treatment independent of color: solid, outline, outline-filled, ghost, or link. */
   public readonly appearance = input<AppearanceType>('solid');
   public readonly loading = input<boolean>(false);
   public readonly icon = input<TemplateRef<unknown> | undefined>(undefined);
@@ -148,126 +228,24 @@ export class HlmButton {
   private readonly _additionalClasses = signal<ClassValue>('');
 
   /** Computed button class merging */
-  protected readonly _computedClass = computed(() => {
-    const outlineClasses =
-      this.appearance() === 'outline' || this.appearance() === 'outline-filled'
-        ? [this.getOutlineClasses(this.variant())]
-        : [];
-
-    if (this.appearance() === 'outline-filled') {
-      outlineClasses.push(this.getOutlineFilledClasses(this.variant()));
-    }
-
-    return hlm(
+  protected readonly _computedClass = computed(() =>
+    hlm(
       buttonVariants({
         variant: this.variant(),
         size: this.size(),
         appearance: this.appearance(),
         loading: this.loading(),
-        className: this.userClass(),
       }),
-      outlineClasses,
+      this.userClass(),
       this.loading() ? 'tw:pointer-events-none' : '',
       this._additionalClasses(),
-    );
-  });
+    ),
+  );
 
-  /** Computed spinner classes */
-  protected readonly spinnerClass = computed(() => {
-    const base =
-      this.appearance() === 'outline' || this.appearance() === 'outline-filled'
-        ? this.getOutlineSpinnerClasses(this.variant())
-        : this.getSpinnerClasses(this.variant());
-
-    return hlm(base, this.spinnerUserClass());
-  });
+  /** Inherit the button's resolved text color, including theme and consumer overrides. */
+  protected readonly spinnerClass = computed(() => hlm('tw:[&>svg]:text-current', this.spinnerUserClass()));
 
   setClass(classes: string): void {
     this._additionalClasses.set(classes);
-  }
-
-  /** Helper functions */
-  private getOutlineClasses(variant: VariantType) {
-    const colors: Record<VariantType, string> = {
-      default: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
-      primary: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
-      secondary: 'tw:border-secondary tw:text-secondary tw:shadow-sm tw:hover:bg-secondary/10',
-      success: 'tw:border-success tw:text-success tw:shadow-sm tw:hover:bg-success/10',
-      warning: 'tw:border-warning tw:text-warning tw:shadow-sm tw:hover:bg-warning/10',
-      danger: 'tw:border-danger tw:text-danger tw:shadow-sm tw:hover:bg-danger/10',
-      info: 'tw:border-info tw:text-info tw:shadow-sm tw:hover:bg-info/10',
-      light: 'tw:border-light tw:text-light-foreground tw:shadow-sm tw:hover:bg-light/10',
-      dark: 'tw:border-dark tw:text-dark tw:shadow-sm tw:hover:bg-dark/10',
-      accent: 'tw:border-accent tw:text-accent tw:shadow-sm tw:hover:bg-accent/10',
-      destructive: 'tw:border-destructive tw:text-destructive tw:shadow-sm tw:hover:bg-destructive/10',
-      muted: 'tw:border-muted tw:text-muted-foreground tw:shadow-sm tw:hover:bg-muted/10',
-      outline: 'tw:border-primary tw:text-primary tw:shadow-sm tw:hover:bg-primary/10',
-      link: 'tw:text-primary',
-      ghost: 'tw:text-light-foreground',
-    };
-    return colors[variant];
-  }
-
-  private getOutlineFilledClasses(variant: VariantType) {
-    const colors: Record<VariantType, string> = {
-      default: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
-      primary: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
-      secondary: 'tw:hover:bg-secondary tw:hover:text-secondary-foreground',
-      success: 'tw:hover:bg-success tw:hover:text-success-foreground',
-      warning: 'tw:hover:bg-warning tw:hover:text-warning-foreground',
-      danger: 'tw:hover:bg-danger tw:hover:text-danger-foreground',
-      info: 'tw:hover:bg-info tw:hover:text-info-foreground',
-      light: 'tw:hover:bg-light tw:hover:text-light-foreground',
-      dark: 'tw:hover:bg-dark tw:hover:text-dark-foreground',
-      accent: 'tw:hover:bg-accent tw:hover:text-accent-foreground',
-      destructive: 'tw:hover:bg-destructive tw:hover:text-destructive-foreground',
-      muted: 'tw:hover:bg-muted tw:hover:text-muted-foreground',
-      outline: 'tw:hover:bg-primary tw:hover:text-primary-foreground',
-      link: 'tw:hover:underline',
-      ghost: 'tw:hover:bg-light',
-    };
-    return colors[variant];
-  }
-
-  private getSpinnerClasses(variant: VariantType) {
-    const colors: Record<VariantType, string> = {
-      default: 'tw:[&>svg]:text-primary-foreground',
-      primary: 'tw:[&>svg]:text-primary-foreground',
-      secondary: 'tw:[&>svg]:text-secondary-foreground',
-      success: 'tw:[&>svg]:text-success-foreground',
-      warning: 'tw:[&>svg]:text-warning-foreground',
-      danger: 'tw:[&>svg]:text-danger-foreground',
-      info: 'tw:[&>svg]:text-info-foreground',
-      light: 'tw:[&>svg]:text-light-foreground',
-      dark: 'tw:[&>svg]:text-dark-foreground',
-      accent: 'tw:[&>svg]:text-accent-foreground',
-      destructive: 'tw:[&>svg]:text-destructive-foreground',
-      muted: 'tw:[&>svg]:text-muted-foreground',
-      outline: 'tw:[&>svg]:text-primary',
-      link: 'tw:[&>svg]:text-primary',
-      ghost: 'tw:[&>svg]:text-light-foreground',
-    };
-    return colors[variant];
-  }
-
-  private getOutlineSpinnerClasses(variant: VariantType) {
-    const colors: Record<VariantType, string> = {
-      default: 'tw:[&>svg]:text-primary',
-      primary: 'tw:[&>svg]:text-primary',
-      secondary: 'tw:[&>svg]:text-secondary',
-      success: 'tw:[&>svg]:text-success',
-      warning: 'tw:[&>svg]:text-warning',
-      danger: 'tw:[&>svg]:text-danger',
-      info: 'tw:[&>svg]:text-info',
-      light: 'tw:[&>svg]:text-light',
-      dark: 'tw:[&>svg]:text-dark',
-      accent: 'tw:[&>svg]:text-accent',
-      destructive: 'tw:[&>svg]:text-destructive',
-      muted: 'tw:[&>svg]:text-muted-foreground',
-      outline: 'tw:[&>svg]:text-primary',
-      link: 'tw:[&>svg]:text-primary',
-      ghost: 'tw:[&>svg]:text-light-foreground',
-    };
-    return colors[variant];
   }
 }
