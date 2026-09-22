@@ -3,26 +3,29 @@ import { BrnField } from '@spartan-ng/brain/field';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 
-const fieldVariants = cva('data-[matches-spartan-invalid=true]:text-destructive gap-3 group/field flex w-full', {
-  variants: {
-    orientation: {
-      vertical: 'flex-col *:w-full [&>.sr-only]:w-auto',
-      horizontal: [
-        'flex-row items-center',
-        '*:data-[slot=field-label]:flex-auto',
-        'has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
-      ],
-      responsive: [
-        'flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto [&>.sr-only]:w-auto',
-        '@md/field-group:*:data-[slot=field-label]:flex-auto',
-        '@md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
-      ],
+const fieldVariants = cva(
+  'tw:data-[matches-spartan-invalid=true]:text-destructive tw:gap-3 tw:group/field tw:flex tw:w-full',
+  {
+    variants: {
+      orientation: {
+        vertical: 'tw:flex-col tw:*:w-full tw:[&>.sr-only]:w-auto',
+        horizontal: [
+          'tw:flex-row tw:items-center',
+          'tw:*:data-[slot=field-label]:flex-auto',
+          'tw:has-[>[data-slot=field-content]]:items-start tw:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
+        ],
+        responsive: [
+          'tw:flex-col tw:*:w-full tw:@md/field-group:flex-row tw:@md/field-group:items-center tw:@md/field-group:*:w-auto tw:[&>.sr-only]:w-auto',
+          'tw:@md/field-group:*:data-[slot=field-label]:flex-auto',
+          'tw:@md/field-group:has-[>[data-slot=field-content]]:items-start tw:@md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
+        ],
+      },
+    },
+    defaultVariants: {
+      orientation: 'vertical',
     },
   },
-  defaultVariants: {
-    orientation: 'vertical',
-  },
-});
+);
 
 export type FieldVariants = VariantProps<typeof fieldVariants>;
 

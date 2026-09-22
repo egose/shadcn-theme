@@ -8,7 +8,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmEmptyDescription {
   constructor() {
     classes(
-      () => 'text-sm/relaxed text-muted-foreground [&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4',
+      () =>
+        'tw:text-sm/relaxed tw:text-muted-foreground tw:[&>a:hover]:text-primary tw:[&>a]:underline tw:[&>a]:underline-offset-4',
     );
   }
 }

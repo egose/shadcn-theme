@@ -34,15 +34,15 @@ export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
   providers: [HLM_DATE_PICKER_VALUE_ACCESSOR, provideBrnDatePicker(HlmDatePicker), provideBrnLabelable(HlmDatePicker)],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnFieldControl],
-  host: { class: 'block' },
+  host: { class: 'tw:block tw:w-full tw:min-w-0 tw:max-w-full' },
   template: `
     <hlm-popover sideOffset="5" [state]="_popoverState()" (stateChanged)="_onStateChange($event)">
       <ng-content />
 
-      <hlm-popover-content class="w-fit p-0" *hlmPopoverPortal="let ctx">
+      <hlm-popover-content class="tw:w-fit tw:p-0" *hlmPopoverPortal="let ctx">
         <ng-content select="[hlmDatePickerHeader]" />
         <hlm-calendar
-          class="rounded-none border-0"
+          class="tw:rounded-none tw:border-0"
           [captionLayout]="captionLayout()"
           [date]="_mutableDate()"
           [defaultFocusedDate]="_mutableDate() ?? defaultFocusedDate()"

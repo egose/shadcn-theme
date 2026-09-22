@@ -33,6 +33,10 @@ export class HlmRadioGroup {
   protected readonly _errorState = computed(() => this._brnRadioGroup.controlState?.()?.spartanInvalid);
 
   constructor() {
-    classes(() => ['grid gap-3', this.userClass(), this._errorState() ? 'data-[invalid=true]:text-destructive' : '']);
+    classes(() => [
+      'tw:grid tw:gap-3',
+      this.userClass(),
+      this._errorState() ? 'tw:data-[invalid=true]:text-destructive' : '',
+    ]);
   }
 }

@@ -10,7 +10,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmCommandShortcut {
   constructor() {
     classes(
-      () => 'text-muted-foreground group-data-[selected]/command-item:text-foreground ms-auto text-xs tracking-widest',
+      () =>
+        'tw:text-muted-foreground tw:group-data-[selected]/command-item:text-foreground tw:ms-auto tw:text-xs tw:tracking-widest',
     );
   }
 }

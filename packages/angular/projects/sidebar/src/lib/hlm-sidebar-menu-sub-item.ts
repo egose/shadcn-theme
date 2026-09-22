@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarMenuSubItem {
   constructor() {
-    classes(() => 'group/menu-sub-item relative');
+    classes(() => 'tw:group/menu-sub-item tw:relative');
   }
 }

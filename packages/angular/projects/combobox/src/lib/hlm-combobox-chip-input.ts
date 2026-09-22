@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxChipInput {
   constructor() {
-    classes(() => 'placeholder:text-muted-foreground min-w-16 flex-1 outline-none');
+    classes(() => 'tw:placeholder:text-muted-foreground tw:min-w-16 tw:flex-1 tw:outline-none');
   }
 }

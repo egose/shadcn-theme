@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSkeleton {
   constructor() {
-    classes(() => 'bg-muted rounded-md block motion-safe:animate-pulse');
+    classes(() => 'tw:bg-muted tw:rounded-md tw:block tw:motion-safe:animate-pulse');
   }
 }

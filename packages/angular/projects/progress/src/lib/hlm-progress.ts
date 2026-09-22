@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmProgress {
   constructor() {
-    classes(() => 'bg-muted h-1.5 rounded-full relative inline-flex w-full overflow-hidden');
+    classes(() => 'tw:bg-muted tw:h-1.5 tw:rounded-full tw:relative tw:inline-flex tw:w-full tw:overflow-hidden');
   }
 }

@@ -8,14 +8,10 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.2.0",
-    "@commitlint/config-conventional": "^21.2.0",
-    "@commitlint/format": "^21.2.0",
-    "@repo-toolkit/publish-package": "^0.25.0",
-    "fs-extra": "^11.3.6",
-    "lodash": "^4.18.1",
-    "prettier": "4.0.0-alpha.12",
-    "semver": "^7.8.5",
-    "yargs": "^18.0.0"
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@commitlint/format": "^21.2.3",
+    "@repo-toolkit/publish-package": "^0.31.0",
+    "prettier": "4.0.0-alpha.12"
   }
 }

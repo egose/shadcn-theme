@@ -27,7 +27,7 @@ import { EmblaCarouselDirective } from 'embla-carousel-angular';
   template: `
     <div
       emblaCarousel
-      class="overflow-hidden"
+      class="tw:overflow-hidden"
       [plugins]="plugins()"
       [options]="_emblaOptions()"
       [subscribeToEvents]="['init', 'select', 'reInit']"
@@ -66,7 +66,7 @@ export class HlmCarousel {
   public readonly slideCount = this._slideCount.asReadonly();
 
   constructor() {
-    classes(() => 'relative');
+    classes(() => 'tw:relative');
   }
 
   protected onEmblaEvent(event: EmblaEventType) {

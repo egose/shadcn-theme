@@ -14,8 +14,10 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
         description="Empty states look best when they explain what happened and suggest the next move. Showing a few real contexts makes the component feel much more solid than a single centered icon."
       />
 
-      <div class="tw:grid tw:gap-6 lg:tw:grid-cols-2 xl:tw:grid-cols-3">
-        <article class="tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4">
+      <div class="tw:grid tw:min-w-0 tw:grid-cols-1 tw:gap-6 lg:tw:grid-cols-2 xl:tw:grid-cols-3">
+        <article
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4"
+        >
           <div hlmEmpty class="tw:min-h-[320px] tw:border-slate-200 tw:bg-white">
             <div hlmEmptyHeader>
               <div hlmEmptyMedia variant="icon">🔎</div>
@@ -36,7 +38,9 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
           </div>
         </article>
 
-        <article class="tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4">
+        <article
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-4"
+        >
           <div hlmEmpty class="tw:min-h-[320px] tw:border-slate-200 tw:bg-white">
             <div hlmEmptyHeader>
               <div hlmEmptyMedia variant="icon">👥</div>
@@ -67,7 +71,7 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
         </article>
 
         <article
-          class="tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-4 lg:tw:col-span-2 xl:tw:col-span-1"
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-3xl tw:border tw:border-slate-200 tw:bg-slate-950 tw:p-4 lg:tw:col-span-2 xl:tw:col-span-1"
         >
           <div hlmEmpty class="tw:min-h-[320px] tw:border-slate-700 tw:bg-slate-900 tw:text-white">
             <div hlmEmptyHeader>

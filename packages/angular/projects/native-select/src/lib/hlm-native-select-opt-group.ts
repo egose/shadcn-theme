@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmNativeSelectOptGroup {
   constructor() {
-    classes(() => 'bg-[Canvas] text-[CanvasText]');
+    classes(() => 'tw:bg-[Canvas] tw:text-[CanvasText]');
   }
 }

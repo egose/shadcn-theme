@@ -9,7 +9,7 @@ export class HlmItemDescription {
   constructor() {
     classes(
       () =>
-        'text-muted-foreground text-start text-sm leading-normal group-data-[size=xs]/item:text-xs [&>a:hover]:text-primary line-clamp-2 flex font-normal [&>a]:underline [&>a]:underline-offset-4',
+        'tw:text-muted-foreground tw:text-start tw:text-sm tw:leading-normal tw:group-data-[size=xs]/item:text-xs tw:[&>a:hover]:text-primary tw:line-clamp-2 tw:flex tw:font-normal tw:[&>a]:underline tw:[&>a]:underline-offset-4',
     );
   }
 }

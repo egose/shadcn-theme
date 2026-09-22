@@ -17,8 +17,8 @@ import { HlmCarousel } from './hlm-carousel';
     '(click)': '_carousel.scrollNext()',
   },
   template: `
-    <ng-icon name="lucideArrowRight" class="rtl:rotate-180" />
-    <span class="sr-only">Next slide</span>
+    <ng-icon name="lucideArrowRight" class="tw:rtl:rotate-180" />
+    <span class="tw:sr-only">Next slide</span>
   `,
 })
 export class HlmCarouselNext {
@@ -26,10 +26,10 @@ export class HlmCarouselNext {
   protected readonly _carousel = inject(HlmCarousel);
   private readonly _computedClass = computed(() =>
     hlm(
-      'rounded-full absolute h-8 w-8',
+      'tw:rounded-full tw:absolute tw:h-8 tw:w-8',
       this._carousel.orientation() === 'horizontal'
-        ? '-end-12 top-1/2 -translate-y-1/2'
-        : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
+        ? 'tw:-end-12 tw:top-1/2 tw:-translate-y-1/2'
+        : 'tw:-bottom-12 tw:left-1/2 tw:-translate-x-1/2 tw:rotate-90',
     ),
   );
   protected readonly isDisabled = () => !this._carousel.canScrollNext();

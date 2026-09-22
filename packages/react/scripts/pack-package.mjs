@@ -5,26 +5,22 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const packageDirectory = fileURLToPath(new URL('..', import.meta.url));
-const distDirectory = path.join(packageDirectory, 'dist');
+const distDirectory = path.join(packageDirectory, 'release', 'npm');
 const artifactDirectory = path.join(packageDirectory, '.artifacts');
 
 await rm(artifactDirectory, { recursive: true, force: true });
 await mkdir(artifactDirectory, { recursive: true });
 
-const packed = spawnSync(
-  'npm',
-  ['pack', '--json', '--ignore-scripts', '--pack-destination', artifactDirectory],
-  {
-    cwd: distDirectory,
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      npm_config_audit: 'false',
-      npm_config_fund: 'false',
-      npm_config_update_notifier: 'false',
-    },
+const packed = spawnSync('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', artifactDirectory], {
+  cwd: distDirectory,
+  encoding: 'utf8',
+  env: {
+    ...process.env,
+    npm_config_audit: 'false',
+    npm_config_fund: 'false',
+    npm_config_update_notifier: 'false',
   },
-);
+});
 assert.equal(packed.status, 0, `${packed.stdout}\n${packed.stderr}`.trim());
 
 const artifacts = (await readdir(artifactDirectory)).filter((file) => file.endsWith('.tgz'));

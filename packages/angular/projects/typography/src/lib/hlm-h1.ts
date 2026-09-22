@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 
-export const hlmH1 = 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl';
+export const hlmH1 = 'tw:scroll-m-20 tw:text-4xl tw:font-extrabold tw:tracking-tight tw:lg:text-5xl';
 
 @Directive({
   selector: '[hlmH1]',

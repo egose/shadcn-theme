@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { DemoSectionComponent } from '../../../shared/demo-section';
 import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
+import { HlmButton } from '@egose/shadcn-theme-ng/button';
 
 @Component({
   selector: 'app-carousel-page',
-  imports: [DemoHeaderComponent, DemoSectionComponent, HlmCarouselImports],
+  imports: [DemoHeaderComponent, DemoSectionComponent, HlmCarouselImports, HlmButton],
   template: `
     <section class="tw:space-y-8">
       <app-demo-header
@@ -13,9 +14,9 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
         description="Horizontally scrollable card track with previous/next controls and a live slide counter."
       />
 
-      <div class="tw:grid tw:gap-6 xl:tw:grid-cols-[minmax(0,1fr)_20rem]">
+      <div class="tw:grid tw:min-w-0 tw:grid-cols-1 tw:gap-6 xl:tw:grid-cols-[minmax(0,1fr)_20rem]">
         <article
-          class="tw:rounded-[28px] tw:border tw:border-slate-800 tw:bg-slate-950 tw:p-6 tw:text-white tw:shadow-sm"
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-800 tw:bg-slate-950 tw:p-6 tw:text-white tw:shadow-sm"
         >
           <div class="tw:mb-6">
             <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.24em] tw:text-slate-400">Featured</p>
@@ -25,7 +26,7 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
             </p>
           </div>
 
-          <hlm-carousel class="tw:block tw:w-full">
+          <hlm-carousel #carousel class="tw:block tw:w-full tw:min-w-0 tw:max-w-full tw:overflow-hidden">
             <!-- The slide display must live inside hlm-carousel: it injects the carousel instance. -->
             <div class="tw:mb-4 tw:flex tw:justify-end">
               <hlm-carousel-slide-display [slideClass]="'tw:text-sm tw:font-medium tw:text-slate-300'" />
@@ -66,20 +67,38 @@ import { HlmCarouselImports } from '@egose/shadcn-theme-ng/carousel';
               }
             </div>
 
-            <div class="tw:mt-6 tw:flex tw:items-center tw:justify-between tw:gap-3">
-              <p class="tw:text-sm tw:text-slate-400">
+            <div class="tw:mt-6 tw:flex tw:min-w-0 tw:flex-wrap tw:items-center tw:justify-between tw:gap-3">
+              <p class="tw:min-w-0 tw:text-sm tw:text-slate-400">
                 Works well for dashboards, marketing rails, and featured content.
               </p>
-              <div class="tw:flex tw:gap-2">
-                <button hlmCarouselPrevious type="button">Previous</button>
-                <button hlmCarouselNext type="button">Next</button>
+              <div class="tw:flex tw:shrink-0 tw:gap-2">
+                <button
+                  hlmButton
+                  variant="secondary"
+                  appearance="outline"
+                  size="sm"
+                  type="button"
+                  (click)="carousel.scrollPrev()"
+                >
+                  Previous
+                </button>
+                <button
+                  hlmButton
+                  variant="secondary"
+                  appearance="outline"
+                  size="sm"
+                  type="button"
+                  (click)="carousel.scrollNext()"
+                >
+                  Next
+                </button>
               </div>
             </div>
           </hlm-carousel>
         </article>
 
         <app-demo-section
-          class="tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
+          class="tw:min-w-0 tw:max-w-full tw:overflow-hidden tw:rounded-[28px] tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-6"
           kicker="Evaluation notes"
           title="What to check"
         >

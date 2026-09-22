@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDialogTitle {
   constructor() {
-    classes(() => 'leading-none font-medium');
+    classes(() => 'tw:leading-none tw:font-medium');
   }
 }

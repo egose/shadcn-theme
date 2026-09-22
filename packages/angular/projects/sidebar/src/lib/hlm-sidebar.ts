@@ -36,10 +36,10 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
           data-slot="sidebar"
           data-sidebar="sidebar"
           data-mobile="true"
-          class="bg-sidebar text-sidebar-foreground h-svh w-(--sidebar-width) p-0 [&>button]:hidden"
+          class="tw:bg-sidebar tw:text-sidebar-foreground tw:h-svh tw:w-(--sidebar-width) tw:p-0 tw:[&>button]:hidden"
           [style.--sidebar-width]="sidebarWidthMobile()"
         >
-          <div class="flex h-full w-full flex-col">
+          <div class="tw:flex tw:h-full tw:w-full tw:flex-col">
             <ng-container *ngTemplateOutlet="contentContainer" />
           </div>
         </hlm-sheet-content>
@@ -51,7 +51,7 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          class="bg-sidebar group-data-[variant=floating]:ring-sidebar-border group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 flex size-full flex-col"
+          class="tw:bg-sidebar tw:group-data-[variant=floating]:ring-sidebar-border tw:group-data-[variant=floating]:rounded-lg tw:group-data-[variant=floating]:shadow-sm tw:group-data-[variant=floating]:ring-1 tw:flex tw:size-full tw:flex-col"
         >
           <ng-container *ngTemplateOutlet="contentContainer" />
         </div>
@@ -70,22 +70,22 @@ export class HlmSidebar {
 
   protected readonly _sidebarGapComputedClass = computed(() =>
     hlm(
-      'transition-[width] duration-200 ease-linear relative w-(--sidebar-width) bg-transparent',
-      'group-data-[collapsible=offcanvas]:w-0',
-      'group-data-[side=right]:rotate-180',
+      'tw:transition-[width] tw:duration-200 tw:ease-linear tw:relative tw:w-(--sidebar-width) tw:bg-transparent',
+      'tw:group-data-[collapsible=offcanvas]:w-0',
+      'tw:group-data-[side=right]:rotate-180',
       this.variant() === 'floating' || this.variant() === 'inset'
-        ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-        : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
+        ? 'tw:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
+        : 'tw:group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
     ),
   );
 
   public readonly sidebarContainerClass = input<ClassValue>('');
   protected readonly _sidebarContainerComputedClass = computed(() =>
     hlm(
-      'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex',
+      'tw:fixed tw:inset-y-0 tw:z-10 tw:hidden tw:h-svh tw:w-(--sidebar-width) tw:transition-[left,right,width] tw:duration-200 tw:ease-linear tw:data-[side=left]:left-0 tw:data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] tw:data-[side=right]:right-0 tw:data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] tw:md:flex',
       this.variant() === 'floating' || this.variant() === 'inset'
-        ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-        : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+        ? 'tw:p-2 tw:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
+        : 'tw:group-data-[collapsible=icon]:w-(--sidebar-width-icon) tw:group-data-[side=left]:border-r tw:group-data-[side=right]:border-l',
       this.sidebarContainerClass(),
     ),
   );
@@ -125,11 +125,11 @@ export class HlmSidebar {
 
     classes(() => {
       if (this.collapsible() === 'none') {
-        return hlm('bg-sidebar text-sidebar-foreground flex h-svh w-(--sidebar-width) flex-col');
+        return hlm('tw:bg-sidebar tw:text-sidebar-foreground tw:flex tw:h-svh tw:w-(--sidebar-width) tw:flex-col');
       } else if (this._sidebarService.isMobile()) {
         return '';
       } else {
-        return hlm('group peer text-sidebar-foreground hidden md:block');
+        return hlm('tw:group tw:peer tw:text-sidebar-foreground tw:hidden tw:md:block');
       }
     });
   }

@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 
-export const hlmLarge = 'text-lg font-semibold';
+export const hlmLarge = 'tw:text-lg tw:font-semibold';
 
 @Directive({
   selector: '[hlmLarge]',

@@ -12,6 +12,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarSeparator {
   constructor() {
-    classes(() => 'bg-sidebar-border mx-2 w-auto');
+    classes(() => 'tw:bg-sidebar-border tw:mx-2 tw:w-auto');
   }
 }

@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCardFooter {
   constructor() {
-    classes(() => 'rounded-b-xl px-(--card-spacing) [.border-t]:pt-(--card-spacing) flex items-center');
+    classes(() => 'tw:rounded-b-xl tw:px-(--card-spacing) tw:[.border-t]:pt-(--card-spacing) tw:flex tw:items-center');
   }
 }

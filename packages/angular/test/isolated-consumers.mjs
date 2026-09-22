@@ -29,7 +29,7 @@ function releaseDirectory() {
 }
 
 async function preparedTarball(directory, variant) {
-  const stage = path.join(directory, 'staged', variant);
+  const stage = path.join(directory, variant);
   const manifest = JSON.parse(await readFile(path.join(stage, 'package.json'), 'utf8'));
   const filename = `${manifest.name.replace('@', '').replace('/', '-')}-${manifest.version}.tgz`;
   const tarball = path.join(directory, filename);
@@ -133,7 +133,10 @@ async function writeConsumer(directory, packageName, tarball) {
     path.join(directory, 'src/styles.css'),
     `@import "tailwindcss"${isTw ? ' prefix(tw)' : ''};\n@source "../node_modules/${packageName}";\n`,
   );
-  await writeFile(path.join(directory, '.postcssrc.json'), `${JSON.stringify({ plugins: { '@tailwindcss/postcss': {} } }, null, 2)}\n`);
+  await writeFile(
+    path.join(directory, '.postcssrc.json'),
+    `${JSON.stringify({ plugins: { '@tailwindcss/postcss': {} } }, null, 2)}\n`,
+  );
   await writeFile(
     path.join(directory, 'src/render.mjs'),
     `import '@angular/compiler';

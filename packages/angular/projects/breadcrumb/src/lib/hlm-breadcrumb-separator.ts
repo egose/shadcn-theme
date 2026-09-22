@@ -22,6 +22,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmBreadcrumbSeparator {
   constructor() {
-    classes(() => '[&>ng-icon]:text-[length:--spacing(3.5)] [&>ng-icon]:flex');
+    classes(() => 'tw:[&>ng-icon]:text-[length:--spacing(3.5)] tw:[&>ng-icon]:flex');
   }
 }

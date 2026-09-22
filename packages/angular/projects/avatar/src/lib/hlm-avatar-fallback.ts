@@ -14,7 +14,7 @@ export class HlmAvatarFallback {
   constructor() {
     classes(
       () =>
-        'bg-muted text-muted-foreground rounded-full flex size-full items-center justify-center text-sm group-data-[size=sm]/avatar:text-xs',
+        'tw:bg-muted tw:text-muted-foreground tw:rounded-full tw:flex tw:size-full tw:items-center tw:justify-center tw:text-sm tw:group-data-[size=sm]/avatar:text-xs',
     );
   }
 }

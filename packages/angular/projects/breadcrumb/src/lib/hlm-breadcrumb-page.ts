@@ -12,6 +12,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmBreadcrumbPage {
   constructor() {
-    classes(() => 'text-foreground font-normal');
+    classes(() => 'tw:text-foreground tw:font-normal');
   }
 }

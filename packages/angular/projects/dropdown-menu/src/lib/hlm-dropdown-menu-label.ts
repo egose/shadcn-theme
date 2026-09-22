@@ -15,6 +15,6 @@ export class HlmDropdownMenuLabel {
   });
 
   constructor() {
-    classes(() => 'text-muted-foreground px-2 py-1.5 text-xs font-medium data-inset:ps-8 block');
+    classes(() => 'tw:text-muted-foreground tw:px-2 tw:py-1.5 tw:text-xs tw:font-medium tw:data-inset:ps-8 tw:block');
   }
 }

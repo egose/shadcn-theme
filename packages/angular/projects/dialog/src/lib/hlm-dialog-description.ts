@@ -9,6 +9,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDialogDescription {
   constructor() {
-    classes(() => 'text-muted-foreground *:[a]:hover:text-foreground text-sm *:[a]:underline *:[a]:underline-offset-3');
+    classes(
+      () =>
+        'tw:text-muted-foreground tw:*:[a]:hover:text-foreground tw:text-sm tw:*:[a]:underline tw:*:[a]:underline-offset-3',
+    );
   }
 }

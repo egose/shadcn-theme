@@ -22,15 +22,15 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
   ],
   host: { 'data-slot': 'calendar' },
   template: `
-    <div class="inline-flex flex-col gap-4">
+    <div class="tw:inline-flex tw:flex-col tw:gap-4">
       <!-- Header -->
-      <div class="flex w-full items-center justify-between gap-1.5">
+      <div class="tw:flex tw:w-full tw:items-center tw:justify-between tw:gap-1.5">
         <ng-template #month>
-          <hlm-select brnCalendarMonthSelect class="order-1">
+          <hlm-select brnCalendarMonthSelect class="tw:order-1">
             <hlm-select-trigger size="sm" [class]="_selectClass">
               <hlm-select-value />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal class="max-h-80">
+            <hlm-select-content *hlmSelectPortal class="tw:max-h-80">
               <hlm-select-group>
                 @for (month of _i18n.config().months(); track month) {
                   <hlm-select-item [value]="month">{{ month }}</hlm-select-item>
@@ -40,11 +40,11 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           </hlm-select>
         </ng-template>
         <ng-template #year>
-          <hlm-select brnCalendarYearSelect class="order-3">
+          <hlm-select brnCalendarYearSelect class="tw:order-3">
             <hlm-select-trigger size="sm" [class]="_selectClass">
               <hlm-select-value />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal class="max-h-80">
+            <hlm-select-content *hlmSelectPortal class="tw:max-h-80">
               <hlm-select-group>
                 @for (year of _i18n.config().years(); track year) {
                   <hlm-select-item [value]="year">{{ year }}</hlm-select-item>
@@ -59,9 +59,9 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           brnCalendarPreviousButton
           variant="ghost"
           hlmBtn
-          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+          class="tw:order-first tw:size-(--cell-size) tw:p-0 tw:select-none tw:aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronLeft" class="rtl:rotate-180" />
+          <ng-icon name="lucideChevronLeft" class="tw:rtl:rotate-180" />
         </button>
 
         @switch (captionLayout()) {
@@ -71,14 +71,14 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           }
           @case ('dropdown-months') {
             <ng-container [ngTemplateOutlet]="month" />
-            <div brnCalendarHeader class="order-4 text-sm font-medium">{{ heading.year }}</div>
+            <div brnCalendarHeader class="tw:order-4 tw:text-sm tw:font-medium">{{ heading.year }}</div>
           }
           @case ('dropdown-years') {
-            <div brnCalendarHeader class="order-2 text-sm font-medium">{{ heading.month }}</div>
+            <div brnCalendarHeader class="tw:order-2 tw:text-sm tw:font-medium">{{ heading.month }}</div>
             <ng-container [ngTemplateOutlet]="year" />
           }
           @case ('label') {
-            <div brnCalendarHeader class="order-5 text-sm font-medium">{{ heading.header }}</div>
+            <div brnCalendarHeader class="tw:order-5 tw:text-sm tw:font-medium">{{ heading.header }}</div>
           }
         }
 
@@ -86,19 +86,19 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
           brnCalendarNextButton
           hlmBtn
           variant="ghost"
-          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
+          class="tw:order-last tw:size-(--cell-size) tw:p-0 tw:select-none tw:aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronRight" class="rtl:rotate-180" />
+          <ng-icon name="lucideChevronRight" class="tw:rtl:rotate-180" />
         </button>
       </div>
 
-      <table class="w-full border-collapse space-y-1" brnCalendarGrid>
+      <table class="tw:w-full tw:border-collapse tw:space-y-1" brnCalendarGrid>
         <thead aria-hidden="true">
-          <tr class="flex">
+          <tr class="tw:flex">
             <th
               *brnCalendarWeekday="let weekday"
               scope="col"
-              class="text-muted-foreground flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal select-none"
+              class="tw:text-muted-foreground tw:flex-1 tw:rounded-(--cell-radius) tw:text-[0.8rem] tw:font-normal tw:select-none"
               [attr.aria-label]="_i18n.config().labelWeekday(weekday)"
             >
               {{ _i18n.config().formatWeekdayName(weekday) }}
@@ -107,11 +107,11 @@ import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
         </thead>
 
         <tbody role="rowgroup">
-          <tr *brnCalendarWeek="let week" class="mt-2 flex w-full">
+          <tr *brnCalendarWeek="let week" class="tw:mt-2 tw:flex tw:w-full">
             @for (date of week; track _dateAdapter.getTime(date)) {
               <td
                 brnCalendarCell
-                class="group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none [&:first-child[data-selected=true]_button]:rounded-s-(--cell-radius) [&:last-child[data-selected=true]_button]:rounded-e-(--cell-radius)"
+                class="tw:group/day tw:relative tw:aspect-square tw:h-full tw:w-full tw:rounded-(--cell-radius) tw:p-0 tw:text-center tw:select-none tw:[&:first-child[data-selected=true]_button]:rounded-s-(--cell-radius) tw:[&:last-child[data-selected=true]_button]:rounded-e-(--cell-radius)"
               >
                 <button brnCalendarCellButton [date]="date" [class]="_btnClass">
                   {{ _dateAdapter.getDate(date) }}
@@ -151,17 +151,17 @@ export class HlmCalendar<T> {
 
   protected readonly _btnClass = hlm(
     buttonVariants({ variant: 'ghost', size: 'icon' }),
-    'data-[today=true]:bg-muted group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground dark:hover:bg-muted/50 dark:hover:text-foreground relative isolate z-10 flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 border-0 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-e-(--cell-radius) data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-s-(--cell-radius) [&>span]:text-xs [&>span]:opacity-70',
-    'data-[outside=true]:opacity-50',
-    "data-[highlighted]:before:content-['']",
-    'data-[highlighted]:before:absolute',
-    'data-[highlighted]:before:bottom-1',
-    'data-[highlighted]:before:start-1/2',
-    'data-[highlighted]:before:h-1',
-    'data-[highlighted]:before:w-1',
-    'data-[highlighted]:before:-translate-x-1/2',
-    'data-[highlighted]:before:rounded-full',
-    'data-[highlighted]:before:bg-destructive',
+    'tw:data-[today=true]:bg-muted tw:group-data-[focused=true]/day:border-ring tw:group-data-[focused=true]/day:ring-ring/50 tw:data-[range-end=true]:bg-primary tw:data-[range-end=true]:text-primary-foreground tw:data-[range-middle=true]:bg-muted tw:data-[range-middle=true]:text-foreground tw:data-[range-start=true]:bg-primary tw:data-[range-start=true]:text-primary-foreground tw:data-[selected-single=true]:bg-primary tw:data-[selected-single=true]:text-primary-foreground tw:dark:hover:bg-muted/50 tw:dark:hover:text-foreground tw:relative tw:isolate tw:z-10 tw:flex tw:aspect-square tw:size-auto tw:w-full tw:min-w-(--cell-size) tw:flex-col tw:gap-1 tw:border-0 tw:leading-none tw:font-normal tw:group-data-[focused=true]/day:relative tw:group-data-[focused=true]/day:z-10 tw:group-data-[focused=true]/day:ring-[3px] tw:data-[range-end=true]:rounded-(--cell-radius) tw:data-[range-end=true]:rounded-e-(--cell-radius) tw:data-[range-middle=true]:rounded-none tw:data-[range-start=true]:rounded-(--cell-radius) tw:data-[range-start=true]:rounded-s-(--cell-radius) tw:[&>span]:text-xs tw:[&>span]:opacity-70',
+    'tw:data-[outside=true]:opacity-50',
+    "tw:data-[highlighted]:before:content-['']",
+    'tw:data-[highlighted]:before:absolute',
+    'tw:data-[highlighted]:before:bottom-1',
+    'tw:data-[highlighted]:before:start-1/2',
+    'tw:data-[highlighted]:before:h-1',
+    'tw:data-[highlighted]:before:w-1',
+    'tw:data-[highlighted]:before:-translate-x-1/2',
+    'tw:data-[highlighted]:before:rounded-full',
+    'tw:data-[highlighted]:before:bg-destructive',
   );
 
   protected readonly _selectClass = 'gap-0 px-1.5 py-2 [&>ng-icon]:ms-1';
@@ -169,7 +169,7 @@ export class HlmCalendar<T> {
   constructor() {
     classes(
       () =>
-        'p-3 [--cell-radius:var(--radius-md)] [--cell-size:--spacing(8)] group/calendar bg-background block in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent',
+        'tw:p-3 tw:[--cell-radius:var(--radius-md)] tw:[--cell-size:--spacing(8)] tw:group/calendar tw:bg-background tw:block tw:in-data-[slot=card-content]:bg-transparent tw:in-data-[slot=popover-content]:bg-transparent',
     );
   }
 }

@@ -7,13 +7,13 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   host: {
     'data-slot': 'radio-group-indicator',
   },
-  template: ` <div class="group-data-[checked=true]:bg-primary size-2 rounded-full bg-transparent"></div> `,
+  template: ` <div class="tw:group-data-[checked=true]:bg-primary tw:size-2 tw:rounded-full tw:bg-transparent"></div> `,
 })
 export class HlmRadioIndicator {
   constructor() {
     classes(
       () =>
-        'border-input text-primary group-has-[:focus-visible]:border-ring group-has-[:focus-visible]:ring-ring/50 dark:bg-input/30 group-data-[disabled=true]:cursor-not-allowed group-data-[disabled=true]:opacity-50 relative flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border shadow-xs transition-[color,box-shadow] outline-none group-has-[:focus-visible]:ring-[3px]',
+        'tw:border-input tw:text-primary tw:group-has-[:focus-visible]:border-ring tw:group-has-[:focus-visible]:ring-ring/50 tw:dark:bg-input/30 tw:group-data-[disabled=true]:cursor-not-allowed tw:group-data-[disabled=true]:opacity-50 tw:relative tw:flex tw:aspect-square tw:size-4 tw:shrink-0 tw:items-center tw:justify-center tw:rounded-full tw:border tw:shadow-xs tw:transition-[color,box-shadow] tw:outline-none tw:group-has-[:focus-visible]:ring-[3px]',
     );
   }
 }

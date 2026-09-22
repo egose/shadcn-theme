@@ -9,7 +9,7 @@ export class HlmFieldTitle {
   constructor() {
     classes(
       () =>
-        'gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50 flex w-fit items-center',
+        'tw:gap-2 tw:text-sm tw:leading-snug tw:font-medium tw:group-data-[disabled=true]/field:opacity-50 tw:flex tw:w-fit tw:items-center',
     );
   }
 }

@@ -8,10 +8,10 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   imports: [NgIcon],
   providers: [provideIcons({ lucideChevronRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: ` <ng-icon name="lucideChevronRight" class="text-[length:--spacing(4)] rtl:rotate-180" /> `,
+  template: ` <ng-icon name="lucideChevronRight" class="tw:text-[length:--spacing(4)] tw:rtl:rotate-180" /> `,
 })
 export class HlmDropdownMenuItemSubIndicator {
   constructor() {
-    classes(() => 'ms-auto flex items-center justify-center');
+    classes(() => 'tw:ms-auto tw:flex tw:items-center tw:justify-center');
   }
 }

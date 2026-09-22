@@ -7,6 +7,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmEmptyContent {
   constructor() {
-    classes(() => 'gap-4 text-sm flex w-full max-w-sm min-w-0 flex-col items-center text-balance');
+    classes(
+      () => 'tw:gap-4 tw:text-sm tw:flex tw:w-full tw:max-w-sm tw:min-w-0 tw:flex-col tw:items-center tw:text-balance',
+    );
   }
 }

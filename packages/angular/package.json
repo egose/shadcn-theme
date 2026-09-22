@@ -27,11 +27,10 @@
     "test:example-boundary": "node --test test/example-consumer-boundary.test.mjs",
     "test:public-api": "node --test test/public-api.test.mjs",
     "test:package-validator": "node --test test/validate-package.test.mjs",
-    "test:release": "node --test test/release.test.mjs",
     "test:variants": "node --test test/variants.test.mjs",
     "audit:production": "pnpm audit --prod --audit-level high",
     "install:browser": "puppeteer browsers install chrome-headless-shell",
-    "prepare:release": "node ../../scripts/publish.mjs --context angular --prepare-only",
+    "prepare:release": "pnpm --dir ../.. exec repo-toolkit-publish-package --config packages/angular/publish.config.mjs --prepare-only",
     "verify:consumers": "node test/isolated-consumers.mjs",
     "validate:package": "node validate-package.mjs",
     "bundle": "node build-all.mjs"

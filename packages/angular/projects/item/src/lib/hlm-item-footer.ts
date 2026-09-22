@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmItemFooter {
   constructor() {
-    classes(() => 'gap-2 flex basis-full items-center justify-between');
+    classes(() => 'tw:gap-2 tw:flex tw:basis-full tw:min-w-0 tw:flex-wrap tw:items-center tw:justify-between');
   }
 }

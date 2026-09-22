@@ -37,7 +37,7 @@ import { ClassValue } from 'clsx';
       brnFieldControlDescribedBy
       [attr.data-placeholder]="_isPlaceholder() ? '' : null"
     >
-      <span class="truncate">
+      <span class="tw:truncate">
         @if (_formattedDate(); as formattedDate) {
           {{ formattedDate }}
         } @else {
@@ -66,7 +66,7 @@ export class HlmDatePickerTrigger implements BrnDatePickerTriggerBase {
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
-    hlm('data-placeholder:text-muted-foreground justify-between', this.userClass()),
+    hlm('tw:data-placeholder:text-muted-foreground tw:justify-between', this.userClass()),
   );
 
   protected readonly _isPlaceholder = computed(() => !this._datePicker.hasDate());

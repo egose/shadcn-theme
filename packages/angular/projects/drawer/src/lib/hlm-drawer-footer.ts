@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDrawerFooter {
   constructor() {
-    classes(() => 'gap-2 p-4 mt-auto flex flex-col');
+    classes(() => 'tw:gap-2 tw:p-4 tw:mt-auto tw:flex tw:flex-col');
   }
 }

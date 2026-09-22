@@ -10,6 +10,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxChipRemove {
   constructor() {
-    classes(() => ['-ms-1 opacity-50 hover:opacity-100', buttonVariants({ variant: 'ghost', size: 'icon-xs' })]);
+    classes(() => [
+      'tw:-ms-1 tw:opacity-50 tw:hover:opacity-100',
+      buttonVariants({ variant: 'ghost', size: 'icon-xs' }),
+    ]);
   }
 }

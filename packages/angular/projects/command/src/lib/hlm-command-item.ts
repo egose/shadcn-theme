@@ -19,7 +19,7 @@ export class HlmCommandItem {
   constructor() {
     classes(
       () =>
-        "data-selected:bg-muted data-selected:text-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none in-data-[slot=dialog-content]:rounded-lg! [&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] group/command-item w-full data-disabled:pointer-events-none data-disabled:opacity-50 data-hidden:hidden [&>ng-icon]:pointer-events-none [&>ng-icon]:shrink-0",
+        "tw:data-selected:bg-muted tw:data-selected:text-foreground tw:relative tw:flex tw:cursor-default tw:items-center tw:gap-2 tw:rounded-sm tw:px-2 tw:py-1.5 tw:text-sm tw:outline-hidden tw:select-none tw:in-data-[slot=dialog-content]:rounded-lg! tw:[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] tw:group/command-item tw:w-full tw:data-disabled:pointer-events-none tw:data-disabled:opacity-50 tw:data-hidden:hidden tw:[&>ng-icon]:pointer-events-none tw:[&>ng-icon]:shrink-0",
     );
   }
 }

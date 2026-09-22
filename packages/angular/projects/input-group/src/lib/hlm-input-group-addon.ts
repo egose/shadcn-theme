@@ -3,15 +3,16 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const inputGroupAddonVariants = cva(
-  "text-muted-foreground h-auto gap-2 py-1.5 text-sm font-medium group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] flex cursor-text items-center justify-center select-none",
+  "tw:text-muted-foreground tw:h-auto tw:gap-2 tw:py-1.5 tw:text-sm tw:font-medium tw:group-data-[disabled=true]/input-group:opacity-50 tw:[&>kbd]:rounded-[calc(var(--radius)-5px)] tw:[&>ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] tw:flex tw:shrink-0 tw:cursor-text tw:items-center tw:justify-center tw:select-none",
   {
     variants: {
       align: {
-        'inline-start': 'ps-2 has-[>button]:-ms-1 has-[>kbd]:ms-[-0.15rem] order-first',
-        'inline-end': 'pe-2 has-[>button]:-me-1 has-[>kbd]:me-[-0.15rem] order-last',
+        'inline-start': 'tw:ps-2 tw:has-[>button]:-ms-1 tw:has-[>kbd]:ms-[-0.15rem] tw:order-first',
+        'inline-end': 'tw:pe-2 tw:has-[>button]:pe-1 tw:has-[>kbd]:me-[-0.15rem] tw:order-last',
         'block-start':
-          'px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2 order-first w-full justify-start',
-        'block-end': 'px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2 order-last w-full justify-start',
+          'tw:px-2.5 tw:pt-2 tw:group-has-[>input]/input-group:pt-2 tw:[.border-b]:pb-2 tw:order-first tw:w-full tw:justify-start',
+        'block-end':
+          'tw:px-2.5 tw:pb-2 tw:group-has-[>input]/input-group:pb-2 tw:[.border-t]:pt-2 tw:order-last tw:w-full tw:justify-start',
       },
     },
     defaultVariants: {

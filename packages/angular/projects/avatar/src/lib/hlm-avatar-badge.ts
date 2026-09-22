@@ -10,10 +10,10 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 export class HlmAvatarBadge {
   constructor() {
     classes(() => [
-      'bg-primary text-primary-foreground ring-background absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-blend-color ring-2 select-none',
-      'group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>ng-icon]:hidden',
-      'group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>ng-icon]:text-[length:--spacing(2)]',
-      'group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>ng-icon]:text-[length:--spacing(2)]',
+      'tw:bg-primary tw:text-primary-foreground tw:ring-background tw:absolute tw:right-0 tw:bottom-0 tw:z-10 tw:inline-flex tw:items-center tw:justify-center tw:rounded-full tw:bg-blend-color tw:ring-2 tw:select-none',
+      'tw:group-data-[size=sm]/avatar:size-2 tw:group-data-[size=sm]/avatar:[&>ng-icon]:hidden',
+      'tw:group-data-[size=default]/avatar:size-2.5 tw:group-data-[size=default]/avatar:[&>ng-icon]:text-[length:--spacing(2)]',
+      'tw:group-data-[size=lg]/avatar:size-3 tw:group-data-[size=lg]/avatar:[&>ng-icon]:text-[length:--spacing(2)]',
     ]);
   }
 }

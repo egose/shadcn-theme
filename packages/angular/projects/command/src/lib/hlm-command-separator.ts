@@ -11,6 +11,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCommandSeparator {
   constructor() {
-    classes(() => 'bg-border -mx-1 h-px w-auto block data-hidden:hidden');
+    classes(() => 'tw:bg-border tw:-mx-1 tw:h-px tw:w-auto tw:block tw:data-hidden:hidden');
   }
 }

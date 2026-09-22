@@ -24,7 +24,7 @@ import { ClassValue } from 'clsx';
         [class]="_computedDialogContentClass()"
         [showCloseButton]="showCloseButton()"
       >
-        <hlm-dialog-header class="sr-only">
+        <hlm-dialog-header class="tw:sr-only">
           <h2 hlmDialogTitle>{{ title() }}</h2>
           <p hlmDialogDescription>{{ description() }}</p>
         </hlm-dialog-header>
@@ -43,7 +43,7 @@ export class HlmCommandDialog {
   public readonly showCloseButton = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
   public readonly dialogContentClass = input<ClassValue>('');
-  protected readonly _computedDialogContentClass = computed(() => hlm('w-96 p-0', this.dialogContentClass()));
+  protected readonly _computedDialogContentClass = computed(() => hlm('tw:w-96 tw:p-0', this.dialogContentClass()));
 
   public readonly stateChange = output<BrnDialogState>();
 

@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCollapsibleContent {
   constructor() {
-    classes(() => 'data-[state=closed]:hidden');
+    classes(() => 'tw:data-[state=closed]:hidden');
   }
 }

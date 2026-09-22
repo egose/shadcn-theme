@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCardTitle {
   constructor() {
-    classes(() => 'text-base leading-normal font-medium group-data-[size=sm]/card:text-sm');
+    classes(() => 'tw:text-base tw:leading-normal tw:font-medium tw:group-data-[size=sm]/card:text-sm');
   }
 }

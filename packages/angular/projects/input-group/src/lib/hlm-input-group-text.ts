@@ -8,7 +8,7 @@ export class HlmInputGroupText {
   constructor() {
     classes(
       () =>
-        "text-muted-foreground gap-2 text-sm [&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] flex items-center [&_ng-icon]:pointer-events-none",
+        "tw:text-muted-foreground tw:gap-2 tw:text-sm tw:[&_ng-icon:not([class*='text-'])]:text-[length:--spacing(4)] tw:flex tw:items-center tw:[&_ng-icon]:pointer-events-none",
     );
   }
 }

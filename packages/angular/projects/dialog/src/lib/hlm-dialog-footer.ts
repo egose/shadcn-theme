@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDialogFooter {
   constructor() {
-    classes(() => 'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end');
+    classes(() => 'tw:flex tw:flex-col-reverse tw:gap-2 tw:sm:flex-row tw:sm:justify-end');
   }
 }

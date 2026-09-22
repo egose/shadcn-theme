@@ -10,6 +10,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSidebarGroup {
   constructor() {
-    classes(() => 'p-2 relative flex w-full min-w-0 flex-col');
+    classes(() => 'tw:p-2 tw:relative tw:flex tw:w-full tw:min-w-0 tw:flex-col');
   }
 }

@@ -62,5 +62,5 @@ export class HlmToaster {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   public readonly userStyle = input<Record<string, string>>({}, { alias: 'style' });
 
-  protected readonly _computedClass = computed(() => hlm('toaster group', this.userClass()));
+  protected readonly _computedClass = computed(() => hlm('toaster tw:group', this.userClass()));
 }

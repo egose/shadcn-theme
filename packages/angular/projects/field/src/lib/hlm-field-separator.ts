@@ -8,10 +8,10 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'data-slot': 'field-separator' },
   template: `
-    <hlm-separator class="absolute inset-0 top-1/2" />
+    <hlm-separator class="tw:absolute tw:inset-0 tw:top-1/2" />
     <span
       data-slot="field-separator-content"
-      class="text-muted-foreground px-2 bg-background relative mx-auto block w-fit"
+      class="tw:text-muted-foreground tw:px-2 tw:bg-background tw:relative tw:mx-auto tw:block tw:w-fit"
     >
       <ng-content />
     </span>
@@ -19,6 +19,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmFieldSeparator {
   constructor() {
-    classes(() => '-my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2 relative');
+    classes(() => 'tw:-my-2 tw:h-5 tw:text-sm tw:group-data-[variant=outline]/field-group:-mb-2 tw:relative');
   }
 }

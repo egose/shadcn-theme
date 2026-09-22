@@ -17,6 +17,8 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmNavigationMenu {
   constructor() {
-    classes(() => 'group/navigation-menu relative flex max-w-max flex-1 items-center justify-center');
+    classes(
+      () => 'tw:group/navigation-menu tw:relative tw:flex tw:max-w-max tw:flex-1 tw:items-center tw:justify-center',
+    );
   }
 }

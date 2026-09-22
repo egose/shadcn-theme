@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmCommandEmpty {
   constructor() {
-    classes(() => 'py-6 text-center text-sm');
+    classes(() => 'tw:py-6 tw:text-center tw:text-sm');
   }
 }

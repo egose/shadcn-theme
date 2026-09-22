@@ -73,6 +73,23 @@ async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
   fixture.detectChanges();
 }
 
+/**
+ * Polls until the dialog overlay is removed. Closing runs through exit
+ * animations that can starve on loaded runners (CI); a fixed 100ms settle
+ * then flakes with the pane lingering at `data-state="closed"`.
+ */
+async function waitForOverlayGone(fixture: ComponentFixture<unknown>, timeoutMs = 5000): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  do {
+    fixture.detectChanges();
+    await fixture.whenStable();
+    if (overlayPane() === null) return true;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  } while (Date.now() < deadline);
+  fixture.detectChanges();
+  return overlayPane() === null;
+}
+
 async function openRowMenu(
   fixture: ComponentFixture<TeamManagementExamplePage>,
   host: HTMLElement,
@@ -287,6 +304,8 @@ describe('TeamManagementExamplePage', () => {
     overlayButton('Send invite')?.click();
     await settle(fixture);
 
+    const closed = await waitForOverlayGone(fixture);
+    expect(closed).withContext('invite dialog closes after a valid submit').toBeTrue();
     expect(overlayPane()).toBeNull();
     const outcomes = host.querySelectorAll('[data-testid="member-outcome"]');
     expect(outcomes.length).toBe(1);
@@ -308,6 +327,9 @@ describe('TeamManagementExamplePage', () => {
     overlayButton('Cancel')?.click();
     await settle(fixture);
 
+    expect(await waitForOverlayGone(fixture))
+      .withContext('cancelled invite dialog closes')
+      .toBeTrue();
     expect(overlayPane()).toBeNull();
     expect(host.querySelector('[data-testid="member-outcome"]')).toBeNull();
     expect(countText(host)).toContain('of 8 members');

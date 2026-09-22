@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmComboboxLabel {
   constructor() {
-    classes(() => 'text-muted-foreground px-2 py-1.5 text-xs');
+    classes(() => 'tw:text-muted-foreground tw:px-2 tw:py-1.5 tw:text-xs');
   }
 }

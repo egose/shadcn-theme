@@ -18,7 +18,7 @@ import { HlmSidebarService } from './hlm-sidebar.service';
   },
   template: `
     <ng-icon name="lucidePanelLeft" />
-    <span class="sr-only">{{ srOnlyText() }}</span>
+    <span class="tw:sr-only">{{ srOnlyText() }}</span>
   `,
 })
 export class HlmSidebarTrigger {

@@ -11,7 +11,7 @@ export class HlmInputGroupTextarea {
   constructor() {
     classes(
       () =>
-        'rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 data-[matches-spartan-invalid=true]:ring-0 dark:bg-transparent flex-1 resize-none',
+        'tw:rounded-none tw:border-0 tw:bg-transparent tw:py-2 tw:shadow-none tw:ring-0 tw:focus-visible:ring-0 tw:data-[matches-spartan-invalid=true]:ring-0 tw:dark:bg-transparent tw:flex-1 tw:resize-none',
     );
   }
 }

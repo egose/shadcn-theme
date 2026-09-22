@@ -148,10 +148,6 @@ jobs:
       run: pnpm test:package-validator
       working-directory: packages/angular
 
-    - name: Test Angular release script
-      run: pnpm test:release
-      working-directory: packages/angular
-
     - name: Install repo-local headless browser for the Angular standard example
       run: pnpm install:browser
       working-directory: packages/angular/@examples/standard
@@ -168,8 +164,8 @@ jobs:
 
     - name: Validate preserved plain and tw packages
       run: |
-        pnpm validate:package --workspace . --package release/staged/plain --variant plain
-        pnpm validate:package --workspace . --package release/staged/tw --variant tw
+        pnpm validate:package --workspace . --package release/plain --variant plain
+        pnpm validate:package --workspace . --package release/tw --variant tw
       working-directory: packages/angular
 
     - name: Build fresh consumers from exact Angular tarballs

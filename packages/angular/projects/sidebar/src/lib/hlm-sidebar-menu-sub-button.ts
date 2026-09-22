@@ -29,7 +29,7 @@ export class HlmSidebarMenuSubButton {
   constructor() {
     classes(
       () =>
-        'text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground h-7 gap-2 rounded-md px-2 focus-visible:ring-2 data-[size=md]:text-sm data-[size=sm]:text-xs [&>ng-icon]:text-[length:--spacing(4)] flex min-w-0 -translate-x-px items-center overflow-hidden outline-hidden group-data-[collapsible=icon]:hidden disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>ng-icon]:shrink-0 [&>span:last-child]:truncate',
+        'tw:text-sidebar-foreground tw:ring-sidebar-ring tw:hover:bg-sidebar-accent tw:hover:text-sidebar-accent-foreground tw:active:bg-sidebar-accent tw:active:text-sidebar-accent-foreground tw:[&>svg]:text-sidebar-accent-foreground tw:data-active:bg-sidebar-accent tw:data-active:text-sidebar-accent-foreground tw:h-7 tw:gap-2 tw:rounded-md tw:px-2 tw:focus-visible:ring-2 tw:data-[size=md]:text-sm tw:data-[size=sm]:text-xs tw:[&>ng-icon]:text-[length:--spacing(4)] tw:flex tw:min-w-0 tw:-translate-x-px tw:items-center tw:overflow-hidden tw:outline-hidden tw:group-data-[collapsible=icon]:hidden tw:disabled:pointer-events-none tw:disabled:opacity-50 tw:aria-disabled:pointer-events-none tw:aria-disabled:opacity-50 tw:[&>ng-icon]:shrink-0 tw:[&>span:last-child]:truncate',
     );
   }
 

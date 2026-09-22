@@ -7,6 +7,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmFieldSet {
   constructor() {
-    classes(() => 'gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col');
+    classes(
+      () =>
+        'tw:gap-6 tw:has-[>[data-slot=checkbox-group]]:gap-3 tw:has-[>[data-slot=radio-group]]:gap-3 tw:flex tw:flex-col',
+    );
   }
 }

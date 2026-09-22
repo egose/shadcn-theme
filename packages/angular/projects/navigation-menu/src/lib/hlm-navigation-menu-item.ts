@@ -11,6 +11,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmNavigationMenuItem {
   constructor() {
-    classes(() => 'relative has-[:focus]:z-10 data-active:z-10');
+    classes(() => 'tw:relative tw:has-[:focus]:z-10 tw:data-active:z-10');
   }
 }

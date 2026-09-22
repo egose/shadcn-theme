@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDrawerDescription {
   constructor() {
-    classes(() => 'text-muted-foreground text-sm');
+    classes(() => 'tw:text-muted-foreground tw:text-sm');
   }
 }

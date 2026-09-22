@@ -9,6 +9,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmDrawerTitle {
   constructor() {
-    classes(() => 'text-foreground font-medium');
+    classes(() => 'tw:text-foreground tw:font-medium');
   }
 }

@@ -7,6 +7,6 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmPopoverHeader {
   constructor() {
-    classes(() => 'flex flex-col gap-1 text-sm');
+    classes(() => 'tw:flex tw:flex-col tw:gap-1 tw:text-sm');
   }
 }

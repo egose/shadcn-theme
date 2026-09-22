@@ -69,8 +69,8 @@ export class HlmRadio<T = unknown> {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>
     hlm(
-      'group relative flex items-center gap-x-3',
-      'data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50',
+      'tw:group tw:relative tw:flex tw:items-center tw:gap-x-3',
+      'tw:data-[disabled=true]:cursor-not-allowed tw:data-[disabled=true]:opacity-50',
       this.userClass(),
       this._errorStateClass(),
     ),

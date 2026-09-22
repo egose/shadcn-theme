@@ -7,7 +7,7 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmTableContainer {
   constructor() {
-    classes(() => 'relative w-full overflow-x-auto');
+    classes(() => 'tw:relative tw:w-full tw:overflow-x-auto');
   }
 }
 
@@ -20,7 +20,7 @@ export class HlmTableContainer {
 })
 export class HlmTable {
   constructor() {
-    classes(() => 'w-full caption-bottom text-sm');
+    classes(() => 'tw:w-full tw:caption-bottom tw:text-sm');
   }
 }
 
@@ -34,7 +34,7 @@ export class HlmTable {
 })
 export class HlmTHead {
   constructor() {
-    classes(() => '[&_tr]:border-b');
+    classes(() => 'tw:[&_tr]:border-b');
   }
 }
 
@@ -48,7 +48,7 @@ export class HlmTHead {
 })
 export class HlmTBody {
   constructor() {
-    classes(() => '[&_tr:last-child]:border-0');
+    classes(() => 'tw:[&_tr:last-child]:border-0');
   }
 }
 
@@ -62,7 +62,7 @@ export class HlmTBody {
 })
 export class HlmTFoot {
   constructor() {
-    classes(() => 'bg-muted/50 border-t font-medium [&>tr]:last:border-b-0');
+    classes(() => 'tw:bg-muted/50 tw:border-t tw:font-medium tw:[&>tr]:last:border-b-0');
   }
 }
 
@@ -77,7 +77,8 @@ export class HlmTFoot {
 export class HlmTr {
   constructor() {
     classes(
-      () => 'hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors has-aria-expanded:bg-muted/50',
+      () =>
+        'tw:hover:bg-muted/50 tw:data-[state=selected]:bg-muted tw:border-b tw:transition-colors tw:has-aria-expanded:bg-muted/50',
     );
   }
 }
@@ -94,7 +95,7 @@ export class HlmTh {
   constructor() {
     classes(
       () =>
-        'text-foreground h-10 px-2 text-start align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pe-0',
+        'tw:text-foreground tw:h-10 tw:px-2 tw:text-start tw:align-middle tw:font-medium tw:whitespace-nowrap tw:[&:has([role=checkbox])]:pe-0',
     );
   }
 }
@@ -109,7 +110,7 @@ export class HlmTh {
 })
 export class HlmTd {
   constructor() {
-    classes(() => 'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pe-0');
+    classes(() => 'tw:p-2 tw:align-middle tw:whitespace-nowrap tw:[&:has([role=checkbox])]:pe-0');
   }
 }
 
@@ -123,6 +124,6 @@ export class HlmTd {
 })
 export class HlmCaption {
   constructor() {
-    classes(() => 'text-muted-foreground mt-4 text-sm');
+    classes(() => 'tw:text-muted-foreground tw:mt-4 tw:text-sm');
   }
 }
