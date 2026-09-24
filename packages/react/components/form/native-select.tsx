@@ -70,7 +70,7 @@ export function FormNativeSelect({
         name={name}
         autoComplete={id}
         className={cn(
-          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base text-foreground shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30 [color-scheme:light] dark:[color-scheme:dark]',
           classNames?.input ?? '',
         )}
         required={required}
@@ -83,6 +83,7 @@ export function FormNativeSelect({
             <option
               key={option.value}
               value={option.value}
+              className="bg-[Canvas] text-[CanvasText]"
               // Unfortunately, the selected prop is not properly set at the nested component level.
               // use `defaultValue` in select element.
               // selected={defaultValue ? defaultValue === option.value : index === 0}

@@ -14,6 +14,7 @@ import {
   HlmSelectItem,
   HlmSelectLabel,
 } from '@egose/shadcn-theme-ng/select';
+import { injectEgFormSelectConfig } from './form-select.token';
 
 interface SelectOption {
   value: string;
@@ -24,7 +25,7 @@ interface SelectOption {
   selector: 'eg-form-select',
   standalone: true,
   host: {
-    class: 'tw:w-full',
+    '[class]': '$userClass()',
   },
   imports: [
     ReactiveFormsModule,
@@ -70,7 +71,7 @@ interface SelectOption {
             <hlm-select-value [placeholder]="placeholder()" />
           </hlm-select-trigger>
 
-          <hlm-select-content>
+          <hlm-select-content *hlmSelectPortal>
             @if (options().length) {
               @if (optionsLabel()) {
                 <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
@@ -92,7 +93,7 @@ interface SelectOption {
             <hlm-select-value [placeholder]="placeholder()" />
           </hlm-select-trigger>
 
-          <hlm-select-content>
+          <hlm-select-content *hlmSelectPortal>
             @if (options().length) {
               @if (optionsLabel()) {
                 <hlm-select-label>{{ optionsLabel() }}</hlm-select-label>
@@ -122,6 +123,7 @@ interface SelectOption {
 export class EgFormSelect {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-select');
+  private readonly _config = injectEgFormSelectConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -160,10 +162,10 @@ export class EgFormSelect {
   errorClass = input<string>('');
   hintClass = input<string>('');
 
-  // Computed classes
-  $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this.labelClass()));
-  $selectClass = computed(() => hlm('tw:w-full', this.selectClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
+  // Computed classes (library base < global config < per-instance)
+  $userClass = computed(() => hlm('tw:w-full', this.userClass()));
+  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this._config.labelClass, this.labelClass()));
+  $selectClass = computed(() => hlm('tw:w-full', this._config.selectClass, this.selectClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
 }

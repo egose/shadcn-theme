@@ -38,6 +38,18 @@ export interface HlmMonthYearPickerConfig<T> {
    * @returns the parsed date, or `null` when the value can't be parsed
    */
   parseDate: (value: string) => T | null;
+
+  /**
+   * Global class defaults for form-wrapper styling slots.
+   * Each is merged under the matching per-instance `*Class` input
+   * (library base < global config < per-instance), mirroring how
+   * `formatDate` provides a global behavior default.
+   */
+  labelClass?: string;
+  pickerClass?: string;
+  inputClass?: string;
+  errorClass?: string;
+  hintClass?: string;
 }
 
 const mmYYYY = <T>(date: T) => {

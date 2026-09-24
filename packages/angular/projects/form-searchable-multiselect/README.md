@@ -89,7 +89,7 @@ Real selectors involved: `eg-form-searchable-multiselect` (this wrapper), `eg-fo
 | `disabled`            | `boolean`             | `false`                  | Wrapper-level disable, forwarded as `wrapperDisabled` to the inner multiselect.                     |
 | `required`            | `boolean`             | `false`                  | Adds `required` to the inner control and renders a red `*` next to the label.                       |
 | `options`             | `SelectOption[]`      | `[]`                     | `{ label: string; value: string }[]` forwarded to the inner multiselect.                            |
-| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes for the host (merged over `tw:flex tw:flex-col`).                                     |
+| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes for the host (merged over `tw:w-full`).                                               |
 | `labelClass`          | `string`              | `''`                     | Extra classes for the `<label>` (merged over `tw:mb-1 tw:gap-0`).                                   |
 | `controlClass`        | `string`              | `''`                     | Extra classes for the inner multiselect (merged over `tw:w-full`).                                  |
 | `errorClass`          | `string`              | `''`                     | Extra classes for `<hlm-error>` (merged over `tw:mt-0`).                                            |
@@ -353,6 +353,16 @@ export class ProgrammaticExample {
 ## Theming / CSS variables
 
 No component-specific CSS variables; styling flows through the shared theme tokens (`--radius`, `--popover`, `--ring`, …) consumed by the inner popover/checkbox classes. Use `class` / `labelClass` / `controlClass` / `errorClass` / `hintClass` to append utilities.
+
+Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+
+```ts
+import { provideEgFormSearchableMultiselectConfig } from '@egose/shadcn-theme-ng/form-searchable-multiselect';
+
+await bootstrapApplication(App, {
+  providers: [provideEgFormSearchableMultiselectConfig({ controlClass: 'tw:text-sm', labelClass: 'tw:font-medium' })],
+});
+```
 
 ## Related subpaths
 

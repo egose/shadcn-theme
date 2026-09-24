@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormTextarea } from './form-textarea';
+import { provideEgFormTextareaConfig } from './form-textarea.token';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormTextarea],
@@ -12,6 +13,7 @@ import { EgFormTextarea } from './form-textarea';
       label="Notes"
       [id]="id()"
       [disabled]="disabled()"
+      [class]="userClass()"
       error="Notes required"
       hint="Add details"
       required
@@ -22,6 +24,7 @@ class Host {
   readonly form = new FormGroup({ value: new FormControl('', { nonNullable: true, validators: Validators.required }) });
   readonly id = signal<string | undefined>('notes');
   readonly disabled = signal(false);
+  readonly userClass = signal('');
 }
 
 describe('EgFormTextarea', () => {
@@ -61,5 +64,51 @@ describe('EgFormTextarea', () => {
     fixture.componentInstance.form.controls.value.disable();
     fixture.detectChanges();
     expect(control().disabled).toBeTrue();
+  });
+
+  it('applies userClass to the host while keeping the full-width base', () => {
+    const host = () => fixture.nativeElement.querySelector('eg-form-textarea') as HTMLElement;
+    expect(host().className).toContain('tw:w-full');
+    fixture.componentInstance.userClass.set('tw:max-w-xs');
+    fixture.detectChanges();
+    expect(host().className).toContain('tw:w-full');
+    expect(host().className).toContain('tw:max-w-xs');
+  });
+});
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormTextarea],
+  template: `<form [formGroup]="form">
+    <eg-form-textarea controlName="value" label="Notes" [labelClass]="labelClass()" [textareaClass]="textareaClass()" />
+  </form>`,
+})
+class ConfigHost {
+  readonly form = new FormGroup({ value: new FormControl('') });
+  readonly labelClass = signal('');
+  readonly textareaClass = signal('');
+}
+
+describe('EgFormTextarea global class defaults', () => {
+  let fixture: ComponentFixture<ConfigHost>;
+  beforeEach(async () => {
+    configureLibraryTestBed([provideEgFormTextareaConfig({ labelClass: 'tw:text-xs', textareaClass: 'tw:text-xs' })]);
+    await TestBed.configureTestingModule({ imports: [ConfigHost] }).compileComponents();
+    fixture = TestBed.createComponent(ConfigHost);
+    fixture.detectChanges();
+  });
+  afterEach(() => fixture.destroy());
+
+  it('merges global config classes under per-instance classes', () => {
+    const label = () => fixture.nativeElement.querySelector('label') as HTMLLabelElement;
+    const control = () => fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
+    expect(label().className).toContain('tw:text-xs');
+    expect(control().className).toContain('tw:text-xs');
+    fixture.componentInstance.labelClass.set('tw:text-lg');
+    fixture.componentInstance.textareaClass.set('tw:text-lg');
+    fixture.detectChanges();
+    expect(label().className).toContain('tw:text-lg');
+    expect(label().className).not.toContain('tw:text-xs');
+    expect(control().className).toContain('tw:text-lg');
+    expect(control().className).not.toContain('tw:text-xs');
   });
 });

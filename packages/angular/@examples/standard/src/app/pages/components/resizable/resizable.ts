@@ -1,18 +1,81 @@
 import { Component } from '@angular/core';
 import { DemoHeaderComponent } from '../../../shared/demo-header';
+import { DemoSectionComponent } from '../../../shared/demo-section';
 import { BrnResizableGroup, BrnResizableHandle, BrnResizablePanel } from '@spartan-ng/brain/resizable';
 import { HlmResizableImports } from '@egose/shadcn-theme-ng/resizable';
 
 @Component({
   selector: 'app-resizable-page',
-  imports: [DemoHeaderComponent, BrnResizableGroup, BrnResizableHandle, BrnResizablePanel, HlmResizableImports],
+  imports: [
+    DemoHeaderComponent,
+    DemoSectionComponent,
+    BrnResizableGroup,
+    BrnResizableHandle,
+    BrnResizablePanel,
+    HlmResizableImports,
+  ],
   template: `
-    <app-demo-header title="Resizable" description="Draggable panels." />
+    <app-demo-header title="Resizable" description="Draggable panels with horizontal and vertical layouts." />
 
-    <div hlmResizableGroup class="tw:flex tw:h-[200px] tw:w-full tw:max-w-md tw:rounded-md tw:border">
-      <div hlmResizablePanel class="tw:flex tw:items-center tw:justify-center tw:p-6">One</div>
-      <hlm-resizable-handle />
-      <div hlmResizablePanel class="tw:flex tw:items-center tw:justify-center tw:p-6">Two</div>
+    <div class="tw:grid tw:min-w-0 tw:grid-cols-1 tw:gap-6">
+      <app-demo-section
+        class="tw:min-w-0 tw:max-w-full tw:overflow-hidden"
+        kicker="Horizontal"
+        title="Two panels"
+        description="Drag the handle to resize."
+      >
+        <div
+          hlmResizableGroup
+          class="tw:flex tw:h-[200px] tw:w-full tw:min-w-0 tw:max-w-full tw:overflow-hidden md:tw:max-w-md tw:rounded-md tw:border"
+        >
+          <div
+            hlmResizablePanel
+            class="tw:flex tw:min-w-0 tw:items-center tw:justify-center tw:overflow-hidden tw:break-words tw:p-4 sm:tw:p-6"
+          >
+            One
+          </div>
+          <hlm-resizable-handle />
+          <div
+            hlmResizablePanel
+            class="tw:flex tw:min-w-0 tw:items-center tw:justify-center tw:overflow-hidden tw:break-words tw:p-4 sm:tw:p-6"
+          >
+            Two
+          </div>
+        </div>
+      </app-demo-section>
+
+      <app-demo-section
+        class="tw:min-w-0 tw:max-w-full tw:overflow-hidden"
+        kicker="Horizontal"
+        title="Three panels"
+        description="Two handles, three sections."
+      >
+        <div
+          hlmResizableGroup
+          class="tw:flex tw:h-[200px] tw:w-full tw:min-w-0 tw:max-w-full tw:overflow-hidden md:tw:max-w-lg tw:rounded-md tw:border"
+        >
+          <div
+            hlmResizablePanel
+            class="tw:flex tw:min-w-0 tw:items-center tw:justify-center tw:overflow-hidden tw:break-words tw:p-4 sm:tw:p-6"
+          >
+            Sidebar
+          </div>
+          <hlm-resizable-handle />
+          <div
+            hlmResizablePanel
+            class="tw:flex tw:min-w-0 tw:items-center tw:justify-center tw:overflow-hidden tw:break-words tw:p-4 sm:tw:p-6"
+          >
+            Content
+          </div>
+          <hlm-resizable-handle />
+          <div
+            hlmResizablePanel
+            class="tw:flex tw:min-w-0 tw:items-center tw:justify-center tw:overflow-hidden tw:break-words tw:p-4 sm:tw:p-6"
+          >
+            Inspector
+          </div>
+        </div>
+      </app-demo-section>
     </div>
   `,
 })

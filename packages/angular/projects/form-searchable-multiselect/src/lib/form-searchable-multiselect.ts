@@ -6,12 +6,13 @@ import { HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/fo
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
 import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
+import { injectEgFormSearchableMultiselectConfig } from './form-searchable-multiselect.token';
 
 @Component({
   selector: 'eg-form-searchable-multiselect',
   standalone: true,
   host: {
-    class: 'tw:w-full',
+    '[class]': '$userClass()',
   },
   imports: [ReactiveFormsModule, EgFormField, HlmError, HlmHint, HlmLabel, EgSearchableMultiselect],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
@@ -60,6 +61,7 @@ import { EgSearchableMultiselect, SelectOption } from '@egose/shadcn-theme-ng/se
 export class EgFormSearchableMultiselect {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-searchable-multiselect');
+  private readonly _config = injectEgFormSearchableMultiselectConfig();
 
   // Form field inputs
   label = input<string | undefined>(undefined);
@@ -97,10 +99,10 @@ export class EgFormSearchableMultiselect {
   errorClass = input<string>('');
   hintClass = input<string>('');
 
-  // Computed class names
-  $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this.labelClass()));
-  $controlClass = computed(() => hlm('tw:w-full', this.controlClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
+  // Computed class names (library base < global config < per-instance)
+  $userClass = computed(() => hlm('tw:w-full', this.userClass()));
+  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this._config.labelClass, this.labelClass()));
+  $controlClass = computed(() => hlm('tw:w-full', this._config.controlClass, this.controlClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
 }

@@ -97,10 +97,12 @@ export class HlmMonthYearPicker<T> implements BrnDatePickerBase<T>, ControlValue
 
   protected readonly _popoverState = signal<BrnOverlayState | null>(null);
 
-  protected readonly _disabled = linkedSignal(this.disabled);
+  private readonly _formDisabled = signal(false);
 
   /** @internal The disabled state as a readonly signal */
-  public readonly disabledState = this._disabled.asReadonly();
+  public readonly disabledState = computed(() => this.disabled() || this._formDisabled());
+
+  protected readonly _disabled = this.disabledState;
 
   public readonly formattedDate = computed(() => {
     const date = this._mutableDate();
@@ -166,7 +168,7 @@ export class HlmMonthYearPicker<T> implements BrnDatePickerBase<T>, ControlValue
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    this._disabled.set(isDisabled);
+    this._formDisabled.set(isDisabled);
   }
 
   public open() {

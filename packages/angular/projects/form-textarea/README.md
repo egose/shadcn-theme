@@ -92,7 +92,7 @@ Real selectors: `eg-form-textarea`, `hlm-form-field`, `label[hlmLabel]`, `textar
 | `required`            | `boolean`                       | `false`     | Native `required` + red `*` on the label.                                                        |
 | `rows`                | `string \| number \| undefined` | `3`         | Native `rows` (visible height).                                                                  |
 | `cols`                | `string \| number \| undefined` | `undefined` | Native `cols` (visible width).                                                                   |
-| `class` (`userClass`) | `ClassValue`                    | `''`        | Extra host classes (merged over `tw:flex tw:flex-col`).                                          |
+| `class` (`userClass`) | `ClassValue`                    | `''`        | Extra host classes (merged over `tw:w-full`).                                                    |
 | `labelClass`          | `string`                        | `''`        | Extra label classes (merged over `tw:mb-1 tw:gap-0`).                                            |
 | `textareaClass`       | `string`                        | `''`        | Extra textarea classes (merged over `tw:mb-1`).                                                  |
 | `errorClass`          | `string`                        | `''`        | Extra error classes (merged over `tw:mt-0`).                                                     |
@@ -339,6 +339,16 @@ export class ProgrammaticExample {
 ## Theming / CSS variables
 
 No component-specific CSS variables; visuals come from the shared theme tokens via the `hlmInput` class hook. Control height with `rows` and `textareaClass` (`tw:min-h-*`, `tw:resize-y` / `tw:resize-none`).
+
+Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+
+```ts
+import { provideEgFormTextareaConfig } from '@egose/shadcn-theme-ng/form-textarea';
+
+await bootstrapApplication(App, {
+  providers: [provideEgFormTextareaConfig({ textareaClass: 'tw:text-sm', labelClass: 'tw:font-medium' })],
+});
+```
 
 ## Related subpaths
 

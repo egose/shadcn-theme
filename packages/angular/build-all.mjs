@@ -226,6 +226,70 @@ export function transformJavaScriptClasses(source, bundle = '', fileName = 'arti
   const sourceFile = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
   const replacements = [];
 
+  function isCvaOptionsObject(node) {
+    if (!node || !ts.isObjectLiteralExpression(node)) return false;
+    return node.properties.some((property) => {
+      if (!ts.isPropertyAssignment(property)) return false;
+      const name = propertyName(property.name);
+      return name === 'variants' || name === 'compoundVariants' || name === 'defaultVariants';
+    });
+  }
+
+  function visitCvaVariantsGroup(node) {
+    if (ts.isObjectLiteralExpression(node)) {
+      for (const property of node.properties) {
+        if (ts.isPropertyAssignment(property)) {
+          // Leaf values are class lists (e.g. primary: 'tw:bg-primary ...').
+          // Property keys are variant option names, never classes.
+          visit(property.initializer, true, false, false);
+        } else {
+          ts.forEachChild(property, (child) => visit(child, true, false, false));
+        }
+      }
+      return;
+    }
+    visit(node, true, false, false);
+  }
+
+  function visitCvaVariantsDefinition(node) {
+    if (ts.isObjectLiteralExpression(node)) {
+      for (const property of node.properties) {
+        if (ts.isPropertyAssignment(property)) {
+          visitCvaVariantsGroup(property.initializer);
+        } else {
+          ts.forEachChild(property, (child) => visit(child, false, false, true));
+        }
+      }
+      return;
+    }
+    visit(node, true, false, false);
+  }
+
+  function visitCvaOptions(node) {
+    if (ts.isObjectLiteralExpression(node)) {
+      for (const property of node.properties) {
+        if (!ts.isPropertyAssignment(property)) {
+          ts.forEachChild(property, (child) => visit(child));
+          continue;
+        }
+        const name = propertyName(property.name);
+        if (name === 'variants') {
+          visitCvaVariantsDefinition(property.initializer);
+        } else if (name === 'compoundVariants' || name === 'defaultVariants') {
+          // Variant-selection positions (e.g. appearance: 'outline'): only
+          // class/className values are classes. Visiting as selection preserves
+          // that via the PropertyAssignment branch below, including dynamic
+          // shapes like Object.keys(...).flatMap(...).
+          visit(property.initializer, false, false, true);
+        } else {
+          visit(property.initializer);
+        }
+      }
+      return;
+    }
+    visit(node);
+  }
+
   function visit(node, classContext = false, templateContext = false, selectionContext = false) {
     if (ts.isStringLiteralLike(node)) {
       let updated = node.text;
@@ -238,9 +302,22 @@ export function transformJavaScriptClasses(source, bundle = '', fileName = 'arti
       return;
     }
 
-    if (ts.isCallExpression(node) && ['classes', 'hlm', 'cva'].includes(callName(node))) {
+    if (ts.isCallExpression(node) && ['classes', 'hlm'].includes(callName(node))) {
       ts.forEachChild(node.expression, (child) => visit(child));
       for (const argument of node.arguments) visit(argument, true);
+      return;
+    }
+
+    if (ts.isCallExpression(node) && callName(node) === 'cva') {
+      ts.forEachChild(node.expression, (child) => visit(child));
+      const args = [...node.arguments];
+      if (args.length === 1 && isCvaOptionsObject(args[0])) {
+        visitCvaOptions(args[0]);
+      } else {
+        if (args[0]) visit(args[0], true, false, false);
+        if (args[1]) visitCvaOptions(args[1]);
+        for (const argument of args.slice(2)) visit(argument);
+      }
       return;
     }
 

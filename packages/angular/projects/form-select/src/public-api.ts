@@ -3,3 +3,4 @@
  */
 
 export * from './lib/form-select';
+export * from './lib/form-select.token';

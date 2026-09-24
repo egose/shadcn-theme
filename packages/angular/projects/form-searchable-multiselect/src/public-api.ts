@@ -3,3 +3,4 @@
  */
 
 export * from './lib/form-searchable-multiselect';
+export * from './lib/form-searchable-multiselect.token';
