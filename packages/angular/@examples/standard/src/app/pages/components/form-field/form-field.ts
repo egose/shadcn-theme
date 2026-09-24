@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroupDirective, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HlmButtonModule, HlmButton } from '@egose/shadcn-theme-ng/button';
 import { ChangeDetectionStrategy, Component, computed, signal, inject, ViewChild } from '@angular/core';
 import { DemoHeaderComponent } from '../../../shared/demo-header';
@@ -301,6 +301,8 @@ export class FormFieldPage {
   public maxDate = new Date(2030, 11, 31);
   private fb = inject(FormBuilder);
 
+  @ViewChild(FormGroupDirective) private readonly formDirective?: FormGroupDirective;
+
   genderOptions = [
     { value: 'male', label: 'Male' },
     { value: 'female', label: 'Female' },
@@ -365,7 +367,7 @@ export class FormFieldPage {
 
   getError(controlName: string): string | undefined {
     const control = this.form.get(controlName);
-    if (control && control.touched && control.invalid) {
+    if (control && control.invalid && (control.touched || control.dirty || !!this.formDirective?.submitted)) {
       if (control.errors?.['required']) return `${this.prettyLabel(controlName)} is required`;
       if (control.errors?.['email']) return `Please enter a valid email address`;
       if (control.errors?.['minlength']) {

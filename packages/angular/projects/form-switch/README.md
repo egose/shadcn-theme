@@ -70,21 +70,22 @@ Selector (from source): `eg-form-switch` (standalone component, host `tw:w-full`
 
 ### `EgFormSwitch` — `eg-form-switch`
 
-| Input         | Type                  | Default | Description                                                        |
-| ------------- | --------------------- | ------- | ------------------------------------------------------------------ |
-| `controlName` | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.** |
-| `label`       | `string \| undefined` | —       | Label text beside the switch (hidden when omitted).                |
-| `error`       | `string \| undefined` | —       | Error text shown when invalid.                                     |
-| `hint`        | `string \| undefined` | —       | Hint text shown otherwise.                                         |
-| `controlId`   | `string \| undefined` | —       | Explicit id (first priority for `effectiveId`).                    |
-| `id`          | `string \| undefined` | —       | Fallback id (second priority).                                     |
-| `disabled`    | `boolean`             | `false` | Locks interaction (form control stays enabled).                    |
-| `required`    | `boolean`             | `false` | Shows a red `*` next to the label; forwarded to the switch.        |
-| `class`       | `ClassValue`          | `''`    | Extra host classes (base `tw:w-full`).                             |
-| `switchClass` | `string`              | `''`    | Extra switch classes, merged into `HlmSwitch.userClass`.           |
-| `labelClass`  | `string`              | `''`    | Extra label classes.                                               |
-| `errorClass`  | `string`              | `''`    | Extra error classes (base `tw:mt-0`).                              |
-| `hintClass`   | `string`              | `''`    | Extra hint classes (base `tw:mt-0`).                               |
+| Input         | Type                  | Default | Description                                                                                                                                                                                      |
+| ------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `controlName` | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                               |
+| `label`       | `string \| undefined` | —       | Label text beside the switch (hidden when omitted).                                                                                                                                              |
+| `error`       | `string \| undefined` | —       | Error text shown when invalid.                                                                                                                                                                   |
+| `autoError`   | `boolean`             | `true`  | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`        | `string \| undefined` | —       | Hint text shown otherwise.                                                                                                                                                                       |
+| `controlId`   | `string \| undefined` | —       | Explicit id (first priority for `effectiveId`).                                                                                                                                                  |
+| `id`          | `string \| undefined` | —       | Fallback id (second priority).                                                                                                                                                                   |
+| `disabled`    | `boolean`             | `false` | Locks interaction (form control stays enabled).                                                                                                                                                  |
+| `required`    | `boolean`             | `false` | Shows a red `*` next to the label; forwarded to the switch.                                                                                                                                      |
+| `class`       | `ClassValue`          | `''`    | Extra host classes (base `tw:w-full`).                                                                                                                                                           |
+| `switchClass` | `string`              | `''`    | Extra switch classes, merged into `HlmSwitch.userClass`.                                                                                                                                         |
+| `labelClass`  | `string`              | `''`    | Extra label classes.                                                                                                                                                                             |
+| `errorClass`  | `string`              | `''`    | Extra error classes (base `tw:mt-0`).                                                                                                                                                            |
+| `hintClass`   | `string`              | `''`    | Extra hint classes (base `tw:mt-0`).                                                                                                                                                             |
 
 | Member               | Description                                                                                                                                                   |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |

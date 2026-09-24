@@ -70,23 +70,24 @@ Selector (from source): `eg-form-radio-group` (standalone component, host `tw:w-
 
 ### `EgFormRadioGroup` — `eg-form-radio-group`
 
-| Input         | Type                            | Default | Description                                                        |
-| ------------- | ------------------------------- | ------- | ------------------------------------------------------------------ |
-| `controlName` | `string`                        | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.** |
-| `label`       | `string \| undefined`           | —       | Group label text (hidden when omitted).                            |
-| `error`       | `string \| undefined`           | —       | Error text shown when invalid.                                     |
-| `hint`        | `string \| undefined`           | —       | Hint text shown otherwise.                                         |
-| `controlId`   | `string \| undefined`           | —       | Explicit id prefix (first priority for `effectiveId`).             |
-| `id`          | `string \| undefined`           | —       | Fallback id prefix (second priority).                              |
-| `name`        | `string \| undefined`           | —       | Native group `name` (`controlName` wins when set).                 |
-| `disabled`    | `boolean`                       | `false` | Locks interaction (form control stays enabled).                    |
-| `required`    | `boolean`                       | `false` | Shows a red `*` next to the label; forwarded to the group.         |
-| `options`     | `{ value, label, disabled? }[]` | `[]`    | Rendered as labelled `hlm-radio` options.                          |
-| `class`       | `ClassValue`                    | `''`    | Extra host classes (base `tw:w-full`).                             |
-| `labelClass`  | `string`                        | `''`    | Extra group-label classes (base `tw:mb-1`).                        |
-| `groupClass`  | `string`                        | `''`    | Extra group classes (base `tw:flex tw:flex-col tw:gap-2`).         |
-| `errorClass`  | `string`                        | `''`    | Extra error classes (base `tw:mt-0`).                              |
-| `hintClass`   | `string`                        | `''`    | Extra hint classes (base `tw:mt-0`).                               |
+| Input         | Type                            | Default | Description                                                                                                                                                                                      |
+| ------------- | ------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `controlName` | `string`                        | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                               |
+| `label`       | `string \| undefined`           | —       | Group label text (hidden when omitted).                                                                                                                                                          |
+| `error`       | `string \| undefined`           | —       | Error text shown when invalid.                                                                                                                                                                   |
+| `autoError`   | `boolean`                       | `true`  | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`        | `string \| undefined`           | —       | Hint text shown otherwise.                                                                                                                                                                       |
+| `controlId`   | `string \| undefined`           | —       | Explicit id prefix (first priority for `effectiveId`).                                                                                                                                           |
+| `id`          | `string \| undefined`           | —       | Fallback id prefix (second priority).                                                                                                                                                            |
+| `name`        | `string \| undefined`           | —       | Native group `name` (`controlName` wins when set).                                                                                                                                               |
+| `disabled`    | `boolean`                       | `false` | Locks interaction (form control stays enabled).                                                                                                                                                  |
+| `required`    | `boolean`                       | `false` | Shows a red `*` next to the label; forwarded to the group.                                                                                                                                       |
+| `options`     | `{ value, label, disabled? }[]` | `[]`    | Rendered as labelled `hlm-radio` options.                                                                                                                                                        |
+| `class`       | `ClassValue`                    | `''`    | Extra host classes (base `tw:w-full`).                                                                                                                                                           |
+| `labelClass`  | `string`                        | `''`    | Extra group-label classes (base `tw:mb-1`).                                                                                                                                                      |
+| `groupClass`  | `string`                        | `''`    | Extra group classes (base `tw:flex tw:flex-col tw:gap-2`).                                                                                                                                       |
+| `errorClass`  | `string`                        | `''`    | Extra error classes (base `tw:mt-0`).                                                                                                                                                            |
+| `hintClass`   | `string`                        | `''`    | Extra hint classes (base `tw:mt-0`).                                                                                                                                                             |
 
 | Member               | Description                                                                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

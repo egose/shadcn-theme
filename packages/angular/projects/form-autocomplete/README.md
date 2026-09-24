@@ -53,25 +53,26 @@ Selector (from source): `eg-form-autocomplete` (standalone component, host `tw:w
 
 ### `EgFormAutocomplete` — `eg-form-autocomplete`
 
-| Input          | Type                  | Default             | Description                                                        |
-| -------------- | --------------------- | ------------------- | ------------------------------------------------------------------ |
-| `controlName`  | `string`              | `''`                | `formControlName` key inside the parent `FormGroup`. **Required.** |
-| `label`        | `string \| undefined` | —                   | Label text (hidden when omitted).                                  |
-| `error`        | `string \| undefined` | —                   | Error text shown when invalid.                                     |
-| `hint`         | `string \| undefined` | —                   | Hint text shown otherwise.                                         |
-| `controlId`    | `string \| undefined` | —                   | Explicit id (first priority for `effectiveId`).                    |
-| `id`           | `string \| undefined` | —                   | Fallback id (second priority).                                     |
-| `placeholder`  | `string`              | `'Type to search…'` | Input placeholder.                                                 |
-| `emptyText`    | `string`              | `'No result.'`      | Text shown when no option matches.                                 |
-| `disabled`     | `boolean`             | `false`             | Locks interaction (form control stays enabled).                    |
-| `required`     | `boolean`             | `false`             | Shows a red `*` next to the label.                                 |
-| `options`      | `string[]`            | `[]`                | Rendered as `hlm-autocomplete-item` entries.                       |
-| `class`        | `ClassValue`          | `''`                | Extra host classes (base `tw:w-full`).                             |
-| `labelClass`   | `string`              | `''`                | Extra label classes (base `tw:mb-1`).                              |
-| `controlClass` | `string`              | `''`                | Extra autocomplete-root classes.                                   |
-| `inputClass`   | `string`              | `''`                | Extra text-input classes.                                          |
-| `errorClass`   | `string`              | `''`                | Extra error classes (base `tw:mt-0`).                              |
-| `hintClass`    | `string`              | `''`                | Extra hint classes (base `tw:mt-0`).                               |
+| Input          | Type                  | Default             | Description                                                                                                                                                                                      |
+| -------------- | --------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `controlName`  | `string`              | `''`                | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                               |
+| `label`        | `string \| undefined` | —                   | Label text (hidden when omitted).                                                                                                                                                                |
+| `error`        | `string \| undefined` | —                   | Error text shown when invalid.                                                                                                                                                                   |
+| `autoError`    | `boolean`             | `true`              | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`         | `string \| undefined` | —                   | Hint text shown otherwise.                                                                                                                                                                       |
+| `controlId`    | `string \| undefined` | —                   | Explicit id (first priority for `effectiveId`).                                                                                                                                                  |
+| `id`           | `string \| undefined` | —                   | Fallback id (second priority).                                                                                                                                                                   |
+| `placeholder`  | `string`              | `'Type to search…'` | Input placeholder.                                                                                                                                                                               |
+| `emptyText`    | `string`              | `'No result.'`      | Text shown when no option matches.                                                                                                                                                               |
+| `disabled`     | `boolean`             | `false`             | Locks interaction (form control stays enabled).                                                                                                                                                  |
+| `required`     | `boolean`             | `false`             | Shows a red `*` next to the label.                                                                                                                                                               |
+| `options`      | `string[]`            | `[]`                | Rendered as `hlm-autocomplete-item` entries.                                                                                                                                                     |
+| `class`        | `ClassValue`          | `''`                | Extra host classes (base `tw:w-full`).                                                                                                                                                           |
+| `labelClass`   | `string`              | `''`                | Extra label classes (base `tw:mb-1`).                                                                                                                                                            |
+| `controlClass` | `string`              | `''`                | Extra autocomplete-root classes.                                                                                                                                                                 |
+| `inputClass`   | `string`              | `''`                | Extra text-input classes.                                                                                                                                                                        |
+| `errorClass`   | `string`              | `''`                | Extra error classes (base `tw:mt-0`).                                                                                                                                                            |
+| `hintClass`    | `string`              | `''`                | Extra hint classes (base `tw:mt-0`).                                                                                                                                                             |
 
 | Member               | Description                                                                        |
 | -------------------- | ---------------------------------------------------------------------------------- |

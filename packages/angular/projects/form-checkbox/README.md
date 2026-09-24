@@ -83,23 +83,24 @@ Selector (from source): `eg-form-checkbox` (standalone component).
 
 ### `EgFormCheckbox` — `eg-form-checkbox`
 
-| Input           | Type                  | Default | Description                                                                                 |
-| --------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------- |
-| `controlName`   | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                          |
-| `label`         | `string`              | `''`    | Label text next to the checkbox.                                                            |
-| `error`         | `string \| undefined` | —       | Error text shown when the control is invalid + touched/dirty (via `EgFormField` switching). |
-| `hint`          | `string \| undefined` | —       | Hint text shown when there is no error to display.                                          |
-| `controlId`     | `string \| undefined` | —       | Explicit control id (first priority for `effectiveId`).                                     |
-| `id`            | `string \| undefined` | —       | Fallback id (second priority).                                                              |
-| `name`          | `string \| undefined` | —       | Checkbox `name` attribute (defaults to `controlName`).                                      |
-| `checked`       | `boolean`             | `false` | Initial checked state passed to `hlm-checkbox`.                                             |
-| `required`      | `boolean`             | `false` | Shows a red `*` and sets checkbox `required`.                                               |
-| `disabled`      | `boolean`             | `false` | Locks interaction via checkbox `wrapperDisabled` (does not write to the form control).      |
-| `class`         | `ClassValue`          | `''`    | Extra host classes.                                                                         |
-| `checkboxClass` | `string`              | `''`    | Extra classes for `hlm-checkbox`.                                                           |
-| `labelClass`    | `string`              | `''`    | Extra classes for the label.                                                                |
-| `errorClass`    | `string`              | `''`    | Extra classes for `hlm-error`.                                                              |
-| `hintClass`     | `string`              | `''`    | Extra classes for `hlm-hint`.                                                               |
+| Input           | Type                  | Default | Description                                                                                                                                                                                      |
+| --------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `controlName`   | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                               |
+| `label`         | `string`              | `''`    | Label text next to the checkbox.                                                                                                                                                                 |
+| `error`         | `string \| undefined` | —       | Error text shown when the control is invalid + touched/dirty (via `EgFormField` switching).                                                                                                      |
+| `autoError`     | `boolean`             | `true`  | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`          | `string \| undefined` | —       | Hint text shown when there is no error to display.                                                                                                                                               |
+| `controlId`     | `string \| undefined` | —       | Explicit control id (first priority for `effectiveId`).                                                                                                                                          |
+| `id`            | `string \| undefined` | —       | Fallback id (second priority).                                                                                                                                                                   |
+| `name`          | `string \| undefined` | —       | Checkbox `name` attribute (defaults to `controlName`).                                                                                                                                           |
+| `checked`       | `boolean`             | `false` | Initial checked state passed to `hlm-checkbox`.                                                                                                                                                  |
+| `required`      | `boolean`             | `false` | Shows a red `*` and sets checkbox `required`.                                                                                                                                                    |
+| `disabled`      | `boolean`             | `false` | Locks interaction via checkbox `wrapperDisabled` (does not write to the form control).                                                                                                           |
+| `class`         | `ClassValue`          | `''`    | Extra host classes.                                                                                                                                                                              |
+| `checkboxClass` | `string`              | `''`    | Extra classes for `hlm-checkbox`.                                                                                                                                                                |
+| `labelClass`    | `string`              | `''`    | Extra classes for the label.                                                                                                                                                                     |
+| `errorClass`    | `string`              | `''`    | Extra classes for `hlm-error`.                                                                                                                                                                   |
+| `hintClass`     | `string`              | `''`    | Extra classes for `hlm-hint`.                                                                                                                                                                    |
 
 | Member               | Description                                                                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |

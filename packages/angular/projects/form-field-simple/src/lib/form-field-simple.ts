@@ -7,6 +7,7 @@ import {
   contentChild,
   signal,
   AfterContentInit,
+  DoCheck,
   OnDestroy,
 } from '@angular/core';
 import { ControlContainer, FormControlName, FormGroup, FormGroupDirective } from '@angular/forms';
@@ -31,7 +32,7 @@ import { Subscription } from 'rxjs';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EgFormField implements AfterContentInit, OnDestroy {
+export class EgFormField implements AfterContentInit, DoCheck, OnDestroy {
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() => hlm('', this.userClass()));
 
@@ -41,6 +42,12 @@ export class EgFormField implements AfterContentInit, OnDestroy {
   public readonly form: FormGroup = this.formGroupDirective.form;
 
   private statusSignal = signal<string | null>(null);
+  /**
+   * Mirrors `FormGroupDirective.submitted` (plain boolean) into a signal so
+   * `hasError` stays reactive under OnPush and errors appear after submit
+   * even when the control was never touched/dirty.
+   */
+  private submittedSignal = signal(false);
 
   private sub = new Subscription();
 
@@ -57,6 +64,11 @@ export class EgFormField implements AfterContentInit, OnDestroy {
     }
   }
 
+  ngDoCheck() {
+    const submitted = !!this.formGroupDirective?.submitted;
+    if (this.submittedSignal() !== submitted) this.submittedSignal.set(submitted);
+  }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -66,8 +78,12 @@ export class EgFormField implements AfterContentInit, OnDestroy {
     if (!ctrlDir) return false;
 
     this.statusSignal();
+    this.submittedSignal();
 
-    return !!ctrlDir.control.errors && (ctrlDir.control.touched || ctrlDir.control.dirty);
+    return (
+      !!ctrlDir.control.errors &&
+      (ctrlDir.control.touched || ctrlDir.control.dirty || !!this.formGroupDirective?.submitted)
+    );
   });
 
   public readonly firstErrorKey = computed(() => {

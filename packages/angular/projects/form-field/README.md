@@ -338,6 +338,15 @@ export class CheckFieldComponent {
 }
 ```
 
+## Automatic error messages (`eg-form-*` wrappers)
+
+The `eg-form-*` wrappers auto-resolve their displayed message from the control's `ValidationErrors` when no explicit `error` is set:
+
+- Resolution order: explicit `error()` wins; otherwise (when `autoError()` is `true`, the default) the message is resolved from a custom dictionary entry, then the built-in defaults (`required`, `requiredTrue`, `email`, `minlength`, `maxlength`, `min`, `max`, `pattern`), then a generic "`label` is invalid" fallback. `error=""` is treated as unset.
+- Set `autoError="false"` on a wrapper for manual-only messages.
+- Global wording / custom validator keys (e.g. `usernameTaken`) and i18n are configured app-wide via `provideEgFormErrorMessages({...})` (merged over `DEFAULT_EG_FORM_ERROR_MESSAGES`, read with `injectEgFormErrorMessages()`); per-call overrides go through `resolveEgFormError(errors, label, messages)`.
+- _When_ a message surfaces: wrappers render `<hlm-error>` (and point `aria-describedby` at it) only when the control is invalid + touched/dirty/submitted — otherwise the hint shows.
+
 ## Accessibility notes
 
 - The wrapper itself adds no label — always include a `<label hlmLabel>` (or `aria-label` on the control) so the field has an accessible name.
