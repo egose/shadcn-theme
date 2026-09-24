@@ -5,7 +5,7 @@ import type { ValidationErrors } from '@angular/forms';
  * Factory for a single error message. Receives the validator's error params
  * (e.g. `{ requiredLength, actualLength }` for `minlength`) and the field label.
  */
-export type EgFormErrorMessageFn = (params: Record<string, any>, label: string) => string;
+export type EgFormErrorMessageFn = (params: Record<string, unknown>, label: string) => string;
 
 /**
  * Dictionary of `ValidationErrors` key → message or message factory.
@@ -74,7 +74,7 @@ export function resolveEgFormError(
   ];
   const key = ordered[0];
   const entry = messages[key];
-  if (typeof entry === 'function') return entry((errors[key] ?? {}) as Record<string, any>, resolvedLabel);
+  if (typeof entry === 'function') return entry((errors[key] ?? {}) as Record<string, unknown>, resolvedLabel);
   if (typeof entry === 'string') return entry;
   return `${resolvedLabel} is invalid`;
 }
