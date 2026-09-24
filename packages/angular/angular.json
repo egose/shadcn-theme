@@ -575,6 +575,344 @@
         }
       }
     },
+    "phone-input": {
+      "projectType": "library",
+      "root": "projects/phone-input",
+      "sourceRoot": "projects/phone-input/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/phone-input/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/phone-input/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/phone-input/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-phone-input": {
+      "projectType": "library",
+      "root": "projects/form-phone-input",
+      "sourceRoot": "projects/form-phone-input/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-phone-input/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-phone-input/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-phone-input/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-toggle": {
+      "projectType": "library",
+      "root": "projects/form-toggle",
+      "sourceRoot": "projects/form-toggle/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-toggle/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-toggle/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-toggle/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-native-select": {
+      "projectType": "library",
+      "root": "projects/form-native-select",
+      "sourceRoot": "projects/form-native-select/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-native-select/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-native-select/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-native-select/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-switch": {
+      "projectType": "library",
+      "root": "projects/form-switch",
+      "sourceRoot": "projects/form-switch/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-switch/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-switch/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-switch/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-autocomplete": {
+      "projectType": "library",
+      "root": "projects/form-autocomplete",
+      "sourceRoot": "projects/form-autocomplete/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-autocomplete/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-autocomplete/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-autocomplete/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-combobox": {
+      "projectType": "library",
+      "root": "projects/form-combobox",
+      "sourceRoot": "projects/form-combobox/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-combobox/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-combobox/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-combobox/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-toggle-group": {
+      "projectType": "library",
+      "root": "projects/form-toggle-group",
+      "sourceRoot": "projects/form-toggle-group/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-toggle-group/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-toggle-group/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-toggle-group/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-radio-group": {
+      "projectType": "library",
+      "root": "projects/form-radio-group",
+      "sourceRoot": "projects/form-radio-group/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-radio-group/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-radio-group/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-radio-group/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-slider": {
+      "projectType": "library",
+      "root": "projects/form-slider",
+      "sourceRoot": "projects/form-slider/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-slider/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-slider/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-slider/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-input-otp": {
+      "projectType": "library",
+      "root": "projects/form-input-otp",
+      "sourceRoot": "projects/form-input-otp/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-input-otp/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-input-otp/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-input-otp/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-date-picker-multi": {
+      "projectType": "library",
+      "root": "projects/form-date-picker-multi",
+      "sourceRoot": "projects/form-date-picker-multi/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-date-picker-multi/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-date-picker-multi/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-date-picker-multi/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-month-year-picker": {
+      "projectType": "library",
+      "root": "projects/form-month-year-picker",
+      "sourceRoot": "projects/form-month-year-picker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-month-year-picker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-month-year-picker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-month-year-picker/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "form-date-picker": {
       "projectType": "library",
       "root": "projects/form-date-picker",
@@ -597,6 +935,32 @@
           "builder": "@angular/build:karma",
           "options": {
             "tsConfig": "projects/form-date-picker/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "form-date-range-picker": {
+      "projectType": "library",
+      "root": "projects/form-date-range-picker",
+      "sourceRoot": "projects/form-date-range-picker/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/form-date-range-picker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/form-date-range-picker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/form-date-range-picker/tsconfig.spec.json"
           }
         }
       }

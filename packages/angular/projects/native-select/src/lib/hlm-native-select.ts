@@ -9,6 +9,7 @@ import {
   input,
   linkedSignal,
   output,
+  signal,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, type ControlValueAccessor } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -42,6 +43,8 @@ export const HLM_NATIVE_SELECT_VALUE_ACCESSOR = {
     <select
       data-slot="native-select"
       [id]="selectId()"
+      [attr.name]="name()"
+      [attr.aria-describedby]="ariaDescribedby()"
       [class]="_computedSelectClass()"
       [attr.data-size]="size()"
       [attr.aria-invalid]="_ariaInvalid() ? 'true' : null"
@@ -72,11 +75,17 @@ export class HlmNativeSelect implements ControlValueAccessor {
 
   public readonly selectId = input<string>(`hlm-native-select-${HlmNativeSelect._id++}`);
 
+  /** Native `name` attribute forwarded to the inner `<select>`. */
+  public readonly name = input<string | undefined>(undefined);
+
+  /** ID of the element describing the select (error/hint) for assistive tech. */
+  public readonly ariaDescribedby = input<string | null>(null);
+
   public readonly selectClass = input<ClassValue>('');
 
   protected readonly _computedSelectClass = computed(() =>
     hlm(
-      'tw:border-input tw:placeholder:text-muted-foreground tw:selection:bg-primary tw:selection:text-primary-foreground tw:dark:bg-input/30 tw:dark:hover:bg-input/50 tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:data-[matches-spartan-invalid=true]:ring-destructive/20 tw:dark:data-[matches-spartan-invalid=true]:ring-destructive/40 tw:data-[matches-spartan-invalid=true]:border-destructive tw:dark:data-[matches-spartan-invalid=true]:border-destructive/50 tw:h-9 tw:w-full tw:min-w-0 tw:appearance-none tw:rounded-md tw:border tw:bg-transparent tw:py-1 tw:ps-2.5 tw:pe-8 tw:text-sm tw:shadow-xs tw:transition-[color,box-shadow] tw:select-none tw:focus-visible:ring-3 tw:data-[matches-spartan-invalid=true]:ring-3 tw:data-[size=sm]:h-8 tw:outline-none tw:disabled:pointer-events-none tw:disabled:cursor-not-allowed',
+      'tw:border-input tw:placeholder:text-muted-foreground tw:selection:bg-primary tw:selection:text-primary-foreground tw:dark:bg-input/30 tw:dark:hover:bg-input/50 tw:focus-visible:border-ring tw:focus-visible:ring-ring/50 tw:data-[matches-spartan-invalid=true]:ring-destructive/20 tw:dark:data-[matches-spartan-invalid=true]:ring-destructive/40 tw:data-[matches-spartan-invalid=true]:border-destructive tw:dark:data-[matches-spartan-invalid=true]:border-destructive/50 tw:h-9 tw:w-full tw:min-w-0 tw:appearance-none tw:rounded-md tw:border tw:bg-transparent tw:py-1 tw:ps-2.5 tw:pe-8 tw:text-sm tw:text-foreground tw:shadow-xs tw:transition-[color,box-shadow] tw:select-none tw:focus-visible:ring-3 tw:data-[matches-spartan-invalid=true]:ring-3 tw:data-[size=sm]:h-8 tw:outline-none tw:disabled:pointer-events-none tw:disabled:cursor-not-allowed tw:[color-scheme:light] tw:dark:[color-scheme:dark]',
       this.selectClass(),
     ),
   );
@@ -94,7 +103,9 @@ export class HlmNativeSelect implements ControlValueAccessor {
 
   public readonly disabled = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
-  protected readonly _disabled = linkedSignal(this.disabled);
+  private readonly _formDisabled = signal(false);
+
+  protected readonly _disabled = computed(() => this.disabled() || this._formDisabled());
 
   /** Whether to force the input into an invalid state. */
   public readonly forceInvalid = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
@@ -152,6 +163,6 @@ export class HlmNativeSelect implements ControlValueAccessor {
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    this._disabled.set(isDisabled);
+    this._formDisabled.set(isDisabled);
   }
 }

@@ -29,14 +29,27 @@ import * as drawer from '@egose/shadcn-theme-ng/drawer';
 import * as dropdownMenu from '@egose/shadcn-theme-ng/dropdown-menu';
 import * as empty from '@egose/shadcn-theme-ng/empty';
 import * as field from '@egose/shadcn-theme-ng/field';
+import * as formAutocomplete from '@egose/shadcn-theme-ng/form-autocomplete';
 import * as formCheckbox from '@egose/shadcn-theme-ng/form-checkbox';
+import * as formCombobox from '@egose/shadcn-theme-ng/form-combobox';
 import * as formDatePicker from '@egose/shadcn-theme-ng/form-date-picker';
+import * as formDatePickerMulti from '@egose/shadcn-theme-ng/form-date-picker-multi';
+import * as formDateRangePicker from '@egose/shadcn-theme-ng/form-date-range-picker';
 import * as formField from '@egose/shadcn-theme-ng/form-field';
 import * as formFieldSimple from '@egose/shadcn-theme-ng/form-field-simple';
+import * as formInputOtp from '@egose/shadcn-theme-ng/form-input-otp';
+import * as formMonthYearPicker from '@egose/shadcn-theme-ng/form-month-year-picker';
+import * as formNativeSelect from '@egose/shadcn-theme-ng/form-native-select';
+import * as formPhoneInput from '@egose/shadcn-theme-ng/form-phone-input';
+import * as formRadioGroup from '@egose/shadcn-theme-ng/form-radio-group';
 import * as formSearchableMultiselect from '@egose/shadcn-theme-ng/form-searchable-multiselect';
 import * as formSelect from '@egose/shadcn-theme-ng/form-select';
+import * as formSlider from '@egose/shadcn-theme-ng/form-slider';
+import * as formSwitch from '@egose/shadcn-theme-ng/form-switch';
 import * as formTextInput from '@egose/shadcn-theme-ng/form-text-input';
 import * as formTextarea from '@egose/shadcn-theme-ng/form-textarea';
+import * as formToggle from '@egose/shadcn-theme-ng/form-toggle';
+import * as formToggleGroup from '@egose/shadcn-theme-ng/form-toggle-group';
 import * as hoverCard from '@egose/shadcn-theme-ng/hover-card';
 import * as icon from '@egose/shadcn-theme-ng/icon';
 import * as input from '@egose/shadcn-theme-ng/input';
@@ -51,6 +64,7 @@ import * as menubar from '@egose/shadcn-theme-ng/menubar';
 import * as nativeSelect from '@egose/shadcn-theme-ng/native-select';
 import * as navigationMenu from '@egose/shadcn-theme-ng/navigation-menu';
 import * as pagination from '@egose/shadcn-theme-ng/pagination';
+import * as phoneInput from '@egose/shadcn-theme-ng/phone-input';
 import * as popover from '@egose/shadcn-theme-ng/popover';
 import * as progress from '@egose/shadcn-theme-ng/progress';
 import * as radioGroup from '@egose/shadcn-theme-ng/radio-group';
@@ -102,14 +116,27 @@ export const EXAMPLE_PUBLIC_SUBPATHS = [
   'dropdown-menu',
   'empty',
   'field',
+  'form-autocomplete',
   'form-checkbox',
+  'form-combobox',
   'form-date-picker',
+  'form-date-picker-multi',
+  'form-date-range-picker',
   'form-field',
   'form-field-simple',
+  'form-input-otp',
+  'form-month-year-picker',
+  'form-native-select',
+  'form-phone-input',
+  'form-radio-group',
   'form-searchable-multiselect',
   'form-select',
+  'form-slider',
+  'form-switch',
   'form-text-input',
   'form-textarea',
+  'form-toggle',
+  'form-toggle-group',
   'hover-card',
   'icon',
   'input',
@@ -124,6 +151,7 @@ export const EXAMPLE_PUBLIC_SUBPATHS = [
   'native-select',
   'navigation-menu',
   'pagination',
+  'phone-input',
   'popover',
   'progress',
   'radio-group',
@@ -178,14 +206,27 @@ export const EXAMPLE_PUBLIC_MODULES: Record<ExamplePublicSubpath, Record<string,
   'dropdown-menu': dropdownMenu as unknown as Record<string, unknown>,
   empty: empty as unknown as Record<string, unknown>,
   field: field as unknown as Record<string, unknown>,
+  'form-autocomplete': formAutocomplete as unknown as Record<string, unknown>,
   'form-checkbox': formCheckbox as unknown as Record<string, unknown>,
+  'form-combobox': formCombobox as unknown as Record<string, unknown>,
   'form-date-picker': formDatePicker as unknown as Record<string, unknown>,
+  'form-date-picker-multi': formDatePickerMulti as unknown as Record<string, unknown>,
+  'form-date-range-picker': formDateRangePicker as unknown as Record<string, unknown>,
   'form-field': formField as unknown as Record<string, unknown>,
   'form-field-simple': formFieldSimple as unknown as Record<string, unknown>,
+  'form-input-otp': formInputOtp as unknown as Record<string, unknown>,
+  'form-month-year-picker': formMonthYearPicker as unknown as Record<string, unknown>,
+  'form-native-select': formNativeSelect as unknown as Record<string, unknown>,
+  'form-phone-input': formPhoneInput as unknown as Record<string, unknown>,
+  'form-radio-group': formRadioGroup as unknown as Record<string, unknown>,
   'form-searchable-multiselect': formSearchableMultiselect as unknown as Record<string, unknown>,
   'form-select': formSelect as unknown as Record<string, unknown>,
+  'form-slider': formSlider as unknown as Record<string, unknown>,
+  'form-switch': formSwitch as unknown as Record<string, unknown>,
   'form-text-input': formTextInput as unknown as Record<string, unknown>,
   'form-textarea': formTextarea as unknown as Record<string, unknown>,
+  'form-toggle': formToggle as unknown as Record<string, unknown>,
+  'form-toggle-group': formToggleGroup as unknown as Record<string, unknown>,
   'hover-card': hoverCard as unknown as Record<string, unknown>,
   icon: icon as unknown as Record<string, unknown>,
   input: input as unknown as Record<string, unknown>,
@@ -200,6 +241,7 @@ export const EXAMPLE_PUBLIC_MODULES: Record<ExamplePublicSubpath, Record<string,
   'native-select': nativeSelect as unknown as Record<string, unknown>,
   'navigation-menu': navigationMenu as unknown as Record<string, unknown>,
   pagination: pagination as unknown as Record<string, unknown>,
+  'phone-input': phoneInput as unknown as Record<string, unknown>,
   popover: popover as unknown as Record<string, unknown>,
   progress: progress as unknown as Record<string, unknown>,
   'radio-group': radioGroup as unknown as Record<string, unknown>,

@@ -343,6 +343,16 @@ export class ProgrammaticExample {
 
 No component-specific CSS variables; visuals come from the shared theme tokens via the `HlmSelect*` parts. Use `selectClass` / `labelClass` / `errorClass` / `hintClass` / `class` to adjust sizing and spacing.
 
+Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+
+```ts
+import { provideEgFormSelectConfig } from '@egose/shadcn-theme-ng/form-select';
+
+await bootstrapApplication(App, {
+  providers: [provideEgFormSelectConfig({ selectClass: 'tw:text-sm', labelClass: 'tw:font-medium' })],
+});
+```
+
 ## Related subpaths
 
 - `@egose/shadcn-theme-ng/select` — raw `HlmSelect`, `HlmSelectTrigger`, `HlmSelectValue`, `HlmSelectContent`, `HlmSelectItem`, `HlmSelectLabel` for custom layouts and grouped sections.

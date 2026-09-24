@@ -12,6 +12,7 @@ import { bootstrapApplication, provideClientHydration, withNoHttpTransferCache }
 import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormTextInput } from './form-text-input';
+import { provideEgFormTextInputConfig } from './form-text-input.token';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormTextInput],
@@ -91,7 +92,6 @@ describe('EgFormTextInput', () => {
     fixture.detectChanges();
     expect(input().disabled).toBeTrue();
   });
-
   it('server-renders and hydrates generated IDs without replacing or mismatching accessible markup', async () => {
     fixture.destroy();
     TestBed.resetTestEnvironment();
@@ -144,5 +144,42 @@ describe('EgFormTextInput', () => {
       destroyPlatform();
       TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
     }
+  });
+});
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormTextInput],
+  template: `<form [formGroup]="form">
+    <eg-form-text-input controlName="value" label="Name" [labelClass]="labelClass()" [inputClass]="inputClass()" />
+  </form>`,
+})
+class ConfigHost {
+  readonly form = new FormGroup({ value: new FormControl('') });
+  readonly labelClass = signal('');
+  readonly inputClass = signal('');
+}
+
+describe('EgFormTextInput global class defaults', () => {
+  let fixture: ComponentFixture<ConfigHost>;
+  beforeEach(async () => {
+    configureLibraryTestBed([provideEgFormTextInputConfig({ labelClass: 'tw:text-xs', inputClass: 'tw:text-xs' })]);
+    await TestBed.configureTestingModule({ imports: [ConfigHost] }).compileComponents();
+    fixture = TestBed.createComponent(ConfigHost);
+    fixture.detectChanges();
+  });
+  afterEach(() => fixture.destroy());
+
+  it('merges global config classes under per-instance classes', () => {
+    const label = () => fixture.nativeElement.querySelector('label') as HTMLLabelElement;
+    const input = () => fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(label().className).toContain('tw:text-xs');
+    expect(input().className).toContain('tw:text-xs');
+    fixture.componentInstance.labelClass.set('tw:text-lg');
+    fixture.componentInstance.inputClass.set('tw:text-lg');
+    fixture.detectChanges();
+    expect(label().className).toContain('tw:text-lg');
+    expect(label().className).not.toContain('tw:text-xs');
+    expect(input().className).toContain('tw:text-lg');
+    expect(input().className).not.toContain('tw:text-xs');
   });
 });

@@ -39,7 +39,7 @@ export const HLM_CHECKBOX_VALUE_ACCESSOR = {
       [aria-label]="ariaLabel()"
       [aria-labelledby]="ariaLabelledby()"
       [aria-describedby]="ariaDescribedby()"
-      (changed)="_handleChange()"
+      (checkedChange)="_handleCheckedChange($event)"
       (touched)="_onTouched?.()"
     >
       @if (checked()) {
@@ -107,13 +107,12 @@ export class HlmCheckbox implements ControlValueAccessor {
   protected _onChange?: ChangeFn<CheckboxValue>;
   protected _onTouched?: TouchFn;
 
-  protected _handleChange(): void {
+  protected _handleCheckedChange(checked: boolean): void {
     if (this.disabledState()) return;
 
-    const previousChecked = this.checked();
-    this.checked.set(previousChecked === 'indeterminate' ? true : !previousChecked);
-    this._onChange?.(!previousChecked);
-    this.changed.emit(!previousChecked);
+    this.checked.set(checked);
+    this._onChange?.(checked);
+    this.changed.emit(checked);
   }
 
   /** CONTROL VALUE ACCESSOR */

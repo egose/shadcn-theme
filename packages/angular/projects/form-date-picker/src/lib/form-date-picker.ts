@@ -2,15 +2,17 @@ import { Component, computed, inject, input } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { HlmFormField, HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
-import { HlmDatePicker, HlmDatePickerInput } from '@egose/shadcn-theme-ng/date-picker';
+import { HlmDatePicker, HlmDatePickerInput, injectHlmDatePickerConfig } from '@egose/shadcn-theme-ng/date-picker';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
+
+type DatePickerCaptionLayout = 'dropdown' | 'label' | 'dropdown-months' | 'dropdown-years';
 
 @Component({
   selector: 'eg-form-date-picker',
   standalone: true,
   host: {
-    class: 'tw:w-full',
+    '[class]': '$userClass()',
   },
   imports: [ReactiveFormsModule, HlmFormField, HlmError, HlmHint, HlmLabel, HlmDatePicker, HlmDatePickerInput],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
@@ -32,17 +34,26 @@ import { ClassValue } from 'clsx';
       }
 
       <hlm-date-picker
-        [min]="min()"
-        [max]="max()"
+        [min]="$min()"
+        [max]="$max()"
         [wrapperDisabled]="disabled()"
+        [autoCloseOnSelect]="autoCloseOnSelect()"
+        [captionLayout]="captionLayout()"
+        [formatDate]="formatDate()"
+        [transformDate]="transformDate()"
         [formControlName]="cnm"
         [class]="$pickerClass()"
       >
         <hlm-date-picker-input
           [inputId]="effectiveId()"
+          [name]="cnm || name()"
+          [readonly]="readonly()"
           [ariaLabel]="lbl"
           [ariaDescribedby]="describedBy()"
           [placeholder]="placeholder()"
+          [parseDate]="parseDate()"
+          [formatInputDate]="formatInputDate()"
+          [inputClass]="$inputClass()"
         />
       </hlm-date-picker>
 
@@ -63,6 +74,7 @@ import { ClassValue } from 'clsx';
 export class EgFormDatePicker {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-date-picker');
+  private readonly _config = injectHlmDatePickerConfig<Date>();
 
   // Inputs
   label = input<string | undefined>(undefined);
@@ -80,11 +92,27 @@ export class EgFormDatePicker {
   required = input<boolean>(false);
   min = input<Date | string | null>(null);
   max = input<Date | string | null>(null);
-  autoCloseOnSelect = input<boolean>(true);
+
+  // Picker behavior (defaults fall back to the injected HlmDatePickerConfig,
+  // so global `provideHlmDatePickerConfig` values keep working unless overridden)
+  autoCloseOnSelect = input<boolean>(this._config.autoCloseOnSelect);
+  captionLayout = input<DatePickerCaptionLayout>('label');
+  formatDate = input<(date: Date) => string>(this._config.formatDate);
+  transformDate = input<(date: Date) => Date>(this._config.transformDate);
+  parseDate = input<(value: string) => Date | null>(this._config.parseDate);
+  formatInputDate = input<(date: Date) => string>(this._config.formatInputDate);
 
   readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
   readonly errorId = computed(() => `${this.effectiveId()}-error`);
   readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  /**
+   * Bounds projected onto the picker's `Date` model. The cast keeps the
+   * template's generic inference on `Date` while passing runtime values
+   * (including `string` bounds, as before) through untouched.
+   */
+  protected readonly $min = computed(() => this.min() as Date | undefined);
+  protected readonly $max = computed(() => this.max() as Date | undefined);
 
   describedBy(): string | null {
     const control = this.formGroupDirective.form.get(this.controlName());
@@ -99,13 +127,15 @@ export class EgFormDatePicker {
   userClass = input<ClassValue>('', { alias: 'class' });
   labelClass = input<string>('');
   pickerClass = input<string>('');
+  inputClass = input<string>('');
   errorClass = input<string>('');
   hintClass = input<string>('');
 
-  // Computed classes
-  $userClass = computed(() => hlm('tw:flex tw:flex-col', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this.labelClass()));
-  $pickerClass = computed(() => hlm('tw:mb-1', this.pickerClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this.hintClass()));
+  // Computed classes (library base < global config < per-instance)
+  $userClass = computed(() => hlm('tw:w-full', this.userClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
+  $pickerClass = computed(() => hlm('tw:mb-1', this._config.pickerClass, this.pickerClass()));
+  $inputClass = computed(() => hlm(this._config.inputClass, this.inputClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
 }

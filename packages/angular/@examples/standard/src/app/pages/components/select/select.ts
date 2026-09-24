@@ -29,7 +29,7 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Choose priority" />
                 </hlm-select-trigger>
-                <hlm-select-content>
+                <hlm-select-content *hlmSelectPortal>
                   <hlm-select-item value="low">Low</hlm-select-item>
                   <hlm-select-item value="medium">Medium</hlm-select-item>
                   <hlm-select-item value="high">High</hlm-select-item>
@@ -43,7 +43,7 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Assign owner" />
                 </hlm-select-trigger>
-                <hlm-select-content>
+                <hlm-select-content *hlmSelectPortal>
                   <hlm-select-item value="jahn">J. Hahn</hlm-select-item>
                   <hlm-select-item value="chen">N. Chen</hlm-select-item>
                   <hlm-select-item value="patel">A. Patel</hlm-select-item>
@@ -68,7 +68,7 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Select a fruit" />
                 </hlm-select-trigger>
-                <hlm-select-content>
+                <hlm-select-content *hlmSelectPortal>
                   <hlm-select-item value="apple">Apple</hlm-select-item>
                   <hlm-select-item value="banana">Banana</hlm-select-item>
                   <hlm-select-item value="cherry">Cherry</hlm-select-item>

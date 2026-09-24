@@ -364,6 +364,16 @@ export class ProfileExample {
 
 No component-specific CSS variables; the input look comes from the shared theme tokens consumed by `HlmInput`. Adjust density with `inputClass` (e.g. `tw:h-11`), label/error/hint spacing with their `*Class` inputs.
 
+Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+
+```ts
+import { provideEgFormTextInputConfig } from '@egose/shadcn-theme-ng/form-text-input';
+
+await bootstrapApplication(App, {
+  providers: [provideEgFormTextInputConfig({ inputClass: 'tw:text-sm', labelClass: 'tw:font-medium' })],
+});
+```
+
 ## Related subpaths
 
 - `@egose/shadcn-theme-ng/input` — the raw `HlmInput` directive for non-form or template-driven inputs.

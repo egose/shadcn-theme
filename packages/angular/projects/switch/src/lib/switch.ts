@@ -6,9 +6,9 @@ import {
   computed,
   forwardRef,
   input,
-  linkedSignal,
   model,
   output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
@@ -37,7 +37,7 @@ export const EG_SWITCH_VALUE_ACCESSOR = {
     <brn-switch
       [class]="_computedClass()"
       [checked]="checked()"
-      (changed)="handleChange($event)"
+      (checkedChange)="handleChange($event)"
       (touched)="_onTouched?.()"
       [disabled]="_disabled()"
       [id]="id()"
@@ -83,8 +83,9 @@ export class HlmSwitch implements ControlValueAccessor {
   /** Emits when the checked state of the switch changes. */
   public readonly changed = output<boolean>();
 
-  protected readonly _disabled = linkedSignal(this.disabled);
+  private readonly _formDisabled = signal(false);
 
+  protected readonly _disabled = computed(() => this.disabled() || this._formDisabled());
   protected _onChange?: ChangeFn<boolean>;
   protected _onTouched?: TouchFn;
 
@@ -110,6 +111,6 @@ export class HlmSwitch implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this._disabled.set(isDisabled);
+    this._formDisabled.set(isDisabled);
   }
 }

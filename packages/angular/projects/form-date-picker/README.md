@@ -84,27 +84,33 @@ Selector (from source): `eg-form-date-picker` (standalone component, host `tw:w-
 
 ### `EgFormDatePicker` — `eg-form-date-picker`
 
-| Input               | Type                     | Default         | Description                                                                                                 |
-| ------------------- | ------------------------ | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| `controlName`       | `string`                 | `''`            | `formControlName` key inside the parent `FormGroup`. **Required.**                                          |
-| `label`             | `string \| undefined`    | —               | Label text (hidden when omitted).                                                                           |
-| `error`             | `string \| undefined`    | —               | Error text shown when invalid.                                                                              |
-| `hint`              | `string \| undefined`    | —               | Hint text shown otherwise.                                                                                  |
-| `controlId`         | `string \| undefined`    | —               | Explicit id (first priority for `effectiveId`).                                                             |
-| `id`                | `string \| undefined`    | —               | Fallback id (second priority).                                                                              |
-| `name`              | `string \| undefined`    | —               | Declared input; **not bound** to the inner picker in the current template (surprise — see below).           |
-| `placeholder`       | `string`                 | `'Pick a date'` | Input placeholder.                                                                                          |
-| `readonly`          | `boolean`                | `false`         | Declared input; **not bound** in the current template.                                                      |
-| `disabled`          | `boolean`                | `false`         | Locks interaction via picker `wrapperDisabled` (form control stays enabled).                                |
-| `required`          | `boolean`                | `false`         | Shows a red `*` next to the label.                                                                          |
-| `min`               | `Date \| string \| null` | `null`          | Minimum date forwarded to `hlm-date-picker`.                                                                |
-| `max`               | `Date \| string \| null` | `null`          | Maximum date forwarded to `hlm-date-picker`.                                                                |
-| `autoCloseOnSelect` | `boolean`                | `true`          | Declared input; **not bound** to the inner picker in the current template (picker default `false` applies). |
-| `class`             | `ClassValue`             | `''`            | Declared but **not applied** to the host in the current template (host is fixed `tw:w-full`).               |
-| `labelClass`        | `string`                 | `''`            | Extra label classes (base `tw:mb-1`).                                                                       |
-| `pickerClass`       | `string`                 | `''`            | Extra picker classes (base `tw:mb-1`).                                                                      |
-| `errorClass`        | `string`                 | `''`            | Extra error classes (base `tw:mt-0`).                                                                       |
-| `hintClass`         | `string`                 | `''`            | Extra hint classes (base `tw:mt-0`).                                                                        |
+| Input               | Type                              | Default         | Description                                                                                                   |
+| ------------------- | --------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------- |
+| `controlName`       | `string`                          | `''`            | `formControlName` key inside the parent `FormGroup`. **Required.**                                            |
+| `label`             | `string \| undefined`             | —               | Label text (hidden when omitted).                                                                             |
+| `error`             | `string \| undefined`             | —               | Error text shown when invalid.                                                                                |
+| `hint`              | `string \| undefined`             | —               | Hint text shown otherwise.                                                                                    |
+| `controlId`         | `string \| undefined`             | —               | Explicit id (first priority for `effectiveId`).                                                               |
+| `id`                | `string \| undefined`             | —               | Fallback id (second priority).                                                                                |
+| `name`              | `string \| undefined`             | —               | Native `name` forwarded to the inner input (`controlName` wins when set, like `eg-form-text-input`).          |
+| `placeholder`       | `string`                          | `'Pick a date'` | Input placeholder.                                                                                            |
+| `readonly`          | `boolean`                         | `false`         | Native `readonly` forwarded to the inner input (locks typed text; use `disabled` to lock the calendar too).   |
+| `disabled`          | `boolean`                         | `false`         | Locks interaction via picker `wrapperDisabled` (form control stays enabled).                                  |
+| `required`          | `boolean`                         | `false`         | Shows a red `*` next to the label.                                                                            |
+| `min`               | `Date \| string \| null`          | `null`          | Minimum date forwarded to `hlm-date-picker`.                                                                  |
+| `max`               | `Date \| string \| null`          | `null`          | Maximum date forwarded to `hlm-date-picker`.                                                                  |
+| `autoCloseOnSelect` | `boolean`                         | config default  | Forwarded to `hlm-date-picker` (falls back to `provideHlmDatePickerConfig`, default `false`).                 |
+| `captionLayout`     | union                             | `'label'`       | Forwarded to `hlm-date-picker` (`'dropdown' \| 'label' \| 'dropdown-months' \| 'dropdown-years'`).            |
+| `formatDate`        | `(date: Date) => string`          | config default  | Display format, forwarded to `hlm-date-picker` (falls back to `provideHlmDatePickerConfig`).                  |
+| `transformDate`     | `(date: Date) => Date`            | config default  | Model transform, forwarded to `hlm-date-picker` (falls back to `provideHlmDatePickerConfig`).                 |
+| `parseDate`         | `(value: string) => Date \| null` | config default  | Input parsing, forwarded to `hlm-date-picker-input` (falls back to `provideHlmDatePickerConfig`).             |
+| `formatInputDate`   | `(date: Date) => string`          | config default  | Edit format while focused, forwarded to `hlm-date-picker-input` (falls back to `provideHlmDatePickerConfig`). |
+| `class`             | `ClassValue`                      | `''`            | Extra host classes (base `tw:w-full`).                                                                        |
+| `labelClass`        | `string`                          | `''`            | Extra label classes (base `tw:mb-1`).                                                                         |
+| `pickerClass`       | `string`                          | `''`            | Extra picker-container classes (base `tw:mb-1`).                                                              |
+| `inputClass`        | `string`                          | `''`            | Extra inner-input classes (e.g. `tw:text-lg` for text size).                                                  |
+| `errorClass`        | `string`                          | `''`            | Extra error classes (base `tw:mt-0`).                                                                         |
+| `hintClass`         | `string`                          | `''`            | Extra hint classes (base `tw:mt-0`).                                                                          |
 
 | Member               | Description                                                                                                                                                 |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -293,6 +299,7 @@ import { EgFormDatePicker } from '@egose/shadcn-theme-ng/form-date-picker';
         label="Event date"
         labelClass="tw:font-semibold"
         pickerClass="tw:max-w-xs"
+        inputClass="tw:text-lg"
         hint="Doors open one hour earlier."
       />
     </form>
@@ -313,7 +320,26 @@ export class StyledDateComponent {
 
 ## Theming / CSS variables
 
-No component-specific CSS variables. Style via `labelClass` / `pickerClass` / `errorClass` / `hintClass` and global tokens. The host is fixed `tw:w-full`; constrain width with a wrapping container.
+No component-specific CSS variables. Style per-instance via `class` / `labelClass` / `pickerClass` / `inputClass` / `errorClass` / `hintClass` (precedence: library base < global config < per-instance).
+
+Global defaults (styling analogue of `formatDate`) via the picker config:
+
+```ts
+import { provideHlmDatePickerConfig } from '@egose/shadcn-theme-ng/date-picker';
+
+await bootstrapApplication(App, {
+  providers: [
+    provideHlmDatePickerConfig({
+      inputClass: 'tw:text-sm', // every date input; per-instance inputClass still wins on conflict
+      labelClass: 'tw:font-medium',
+    }),
+  ],
+});
+```
+
+The same `labelClass` / `pickerClass` / `inputClass` / `errorClass` / `hintClass` keys exist on
+`HlmDateRangePickerConfig`, `HlmDatePickerMultiConfig`, and `HlmMonthYearPickerConfig` for future
+wrappers. The host keeps `tw:w-full`; constrain width with `class` (e.g. `tw:max-w-xs`) or a wrapping container.
 
 ## Related subpaths
 

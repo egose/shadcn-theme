@@ -38,6 +38,18 @@ export interface HlmDatePickerConfig<T> {
    * @returns the parsed date, or `null` when the value can't be parsed
    */
   parseDate: (value: string) => T | null;
+
+  /**
+   * Global class defaults for `eg-form-date-picker` styling slots.
+   * Each is merged under the matching per-instance `*Class` input
+   * (library base < global config < per-instance), mirroring how
+   * `formatDate` provides a global behavior default.
+   */
+  labelClass?: string;
+  pickerClass?: string;
+  inputClass?: string;
+  errorClass?: string;
+  hintClass?: string;
 }
 
 function getDefaultConfig<T>(): HlmDatePickerConfig<T> {

@@ -39,16 +39,28 @@
       "@egose/shadcn-theme-ng/dropdown-menu": ["./projects/dropdown-menu/src/public-api.ts"],
       "@egose/shadcn-theme-ng/empty": ["./projects/empty/src/public-api.ts"],
       "@egose/shadcn-theme-ng/field": ["./projects/field/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-autocomplete": ["./projects/form-autocomplete/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-checkbox": ["./projects/form-checkbox/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-combobox": ["./projects/form-combobox/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-date-picker": ["./projects/form-date-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-date-picker-multi": ["./projects/form-date-picker-multi/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-date-range-picker": ["./projects/form-date-range-picker/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-field": ["./projects/form-field/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-field-simple": ["./projects/form-field-simple/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-input-otp": ["./projects/form-input-otp/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-month-year-picker": ["./projects/form-month-year-picker/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-native-select": ["./projects/form-native-select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-radio-group": ["./projects/form-radio-group/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-searchable-multiselect": [
         "./projects/form-searchable-multiselect/src/public-api.ts"
       ],
       "@egose/shadcn-theme-ng/form-select": ["./projects/form-select/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-slider": ["./projects/form-slider/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-switch": ["./projects/form-switch/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-text-input": ["./projects/form-text-input/src/public-api.ts"],
       "@egose/shadcn-theme-ng/form-textarea": ["./projects/form-textarea/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-toggle": ["./projects/form-toggle/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-toggle-group": ["./projects/form-toggle-group/src/public-api.ts"],
       "@egose/shadcn-theme-ng/hover-card": ["./projects/hover-card/src/public-api.ts"],
       "@egose/shadcn-theme-ng/icon": ["./projects/icon/src/public-api.ts"],
       "@egose/shadcn-theme-ng/input": ["./projects/input/src/public-api.ts"],
@@ -63,6 +75,8 @@
       "@egose/shadcn-theme-ng/native-select": ["./projects/native-select/src/public-api.ts"],
       "@egose/shadcn-theme-ng/navigation-menu": ["./projects/navigation-menu/src/public-api.ts"],
       "@egose/shadcn-theme-ng/pagination": ["./projects/pagination/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/phone-input": ["./projects/phone-input/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/form-phone-input": ["./projects/form-phone-input/src/public-api.ts"],
       "@egose/shadcn-theme-ng/popover": ["./projects/popover/src/public-api.ts"],
       "@egose/shadcn-theme-ng/progress": ["./projects/progress/src/public-api.ts"],
       "@egose/shadcn-theme-ng/radio-group": ["./projects/radio-group/src/public-api.ts"],
@@ -230,10 +244,94 @@
       "path": "./projects/popover/tsconfig.spec.json"
     },
     {
+      "path": "./projects/phone-input/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/phone-input/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-phone-input/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-phone-input/tsconfig.spec.json"
+    },
+    {
       "path": "./projects/form-date-picker/tsconfig.lib.json"
     },
     {
       "path": "./projects/form-date-picker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-date-range-picker/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-date-range-picker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-native-select/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-native-select/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-switch/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-switch/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-radio-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-radio-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-slider/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-slider/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-input-otp/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-input-otp/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-date-picker-multi/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-date-picker-multi/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-month-year-picker/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-month-year-picker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-toggle/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-toggle/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-toggle-group/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-toggle-group/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-autocomplete/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-autocomplete/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/form-combobox/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/form-combobox/tsconfig.spec.json"
     },
     {
       "path": "./projects/basic-alert/tsconfig.lib.json"

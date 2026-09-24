@@ -98,8 +98,8 @@ Selector (from source): `eg-form-checkbox` (standalone component).
 | `class`         | `ClassValue`          | `''`    | Extra host classes.                                                                         |
 | `checkboxClass` | `string`              | `''`    | Extra classes for `hlm-checkbox`.                                                           |
 | `labelClass`    | `string`              | `''`    | Extra classes for the label.                                                                |
-| `$errorClass`   | `string`              | `''`    | Extra classes for `hlm-error`. (Note the `$` prefix — part of the real input name.)         |
-| `$hintClass`    | `string`              | `''`    | Extra classes for `hlm-hint`. (Note the `$` prefix.)                                        |
+| `errorClass`    | `string`              | `''`    | Extra classes for `hlm-error`.                                                              |
+| `hintClass`     | `string`              | `''`    | Extra classes for `hlm-hint`.                                                               |
 
 | Member               | Description                                                                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -303,7 +303,17 @@ export class SubmitCheckComponent {
 
 ## Theming / CSS variables
 
-No component-specific CSS variables. Style via `class`, `checkboxClass`, `labelClass`, `$errorClass`, `$hintClass` inputs and global tokens. The row layout (`flex items-center gap-1`) is fixed in the template.
+No component-specific CSS variables. Style per-instance via `class`, `checkboxClass`, `labelClass`, `errorClass`, `hintClass` inputs. The row layout (`flex items-center gap-1`) is fixed in the template.
+
+Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+
+```ts
+import { provideEgFormCheckboxConfig } from '@egose/shadcn-theme-ng/form-checkbox';
+
+await bootstrapApplication(App, {
+  providers: [provideEgFormCheckboxConfig({ checkboxClass: 'tw:size-5', labelClass: 'tw:font-medium' })],
+});
+```
 
 ## Related subpaths
 

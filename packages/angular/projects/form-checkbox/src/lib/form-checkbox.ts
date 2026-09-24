@@ -6,6 +6,7 @@ import { HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/fo
 import { EgFormField } from '@egose/shadcn-theme-ng/form-field-simple';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
+import { injectEgFormCheckboxConfig } from './form-checkbox.token';
 
 @Component({
   selector: 'eg-form-checkbox',
@@ -60,6 +61,7 @@ import { ClassValue } from 'clsx';
 export class EgFormCheckbox {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-checkbox');
+  private readonly _config = injectEgFormCheckboxConfig();
 
   // Classes
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
@@ -94,10 +96,12 @@ export class EgFormCheckbox {
   // Styling
   checkboxClass = input<string>('');
   labelClass = input<string>('');
+  errorClass = input<string>('');
+  hintClass = input<string>('');
 
-  // Computed styling
-  $checkboxClass = computed(() => hlm(this.checkboxClass()));
-  $labelClass = computed(() => hlm(this.labelClass()));
-  $errorClass = input<string>('');
-  $hintClass = input<string>('');
+  // Computed styling (library base < global config < per-instance)
+  $checkboxClass = computed(() => hlm(this._config.checkboxClass, this.checkboxClass()));
+  $labelClass = computed(() => hlm(this._config.labelClass, this.labelClass()));
+  $errorClass = computed(() => hlm(this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm(this._config.hintClass, this.hintClass()));
 }
