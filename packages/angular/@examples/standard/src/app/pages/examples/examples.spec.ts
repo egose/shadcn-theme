@@ -13,6 +13,7 @@ import {
   duplicateValues,
 } from '../../catalog/catalog';
 import { ExamplesLayout } from './examples';
+import { HomePage } from '../home/home';
 
 /**
  * Registry integration for the real-example surface (`/examples/<slug>`).
@@ -117,24 +118,34 @@ describe('examples wildcard recovery', () => {
   });
 });
 
-describe('ExamplesLayout catalog surface', () => {
+describe('ExamplesLayout thin shell', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection(), provideRouter([])],
     }).compileComponents();
   });
 
-  it('renders one h1, a registry-derived count, and a link per example', () => {
+  it('renders only the outlet wrapper without duplicating the catalog', () => {
     const fixture = TestBed.createComponent(ExamplesLayout);
     fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.querySelectorAll('h1').length).toBe(1);
+    expect(host.querySelector('router-outlet')).not.toBeNull();
+    // Headings belong to routed pages (app-demo-header h2); the shell adds none.
+    expect(host.querySelectorAll('h1').length).toBe(0);
+    // Catalog surface lives on home + fly-out nav; the shell must not duplicate it.
+    expect(host.querySelector('[data-testid="example-count"]')).toBeNull();
+    expect(host.querySelector('[data-testid="example-catalog"]')).toBeNull();
+  });
+
+  it('keeps the example catalog surfaced via home counts and menu groups', () => {
+    const homeFixture = TestBed.createComponent(HomePage);
+    homeFixture.detectChanges();
     const expected = catalogEntriesByKind('example').length;
-    expect(host.querySelector('[data-testid="example-count"]')?.textContent).toContain(`${expected}`);
-    const links = Array.from(host.querySelectorAll('[data-testid="example-catalog"] a')).map((anchor) =>
-      anchor.getAttribute('href'),
+    expect(homeFixture.nativeElement.querySelector('[data-testid="home-example-count"]')?.textContent).toContain(
+      `${expected}`,
     );
-    expect(links).toEqual(catalogEntriesByKind('example').map((entry) => catalogLink(entry)));
+    const menuLinks = catalogMenuGroups('example').flatMap((group) => group.items.map((item) => item.link));
+    expect(menuLinks).toEqual(catalogEntriesByKind('example').map((entry) => catalogLink(entry)));
   });
 });
 

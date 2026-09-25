@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { catalogEntriesByKind, catalogLink } from '../../catalog/catalog';
 
 /**
  * Layout shell for the real product examples (`/examples/<slug>`).
  *
- * Mirrors the component gallery shell: one `h1`, a registry-derived count,
- * and a registry-derived catalog of example links so adding a flow is one
- * registry entry plus its feature directory. Routed example pages render
- * their own `h2` titles beneath this heading.
+ * Intentionally thin: only a `router-outlet` wrapper. The catalog surface
+ * lives elsewhere (home counts/links and the fly-out navigation derived from
+ * `catalogMenuGroups('example')`), so this shell must not duplicate an `h1`,
+ * count, or link list. Routed example pages render their own titles via
+ * `app-demo-header` (`h2`) beneath the app shell.
  */
 @Component({
   selector: 'app-examples',
@@ -22,14 +22,4 @@ import { catalogEntriesByKind, catalogLink } from '../../catalog/catalog';
     </section>
   `,
 })
-export class ExamplesLayout {
-  // Displayed count and catalog links derive from the registry so they can
-  // never drift from the real example routes.
-  protected readonly exampleCount = catalogEntriesByKind('example').length;
-  protected readonly examples = catalogEntriesByKind('example').map((entry) => ({
-    slug: entry.slug,
-    title: entry.title,
-    category: entry.category,
-    link: catalogLink(entry),
-  }));
-}
+export class ExamplesLayout {}
