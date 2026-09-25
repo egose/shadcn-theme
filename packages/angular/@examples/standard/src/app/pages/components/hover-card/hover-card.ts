@@ -6,7 +6,10 @@ import { HlmHoverCardImports } from '@egose/shadcn-theme-ng/hover-card';
   selector: 'app-hover-card-page',
   imports: [DemoHeaderComponent, HlmHoverCardImports],
   template: `
-    <app-demo-header title="Hover Card" description="Hover a link to reveal a preview card. The trigger is a real external link, not a placeholder anchor." />
+    <app-demo-header
+      title="Hover Card"
+      description="Hover a link to reveal a preview card. The trigger is a real external link, not a placeholder anchor."
+    />
 
     <div hlmHoverCard>
       <a
