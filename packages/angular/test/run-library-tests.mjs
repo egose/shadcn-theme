@@ -29,6 +29,7 @@ const selectedProjects = [
   'radio-group',
   'switch',
   'native-select',
+  'stepper',
 ];
 const projects = process.argv.slice(2);
 const targets = projects.length ? projects : selectedProjects;

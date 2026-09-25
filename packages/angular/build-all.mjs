@@ -190,9 +190,51 @@ const tailwindDesignSystem = await __unstable__loadDesignSystem(`
   }
 `);
 
+// tw-animate-css ships its utilities as `@utility <name>` rules (e.g. `fade-in`,
+// `slide-in-from-right-*`), which the stub design system above does not know.
+// Parse those names from the installed package once so animation tokens are
+// treated as candidates: the bare build then strips them to unprefixed form
+// while the `tw` build retains/applies the prefix. Degrades to previous
+// behavior when the package cannot be read.
+const twAnimateUtilities = await (async () => {
+  const exact = new Set();
+  const stems = [];
+  try {
+    const css = await readFile(
+      path.join(scriptDirectory, 'node_modules', 'tw-animate-css', 'dist', 'tw-animate.css'),
+      'utf8',
+    );
+    for (const [, name] of css.matchAll(/@utility\s+([^\s{]+)/g)) {
+      if (name.endsWith('*')) stems.push(name.slice(0, -1));
+      else exact.add(name);
+    }
+  } catch {
+    // Ignore: recognition falls back to the design-system check above.
+  }
+  return { exact, stems };
+})();
+
+function matchesTwAnimateUtilities(canonical) {
+  // Arbitrary values/properties (`[...]`) may contain colons that naive
+  // variant splitting would misparse; the design-system check already covers
+  // the cases that matter there.
+  if (canonical.includes('[')) return false;
+  const segments = canonical.split(':');
+  for (let index = 0; index < segments.length; index++) {
+    const base = segments.slice(index).join(':');
+    if (twAnimateUtilities.exact.has(base)) return true;
+    if (twAnimateUtilities.stems.some((stem) => base.length > stem.length && base.startsWith(stem))) return true;
+  }
+  return false;
+};
+
 function isTailwindCandidate(token) {
   const canonical = token.replace(/^tw:/, '');
-  return /^(?:group|peer)(?:\/[\w-]+)?$/.test(canonical) || tailwindDesignSystem.parseCandidate(canonical).length > 0;
+  return (
+    /^(?:group|peer)(?:\/[\w-]+)?$/.test(canonical) ||
+    tailwindDesignSystem.parseCandidate(canonical).length > 0 ||
+    matchesTwAnimateUtilities(canonical)
+  );
 }
 
 export function transformTailwindClassList(value, bundle = '') {

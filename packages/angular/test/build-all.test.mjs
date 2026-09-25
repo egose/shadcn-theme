@@ -39,8 +39,9 @@ async function emitProject(workspace, project, declaration = `types/${project}.d
 
 test('the authoritative workspace project set includes menu everywhere', async () => {
   const projects = await validateProjectMembership(packageDirectory);
-  assert.equal(projects.length, 85);
+  assert.equal(projects.length, 86);
   assert(projects.includes('menu'));
+  assert(projects.includes('stepper'));
 });
 
 test('dependency ordering is deterministic', () => {

@@ -79,6 +79,7 @@ import * as skeleton from '@egose/shadcn-theme-ng/skeleton';
 import * as slider from '@egose/shadcn-theme-ng/slider';
 import * as sonner from '@egose/shadcn-theme-ng/sonner';
 import * as spinner from '@egose/shadcn-theme-ng/spinner';
+import * as stepper from '@egose/shadcn-theme-ng/stepper';
 import * as switchLib from '@egose/shadcn-theme-ng/switch';
 import * as table from '@egose/shadcn-theme-ng/table';
 import * as tabs from '@egose/shadcn-theme-ng/tabs';
@@ -166,6 +167,7 @@ export const EXAMPLE_PUBLIC_SUBPATHS = [
   'slider',
   'sonner',
   'spinner',
+  'stepper',
   'switch',
   'table',
   'tabs',
@@ -256,6 +258,7 @@ export const EXAMPLE_PUBLIC_MODULES: Record<ExamplePublicSubpath, Record<string,
   slider: slider as unknown as Record<string, unknown>,
   sonner: sonner as unknown as Record<string, unknown>,
   spinner: spinner as unknown as Record<string, unknown>,
+  stepper: stepper as unknown as Record<string, unknown>,
   switch: switchLib as unknown as Record<string, unknown>,
   table: table as unknown as Record<string, unknown>,
   tabs: tabs as unknown as Record<string, unknown>,

@@ -2212,6 +2212,32 @@
           }
         }
       }
+    },
+    "stepper": {
+      "projectType": "library",
+      "root": "projects/stepper",
+      "sourceRoot": "projects/stepper/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/stepper/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/stepper/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/stepper/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }

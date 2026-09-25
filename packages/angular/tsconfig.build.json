@@ -78,6 +78,7 @@
       "@egose/shadcn-theme-ng/slider": ["./dist/slider"],
       "@egose/shadcn-theme-ng/sonner": ["./dist/sonner"],
       "@egose/shadcn-theme-ng/spinner": ["./dist/spinner"],
+      "@egose/shadcn-theme-ng/stepper": ["./dist/stepper"],
       "@egose/shadcn-theme-ng/switch": ["./dist/switch"],
       "@egose/shadcn-theme-ng/table": ["./dist/table"],
       "@egose/shadcn-theme-ng/tabs": ["./dist/tabs"],
