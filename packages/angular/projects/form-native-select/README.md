@@ -76,23 +76,24 @@ Selector (from source): `eg-form-native-select` (standalone component, host `tw:
 
 ### `EgFormNativeSelect` — `eg-form-native-select`
 
-| Input         | Type                            | Default | Description                                                            |
-| ------------- | ------------------------------- | ------- | ---------------------------------------------------------------------- |
-| `controlName` | `string`                        | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**     |
-| `label`       | `string \| undefined`           | —       | Label text (hidden when omitted).                                      |
-| `error`       | `string \| undefined`           | —       | Error text shown when invalid.                                         |
-| `hint`        | `string \| undefined`           | —       | Hint text shown otherwise.                                             |
-| `controlId`   | `string \| undefined`           | —       | Explicit id (first priority for `effectiveId`).                        |
-| `id`          | `string \| undefined`           | —       | Fallback id (second priority).                                         |
-| `name`        | `string \| undefined`           | —       | Native `name` forwarded to the inner `<select>` (`controlName` wins).  |
-| `disabled`    | `boolean`                       | `false` | Locks interaction (form control stays enabled).                        |
-| `required`    | `boolean`                       | `false` | Shows a red `*` next to the label.                                     |
-| `options`     | `{ value, label, disabled? }[]` | `[]`    | Rendered as native `<option>` elements.                                |
-| `class`       | `ClassValue`                    | `''`    | Extra host classes (base `tw:w-full`).                                 |
-| `labelClass`  | `string`                        | `''`    | Extra label classes (base `tw:mb-1 tw:gap-0`).                         |
-| `selectClass` | `string`                        | `''`    | Extra inner-select classes, merged into `HlmNativeSelect.selectClass`. |
-| `errorClass`  | `string`                        | `''`    | Extra error classes (base `tw:mt-0`).                                  |
-| `hintClass`   | `string`                        | `''`    | Extra hint classes (base `tw:mt-0`).                                   |
+| Input         | Type                            | Default | Description                                                                                                                                                                                      |
+| ------------- | ------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `controlName` | `string`                        | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                               |
+| `label`       | `string \| undefined`           | —       | Label text (hidden when omitted).                                                                                                                                                                |
+| `error`       | `string \| undefined`           | —       | Error text shown when invalid.                                                                                                                                                                   |
+| `autoError`   | `boolean`                       | `true`  | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`        | `string \| undefined`           | —       | Hint text shown otherwise.                                                                                                                                                                       |
+| `controlId`   | `string \| undefined`           | —       | Explicit id (first priority for `effectiveId`).                                                                                                                                                  |
+| `id`          | `string \| undefined`           | —       | Fallback id (second priority).                                                                                                                                                                   |
+| `name`        | `string \| undefined`           | —       | Native `name` forwarded to the inner `<select>` (`controlName` wins).                                                                                                                            |
+| `disabled`    | `boolean`                       | `false` | Locks interaction (form control stays enabled).                                                                                                                                                  |
+| `required`    | `boolean`                       | `false` | Shows a red `*` next to the label.                                                                                                                                                               |
+| `options`     | `{ value, label, disabled? }[]` | `[]`    | Rendered as native `<option>` elements.                                                                                                                                                          |
+| `class`       | `ClassValue`                    | `''`    | Extra host classes (base `tw:w-full`).                                                                                                                                                           |
+| `labelClass`  | `string`                        | `''`    | Extra label classes (base `tw:mb-1 tw:gap-0`).                                                                                                                                                   |
+| `selectClass` | `string`                        | `''`    | Extra inner-select classes, merged into `HlmNativeSelect.selectClass`.                                                                                                                           |
+| `errorClass`  | `string`                        | `''`    | Extra error classes (base `tw:mt-0`).                                                                                                                                                            |
+| `hintClass`   | `string`                        | `''`    | Extra hint classes (base `tw:mt-0`).                                                                                                                                                             |
 
 | Member               | Description                                                                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |

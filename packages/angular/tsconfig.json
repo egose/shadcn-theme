@@ -91,6 +91,7 @@
       "@egose/shadcn-theme-ng/slider": ["./projects/slider/src/public-api.ts"],
       "@egose/shadcn-theme-ng/sonner": ["./projects/sonner/src/public-api.ts"],
       "@egose/shadcn-theme-ng/spinner": ["./projects/spinner/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/stepper": ["./projects/stepper/src/public-api.ts"],
       "@egose/shadcn-theme-ng/switch": ["./projects/switch/src/public-api.ts"],
       "@egose/shadcn-theme-ng/table": ["./projects/table/src/public-api.ts"],
       "@egose/shadcn-theme-ng/tabs": ["./projects/tabs/src/public-api.ts"],
@@ -620,6 +621,12 @@
     },
     {
       "path": "./projects/typography/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/stepper/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/stepper/tsconfig.spec.json"
     }
   ]
 }

@@ -8,7 +8,9 @@ import { HlmFormField } from './lib/form-field';
 import { HlmHint } from './lib/hint';
 
 export * from './lib/error';
+export * from './lib/form-error-messages';
 export * from './lib/form-id-generator';
+export * from './lib/form-shared-config';
 export * from './lib/form-field';
 export * from './lib/hint';
 

@@ -77,22 +77,23 @@ Selector (from source): `eg-form-toggle` (standalone component, host `tw:w-full`
 
 Bind `formControlName` on the element; there is no `controlName` input.
 
-| Input         | Type                        | Default     | Description                                         |
-| ------------- | --------------------------- | ----------- | --------------------------------------------------- |
-| `label`       | `string \| undefined`       | —           | Label text beside the toggle (hidden when omitted). |
-| `error`       | `string \| undefined`       | —           | Error text shown when invalid.                      |
-| `hint`        | `string \| undefined`       | —           | Hint text shown otherwise.                          |
-| `controlId`   | `string \| undefined`       | —           | Explicit id (first priority for `effectiveId`).     |
-| `id`          | `string \| undefined`       | —           | Fallback id (second priority).                      |
-| `disabled`    | `boolean`                   | `false`     | Locks interaction (form control stays enabled).     |
-| `required`    | `boolean`                   | `false`     | Shows a red `*` next to the label.                  |
-| `variant`     | `'default' \| 'outline'`    | `'default'` | Toggle variant forwarded to `hlmToggle`.            |
-| `size`        | `'default' \| 'sm' \| 'lg'` | `'default'` | Toggle size forwarded to `hlmToggle`.               |
-| `class`       | `ClassValue`                | `''`        | Extra host classes (base `tw:w-full`).              |
-| `toggleClass` | `string`                    | `''`        | Extra toggle-button classes.                        |
-| `labelClass`  | `string`                    | `''`        | Extra label classes.                                |
-| `errorClass`  | `string`                    | `''`        | Extra error classes (base `tw:mt-0`).               |
-| `hintClass`   | `string`                    | `''`        | Extra hint classes (base `tw:mt-0`).                |
+| Input         | Type                        | Default     | Description                                                                                                                                                                                      |
+| ------------- | --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `label`       | `string \| undefined`       | —           | Label text beside the toggle (hidden when omitted).                                                                                                                                              |
+| `error`       | `string \| undefined`       | —           | Error text shown when invalid.                                                                                                                                                                   |
+| `autoError`   | `boolean`                   | `true`      | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`        | `string \| undefined`       | —           | Hint text shown otherwise.                                                                                                                                                                       |
+| `controlId`   | `string \| undefined`       | —           | Explicit id (first priority for `effectiveId`).                                                                                                                                                  |
+| `id`          | `string \| undefined`       | —           | Fallback id (second priority).                                                                                                                                                                   |
+| `disabled`    | `boolean`                   | `false`     | Locks interaction (form control stays enabled).                                                                                                                                                  |
+| `required`    | `boolean`                   | `false`     | Shows a red `*` next to the label.                                                                                                                                                               |
+| `variant`     | `'default' \| 'outline'`    | `'default'` | Toggle variant forwarded to `hlmToggle`.                                                                                                                                                         |
+| `size`        | `'default' \| 'sm' \| 'lg'` | `'default'` | Toggle size forwarded to `hlmToggle`.                                                                                                                                                            |
+| `class`       | `ClassValue`                | `''`        | Extra host classes (base `tw:w-full`).                                                                                                                                                           |
+| `toggleClass` | `string`                    | `''`        | Extra toggle-button classes.                                                                                                                                                                     |
+| `labelClass`  | `string`                    | `''`        | Extra label classes.                                                                                                                                                                             |
+| `errorClass`  | `string`                    | `''`        | Extra error classes (base `tw:mt-0`).                                                                                                                                                            |
+| `hintClass`   | `string`                    | `''`        | Extra hint classes (base `tw:mt-0`).                                                                                                                                                             |
 
 | Member               | Description                                                                    |
 | -------------------- | ------------------------------------------------------------------------------ |

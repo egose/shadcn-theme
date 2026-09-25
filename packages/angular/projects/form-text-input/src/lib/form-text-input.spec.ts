@@ -183,3 +183,161 @@ describe('EgFormTextInput global class defaults', () => {
     expect(input().className).not.toContain('tw:text-xs');
   });
 });
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormTextInput],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <eg-form-text-input
+        controlName="value"
+        label="Name"
+        [error]="error()"
+        [autoError]="autoError()"
+        hint="Enter a name"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  `,
+})
+class AutoErrorHost {
+  readonly form = new FormGroup({ value: new FormControl('', { nonNullable: true, validators: Validators.required }) });
+  readonly error = signal<string | undefined>(undefined);
+  readonly autoError = signal(true);
+  onSubmit() {}
+}
+
+describe('EgFormTextInput auto error messages', () => {
+  let fixture: ComponentFixture<AutoErrorHost>;
+
+  beforeEach(async () => {
+    configureLibraryTestBed();
+    await TestBed.configureTestingModule({ imports: [AutoErrorHost] }).compileComponents();
+    fixture = TestBed.createComponent(AutoErrorHost);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => fixture.destroy());
+
+  it('auto-resolves the required message once the control is touched', () => {
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.detectChanges();
+    const describedBy = (fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute(
+      'aria-describedby',
+    );
+    expect(describedBy).toMatch(/-error$/);
+    expect(
+      fixture.nativeElement.querySelector(describedBy ? `#${CSS.escape(describedBy)}` : 'hlm-error').textContent,
+    ).toContain('Name is required');
+  });
+
+  it('lets an explicit error win over the auto-resolved message', () => {
+    fixture.componentInstance.error.set('Custom message');
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.detectChanges();
+    const describedBy = (fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute(
+      'aria-describedby',
+    );
+    expect(fixture.nativeElement.querySelector(`#${CSS.escape(describedBy!)}`).textContent).toContain('Custom message');
+  });
+
+  it('treats an empty explicit error as unset, falling back to the auto message', () => {
+    fixture.componentInstance.error.set('');
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.detectChanges();
+    const describedBy = (fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute(
+      'aria-describedby',
+    );
+    expect(describedBy).toMatch(/-error$/);
+    expect(fixture.nativeElement.querySelector(`#${CSS.escape(describedBy!)}`).textContent).toContain(
+      'Name is required',
+    );
+  });
+
+  it('renders no error when autoError is disabled and no explicit error is set', () => {
+    fixture.componentInstance.autoError.set(false);
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.detectChanges();
+    const describedBy = (fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute(
+      'aria-describedby',
+    );
+    expect(describedBy).toMatch(/-hint$/);
+    expect(fixture.nativeElement.querySelector('hlm-error')).toBeNull();
+  });
+
+  it('hides the visual error while pristine, then shows it after submit', () => {
+    // Invalid from creation, but untouched and unsubmitted -> hint only, no error element.
+    expect(fixture.nativeElement.querySelector('hlm-error')).toBeNull();
+    expect((fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute('aria-describedby')).toMatch(
+      /-hint$/,
+    );
+
+    (fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('hlm-error').textContent).toContain('Name is required');
+    expect((fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute('aria-describedby')).toMatch(
+      /-error$/,
+    );
+  });
+
+  it('clears the auto message once the control becomes valid', () => {
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('hlm-error')).not.toBeNull();
+
+    fixture.componentInstance.form.controls.value.setValue('Ada');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('hlm-error')).toBeNull();
+    expect((fixture.nativeElement.querySelector('input') as HTMLInputElement).getAttribute('aria-describedby')).toMatch(
+      /-hint$/,
+    );
+  });
+
+  it('updates the auto message when the failing validator changes', () => {
+    fixture.componentInstance.form.controls.value.markAsTouched();
+    fixture.componentInstance.form.controls.value.setValidators([Validators.required, Validators.minLength(3)]);
+    fixture.componentInstance.form.controls.value.setValue('a');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('hlm-error').textContent).toContain('at least 3 characters');
+  });
+});
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormTextInput],
+  template: `
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <eg-form-text-input controlName="value" label="Name" error="Name is required" hint="Enter a name" />
+      <button type="submit">Submit</button>
+    </form>
+  `,
+})
+class SubmitHost {
+  readonly form = new FormGroup({ value: new FormControl('', { nonNullable: true, validators: Validators.required }) });
+  onSubmit() {}
+}
+
+describe('EgFormTextInput submit behavior', () => {
+  let fixture: ComponentFixture<SubmitHost>;
+
+  beforeEach(async () => {
+    configureLibraryTestBed();
+    await TestBed.configureTestingModule({ imports: [SubmitHost] }).compileComponents();
+    fixture = TestBed.createComponent(SubmitHost);
+    fixture.detectChanges();
+  });
+
+  afterEach(() => fixture.destroy());
+
+  it('points aria-describedby at the hint until touched/dirty or submitted', () => {
+    const input = () => fixture.nativeElement.querySelector('input') as HTMLInputElement;
+
+    // Invalid from creation, but untouched and unsubmitted -> hint.
+    expect(input().getAttribute('aria-describedby')).toBe(`${input().id}-hint`);
+
+    // Submitting the parent form flips it to the error without touching the control.
+    (fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    fixture.detectChanges();
+    expect(input().getAttribute('aria-describedby')).toBe(`${input().id}-error`);
+  });
+});

@@ -83,29 +83,30 @@ Selector (from source): `eg-form-checkbox` (standalone component).
 
 ### `EgFormCheckbox` — `eg-form-checkbox`
 
-| Input           | Type                  | Default | Description                                                                                 |
-| --------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------- |
-| `controlName`   | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                          |
-| `label`         | `string`              | `''`    | Label text next to the checkbox.                                                            |
-| `error`         | `string \| undefined` | —       | Error text shown when the control is invalid + touched/dirty (via `EgFormField` switching). |
-| `hint`          | `string \| undefined` | —       | Hint text shown when there is no error to display.                                          |
-| `controlId`     | `string \| undefined` | —       | Explicit control id (first priority for `effectiveId`).                                     |
-| `id`            | `string \| undefined` | —       | Fallback id (second priority).                                                              |
-| `name`          | `string \| undefined` | —       | Checkbox `name` attribute (defaults to `controlName`).                                      |
-| `checked`       | `boolean`             | `false` | Initial checked state passed to `hlm-checkbox`.                                             |
-| `required`      | `boolean`             | `false` | Shows a red `*` and sets checkbox `required`.                                               |
-| `disabled`      | `boolean`             | `false` | Locks interaction via checkbox `wrapperDisabled` (does not write to the form control).      |
-| `class`         | `ClassValue`          | `''`    | Extra host classes.                                                                         |
-| `checkboxClass` | `string`              | `''`    | Extra classes for `hlm-checkbox`.                                                           |
-| `labelClass`    | `string`              | `''`    | Extra classes for the label.                                                                |
-| `errorClass`    | `string`              | `''`    | Extra classes for `hlm-error`.                                                              |
-| `hintClass`     | `string`              | `''`    | Extra classes for `hlm-hint`.                                                               |
+| Input           | Type                  | Default | Description                                                                                                                                                                                                                                             |
+| --------------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `controlName`   | `string`              | `''`    | `formControlName` key inside the parent `FormGroup`. **Required.**                                                                                                                                                                                      |
+| `label`         | `string`              | `''`    | Label text next to the checkbox.                                                                                                                                                                                                                        |
+| `error`         | `string \| undefined` | —       | Error text shown when the control is invalid + touched/dirty/submitted (via `EgFormField` switching).                                                                                                                                                   |
+| `autoError`     | `boolean`             | `true`  | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`.                                                        |
+| `hint`          | `string \| undefined` | —       | Hint text shown when there is no error to display.                                                                                                                                                                                                      |
+| `controlId`     | `string \| undefined` | —       | Explicit control id (first priority for `effectiveId`).                                                                                                                                                                                                 |
+| `id`            | `string \| undefined` | —       | Fallback id (second priority).                                                                                                                                                                                                                          |
+| `name`          | `string \| undefined` | —       | Checkbox `name` attribute (defaults to `controlName`).                                                                                                                                                                                                  |
+| `checked`       | `boolean`             | `false` | Initial checked state passed to `hlm-checkbox`.                                                                                                                                                                                                         |
+| `required`      | `boolean`             | `false` | Shows a red `*` and sets checkbox `required` (boolean-coerced, so bare `required` works). Presentation only — it does not validate by itself; add `Validators.requiredTrue` to the `FormControl` or the control is never invalid and no error is shown. |
+| `disabled`      | `boolean`             | `false` | Locks interaction via checkbox `wrapperDisabled` (does not write to the form control).                                                                                                                                                                  |
+| `class`         | `ClassValue`          | `''`    | Extra host classes.                                                                                                                                                                                                                                     |
+| `checkboxClass` | `string`              | `''`    | Extra classes for `hlm-checkbox`.                                                                                                                                                                                                                       |
+| `labelClass`    | `string`              | `''`    | Extra classes for the label.                                                                                                                                                                                                                            |
+| `errorClass`    | `string`              | `''`    | Extra classes for `hlm-error`.                                                                                                                                                                                                                          |
+| `hintClass`     | `string`              | `''`    | Extra classes for `hlm-hint`.                                                                                                                                                                                                                           |
 
-| Member               | Description                                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `effectiveId`        | `controlId() \|\| id() \|\| generated` — wired to checkbox `id` and label `for`.                                                     |
-| `errorId` / `hintId` | `effectiveId + '-error' / '-hint'` for `aria-describedby`.                                                                           |
-| `describedBy()`      | Returns `errorId` when `error()` is set and the control is invalid + dirty/touched, else `hintId` when `hint()` is set, else `null`. |
+| Member               | Description                                                                                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `effectiveId`        | `controlId() \|\| id() \|\| generated` — wired to checkbox `id` and label `for`.                                                               |
+| `errorId` / `hintId` | `effectiveId + '-error' / '-hint'` for `aria-describedby`.                                                                                     |
+| `describedBy()`      | Returns `errorId` when `error()` is set and the control is invalid + dirty/touched/submitted, else `hintId` when `hint()` is set, else `null`. |
 
 Requires a `[formGroup]` ancestor: the component injects `FormGroupDirective` and provides
 `ControlContainer → FormGroupDirective` so `formControlName` resolves.
@@ -297,7 +298,7 @@ export class SubmitCheckComponent {
 ## Accessibility notes
 
 - The checkbox `id` and label `for` are generated (`eg-form-checkbox-<app>-<n>`) unless `controlId`/`id` is given — labels are always programmatically associated.
-- `aria-describedby` points at the error id only while the control is invalid + touched/dirty, otherwise at the hint id — screen readers hear the right message in each state.
+- `aria-describedby` points at the error id only while the control is invalid + touched/dirty/submitted, otherwise at the hint id — screen readers hear the right message in each state.
 - The required marker (`*`) is visual; the underlying `hlm-checkbox` also receives `required` so assistive tech announces it.
 - Keep the component inside a `<form>` with a submit path; the row itself is a single tab stop (the checkbox).
 

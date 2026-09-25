@@ -13,6 +13,7 @@ import {
   lucideLayers,
   lucideLayoutDashboard,
   lucideList,
+  lucideListOrdered,
   lucideLoaderCircle,
   lucideMenu,
   lucideMessageSquare,
@@ -25,6 +26,7 @@ import {
   lucideTextCursorInput,
   lucideToggleLeft,
   lucideType,
+  lucideUserPlus,
   lucideUsers,
 } from '@ng-icons/lucide';
 
@@ -722,6 +724,15 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     load: () => import('../pages/components/tabs/tabs').then((m) => m.TabsPage),
   },
   {
+    slug: 'stepper',
+    title: 'Stepper',
+    category: 'Layout & Navigation',
+    kind: 'component',
+    description: 'Guide people through multi-step flows with clear progress.',
+    icon: lucideListOrdered,
+    load: () => import('../pages/components/stepper/stepper').then((m) => m.StepperPage),
+  },
+  {
     slug: 'layout-simple',
     title: 'Layout Simple',
     category: 'Layout & Navigation',
@@ -930,6 +941,15 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     description: 'Browse support conversations and work through incoming requests.',
     icon: lucideMessageSquare,
     load: () => import('../pages/examples/support-inbox/support-inbox').then((m) => m.SupportInboxExamplePage),
+  },
+  {
+    slug: 'signup-flow',
+    title: 'Signup Flow',
+    category: 'Product Flows',
+    kind: 'example',
+    description: 'Multi-step signup with a validated form per step, from account details to terms acceptance.',
+    icon: lucideUserPlus,
+    load: () => import('../pages/examples/signup-flow/signup-flow').then((m) => m.SignupFlowExamplePage),
   },
 ];
 

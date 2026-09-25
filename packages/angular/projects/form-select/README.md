@@ -75,25 +75,26 @@ In multi mode the inner `brn-select` becomes `brn-select-multiple`; everything e
 
 ### `eg-form-select` — `EgFormSelect`
 
-| Input                 | Type                  | Default     | Description                                                                                               |
-| --------------------- | --------------------- | ----------- | --------------------------------------------------------------------------------------------------------- |
-| `label`               | `string \| undefined` | `undefined` | Field label rendered as `<label hlmLabel>` bound to the trigger button id.                                |
-| `controlName`         | `string`              | `''`        | **Required.** Control name in the parent `FormGroup`; forwarded as `formControlName`.                     |
-| `controlId`           | `string \| undefined` | `undefined` | Explicit id; falls back to `id`, then generated `eg-form-select-…`.                                       |
-| `id`                  | `string \| undefined` | `undefined` | Alias for an explicit id (same fallback chain). Forwarded as `buttonId` to the select trigger.            |
-| `error`               | `string \| undefined` | `undefined` | Error text rendered in `<hlm-error>`.                                                                     |
-| `hint`                | `string \| undefined` | `undefined` | Hint text rendered in `<hlm-hint>`.                                                                       |
-| `placeholder`         | `string`              | `''`        | Placeholder forwarded to `<hlm-select-value>`.                                                            |
-| `disabled`            | `boolean`             | `false`     | Forwarded as `wrapperDisabled` to `<hlm-select-trigger>`.                                                 |
-| `required`            | `boolean`             | `false`     | Renders a red `*` next to the label (pair with `Validators.required`).                                    |
-| `multiple`            | `boolean`             | `false`     | When `true`, renders `brn-select-multiple` (value is `string[]`).                                         |
-| `options`             | `SelectOption[]`      | `[]`        | `{ value: string; label: string }[]` rendered as `<hlm-select-item>` rows. Local interface, not exported. |
-| `optionsLabel`        | `string \| undefined` | `undefined` | Optional group heading rendered once as `<hlm-select-label>`.                                             |
-| `class` (`userClass`) | `ClassValue`          | `''`        | Extra host classes (merged over `tw:flex tw:flex-col`).                                                   |
-| `labelClass`          | `string`              | `''`        | Extra label classes (merged over `tw:mb-1 tw:gap-0`).                                                     |
-| `selectClass`         | `string`              | `''`        | Extra trigger classes (merged over `tw:w-full`).                                                          |
-| `errorClass`          | `string`              | `''`        | Extra error classes (merged over `tw:mt-0`).                                                              |
-| `hintClass`           | `string`              | `''`        | Extra hint classes (merged over `tw:mt-0`).                                                               |
+| Input                 | Type                  | Default     | Description                                                                                                                                                                                      |
+| --------------------- | --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `label`               | `string \| undefined` | `undefined` | Field label rendered as `<label hlmLabel>` bound to the trigger button id.                                                                                                                       |
+| `controlName`         | `string`              | `''`        | **Required.** Control name in the parent `FormGroup`; forwarded as `formControlName`.                                                                                                            |
+| `controlId`           | `string \| undefined` | `undefined` | Explicit id; falls back to `id`, then generated `eg-form-select-…`.                                                                                                                              |
+| `id`                  | `string \| undefined` | `undefined` | Alias for an explicit id (same fallback chain). Forwarded as `buttonId` to the select trigger.                                                                                                   |
+| `error`               | `string \| undefined` | `undefined` | Error text rendered in `<hlm-error>`.                                                                                                                                                            |
+| `autoError`           | `boolean`             | `true`      | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`                | `string \| undefined` | `undefined` | Hint text rendered in `<hlm-hint>`.                                                                                                                                                              |
+| `placeholder`         | `string`              | `''`        | Placeholder forwarded to `<hlm-select-value>`.                                                                                                                                                   |
+| `disabled`            | `boolean`             | `false`     | Forwarded as `wrapperDisabled` to `<hlm-select-trigger>`.                                                                                                                                        |
+| `required`            | `boolean`             | `false`     | Renders a red `*` next to the label (pair with `Validators.required`).                                                                                                                           |
+| `multiple`            | `boolean`             | `false`     | When `true`, renders `brn-select-multiple` (value is `string[]`).                                                                                                                                |
+| `options`             | `SelectOption[]`      | `[]`        | `{ value: string; label: string }[]` rendered as `<hlm-select-item>` rows. Local interface, not exported.                                                                                        |
+| `optionsLabel`        | `string \| undefined` | `undefined` | Optional group heading rendered once as `<hlm-select-label>`.                                                                                                                                    |
+| `class` (`userClass`) | `ClassValue`          | `''`        | Extra host classes (merged over `tw:flex tw:flex-col`).                                                                                                                                          |
+| `labelClass`          | `string`              | `''`        | Extra label classes (merged over `tw:mb-1 tw:gap-0`).                                                                                                                                            |
+| `selectClass`         | `string`              | `''`        | Extra trigger classes (merged over `tw:w-full`).                                                                                                                                                 |
+| `errorClass`          | `string`              | `''`        | Extra error classes (merged over `tw:mt-0`).                                                                                                                                                     |
+| `hintClass`           | `string`              | `''`        | Extra hint classes (merged over `tw:mt-0`).                                                                                                                                                      |
 
 No outputs. Readonly computeds/methods: `effectiveId()`, `errorId()`, `hintId()`, `describedBy(): string | null` (error id when invalid + dirty/touched, else hint id, else `null`).
 

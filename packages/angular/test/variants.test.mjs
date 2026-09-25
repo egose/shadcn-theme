@@ -74,6 +74,31 @@ test('representative pagination, radio, and carousel classes render for both var
   assert(prefixed.split(/\s+/).every((token) => token.startsWith('tw:')));
 });
 
+test('tw-animate-css utilities transform for both variants', () => {
+  const classes =
+    'tw:animate-in tw:fade-in tw:slide-in-from-right-8 tw:animate-out tw:fade-out tw:slide-out-to-left-8 tw:fill-mode-both';
+  const plain = transformTailwindClassList(classes);
+  assert.equal(
+    plain,
+    'animate-in fade-in slide-in-from-right-8 animate-out fade-out slide-out-to-left-8 fill-mode-both',
+  );
+  assert.doesNotMatch(plain, /(?:^|\s)tw:/);
+
+  const prefixed = transformTailwindClassList(classes, 'tw');
+  assert.equal(prefixed, classes);
+
+  // Legacy bare animation tokens (e.g. dialog `data-open:fade-in-0`) stay bare
+  // for plain but gain the prefix for `tw`, so both variants emit working CSS.
+  assert.equal(transformTailwindClassList('fade-in'), 'fade-in');
+  assert.equal(transformTailwindClassList('fade-in', 'tw'), 'tw:fade-in');
+  assert.equal(transformTailwindClassList('data-open:fade-in-0'), 'data-open:fade-in-0');
+  assert.equal(transformTailwindClassList('data-open:fade-in-0', 'tw'), 'tw:data-open:fade-in-0');
+
+  // Non-class strings still pass through untouched in both variants.
+  assert.equal(transformTailwindClassList('not-a-class'), 'not-a-class');
+  assert.equal(transformTailwindClassList('not-a-class', 'tw'), 'not-a-class');
+});
+
 test('JavaScript transformation is syntax-aware and leaves non-class strings unchanged', () => {
   const source = `const direction = 'relative'; const view = { template: '<div class="relative tw:flex"></div>' };`;
   const transformed = transformJavaScriptClasses(source, 'tw');

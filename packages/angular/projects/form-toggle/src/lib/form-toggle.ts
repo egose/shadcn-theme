@@ -5,6 +5,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  DoCheck,
   forwardRef,
   inject,
   Injector,
@@ -13,8 +14,15 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControlName, type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { HlmError, HlmHint, HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
+import { FormControlName, FormGroupDirective, type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  HlmError,
+  HlmHint,
+  HlmFormIdGenerator,
+  injectEgFormErrorMessages,
+  injectEgFormSharedConfig,
+  resolveEgFormError,
+} from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmToggle, type ToggleVariants } from '@egose/shadcn-theme-ng/toggle';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
@@ -79,7 +87,7 @@ export const EG_FORM_TOGGLE_VALUE_ACCESSOR = {
 
       @if (showError()) {
         <hlm-error [id]="errorId()" [class]="$errorClass()">
-          {{ error() }}
+          {{ resolvedError() }}
         </hlm-error>
       } @else if (showHint()) {
         <hlm-hint [id]="hintId()" [class]="$hintClass()">
@@ -89,16 +97,25 @@ export const EG_FORM_TOGGLE_VALUE_ACCESSOR = {
     </div>
   `,
 })
-export class EgFormToggle implements ControlValueAccessor, AfterViewInit {
+export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoCheck {
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-toggle');
   private readonly _config = injectEgFormToggleConfig();
+  private readonly _shared = injectEgFormSharedConfig();
   private readonly _injector = inject(Injector);
   private readonly _destroyRef = inject(DestroyRef);
+  private readonly _formGroupDirective = inject(FormGroupDirective, { optional: true });
+  private readonly _errorMessages = injectEgFormErrorMessages();
   private _controlDir: FormControlName | null = null;
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
   error = input<string | undefined>(undefined);
+  /**
+   * Auto-resolve the displayed message from the control's `ValidationErrors`
+   * when `error()` is unset. Explicit `error()` always wins. Set to `false`
+   * for manual-only messages.
+   */
+  autoError = input<boolean>(true);
   hint = input<string | undefined>(undefined);
 
   id = input<string | undefined>(undefined);
@@ -116,16 +133,41 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit {
   protected readonly _disabled = computed(() => this.disabled() || this._formDisabled());
 
   private readonly _status = signal<string | null>(null);
+  private readonly _submitted = signal(false);
+
+  /**
+   * Displayed message: explicit `error()` wins; otherwise (when `autoError()`)
+   * auto-resolved from the control's `ValidationErrors`. Plain method (not a
+   * computed): `ValidationErrors` is not a signal, so the control must be read
+   * fresh on every change-detection pass (`showError()` re-evaluates with it
+   * via the `_status`/`_submitted` signals).
+   */
+  protected resolvedError(): string | undefined {
+    const explicit = this.error();
+    if (explicit) return explicit;
+    if (!this.autoError()) return undefined;
+    return resolveEgFormError(this._controlDir?.control?.errors ?? null, this.label(), this._errorMessages);
+  }
 
   protected readonly showError = computed(() => {
     this._status();
+    this._submitted();
     const control = this._controlDir?.control;
-    return !!this.error() && !!control?.errors && (control.touched || control.dirty);
+    return (
+      !!this.resolvedError() &&
+      !!control?.errors &&
+      (control.touched || control.dirty || !!this._formGroupDirective?.submitted)
+    );
   });
   protected readonly showHint = computed(() => !this.showError() && !!this.hint());
 
   protected _onChange?: ChangeFn<boolean>;
   protected _onTouched?: TouchFn;
+
+  ngDoCheck(): void {
+    const submitted = !!this._formGroupDirective?.submitted;
+    if (this._submitted() !== submitted) this._submitted.set(submitted);
+  }
 
   ngAfterViewInit(): void {
     // Resolved here (not earlier): this component IS the value accessor for
@@ -172,10 +214,12 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit {
   errorClass = input<string>('');
   hintClass = input<string>('');
 
-  // Computed classes (library base < global config < per-instance)
+  // Computed classes (library base < shared global < component global < per-instance).
+  // Note: toggle keeps its own CVA/error-hint behavior; only the shared
+  // label/error/hint styling slots are picked up (toggleClass stays local).
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
   $toggleClass = computed(() => hlm(this._config.toggleClass, this.toggleClass()));
-  $labelClass = computed(() => hlm(this._config.labelClass, this.labelClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm(this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }
