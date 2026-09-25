@@ -20,6 +20,7 @@ import {
   HlmHint,
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
+  injectEgFormSharedConfig,
   resolveEgFormError,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
@@ -99,6 +100,7 @@ export const EG_FORM_TOGGLE_VALUE_ACCESSOR = {
 export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoCheck {
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-toggle');
   private readonly _config = injectEgFormToggleConfig();
+  private readonly _shared = injectEgFormSharedConfig();
   private readonly _injector = inject(Injector);
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _formGroupDirective = inject(FormGroupDirective, { optional: true });
@@ -212,10 +214,12 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
   errorClass = input<string>('');
   hintClass = input<string>('');
 
-  // Computed classes (library base < global config < per-instance)
+  // Computed classes (library base < shared global < component global < per-instance).
+  // Note: toggle keeps its own CVA/error-hint behavior; only the shared
+  // label/error/hint styling slots are picked up (toggleClass stays local).
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
   $toggleClass = computed(() => hlm(this._config.toggleClass, this.toggleClass()));
-  $labelClass = computed(() => hlm(this._config.labelClass, this.labelClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm(this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmRadio, HlmRadioGroup, HlmRadioIndicator } from '@egose/shadcn-theme-ng/radio-group';
@@ -84,6 +85,7 @@ export class EgFormRadioGroup {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-radio-group');
   private readonly _config = injectEgFormRadioGroupConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -158,8 +160,10 @@ export class EgFormRadioGroup {
 
   // Computed classes (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
-  $groupClass = computed(() => hlm('tw:flex tw:flex-col tw:gap-2', this._config.groupClass, this.groupClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $groupClass = computed(() =>
+    hlm('tw:flex tw:flex-col tw:gap-2', this._shared.groupClass, this._config.groupClass, this.groupClass()),
+  );
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

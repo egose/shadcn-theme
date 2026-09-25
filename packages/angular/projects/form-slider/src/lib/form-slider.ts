@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmSlider } from '@egose/shadcn-theme-ng/slider';
@@ -69,6 +70,7 @@ export class EgFormSlider {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-slider');
   private readonly _config = injectEgFormSliderConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -143,8 +145,10 @@ export class EgFormSlider {
 
   // Computed classes (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
-  $sliderClass = computed(() => hlm('tw:w-full', this._config.sliderClass, this.sliderClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $sliderClass = computed(() =>
+    hlm('tw:w-full', this._shared.sliderClass, this._config.sliderClass, this.sliderClass()),
+  );
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

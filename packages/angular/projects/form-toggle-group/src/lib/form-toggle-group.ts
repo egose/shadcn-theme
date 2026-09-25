@@ -6,6 +6,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { EgFormField } from '@egose/shadcn-theme-ng/form-field-simple';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
@@ -85,6 +86,7 @@ export class EgFormToggleGroup {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-toggle-group');
   private readonly _config = injectEgFormToggleGroupConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -161,8 +163,8 @@ export class EgFormToggleGroup {
 
   // Computed classes (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
-  $groupClass = computed(() => hlm(this._config.groupClass, this.groupClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $groupClass = computed(() => hlm(this._shared.groupClass, this._config.groupClass, this.groupClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

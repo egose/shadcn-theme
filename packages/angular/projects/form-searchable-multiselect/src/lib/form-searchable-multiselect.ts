@@ -8,6 +8,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
@@ -68,6 +69,7 @@ export class EgFormSearchableMultiselect {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-searchable-multiselect');
   private readonly _config = injectEgFormSearchableMultiselectConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   // Form field inputs
   label = input<string | undefined>(undefined);
@@ -136,8 +138,12 @@ export class EgFormSearchableMultiselect {
 
   // Computed class names (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this._config.labelClass, this.labelClass()));
-  $controlClass = computed(() => hlm('tw:w-full', this._config.controlClass, this.controlClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() =>
+    hlm('tw:mb-1 tw:gap-0', this._shared.labelClass, this._config.labelClass, this.labelClass()),
+  );
+  $controlClass = computed(() =>
+    hlm('tw:w-full', this._shared.controlClass, this._config.controlClass, this.controlClass()),
+  );
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

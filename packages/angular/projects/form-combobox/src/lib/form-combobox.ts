@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import {
@@ -123,6 +124,7 @@ export class EgFormCombobox {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-combobox');
   private readonly _config = injectEgFormComboboxConfig();
+  private readonly _shared = injectEgFormSharedConfig();
   private readonly _picker = viewChild(BrnComboboxMultiple<string>);
   private readonly _single = viewChild(BrnCombobox<string>);
 
@@ -212,9 +214,9 @@ export class EgFormCombobox {
   // NOTE: the chip search input exposes no aria-describedby, so error/hint
   // ids render without an input-level describedby link.
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
-  $controlClass = computed(() => hlm(this._config.controlClass, this.controlClass()));
-  $chipsClass = computed(() => hlm(this._config.chipsClass, this.chipsClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $controlClass = computed(() => hlm(this._shared.controlClass, this._config.controlClass, this.controlClass()));
+  $chipsClass = computed(() => hlm(this._shared.chipsClass, this._config.chipsClass, this.chipsClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

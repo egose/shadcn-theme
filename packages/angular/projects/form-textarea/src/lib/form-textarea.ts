@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
@@ -75,6 +76,7 @@ export class EgFormTextarea {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-textarea');
   private readonly _config = injectEgFormTextareaConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   // General props
   label = input<string | undefined>(undefined);
@@ -151,8 +153,12 @@ export class EgFormTextarea {
 
   // Computed class bindings (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this._config.labelClass, this.labelClass()));
-  $textareaClass = computed(() => hlm('tw:mb-1', this._config.textareaClass, this.textareaClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() =>
+    hlm('tw:mb-1 tw:gap-0', this._shared.labelClass, this._config.labelClass, this.labelClass()),
+  );
+  $textareaClass = computed(() =>
+    hlm('tw:mb-1', this._shared.textareaClass, this._config.textareaClass, this.textareaClass()),
+  );
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

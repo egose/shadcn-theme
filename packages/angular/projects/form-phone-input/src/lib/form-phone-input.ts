@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmPhoneInput, formatNanpPhoneNumber, type PhoneNumberFormatter } from '@egose/shadcn-theme-ng/phone-input';
@@ -73,6 +74,7 @@ export class EgFormPhoneInput {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-phone-input');
   private readonly _config = injectEgFormPhoneInputConfig();
+  private readonly _shared = injectEgFormSharedConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -142,8 +144,10 @@ export class EgFormPhoneInput {
 
   // Computed classes (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1 tw:gap-0', this._config.labelClass, this.labelClass()));
-  $inputClass = computed(() => hlm('tw:mb-1', this._config.inputClass, this.inputClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() =>
+    hlm('tw:mb-1 tw:gap-0', this._shared.labelClass, this._config.labelClass, this.labelClass()),
+  );
+  $inputClass = computed(() => hlm('tw:mb-1', this._shared.inputClass, this._config.inputClass, this.inputClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }

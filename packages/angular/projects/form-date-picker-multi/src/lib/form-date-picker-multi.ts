@@ -7,6 +7,7 @@ import {
   HlmFormIdGenerator,
   injectEgFormErrorMessages,
   resolveEgFormError,
+  injectEgFormSharedConfig,
 } from '@egose/shadcn-theme-ng/form-field';
 import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import {
@@ -89,6 +90,7 @@ export class EgFormDatePickerMulti {
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-date-picker-multi');
   private readonly _config = injectHlmDatePickerMultiConfig<Date>();
+  private readonly _shared = injectEgFormSharedConfig();
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -175,9 +177,9 @@ export class EgFormDatePickerMulti {
 
   // Computed classes (library base < global config < per-instance)
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
-  $labelClass = computed(() => hlm('tw:mb-1', this._config.labelClass, this.labelClass()));
-  $pickerClass = computed(() => hlm('tw:mb-1', this._config.pickerClass, this.pickerClass()));
-  $inputClass = computed(() => hlm(this._config.inputClass, this.inputClass()));
-  $errorClass = computed(() => hlm('tw:mt-0', this._config.errorClass, this.errorClass()));
-  $hintClass = computed(() => hlm('tw:mt-0', this._config.hintClass, this.hintClass()));
+  $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
+  $pickerClass = computed(() => hlm('tw:mb-1', this._shared.pickerClass, this._config.pickerClass, this.pickerClass()));
+  $inputClass = computed(() => hlm(this._shared.inputClass, this._config.inputClass, this.inputClass()));
+  $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
+  $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
 }
