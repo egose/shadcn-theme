@@ -1,0 +1,1 @@
+import{sn as as}from"./chunk-CqIpapos.js";import{n as et}from"./chunk-bfvoYClY.js";var r=class t{constructor(){et(()=>`tw:bg-muted tw:rounded-md tw:block tw:motion-safe:animate-pulse`)}static ɵfac=function(s){return new(s||t)};static ɵdir=as({type:t,selectors:[[``,`hlmSkeleton`,``],[`hlm-skeleton`]],hostAttrs:[`data-slot`,`skeleton`]})};export{r as t};

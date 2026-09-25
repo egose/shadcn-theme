@@ -1,1 +1,0 @@
-import{ot as Qi}from"./chunk-Di-5HtnB.js";import{n as et}from"./chunk-sHyjjosi.js";var r=class t{constructor(){et(()=>`tw:bg-muted tw:rounded-md tw:block tw:motion-safe:animate-pulse`)}static ɵfac=function(s){return new(s||t)};static ɵdir=Qi({type:t,selectors:[[``,`hlmSkeleton`,``],[`hlm-skeleton`]],hostAttrs:[`data-slot`,`skeleton`]})};export{r as t};
