@@ -12,6 +12,6 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@commitlint/format": "^21.2.3",
     "@repo-toolkit/publish-package": "^0.31.0",
-    "prettier": "4.0.0-alpha.12"
+    "prettier": "4.0.0-alpha.13"
   }
 }
