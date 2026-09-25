@@ -31,8 +31,8 @@ function firstLink(kind: 'component' | 'example', fallback: string): string {
             Shadcn theme for Angular, running live
           </h1>
           <p class="tw:text-sm tw:leading-7 tw:text-slate-600 sm:tw:text-base">
-            Browse every packaged @egose/shadcn-theme-ng component with realistic page spacing, or walk through
-            complete product flows composed from the same primitives. Pick a section below to reveal its navigation.
+            Browse every packaged @egose/shadcn-theme-ng component with realistic page spacing, or walk through complete
+            product flows composed from the same primitives. Pick a section below to reveal its navigation.
           </p>
         </div>
 

@@ -180,13 +180,7 @@ import { HlmError, HlmHint } from '@egose/shadcn-theme-ng/form-field';
   template: `
     <form [formGroup]="form">
       <label for="handle">Handle</label>
-      <input
-        hlmInput
-        id="handle"
-        formControlName="handle"
-        placeholder="@jane"
-        [ariaDescribedby]="describedBy()"
-      />
+      <input hlmInput id="handle" formControlName="handle" placeholder="@jane" [ariaDescribedby]="describedBy()" />
       @if (showError()) {
         <hlm-error id="handle-error">Use 3+ lowercase letters.</hlm-error>
       } @else {
