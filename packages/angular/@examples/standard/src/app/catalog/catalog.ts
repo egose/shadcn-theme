@@ -798,6 +798,15 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     load: () => import('../pages/components/table/table').then((m) => m.TablePage),
   },
   {
+    slug: 'data-table',
+    title: 'Data Table',
+    category: 'Data Display',
+    kind: 'component',
+    description: 'Sort, filter, select, and page structured records with an optional grid layout.',
+    icon: lucideTable,
+    load: () => import('../pages/components/data-table/data-table').then((m) => m.DataTablePage),
+  },
+  {
     slug: 'kbd',
     title: 'Kbd',
     category: 'Data Display',

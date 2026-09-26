@@ -23,6 +23,7 @@ import * as combobox from '@egose/shadcn-theme-ng/combobox';
 import * as command from '@egose/shadcn-theme-ng/command';
 import * as confirmationDialog from '@egose/shadcn-theme-ng/confirmation-dialog';
 import * as contextMenu from '@egose/shadcn-theme-ng/context-menu';
+import * as dataTable from '@egose/shadcn-theme-ng/data-table';
 import * as datePicker from '@egose/shadcn-theme-ng/date-picker';
 import * as dialog from '@egose/shadcn-theme-ng/dialog';
 import * as drawer from '@egose/shadcn-theme-ng/drawer';
@@ -111,6 +112,7 @@ export const EXAMPLE_PUBLIC_SUBPATHS = [
   'command',
   'confirmation-dialog',
   'context-menu',
+  'data-table',
   'date-picker',
   'dialog',
   'drawer',
@@ -202,6 +204,7 @@ export const EXAMPLE_PUBLIC_MODULES: Record<ExamplePublicSubpath, Record<string,
   command: command as unknown as Record<string, unknown>,
   'confirmation-dialog': confirmationDialog as unknown as Record<string, unknown>,
   'context-menu': contextMenu as unknown as Record<string, unknown>,
+  'data-table': dataTable as unknown as Record<string, unknown>,
   'date-picker': datePicker as unknown as Record<string, unknown>,
   dialog: dialog as unknown as Record<string, unknown>,
   drawer: drawer as unknown as Record<string, unknown>,

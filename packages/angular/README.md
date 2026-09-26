@@ -19,16 +19,17 @@ versions; applications must keep their existing framework versions inside the su
 
 ### Peer dependencies
 
-| Package             | Supported version  | Tested version |
-| ------------------- | ------------------ | -------------- |
-| `@angular/cdk`      | `>=22.0.0 <23.0.0` | `22.1.3`       |
-| `@angular/common`   | `>=22.0.0 <23.0.0` | `22.1.3`       |
-| `@angular/core`     | `>=22.0.0 <23.0.0` | `22.1.3`       |
-| `@angular/forms`    | `>=22.0.0 <23.0.0` | `22.1.3`       |
-| `@angular/router`   | `>=22.0.0 <23.0.0` | `22.1.3`       |
-| `@ng-icons/core`    | `>=35.0.1 <36.0.0` | `35.0.1`       |
-| `@spartan-ng/brain` | `>=1.3.2 <2.0.0`   | `1.3.2`        |
-| `rxjs`              | `>=7.8.0 <8.0.0`   | `7.8.2`        |
+| Package                   | Supported version  | Tested version |
+| ------------------------- | ------------------ | -------------- |
+| `@angular/cdk`            | `>=22.0.0 <23.0.0` | `22.1.3`       |
+| `@angular/common`         | `>=22.0.0 <23.0.0` | `22.1.3`       |
+| `@angular/core`           | `>=22.0.0 <23.0.0` | `22.1.3`       |
+| `@angular/forms`          | `>=22.0.0 <23.0.0` | `22.1.3`       |
+| `@angular/router`         | `>=22.0.0 <23.0.0` | `22.1.3`       |
+| `@ng-icons/core`          | `>=35.0.1 <36.0.0` | `35.0.1`       |
+| `@spartan-ng/brain`       | `>=1.3.2 <2.0.0`   | `1.3.2`        |
+| `@tanstack/angular-table` | `>=9.1.2 <10.0.0`  | `9.1.2`        |
+| `rxjs`                    | `>=7.8.0 <8.0.0`   | `7.8.2`        |
 
 Angular and CDK must use the same major version. The tested consumer contract is Angular 22, CDK 22, and Spartan 1.3.2;
 the ranges above are copied from the published peer metadata and validated with strict isolated installs.
@@ -138,7 +139,7 @@ Import by component name. Component `NameX` is reachable at `@egose/shadcn-theme
 
 <!-- BEGIN GENERATED SUBPATHS -->
 
-`accordion`, `alert`, `alert-dialog`, `aspect-ratio`, `autocomplete`, `avatar`, `badge`, `basic-alert`, `breadcrumb`, `button`, `button-group`, `calendar`, `card`, `carousel`, `checkbox`, `collapsible`, `combobox`, `command`, `confirmation-dialog`, `context-menu`, `date-picker`, `dialog`, `drawer`, `dropdown-menu`, `empty`, `field`, `form-autocomplete`, `form-checkbox`, `form-combobox`, `form-date-picker`, `form-date-picker-multi`, `form-date-range-picker`, `form-field`, `form-field-simple`, `form-input-otp`, `form-month-year-picker`, `form-native-select`, `form-phone-input`, `form-radio-group`, `form-searchable-multiselect`, `form-select`, `form-slider`, `form-switch`, `form-text-input`, `form-textarea`, `form-toggle`, `form-toggle-group`, `hover-card`, `icon`, `input`, `input-group`, `input-otp`, `item`, `kbd`, `label`, `layout-simple`, `menu`, `menubar`, `native-select`, `navigation-menu`, `pagination`, `phone-input`, `popover`, `progress`, `radio-group`, `resizable`, `scroll-area`, `searchable-multiselect`, `select`, `separator`, `sheet`, `sidebar`, `skeleton`, `slider`, `sonner`, `spinner`, `stepper`, `switch`, `table`, `tabs`, `textarea`, `toggle`, `toggle-group`, `tooltip`, `typography`, `utils`.
+`accordion`, `alert`, `alert-dialog`, `aspect-ratio`, `autocomplete`, `avatar`, `badge`, `basic-alert`, `breadcrumb`, `button`, `button-group`, `calendar`, `card`, `carousel`, `checkbox`, `collapsible`, `combobox`, `command`, `confirmation-dialog`, `context-menu`, `data-table`, `date-picker`, `dialog`, `drawer`, `dropdown-menu`, `empty`, `field`, `form-autocomplete`, `form-checkbox`, `form-combobox`, `form-date-picker`, `form-date-picker-multi`, `form-date-range-picker`, `form-field`, `form-field-simple`, `form-input-otp`, `form-month-year-picker`, `form-native-select`, `form-phone-input`, `form-radio-group`, `form-searchable-multiselect`, `form-select`, `form-slider`, `form-switch`, `form-text-input`, `form-textarea`, `form-toggle`, `form-toggle-group`, `hover-card`, `icon`, `input`, `input-group`, `input-otp`, `item`, `kbd`, `label`, `layout-simple`, `menu`, `menubar`, `native-select`, `navigation-menu`, `pagination`, `phone-input`, `popover`, `progress`, `radio-group`, `resizable`, `scroll-area`, `searchable-multiselect`, `select`, `separator`, `sheet`, `sidebar`, `skeleton`, `slider`, `sonner`, `spinner`, `stepper`, `switch`, `table`, `tabs`, `textarea`, `toggle`, `toggle-group`, `tooltip`, `typography`, `utils`.
 
 <!-- END GENERATED SUBPATHS -->
 

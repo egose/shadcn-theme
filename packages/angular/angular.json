@@ -2109,6 +2109,32 @@
         }
       }
     },
+    "data-table": {
+      "projectType": "library",
+      "root": "projects/data-table",
+      "sourceRoot": "projects/data-table/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/data-table/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/data-table/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/data-table/tsconfig.spec.json"
+          }
+        }
+      }
+    },
     "textarea": {
       "projectType": "library",
       "root": "projects/textarea",

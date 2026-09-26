@@ -33,6 +33,7 @@
       "@egose/shadcn-theme-ng/command": ["./projects/command/src/public-api.ts"],
       "@egose/shadcn-theme-ng/confirmation-dialog": ["./projects/confirmation-dialog/src/public-api.ts"],
       "@egose/shadcn-theme-ng/context-menu": ["./projects/context-menu/src/public-api.ts"],
+      "@egose/shadcn-theme-ng/data-table": ["./projects/data-table/src/public-api.ts"],
       "@egose/shadcn-theme-ng/date-picker": ["./projects/date-picker/src/public-api.ts"],
       "@egose/shadcn-theme-ng/dialog": ["./projects/dialog/src/public-api.ts"],
       "@egose/shadcn-theme-ng/drawer": ["./projects/drawer/src/public-api.ts"],

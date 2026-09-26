@@ -136,6 +136,8 @@ Host exposes `data-state`, `data-side`, and animation classes derived from the t
 
 CDK bindings (via `hostDirectives`): `cdkMenuTriggerFor: hlmDropdownMenuTrigger` (the `ng-template`), `cdkMenuTriggerData: hlmDropdownMenuTriggerData`; outputs `cdkMenuOpened: hlmDropdownMenuOpened`, `cdkMenuClosed: hlmDropdownMenuClosed`.
 
+> Do not nest the trigger inside another `hlmDropdownMenu` element. The outer element acts as a parent `CdkMenu`, turning the trigger into a submenu trigger that ignores menu-stack close events — the panel will no longer dismiss on outside clicks. Keep root triggers as siblings of their `ng-template` (see Anatomy above).
+
 ### `HlmDropdownMenuItem` — `[hlmDropdownMenuItem], hlm-dropdown-menu-item`
 
 | Input      | Type                         | Default     | Description                                                  |

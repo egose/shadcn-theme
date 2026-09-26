@@ -22,6 +22,7 @@
       "@egose/shadcn-theme-ng/command": ["./dist/command"],
       "@egose/shadcn-theme-ng/confirmation-dialog": ["./dist/confirmation-dialog"],
       "@egose/shadcn-theme-ng/context-menu": ["./dist/context-menu"],
+      "@egose/shadcn-theme-ng/data-table": ["./dist/data-table"],
       "@egose/shadcn-theme-ng/date-picker": ["./dist/date-picker"],
       "@egose/shadcn-theme-ng/dialog": ["./dist/dialog"],
       "@egose/shadcn-theme-ng/drawer": ["./dist/drawer"],
