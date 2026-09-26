@@ -1,0 +1,1 @@
+import{Yn as gs}from"./chunk-TdxMhGno.js";import{n as et}from"./chunk-BstLGH68.js";var r=class t{constructor(){et(()=>`tw:bg-muted tw:rounded-md tw:block tw:motion-safe:animate-pulse`)}static ɵfac=function(s){return new(s||t)};static ɵdir=gs({type:t,selectors:[[``,`hlmSkeleton`,``],[`hlm-skeleton`]],hostAttrs:[`data-slot`,`skeleton`]})};export{r as t};
