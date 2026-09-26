@@ -58,11 +58,12 @@ The directive matches `input[hlmInput]` usage in practice (selector `[hlmInput]`
 
 ### `[hlmInput]` — `HlmInput`
 
-| Input             | Type             | Default | Description                                                                                                         |
-| ----------------- | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
-| `ariaDescribedby` | `string \| null` | `null`  | Bound to `aria-describedby`. Combine with `<hlm-error>`/`<hlm-hint>` ids (the form wrappers do this automatically). |
-| `id`              | (via `BrnInput`) | —       | Forwarded to the `BrnInput` host directive.                                                                         |
-| `forceInvalid`    | (via `BrnInput`) | —       | Forwarded to the `BrnInput` host directive; forces the `data-matches-spartan-invalid` error styles.                 |
+| Input             | Type                  | Default   | Description                                                                                                         |
+| ----------------- | --------------------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| `ariaDescribedby` | `string \| null`      | `null`    | Bound to `aria-describedby`. Combine with `<hlm-error>`/`<hlm-hint>` ids (the form wrappers do this automatically). |
+| `id`              | (via `BrnInput`)      | —         | Forwarded to the `BrnInput` host directive.                                                                         |
+| `forceInvalid`    | (via `BrnInput`)      | —         | Forwarded to the `BrnInput` host directive; forces the `data-matches-spartan-invalid` error styles.                 |
+| `size`            | `sm \| default \| lg` | `default` | Height density: `h-8` / `h-9` / `h-10`.                                                                             |
 
 No outputs. Visual states are attribute-driven: `data-matches-spartan-invalid=true` switches the border/ring to destructive; `disabled` applies `pointer-events-none`, `cursor-not-allowed`, `opacity-50`. Base geometry: `h-9`, `rounded-md`, `text-base` (`md:text-sm`), full width.
 

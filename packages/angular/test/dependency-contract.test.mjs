@@ -58,6 +58,7 @@ test('real package metadata classifies the tested compatibility contract', async
     '@angular/router': '>=22.0.0 <23.0.0',
     '@ng-icons/core': '>=35.0.1 <36.0.0',
     '@spartan-ng/brain': '>=1.3.2 <2.0.0',
+    '@tanstack/angular-table': '>=9.1.2 <10.0.0',
     rxjs: '>=7.8.0 <8.0.0',
   });
   assert.deepEqual(packageJson.dependencies, {

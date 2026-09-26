@@ -130,6 +130,8 @@ There are **no inputs, outputs, or methods** on any table directive. Each direct
 
 User `class` attributes on the same element are preserved and merged (the `classes()` helper keeps base classes).
 
+`HlmTh`/`HlmTd` take a `size` input (`HlmTableSize`: `sm` / `default` / `lg`) scaling density one step down/up: header height `h-8` / `h-10` / `h-12`, cell padding `p-1` / `p-2` / `p-3`.
+
 ## Examples
 
 ### 1. Basic invoice table

@@ -255,7 +255,7 @@ export class ChangeRoleDialog {
   selector: 'app-member-actions',
   imports: [HlmButton, HlmDropdownMenuImports],
   template: `
-    <div hlmDropdownMenu>
+    <div>
       <button
         hlmButton
         variant="secondary"

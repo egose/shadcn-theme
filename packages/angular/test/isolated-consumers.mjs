@@ -228,7 +228,15 @@ try {
     const { packageName, tarball } = await preparedTarball(preparedRelease, variant);
     const consumer = path.join(temporaryRoot, variant, 'consumer');
     await writeConsumer(consumer, packageName, tarball);
-    run('npm', ['install', '--strict-peer-deps', '--ignore-scripts'], consumer);
+    // Use the default npm peer resolution here (not --strict-peer-deps):
+    // @tanstack/angular-table pulls @tanstack/angular-store whose wide
+    // `>=19.0.0` peers on @angular/* force npm's strict mode to plan a nested
+    // @angular/common copy (e.g. 22.2.0 / 21.2.24) whose exact lockstep peer on
+    // @angular/core then conflicts with the pinned root Angular, even though
+    // the default resolution dedupes to the root Angular correctly. Real
+    // consumers install with default resolution, and the incompatible-peer
+    // assertion below still guards our own peer contract with --strict-peer-deps.
+    run('npm', ['install', '--ignore-scripts'], consumer);
     run('npm', ['run', 'typecheck'], consumer);
     run('npm', ['run', 'build'], consumer);
     await assertConsumerStyles(consumer, packageName);

@@ -12,7 +12,7 @@ import { HlmButton } from '@egose/shadcn-theme-ng/button';
       description="A menu triggered by a button. Choosing an item records a visible outcome below."
     />
 
-    <div hlmDropdownMenu>
+    <div>
       <button hlmButton [hlmDropdownMenuTrigger]="menu" type="button">Open</button>
       <ng-template #menu>
         <div hlmDropdownMenu>
