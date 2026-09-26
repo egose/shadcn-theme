@@ -4,6 +4,7 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
 import { injectTableContext } from '@tanstack/angular-table';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
+import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft, lucideChevronRight, lucideChevronsLeft, lucideChevronsRight } from '@ng-icons/lucide';
 
@@ -29,14 +30,14 @@ export type EgPaginationNavMode = 'icons' | 'text' | 'both';
   template: `
     <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2 tw:px-2">
       @if (showStatus()) {
-        <div class="tw:text-muted-foreground tw:flex-1 tw:text-sm">{{ _statusText() }}</div>
+        <div class="tw:text-muted-foreground tw:flex-1 {{ _metaTextClass() }}">{{ _statusText() }}</div>
       }
       <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-x-6 tw:gap-y-2 tw:lg:gap-x-8">
         @if (showPageSize()) {
           <div class="tw:flex tw:items-center tw:gap-2">
-            <p class="tw:text-sm tw:font-medium">Rows per page</p>
+            <p class="tw:font-medium {{ _metaTextClass() }}">Rows per page</p>
             <div hlmSelect class="tw:inline-flex" [value]="_pageSize()" (valueChange)="_onPageSizeChange($event)">
-              <hlm-select-trigger class="tw:h-8 tw:w-[70px]">
+              <hlm-select-trigger class="tw:w-[70px]" [size]="size() === 'sm' ? 'sm' : 'default'">
                 <hlm-select-value />
               </hlm-select-trigger>
               <hlm-select-content *hlmSelectPortal>
@@ -48,7 +49,7 @@ export type EgPaginationNavMode = 'icons' | 'text' | 'both';
           </div>
         }
         @if (_showPager()) {
-          <div class="tw:flex tw:w-[100px] tw:items-center tw:justify-center tw:text-sm tw:font-medium">
+          <div class="tw:flex tw:w-[100px] tw:items-center tw:justify-center tw:font-medium {{ _metaTextClass() }}">
             Page {{ _pageIndex() + 1 }} of {{ _pageCount() }}
           </div>
           <div class="tw:flex tw:items-center tw:gap-2">
@@ -140,6 +141,8 @@ export class EgDataTablePagination {
   public readonly pageSizes = input<readonly number[]>([10, 20, 30, 40, 50]);
   /** Navigation-button content: icons only, text labels only, or both. */
   public readonly navMode = input<EgPaginationNavMode>('icons');
+  /** Density of buttons, trigger, and meta texts. Type scale of buttons is untouched. */
+  public readonly size = input<HlmTableSize>('default');
 
   protected readonly _table = injectTableContext();
 
@@ -153,10 +156,24 @@ export class EgDataTablePagination {
 
   /** Icon-only buttons stay square; labeled buttons size to their text. Merged by `hlmButton` via the `class` binding. */
   protected readonly _navButtonClass = computed(() =>
-    hlm('tw:h-8 tw:p-0', this.navMode() === 'icons' ? 'tw:w-8' : 'tw:gap-1 tw:px-2'),
+    hlm(
+      this.size() === 'sm' ? 'tw:h-7 tw:p-0' : this.size() === 'lg' ? 'tw:h-9 tw:p-0' : 'tw:h-8 tw:p-0',
+      this.navMode() === 'icons'
+        ? this.size() === 'sm'
+          ? 'tw:w-7'
+          : this.size() === 'lg'
+            ? 'tw:w-9'
+            : 'tw:w-8'
+        : 'tw:gap-1 tw:px-2',
+    ),
   );
   /** First/last buttons stay desktop-only. */
   protected readonly _edgeNavButtonClass = computed(() => hlm('tw:hidden tw:lg:flex', this._navButtonClass()));
+
+  /** Meta-text size per density (status, page indicator, rows-per-page label). */
+  protected readonly _metaTextClass = computed(() =>
+    this.size() === 'sm' ? 'tw:text-xs' : this.size() === 'lg' ? 'tw:text-base' : 'tw:text-sm',
+  );
 
   protected readonly _pageSizeOptions = computed(() => {
     const sizes = this.pageSizes();

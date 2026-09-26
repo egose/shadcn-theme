@@ -1,5 +1,8 @@
-import { Directive } from '@angular/core';
-import { classes } from '@egose/shadcn-theme-ng/utils';
+import { Directive, input } from '@angular/core';
+import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
+
+/** Density scale shared by table parts and higher-level components (e.g. data-table). */
+export type HlmTableSize = 'sm' | 'default' | 'lg';
 
 @Directive({
   selector: 'div[hlmTableContainer]',
@@ -92,10 +95,14 @@ export class HlmTr {
   host: { 'data-slot': 'table-head' },
 })
 export class HlmTh {
+  public readonly size = input<HlmTableSize>('default');
+
   constructor() {
-    classes(
-      () =>
+    classes(() =>
+      hlm(
         'tw:text-foreground tw:h-10 tw:px-2 tw:text-start tw:align-middle tw:font-medium tw:whitespace-nowrap tw:[&:has([role=checkbox])]:pe-0',
+        this.size() === 'sm' ? 'tw:h-8' : this.size() === 'lg' ? 'tw:h-12' : '',
+      ),
     );
   }
 }
@@ -109,8 +116,15 @@ export class HlmTh {
   host: { 'data-slot': 'table-cell' },
 })
 export class HlmTd {
+  public readonly size = input<HlmTableSize>('default');
+
   constructor() {
-    classes(() => 'tw:p-2 tw:align-middle tw:whitespace-nowrap tw:[&:has([role=checkbox])]:pe-0');
+    classes(() =>
+      hlm(
+        'tw:p-2 tw:align-middle tw:whitespace-nowrap tw:[&:has([role=checkbox])]:pe-0',
+        this.size() === 'sm' ? 'tw:p-1' : this.size() === 'lg' ? 'tw:p-3' : '',
+      ),
+    );
   }
 }
 

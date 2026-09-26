@@ -221,6 +221,16 @@ class NavModeHostComponent {
   readonly navMode = signal<EgPaginationNavMode>('text');
 }
 
+@Component({
+  selector: 'eg-data-table-size-host',
+  imports: [EgDataTable],
+  template: `<eg-data-table [columns]="columns" [data]="data" size="sm" />`,
+})
+class SizeHostComponent {
+  protected readonly columns = columns;
+  protected readonly data: Person[] = [...PEOPLE];
+}
+
 function cellTexts(fixture: { nativeElement: HTMLElement }): string[] {
   return Array.from(fixture.nativeElement.querySelectorAll('tbody td')).map((cell) =>
     (cell as HTMLElement).textContent?.trim(),
@@ -430,6 +440,15 @@ describe('EgDataTable', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Next');
     expect(fixture.debugElement.query(By.css('button[aria-label="Go to next page"] svg'))).not.toBeNull();
+  });
+
+  it('applies density classes in sm size mode', async () => {
+    const fixture = TestBed.createComponent(SizeHostComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect((fixture.debugElement.query(By.css('th')).nativeElement as HTMLElement).className).toContain('tw:h-8');
+    expect((fixture.debugElement.query(By.css('tbody td')).nativeElement as HTMLElement).className).toContain('tw:p-1');
   });
 
   it('exposes the default feature registry', () => {

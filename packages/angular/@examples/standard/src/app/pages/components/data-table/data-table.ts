@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inputBinding, signal } from '@angular/core';
 import { DemoHeaderComponent } from '../../../shared/demo-header';
 import { DemoSectionComponent } from '../../../shared/demo-section';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
@@ -10,6 +10,7 @@ import {
   type EgPaginatedResponse,
   type EgPaginationNavMode,
 } from '@egose/shadcn-theme-ng/data-table';
+import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
 import { createColumnHelper, flexRenderComponent } from '@tanstack/angular-table';
 
 interface Payment {
@@ -20,27 +21,6 @@ interface Payment {
 }
 
 const helper = createColumnHelper<EgDataTableFeatures, Payment>();
-
-const columns = helper.columns([
-  helper.accessor('status', {
-    header: 'Status',
-    cell: (info) => `<span class="tw:capitalize">${info.getValue<string>()}</span>`,
-  }),
-  helper.accessor('email', {
-    header: ({ column }) => flexRenderComponent(EgDataTableColumnHeader, { inputs: { column, title: 'Email' } }),
-    cell: (info) => `<div class="tw:lowercase">${info.getValue<string>()}</div>`,
-  }),
-  helper.accessor('amount', {
-    header: 'Amount',
-    meta: { hideInTable: false },
-    cell: (info) => {
-      const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
-        info.getValue<number>(),
-      );
-      return `<div class="tw:text-right tw:font-medium">${formatted}</div>`;
-    },
-  }),
-]);
 
 const gridColumns = helper.columns([
   helper.accessor('email', {
@@ -114,15 +94,51 @@ function slice(pageIndex: number): EgPaginatedResponse<Payment> {
           [showColumnToggle]="true"
           [pageSizes]="[5, 10, 20]"
           [toolbarActions]="clientActions"
+          [size]="density()"
           (selectionChange)="selected.set($event)"
           (filterChange)="filterText.set($event)"
         />
         <ng-template #clientActions>
           <button hlmButton variant="secondary" size="sm" type="button" (click)="exportCsv()">Export</button>
         </ng-template>
-        <p class="tw:mt-2 tw:text-sm tw:text-slate-600" role="status">
-          {{ selected().length }} of {{ payments().length }} row(s) selected. Filter: {{ filterText() || '—' }}
-        </p>
+        <div class="tw:mt-2 tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:text-sm">
+          <span class="tw:text-slate-600" role="status">
+            {{ selected().length }} of {{ payments().length }} row(s) selected. Filter: {{ filterText() || '—' }}
+          </span>
+          <span class="tw:ml-auto tw:flex tw:items-center tw:gap-1">
+            <span class="tw:text-slate-600">Density:</span>
+            <button
+              hlmButton
+              variant="secondary"
+              size="sm"
+              type="button"
+              [disabled]="density() === 'sm'"
+              (click)="density.set('sm')"
+            >
+              Sm
+            </button>
+            <button
+              hlmButton
+              variant="secondary"
+              size="sm"
+              type="button"
+              [disabled]="density() === 'default'"
+              (click)="density.set('default')"
+            >
+              Default
+            </button>
+            <button
+              hlmButton
+              variant="secondary"
+              size="sm"
+              type="button"
+              [disabled]="density() === 'lg'"
+              (click)="density.set('lg')"
+            >
+              Lg
+            </button>
+          </span>
+        </div>
       </app-demo-section>
 
       <app-demo-section
@@ -201,7 +217,34 @@ function slice(pageIndex: number): EgPaginatedResponse<Payment> {
   `,
 })
 export class DataTablePage {
-  protected readonly columns = columns;
+  protected readonly density = signal<HlmTableSize>('default');
+  protected readonly columns = helper.columns([
+    helper.accessor('status', {
+      header: 'Status',
+      cell: (info) => `<span class="tw:capitalize">${info.getValue<string>()}</span>`,
+    }),
+    helper.accessor('email', {
+      header: ({ column }) =>
+        flexRenderComponent(EgDataTableColumnHeader, {
+          bindings: [
+            inputBinding('column', () => column),
+            inputBinding('title', () => 'Email'),
+            inputBinding('size', this.density),
+          ],
+        }),
+      cell: (info) => `<div class="tw:lowercase">${info.getValue<string>()}</div>`,
+    }),
+    helper.accessor('amount', {
+      header: 'Amount',
+      meta: { hideInTable: false },
+      cell: (info) => {
+        const formatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+          info.getValue<number>(),
+        );
+        return `<div class="tw:text-right tw:font-medium">${formatted}</div>`;
+      },
+    }),
+  ]);
   protected readonly gridColumns = gridColumns;
   protected readonly payments = signal<Payment[]>(ALL_PAYMENTS.slice(0, 8));
   protected readonly selected = signal<readonly Payment[]>([]);

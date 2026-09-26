@@ -18,6 +18,7 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { HlmSpinner } from '@egose/shadcn-theme-ng/spinner';
 import { HlmTableImports } from '@egose/shadcn-theme-ng/table';
+import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
 import { HlmToggleGroup, HlmToggleGroupItem } from '@egose/shadcn-theme-ng/toggle-group';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -119,11 +120,12 @@ export type EgDataTableLayout = 'table' | 'grid';
               <input
                 hlmInput
                 class="tw:w-full tw:min-w-0 tw:md:w-80"
+                [size]="size()"
                 [placeholder]="filterPlaceholder()"
                 (input)="_onFilterInput($event)"
               />
               @if (showColumnToggle()) {
-                <eg-data-table-view-options />
+                <eg-data-table-view-options [size]="size()" />
               }
             </div>
           }
@@ -149,7 +151,7 @@ export type EgDataTableLayout = 'table' | 'grid';
                 @for (headerGroup of _table.getHeaderGroups(); track headerGroup.id) {
                   <tr hlmTr>
                     @for (header of headerGroup.headers; track header.id) {
-                      <th hlmTh [attr.colSpan]="header.colSpan">
+                      <th hlmTh [size]="size()" [attr.colSpan]="header.colSpan">
                         @if (!header.isPlaceholder) {
                           <div class="tw:flex tw:items-center tw:gap-1">
                             <ng-container
@@ -162,7 +164,7 @@ export type EgDataTableLayout = 'table' | 'grid';
                                 hlmButton
                                 variant="ghost"
                                 size="sm"
-                                class="tw:h-6 tw:w-6 tw:p-0"
+                                [class]="_sortButtonClass()"
                                 type="button"
                                 [attr.aria-label]="'Sort by ' + header.column.id"
                                 (click)="_toggleHeaderSorting(header)"
@@ -208,7 +210,7 @@ export type EgDataTableLayout = 'table' | 'grid';
                       (click)="_onRowClick($event, row)"
                     >
                       @for (cell of row.getVisibleCells(); track cell.id) {
-                        <td hlmTd>
+                        <td hlmTd [size]="size()">
                           <ng-container
                             *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cellText"
                           >
@@ -299,6 +301,7 @@ export type EgDataTableLayout = 'table' | 'grid';
             [showPageSize]="showPageSize()"
             [pageSizes]="pageSizes()"
             [navMode]="navMode()"
+            [size]="size()"
           />
         </div>
       }
@@ -322,6 +325,8 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   /** When true, a checkbox column is auto-prepended and `selectionChange` emits the selected rows. */
   public readonly enableSelection = input<boolean>(false);
   public readonly hideFooter = input<boolean>(false);
+  /** Density of toolbar, table, and pagination chrome. Type scale is untouched. */
+  public readonly size = input<HlmTableSize>('default');
   /** Presentation mode. Two-way bindable: `[(layout)]`. Grid requires `gridColumns`. */
   public readonly layout = model<EgDataTableLayout>('table');
   /** Show the table/grid toggle (only rendered when `gridColumns` is set). */
@@ -369,6 +374,11 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   public readonly columnVisibilityChange = output<ColumnVisibilityState>();
 
   protected readonly _containerClass = computed(() => hlm('tw:space-y-2', this.userClass()));
+
+  /** Inline TH sort-button footprint per density. Merged by `hlmButton` via the `class` binding. */
+  protected readonly _sortButtonClass = computed(() =>
+    hlm('tw:p-0', this.size() === 'sm' ? 'tw:h-5 tw:w-5' : this.size() === 'lg' ? 'tw:h-7 tw:w-7' : 'tw:h-6 tw:w-6'),
+  );
 
   private readonly _sorting = signal<SortingState>([]);
   private readonly _columnFilters = signal<ColumnFiltersState>([]);

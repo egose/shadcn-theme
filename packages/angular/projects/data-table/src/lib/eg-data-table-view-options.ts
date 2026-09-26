@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
 import { HlmDropdownMenuImports } from '@egose/shadcn-theme-ng/dropdown-menu';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSettings2 } from '@ng-icons/lucide';
 import { injectTableContext } from '@tanstack/angular-table';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
+import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
 
 /**
  * Column-visibility toggle.
@@ -23,7 +25,7 @@ import { injectTableContext } from '@tanstack/angular-table';
       variant="secondary"
       appearance="outline"
       size="sm"
-      class="tw:ml-auto tw:hidden tw:h-8 tw:lg:flex"
+      [class]="_buttonClass()"
       type="button"
       [hlmDropdownMenuTrigger]="_menu"
     >
@@ -51,7 +53,18 @@ import { injectTableContext } from '@tanstack/angular-table';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EgDataTableViewOptions {
+  /** Density of the toggle button. */
+  public readonly size = input<HlmTableSize>('default');
+
   protected readonly _table = injectTableContext();
+
+  /** Height per density; hidden below `lg` like the pager edge buttons. Merged by `hlmButton`. */
+  protected readonly _buttonClass = computed(() =>
+    hlm(
+      'tw:ml-auto tw:hidden tw:lg:flex',
+      this.size() === 'sm' ? 'tw:h-7' : this.size() === 'lg' ? 'tw:h-9' : 'tw:h-8',
+    ),
+  );
 
   protected readonly _hidableColumns = computed(() =>
     this._table()

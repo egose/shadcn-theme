@@ -5,6 +5,8 @@ import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowDown, lucideArrowUp, lucideChevronsUpDown, lucideEyeOff } from '@ng-icons/lucide';
 import type { SortDirection } from '@tanstack/angular-table';
+import { hlm } from '@egose/shadcn-theme-ng/utils';
+import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
 
 /**
  * Minimal column surface `EgDataTableColumnHeader` needs.
@@ -40,7 +42,7 @@ export interface EgSortableColumn {
           hlmButton
           variant="ghost"
           size="sm"
-          class="tw:-ml-3 tw:h-8"
+          [class]="_buttonClass()"
           type="button"
           [hlmDropdownMenuTrigger]="_menu"
         >
@@ -84,6 +86,13 @@ export interface EgSortableColumn {
 export class EgDataTableColumnHeader {
   public readonly column = input.required<EgSortableColumn>();
   public readonly title = input.required<string>();
+  /** Density of the trigger button. */
+  public readonly size = input<HlmTableSize>('default');
 
   protected readonly _sorted = computed(() => this.column().getIsSorted());
+
+  /** Height per density. Merged by `hlmButton`. */
+  protected readonly _buttonClass = computed(() =>
+    hlm('tw:-ml-3', this.size() === 'sm' ? 'tw:h-7' : this.size() === 'lg' ? 'tw:h-9' : 'tw:h-8'),
+  );
 }
