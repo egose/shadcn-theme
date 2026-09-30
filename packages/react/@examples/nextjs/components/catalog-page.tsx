@@ -17,22 +17,18 @@ export function CatalogIndexPage({
 }) {
   return (
     <div className="space-y-8 py-4">
-
       <header className="space-y-2">
-                <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">Examples</p>
+        <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">Examples</p>
 
         <div className="space-y-1">
-                    <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-                    <p className="max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>
-
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>
         </div>
-
       </header>
 
       <CatalogSearch
         entries={listCatalog(section, [componentsSection, formSection, widgetsSection, realExamplesSection])}
       />
-
     </div>
   );
 }

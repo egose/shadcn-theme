@@ -31,7 +31,6 @@ export function HookFormMultiSelect<T extends FieldValues>({
 
   return (
     <div className={cn('$hook-multi-select', wrapper)}>
-
       <Controller
         control={control}
         name={name}
@@ -58,7 +57,6 @@ export function HookFormMultiSelect<T extends FieldValues>({
       />
 
       <FormError field={name} className="mt-1" message={error} />
-
     </div>
   );
 }

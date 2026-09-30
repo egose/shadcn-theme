@@ -92,60 +92,52 @@ export default function PricingExample() {
       title="Pricing and Plan Selection"
       description="A framed product preview: the plan cards, comparison table, FAQ, and confirmation dialog below are the example. The surrounding catalog sidebar and header are not part of it."
     >
-
       <ExampleStateToolbar value={viewState} onValueChange={setViewState} />
-            {/* Catalog tooling: lets a reviewer pick the deterministic request outcome. */}
+      {/* Catalog tooling: lets a reviewer pick the deterministic request outcome. */}
 
       <OutcomePicker
         label="Simulated plan-change outcome"
         value={simulatedOutcome}
         onValueChange={setSimulatedOutcome}
       />
-            {viewState === 'loading' && <p role="status">Loading plans…</p>}
+      {viewState === 'loading' && <p role="status">Loading plans…</p>}
 
       {viewState === 'error' && (
         <Alert variant="destructive">
-                    <AlertTitle>Plans could not be loaded</AlertTitle>
+          <AlertTitle>Plans could not be loaded</AlertTitle>
 
           <AlertDescription>
-                        <p>Something went wrong while loading pricing. Retry to load the plans again.</p>
+            <p>Something went wrong while loading pricing. Retry to load the plans again.</p>
 
             <Button type="button" variant="secondary" size="sm" className="mt-2" onClick={() => setViewState('loaded')}>
-                            Retry
+              Retry
             </Button>
-
           </AlertDescription>
-
         </Alert>
       )}
-            {viewState === 'empty' && <p role="status">No plans are available right now. Check back later.</p>}
-            {/* Persistent, visible outcome of the last plan change (not toast-only). */}
+      {viewState === 'empty' && <p role="status">No plans are available right now. Check back later.</p>}
+      {/* Persistent, visible outcome of the last plan change (not toast-only). */}
 
       <div ref={resultRef} tabIndex={-1} role="region" aria-label="Plan change result" aria-live="polite">
-
         {result?.kind === 'success' && (
           <p role="status" className="text-sm font-medium">
-                        Your plan is now {result.planName}.
+            Your plan is now {result.planName}.
           </p>
         )}
 
         {result?.kind === 'failure' && (
           <Alert variant="destructive">
-                        <AlertTitle>Plan change failed</AlertTitle>
-                        <AlertDescription>{result.message}</AlertDescription>
-
+            <AlertTitle>Plan change failed</AlertTitle>
+            <AlertDescription>{result.message}</AlertDescription>
           </Alert>
         )}
-
       </div>
 
       {viewState === 'loaded' && (
         <>
-
           <div role="group" aria-labelledby="billing-toggle-label" className="flex flex-wrap items-center gap-3">
-
             <span id="billing-toggle-label" className="text-sm font-medium">
-                            Billing period
+              Billing period
             </span>
 
             <ToggleGroup
@@ -155,26 +147,20 @@ export default function PricingExample() {
               aria-labelledby="billing-toggle-label"
               onValueChange={(value) => value && setBilling(value as BillingPeriod)}
             >
-                            <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
-                            <ToggleGroupItem value="annual">Annual</ToggleGroupItem>
-
+              <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
+              <ToggleGroupItem value="annual">Annual</ToggleGroupItem>
             </ToggleGroup>
 
             <span className="text-muted-foreground text-sm">
-
               {billing === 'annual'
                 ? 'Annual billing selected — per-month prices reflect the annual discount.'
                 : 'Switch to annual billing to save up to 18%.'}
-
             </span>
-
           </div>
 
           <ul className="grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-3">
-
             {PLANS.map((plan) => (
               <li key={plan.id}>
-
                 <PlanCard
                   plan={plan}
                   billing={billing}
@@ -182,10 +168,8 @@ export default function PricingExample() {
                   busy={submitting}
                   onSelect={openDialog}
                 />
-
               </li>
             ))}
-
           </ul>
 
           <Separator />
@@ -194,78 +178,57 @@ export default function PricingExample() {
             title="Compare plans"
             description="All values are fixed example data. The table scrolls horizontally on narrow screens."
           >
-
             <div
               role="region"
               aria-label="Plan feature comparison, scrollable horizontally"
               tabIndex={0}
               className="overflow-x-auto"
             >
-
               <Table>
-
                 <TableCaption>Feature comparison across the Starter, Growth, and Scale plans.</TableCaption>
 
                 <TableHeader>
-
                   <TableRow>
-                                        <TableHead scope="col">Feature</TableHead>
+                    <TableHead scope="col">Feature</TableHead>
 
                     {PLANS.map((plan) => (
                       <TableHead key={plan.id} scope="col">
-                                                {plan.name}
-
+                        {plan.name}
                       </TableHead>
                     ))}
-
                   </TableRow>
-
                 </TableHeader>
 
                 <TableBody>
-
                   {COMPARISON_ROWS.map((row) => (
                     <TableRow key={row.feature}>
-
                       <TableHead scope="row" className="font-normal">
-                                                {row.feature}
-
+                        {row.feature}
                       </TableHead>
 
                       {PLANS.map((plan) => (
                         <TableCell key={plan.id}>{row.values[plan.id]}</TableCell>
                       ))}
-
                     </TableRow>
                   ))}
-
                 </TableBody>
-
               </Table>
-
             </div>
-
           </ExampleSection>
 
           <ExampleSection
             title="Frequently asked questions"
             description="Answers about billing, trials, and plan changes."
           >
-
             <Accordion type="single" collapsible>
-
               {FAQ_ENTRIES.map((entry) => (
                 <AccordionItem key={entry.question} value={entry.question}>
-                                    <AccordionTrigger>{entry.question}</AccordionTrigger>
-                                    <AccordionContent>{entry.answer}</AccordionContent>
-
+                  <AccordionTrigger>{entry.question}</AccordionTrigger>
+                  <AccordionContent>{entry.answer}</AccordionContent>
                 </AccordionItem>
               ))}
-
             </Accordion>
-
           </ExampleSection>
-
         </>
       )}
 
@@ -276,7 +239,6 @@ export default function PricingExample() {
           if (!open) cancelDialog();
         }}
       >
-
         <DialogContent
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -286,41 +248,33 @@ export default function PricingExample() {
             lastTriggerRef.current = null;
           }}
         >
-
           <DialogHeader>
-                        <DialogTitle>Change plan to {selectedPlan?.name}?</DialogTitle>
+            <DialogTitle>Change plan to {selectedPlan?.name}?</DialogTitle>
 
             <DialogDescription>
-                            Your workspace will move from the {PLANS.find((p) => p.id === currentPlanId)?.name}
-               plan to the
-                            {selectedPlan?.name} plan, billed {billing}
-              . This example simulates the request — no payment is collected.
+              Your workspace will move from the {PLANS.find((p) => p.id === currentPlanId)?.name}
+              plan to the
+              {selectedPlan?.name} plan, billed {billing}. This example simulates the request — no payment is collected.
             </DialogDescription>
-
           </DialogHeader>
 
           {submitting && (
             <p role="status" className="text-sm">
-                            Changing your plan…
+              Changing your plan…
             </p>
           )}
 
           <DialogFooter>
-
             <Button type="button" variant="secondary" disabled={submitting} onClick={cancelDialog}>
-                            Cancel
+              Cancel
             </Button>
 
             <Button type="button" loading={submitting} onClick={confirmPlanChange}>
-                            Confirm plan change
+              Confirm plan change
             </Button>
-
           </DialogFooter>
-
         </DialogContent>
-
       </Dialog>
-
     </ExamplePage>
   );
 }

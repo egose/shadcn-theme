@@ -77,7 +77,6 @@ export default function SupportInboxExample() {
 
   const list = (
     <ScrollArea className="h-full min-h-0 min-w-0" role="region" aria-label="Ticket list" tabIndex={0}>
-
       {visibleTickets.length === 0 ? (
         <div className="space-y-2 p-4">
           <p>No tickets match the current filters.</p>
@@ -94,12 +93,9 @@ export default function SupportInboxExample() {
         </div>
       ) : (
         <ItemGroup aria-label="Tickets" className="gap-2 p-2">
-
           {visibleTickets.map((ticket) => (
             <Item key={ticket.id} role="listitem" variant={selectedId === ticket.id ? 'muted' : 'outline'}>
-
               <ItemContent className="min-w-0">
-
                 <button
                   type="button"
                   className="rounded text-left font-medium [overflow-wrap:anywhere] focus-visible:outline-2"
@@ -111,8 +107,7 @@ export default function SupportInboxExample() {
                     if (!desktop) setMobileOpen(true);
                   }}
                 >
-                                    {ticket.subject}
-
+                  {ticket.subject}
                 </button>
 
                 <ItemDescription>
@@ -125,21 +120,16 @@ export default function SupportInboxExample() {
                   {ticket.readOnly ? ' · Read-only' : ''}
                   {drafts[ticket.id] ? ' · Draft' : ''}
                 </p>
-
               </ItemContent>
-
             </Item>
           ))}
-
         </ItemGroup>
       )}
-
     </ScrollArea>
   );
 
   return (
     <div className="min-w-0 space-y-4">
-
       <ExampleStateToolbar
         value={state}
         onValueChange={(next) => {
@@ -147,10 +137,11 @@ export default function SupportInboxExample() {
           setState(next);
         }}
       />
-            {!(mobileOpen && !desktop && state === 'loaded') && outcomePicker}
+      {!(mobileOpen && !desktop && state === 'loaded') && outcomePicker}
 
       <p className="text-muted-foreground text-xs">
-        Catalog previews preserve tickets, drafts and pending work. Loaded returns to this session; reload resets fixtures.
+        Catalog previews preserve tickets, drafts and pending work. Loaded returns to this session; reload resets
+        fixtures.
       </p>
 
       <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold">
@@ -177,9 +168,7 @@ export default function SupportInboxExample() {
         </div>
       ) : (
         <>
-
           <div className="flex flex-wrap items-end gap-3">
-
             <label className="min-w-0 flex-1 text-sm">
               Search tickets
               <Input
@@ -188,7 +177,6 @@ export default function SupportInboxExample() {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Subject, customer or ticket ID"
               />
-
             </label>
 
             <label className="text-sm">
@@ -198,14 +186,11 @@ export default function SupportInboxExample() {
                 value={filter}
                 onChange={(event) => setFilter(event.target.value as TicketFilter)}
               >
-                                    <option value="all">All</option>
+                <option value="all">All</option>
                 <option value="open">Open</option>
                 <option value="resolved">Resolved</option>
-
               </select>
-
             </label>
-
           </div>
 
           <p role="status" className="text-muted-foreground text-sm">
@@ -213,10 +198,8 @@ export default function SupportInboxExample() {
           </p>
 
           <div className="h-[min(44rem,75dvh)] min-h-[32rem] min-w-0 overflow-hidden rounded-md border">
-
             {desktop ? (
               <ResizablePanelGroup orientation="horizontal">
-
                 <ResizablePanel id="support-list" defaultSize="35%" minSize="25%" maxSize="50%">
                   {list}
                 </ResizablePanel>
@@ -226,16 +209,13 @@ export default function SupportInboxExample() {
                 <ResizablePanel id="support-detail" defaultSize="65%" minSize="50%">
                   {detail}
                 </ResizablePanel>
-
               </ResizablePanelGroup>
             ) : (
               list
             )}
-
           </div>
 
           <Sheet open={!desktop && mobileOpen} onOpenChange={setMobileOpen}>
-
             <SheetContent
               className="data-[side=right]:w-full data-[side=right]:sm:max-w-xl gap-0 overflow-y-auto"
               onCloseAutoFocus={(event) => {
@@ -245,25 +225,19 @@ export default function SupportInboxExample() {
                 else headingRef.current?.focus();
               }}
             >
-
               <SheetHeader className="shrink-0 pr-14">
-                                    <SheetTitle>Ticket {selected.id}</SheetTitle>
+                <SheetTitle>Ticket {selected.id}</SheetTitle>
 
                 <SheetDescription>
                   Conversation and local reply draft. Closing keeps pending work and drafts.
                 </SheetDescription>
-
               </SheetHeader>
-                                <div className="shrink-0 px-3 pb-2">{outcomePicker}</div>
-                                <div className="min-h-[28rem] flex-1">{detail}</div>
-
+              <div className="shrink-0 px-3 pb-2">{outcomePicker}</div>
+              <div className="min-h-[28rem] flex-1">{detail}</div>
             </SheetContent>
-
           </Sheet>
-
         </>
       )}
-
     </div>
   );
 }

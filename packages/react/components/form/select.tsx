@@ -78,11 +78,9 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>(f
       onBlurCapture={focus.onBlurCapture}
       className={cn('$form-select space-y-1', classNames?.wrapper)}
     >
-
       {label && (
         <Label htmlFor={id} className={classNames?.label} required={required}>
-                    {label}
-
+          {label}
         </Label>
       )}
 
@@ -94,11 +92,8 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>(f
         defaultValue={defaultValue ?? value ?? ''}
         value={value}
       >
-
         <SelectTrigger ref={ref} id={id} className="mb-0">
-
           <SelectValue placeholder={placeholder} />
-
         </SelectTrigger>
 
         <SelectContent
@@ -106,20 +101,15 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>(f
           onCloseAutoFocus={focus.onCloseAutoFocus}
           className={cn(classNames?.input)}
         >
-
           {_options.map((option) => {
             return (
               <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-
+                {option.label}
               </SelectItem>
             );
           })}
-
         </SelectContent>
-
       </Select>
-
     </div>
   );
 });

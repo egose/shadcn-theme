@@ -239,27 +239,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
         disabled={loading || props.disabled}
       >
-
         {loading ? (
           <div className="relative inline-flex items-center justify-center w-full">
-                        <span className="invisible">{children}</span>
+            <span className="invisible">{children}</span>
 
             <span className="absolute inset-0 flex items-center justify-center">
-
               <Spinner size="small" className="size-4 text-current" />
-
             </span>
-
           </div>
         ) : (
           <div className="flex items-center gap-1">
-                        {icon && iconPosition === 'left' && <span className="flex-shrink-0">{icon}</span>}
-                        {children}
-                        {icon && iconPosition === 'right' && <span className="flex-shrink-0">{icon}</span>}
-
+            {icon && iconPosition === 'left' && <span className="flex-shrink-0">{icon}</span>}
+            {children}
+            {icon && iconPosition === 'right' && <span className="flex-shrink-0">{icon}</span>}
           </div>
         )}
-
       </Comp>
     );
   },

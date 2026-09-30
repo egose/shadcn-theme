@@ -34,86 +34,67 @@ export function ReviewSummary({
 
   return (
     <section aria-label="Launch request review" className="space-y-4 rounded-xl border bg-muted/20 p-4">
-
       <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-medium">Review</h3>
+        <h3 className="text-sm font-medium">Review</h3>
 
         <span aria-label={`Request status: ${statusLabel}`} className="text-muted-foreground text-xs">
-                    Status: {statusLabel}
-
+          Status: {statusLabel}
         </span>
-
       </div>
 
       {status === 'unsaved' && (
         <p className="text-muted-foreground text-xs">
-                    Showing current unsaved edits. Submitted revision {savedRevision} is unchanged.
+          Showing current unsaved edits. Submitted revision {savedRevision} is unchanged.
         </p>
       )}
 
       <div>
-                <h4 className="text-muted-foreground text-xs font-medium">Overview</h4>
+        <h4 className="text-muted-foreground text-xs font-medium">Overview</h4>
 
         <dl className="mt-1 grid gap-1 text-sm">
-
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Project:</dt>
-                        <dd>{projectName || '—'}</dd>
-
+            <dt className="text-muted-foreground">Project:</dt>
+            <dd>{projectName || '—'}</dd>
           </div>
 
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Summary:</dt>
-                        <dd className="min-w-0 break-words">{summary || '—'}</dd>
-
+            <dt className="text-muted-foreground">Summary:</dt>
+            <dd className="min-w-0 break-words">{summary || '—'}</dd>
           </div>
-
         </dl>
-
       </div>
 
       <div>
-                <h4 className="text-muted-foreground text-xs font-medium">Schedule</h4>
+        <h4 className="text-muted-foreground text-xs font-medium">Schedule</h4>
 
         <dl className="mt-1 grid gap-1 text-sm">
-
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Launch date:</dt>
-                        <dd>{launchDate || '—'}</dd>
-
+            <dt className="text-muted-foreground">Launch date:</dt>
+            <dd>{launchDate || '—'}</dd>
           </div>
 
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Rollout window:</dt>
-                        <dd>{VALUE_LABELS[rolloutWindow] ?? rolloutWindow}</dd>
-
+            <dt className="text-muted-foreground">Rollout window:</dt>
+            <dd>{VALUE_LABELS[rolloutWindow] ?? rolloutWindow}</dd>
           </div>
-
         </dl>
-
       </div>
 
       <div>
-                <h4 className="text-muted-foreground text-xs font-medium">Ownership</h4>
+        <h4 className="text-muted-foreground text-xs font-medium">Ownership</h4>
 
         <dl className="mt-1 grid gap-1 text-sm">
-
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Owner:</dt>
-                        <dd>{ownerEmail || '—'}</dd>
-
+            <dt className="text-muted-foreground">Owner:</dt>
+            <dd>{ownerEmail || '—'}</dd>
           </div>
 
           <div className="flex flex-wrap gap-x-2">
-                        <dt className="text-muted-foreground">Teams:</dt>
-                        <dd>{teams.length > 0 ? teams.map((team) => VALUE_LABELS[team] ?? team).join(', ') : '—'}</dd>
-
+            <dt className="text-muted-foreground">Teams:</dt>
+            <dd>{teams.length > 0 ? teams.map((team) => VALUE_LABELS[team] ?? team).join(', ') : '—'}</dd>
           </div>
-
         </dl>
-
       </div>
-
     </section>
   );
 }

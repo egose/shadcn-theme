@@ -40,16 +40,14 @@ export default function CustomersExample() {
       title="Customer Resource Management"
       description="The product area below is the example: search, filters, pagination, and row mutations over one customer list. The surrounding catalog chrome is not part of it."
     >
-
       <ExampleStateToolbar value={viewState} onValueChange={changeViewState} />
 
       <p className="text-muted-foreground text-xs">
-                Empty starts a new empty customer dataset. Reload to restore the fixtures.
+        Empty starts a new empty customer dataset. Reload to restore the fixtures.
       </p>
-            {(!mutation || mutation.kind === 'archive') && outcomeControl}
+      {(!mutation || mutation.kind === 'archive') && outcomeControl}
 
       <div ref={resultRef} tabIndex={-1} role="region" aria-label="Customer update result" aria-live="polite">
-
         {notice?.kind === 'success' && (
           <p role="status" className="text-sm font-medium">
             {notice.text}
@@ -58,21 +56,19 @@ export default function CustomersExample() {
 
         {notice?.kind === 'failure' && !mutation && (
           <Alert variant="destructive">
-                        <AlertTitle>Customer update failed</AlertTitle>
-                        <AlertDescription>{notice.text}</AlertDescription>
-
+            <AlertTitle>Customer update failed</AlertTitle>
+            <AlertDescription>{notice.text}</AlertDescription>
           </Alert>
         )}
-
       </div>
-            {viewState === 'loading' && <p role="status">Loading customers…</p>}
+      {viewState === 'loading' && <p role="status">Loading customers…</p>}
 
       {viewState === 'error' && (
         <Alert variant="destructive">
-                    <AlertTitle>Customers could not be loaded</AlertTitle>
+          <AlertTitle>Customers could not be loaded</AlertTitle>
 
           <AlertDescription>
-                        <p>Something went wrong while loading the customer list. Retry to load it again.</p>
+            <p>Something went wrong while loading the customer list. Retry to load it again.</p>
 
             <Button
               type="button"
@@ -81,11 +77,9 @@ export default function CustomersExample() {
               className="mt-2"
               onClick={() => changeViewState('loaded')}
             >
-                            Retry
+              Retry
             </Button>
-
           </AlertDescription>
-
         </Alert>
       )}
 
@@ -113,7 +107,6 @@ export default function CustomersExample() {
           onRestoreFocus={restoreFocus}
         />
       )}
-
     </ExamplePage>
   );
 }

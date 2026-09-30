@@ -60,21 +60,18 @@ export function LaunchDateField({ control }: { control: Control<LaunchRequestVal
       }}
       onBlurCapture={checkBlur}
     >
-
       <Label htmlFor={id}>
-                <span id={`${id}-label`}>Launch date</span>
+        <span id={`${id}-label`}>Launch date</span>
 
         <span aria-hidden="true" className="text-danger">
           *
         </span>
-
       </Label>
 
       <Popover open={open} onOpenChange={setOpen}>
-                {/* Select-only combobox with a calendar dialog; this role supports aria-required. */}
+        {/* Select-only combobox with a calendar dialog; this role supports aria-required. */}
 
         <PopoverTrigger asChild>
-
           <Button
             ref={ref}
             id={id}
@@ -89,12 +86,9 @@ export function LaunchDateField({ control }: { control: Control<LaunchRequestVal
             appearance="outline"
             className="min-w-[145px] justify-start text-left font-normal"
           >
-
             <CalendarIcon aria-hidden="true" />
-                        <span id={`${id}-value`}>{date ? format(date, 'LLL dd, y') : 'Pick a date'}</span>
-
+            <span id={`${id}-value`}>{date ? format(date, 'LLL dd, y') : 'Pick a date'}</span>
           </Button>
-
         </PopoverTrigger>
 
         <PopoverContent
@@ -104,7 +98,6 @@ export function LaunchDateField({ control }: { control: Control<LaunchRequestVal
           align="start"
           onCloseAutoFocus={checkBlur}
         >
-
           <Calendar
             mode="single"
             autoFocus
@@ -115,9 +108,7 @@ export function LaunchDateField({ control }: { control: Control<LaunchRequestVal
               setOpen(false);
             }}
           />
-
         </PopoverContent>
-
       </Popover>
 
       {fieldState.error && (
@@ -125,7 +116,6 @@ export function LaunchDateField({ control }: { control: Control<LaunchRequestVal
           {fieldState.error.message}
         </p>
       )}
-
     </div>
   );
 }

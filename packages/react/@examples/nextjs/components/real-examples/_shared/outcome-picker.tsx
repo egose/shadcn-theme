@@ -22,7 +22,6 @@ export function OutcomePicker({ label, value, onValueChange, operation }: Outcom
 
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-md border border-dashed p-2 text-sm">
-
       <span id={labelId} className="text-muted-foreground text-xs">
         {label}:
       </span>
@@ -41,7 +40,6 @@ export function OutcomePicker({ label, value, onValueChange, operation }: Outcom
           if (next === 'success' || next === 'failure') onValueChange(next);
         }}
       >
-
         <ToggleGroupItem value="success" aria-label={`${action} success`}>
           Success
         </ToggleGroupItem>
@@ -49,9 +47,7 @@ export function OutcomePicker({ label, value, onValueChange, operation }: Outcom
         <ToggleGroupItem value="failure" aria-label={`${action} failure`}>
           Failure
         </ToggleGroupItem>
-
       </ToggleGroup>
-
     </div>
   );
 }

@@ -69,44 +69,34 @@ export function ContextSwitcher({
 
   return (
     <SidebarMenu>
-
       <SidebarMenuItem>
-
         <DropdownMenu>
-
           <DropdownMenuTrigger asChild>
-
             <SidebarMenuButton
               type="button"
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-
               <div
                 className={cn(
                   'flex aspect-square size-8 items-center justify-center rounded-lg bg-dark text-dark-foreground',
                   activeContext.className,
                 )}
               >
-
                 {activeContext.logo ? (
                   <activeContext.logo className="size-4" />
                 ) : (
                   <img src={activeContext.logoUrl} alt={activeContext.name} className="size-4 rounded-sm" />
                 )}
-
               </div>
 
               <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{activeContext.name}</span>
-                                <span className="truncate text-xs">{activeContext.text}</span>
-
+                <span className="truncate font-semibold">{activeContext.name}</span>
+                <span className="truncate text-xs">{activeContext.text}</span>
               </div>
 
               <ChevronsUpDown className="ml-auto" />
-
             </SidebarMenuButton>
-
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
@@ -115,7 +105,7 @@ export function ContextSwitcher({
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">{title}</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">{title}</DropdownMenuLabel>
 
             {items.map((item) => (
               <DropdownMenuItem
@@ -128,24 +118,19 @@ export function ContextSwitcher({
                 }}
                 className="gap-2 p-2"
               >
-
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-
                   {item.logo ? (
                     <item.logo className="size-4 shrink-0" />
                   ) : (
                     <img src={item.logoUrl} alt={item.name} className="size-4 shrink-0 rounded-sm" />
                   )}
-
                 </div>
-                                {item.name}
-
+                {item.name}
               </DropdownMenuItem>
             ))}
 
             {canAdd && (
               <>
-
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
@@ -156,25 +141,16 @@ export function ContextSwitcher({
                     }
                   }}
                 >
-
                   <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-
                     <Plus className="size-4" />
-
                   </div>
-                                    <div className="font-medium text-muted-foreground">{newContextText}</div>
-
+                  <div className="font-medium text-muted-foreground">{newContextText}</div>
                 </DropdownMenuItem>
-
               </>
             )}
-
           </DropdownMenuContent>
-
         </DropdownMenu>
-
       </SidebarMenuItem>
-
     </SidebarMenu>
   );
 }

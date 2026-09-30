@@ -35,25 +35,23 @@ export function SaveBar({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-
       <Button
         type="submit"
         loading={status === 'saving'}
         disabled={!!saveBlockedReason || (status !== 'unsaved' && status !== 'error')}
         aria-describedby={saveBlockedReason ? reasonId : undefined}
       >
-                Save changes
+        Save changes
       </Button>
 
       {(status === 'unsaved' || status === 'error') && (
         <Button type="button" variant="secondary" appearance="outline" onClick={onDiscard}>
-                    Discard changes
+          Discard changes
         </Button>
       )}
 
       <p role="status" aria-live="polite" className="text-muted-foreground text-sm">
-                {statusText}
-
+        {statusText}
       </p>
 
       {saveBlockedReason && (
@@ -61,7 +59,6 @@ export function SaveBar({
           {saveBlockedReason}
         </p>
       )}
-
     </div>
   );
 }

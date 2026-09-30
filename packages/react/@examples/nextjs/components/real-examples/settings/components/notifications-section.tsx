@@ -34,21 +34,17 @@ export function NotificationsSection({ state }: { state: SettingsSession['notifi
         void save();
       }}
     >
-
       <div className="space-y-1">
-                <h3 className="text-lg font-medium">Notifications</h3>
+        <h3 className="text-lg font-medium">Notifications</h3>
 
         <p className="text-muted-foreground text-sm">
-                    Account inbox preferences apply across your workspaces and remain available after a workspace is deleted.
-                    Saving updates mentions, product updates, and digest frequency only.
+          Account inbox preferences apply across your workspaces and remain available after a workspace is deleted.
+          Saving updates mentions, product updates, and digest frequency only.
         </p>
-
       </div>
 
       <FieldGroup>
-
         <Field orientation="horizontal">
-
           <Switch
             id="settings-notify-mentions"
             checked={draft.mentions}
@@ -57,21 +53,17 @@ export function NotificationsSection({ state }: { state: SettingsSession['notifi
           />
 
           <div className="flex flex-col gap-1">
-
             <FieldLabel id="settings-notify-mentions-label" htmlFor="settings-notify-mentions">
-                            Mentions
+              Mentions
             </FieldLabel>
 
             <FieldDescription>
               Notify me when someone @-mentions me in a comment in any of my workspaces.
             </FieldDescription>
-
           </div>
-
         </Field>
 
         <Field orientation="horizontal">
-
           <Switch
             id="settings-notify-product"
             checked={draft.productUpdates}
@@ -80,21 +72,17 @@ export function NotificationsSection({ state }: { state: SettingsSession['notifi
           />
 
           <div className="flex flex-col gap-1">
-
             <FieldLabel id="settings-notify-product-label" htmlFor="settings-notify-product">
-                            Product updates
+              Product updates
             </FieldLabel>
-                        <FieldDescription>Occasional release notes and roadmap updates.</FieldDescription>
-
+            <FieldDescription>Occasional release notes and roadmap updates.</FieldDescription>
           </div>
-
         </Field>
 
         {/* Permission-disabled control: the reason is real text referenced by
             aria-describedby, not styling alone. */}
 
         <Field orientation="horizontal" data-disabled="true">
-
           <Switch
             id="settings-notify-security"
             checked
@@ -104,24 +92,21 @@ export function NotificationsSection({ state }: { state: SettingsSession['notifi
           />
 
           <div className="flex flex-col gap-1">
-
             <FieldLabel id="settings-notify-security-label" htmlFor="settings-notify-security">
-                            Security alerts
+              Security alerts
             </FieldLabel>
 
             <FieldDescription id="settings-notify-security-reason">
-                            Workspace policy reference, not saved with these account preferences: security alerts are mandatory
-                            while you are a member of an existing workspace. Only an owner can change that workspace policy — your
-                            example role is {CURRENT_ROLE}.
+              Workspace policy reference, not saved with these account preferences: security alerts are mandatory while
+              you are a member of an existing workspace. Only an owner can change that workspace policy — your example
+              role is {CURRENT_ROLE}.
             </FieldDescription>
-
           </div>
-
         </Field>
 
         <FieldSet>
-                    <FieldLegend>Digest frequency</FieldLegend>
-                    <FieldDescription>How often we bundle lower-priority notifications.</FieldDescription>
+          <FieldLegend>Digest frequency</FieldLegend>
+          <FieldDescription>How often we bundle lower-priority notifications.</FieldDescription>
 
           <RadioGroup
             aria-label="Digest frequency"
@@ -129,53 +114,41 @@ export function NotificationsSection({ state }: { state: SettingsSession['notifi
             onValueChange={(value) => update({ digestFrequency: value as DigestFrequency })}
             className="gap-3"
           >
-
             <div className="flex items-center gap-2">
-
               <RadioGroupItem value="off" id="settings-digest-off" />
 
               <FieldLabel htmlFor="settings-digest-off" className="font-normal">
-                                Off
+                Off
               </FieldLabel>
-
             </div>
 
             <div className="flex items-center gap-2">
-
               <RadioGroupItem value="daily" id="settings-digest-daily" />
 
               <FieldLabel htmlFor="settings-digest-daily" className="font-normal">
-                                Daily
+                Daily
               </FieldLabel>
-
             </div>
 
             <div className="flex items-center gap-2">
-
               <RadioGroupItem value="weekly" id="settings-digest-weekly" />
 
               <FieldLabel htmlFor="settings-digest-weekly" className="font-normal">
-                                Weekly
+                Weekly
               </FieldLabel>
-
             </div>
-
           </RadioGroup>
-
         </FieldSet>
-
       </FieldGroup>
 
       {status === 'error' && (
         <Alert variant="destructive">
-                    <AlertTitle>Notification settings could not be saved</AlertTitle>
-                    <AlertDescription>{SAVE_ERROR_HINT}</AlertDescription>
-
+          <AlertTitle>Notification settings could not be saved</AlertTitle>
+          <AlertDescription>{SAVE_ERROR_HINT}</AlertDescription>
         </Alert>
       )}
 
       <SaveBar status={status} onDiscard={discard} />
-
     </form>
   );
 }

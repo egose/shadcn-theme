@@ -48,22 +48,17 @@ function SidebarMenuLink({ item, as: LinkComponent }: { item: IMenuSubItem; as: 
 
   return (
     <SidebarMenuItem>
-
       <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.title} onClick={() => setOpenMobile(false)}>
-
         <Comp
           type={Comp === 'button' ? 'button' : undefined}
           to={item.url}
           href={item.url}
           onClick={() => item.onClick?.(item.title)}
         >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-
+          {item.icon && <item.icon />}
+          <span>{item.title}</span>
         </Comp>
-
       </SidebarMenuButton>
-
     </SidebarMenuItem>
   );
 }
@@ -74,33 +69,24 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
 
   return (
     <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
-
       <SidebarMenuItem>
-
         <CollapsibleTrigger asChild>
-
           <SidebarMenuButton type="button" tooltip={item.title}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
+            {item.icon && <item.icon />}
+            <span>{item.title}</span>
 
             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-
           </SidebarMenuButton>
-
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-
           <SidebarMenuSub>
-
             {item.subItems.map((subItem) => {
               const Comp = LinkComponent && subItem.url ? LinkComponent : 'button';
 
               return (
                 <SidebarMenuSubItem key={subItem.title}>
-
                   <SidebarMenuSubButton asChild isActive={subItem.isActive} onClick={() => setOpenMobile(false)}>
-
                     <Comp
                       type={Comp === 'button' ? 'button' : undefined}
                       to={subItem.url}
@@ -108,23 +94,16 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
                       onClick={() => (subItem.onClick ?? item.onClick)?.(subItem.title)}
                       className="block w-full"
                     >
-                                            {subItem.icon && <subItem.icon />}
-                                            <span>{subItem.title}</span>
-
+                      {subItem.icon && <subItem.icon />}
+                      <span>{subItem.title}</span>
                     </Comp>
-
                   </SidebarMenuSubButton>
-
                 </SidebarMenuSubItem>
               );
             })}
-
           </SidebarMenuSub>
-
         </CollapsibleContent>
-
       </SidebarMenuItem>
-
     </Collapsible>
   );
 }
@@ -139,10 +118,9 @@ export function NavMenus({ menus, aslink }: { menus: INavMenu[]; aslink: React.E
   return menus.map((menu) => {
     return (
       <SidebarGroup key={menu.title} className={cn(menu.className)}>
-                {!menu.hideTitle && <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>}
+        {!menu.hideTitle && <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>}
 
         <SidebarMenu>
-
           {menu.items.map((item) =>
             item.subItems && item.subItems.length > 0 ? (
               <SidebarMenuCollapsible key={item.title} item={item} as={aslink} />
@@ -150,9 +128,7 @@ export function NavMenus({ menus, aslink }: { menus: INavMenu[]; aslink: React.E
               <SidebarMenuLink key={item.title} item={item} as={aslink} />
             ),
           )}
-
         </SidebarMenu>
-
       </SidebarGroup>
     );
   });

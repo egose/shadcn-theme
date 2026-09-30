@@ -26,10 +26,10 @@ export function BillingSection({ state }: { state: SettingsSession['billing'] })
     >
 
       <div className="space-y-1">
-                        <h3 className="text-lg font-medium">Billing</h3>
+                <h3 className="text-lg font-medium">Billing</h3>
 
         <p className="text-muted-foreground text-sm">
-                              This workspace’s plan: <Badge variant="secondary">{CURRENT_PLAN.name}</Badge>
+                    This workspace’s plan: <Badge variant="secondary">{CURRENT_PLAN.name}</Badge>
 
         </p>
 
@@ -38,7 +38,7 @@ export function BillingSection({ state }: { state: SettingsSession['billing'] })
       <FieldGroup>
 
         <Field>
-                              <FieldLabel htmlFor="settings-billing-email">Billing email</FieldLabel>
+                    <FieldLabel htmlFor="settings-billing-email">Billing email</FieldLabel>
 
           <Input
             id="settings-billing-email"
@@ -46,7 +46,7 @@ export function BillingSection({ state }: { state: SettingsSession['billing'] })
             value={draft.billingEmail}
             onChange={(event) => update({ billingEmail: event.target.value })}
           />
-                              <FieldDescription>Invoices and payment receipts are sent here.</FieldDescription>
+                    <FieldDescription>Invoices and payment receipts are sent here.</FieldDescription>
 
         </Field>
 
@@ -65,7 +65,7 @@ export function BillingSection({ state }: { state: SettingsSession['billing'] })
           <div className="flex flex-col gap-1">
 
             <FieldLabel id="settings-consolidated-billing-label" htmlFor="settings-consolidated-billing">
-                                          Consolidated billing across workspaces
+                            Consolidated billing across workspaces
             </FieldLabel>
 
             <FieldDescription id="settings-consolidated-billing-reason">
@@ -86,8 +86,8 @@ export function BillingSection({ state }: { state: SettingsSession['billing'] })
 
       {status === 'error' && (
         <Alert variant="destructive">
-                              <AlertTitle>Billing settings could not be saved</AlertTitle>
-                              <AlertDescription>{SAVE_ERROR_HINT}</AlertDescription>
+                    <AlertTitle>Billing settings could not be saved</AlertTitle>
+                    <AlertDescription>{SAVE_ERROR_HINT}</AlertDescription>
 
         </Alert>
       )}
