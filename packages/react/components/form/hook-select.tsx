@@ -30,7 +30,6 @@ export function HookFormSelect<T extends FieldValues>({
 
   return (
     <div className={cn('$hook-form-select', wrapper)}>
-
       <Controller
         control={control}
         name={name}
@@ -57,7 +56,6 @@ export function HookFormSelect<T extends FieldValues>({
       />
 
       <FormError field={name} className="mt-1" message={error} />
-
     </div>
   );
 }

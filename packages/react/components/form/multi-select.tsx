@@ -107,11 +107,9 @@ export const FormMultiSelect = React.forwardRef<HTMLInputElement, FormMultiSelec
         onBlurCapture={focus.onBlurCapture}
         className={cn('flex flex-col gap-2', classNames?.wrapper)}
       >
-
         {label && (
           <Label htmlFor={inputId} className={classNames?.label} required={required}>
-                      {label}
-
+            {label}
           </Label>
         )}
 
@@ -123,13 +121,9 @@ export const FormMultiSelect = React.forwardRef<HTMLInputElement, FormMultiSelec
           disabled={disabled}
           className="p-0"
         >
-
           <Popover>
-
             <PopoverTrigger asChild>
-
               <MultiSelectorTrigger className={cn('cursor-pointer', classNames?.trigger)}>
-
                 <MultiSelectorInput
                   ref={attachInput}
                   id={id}
@@ -137,9 +131,7 @@ export const FormMultiSelect = React.forwardRef<HTMLInputElement, FormMultiSelec
                   placeholder={selectedValues.length === 0 ? placeholder : ''}
                   className={classNames?.input}
                 />
-
               </MultiSelectorTrigger>
-
             </PopoverTrigger>
 
             <PopoverContent
@@ -168,24 +160,16 @@ export const FormMultiSelect = React.forwardRef<HTMLInputElement, FormMultiSelec
               align="start"
               className={cn('w-[var(--radix-popover-trigger-width)] p-0', classNames?.content)}
             >
-
               <MultiSelectorList className="static relative border-none shadow-none">
-
                 {options.map((option) => (
                   <MultiSelectorItem key={option.value} value={option.value} label={option.label}>
-                                      <span>{option.label}</span>
-
+                    <span>{option.label}</span>
                   </MultiSelectorItem>
                 ))}
-
               </MultiSelectorList>
-
             </PopoverContent>
-
           </Popover>
-
         </MultiSelector>
-
       </div>
     );
   },

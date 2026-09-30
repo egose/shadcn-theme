@@ -39,26 +39,21 @@ export function DangerZoneSection({
 
   return (
     <div className="space-y-6">
-
       <div className="space-y-1">
-                <h3 className="text-lg font-medium">Danger zone</h3>
-                <p className="text-muted-foreground text-sm">Irreversible actions for this workspace.</p>
-
+        <h3 className="text-lg font-medium">Danger zone</h3>
+        <p className="text-muted-foreground text-sm">Irreversible actions for this workspace.</p>
       </div>
 
       <div className="border-destructive/50 rounded-md border p-4">
-
         <div className="flex flex-wrap items-start justify-between gap-3">
-
           <div className="space-y-1">
-                        <h4 className="text-sm font-medium">Delete this workspace</h4>
+            <h4 className="text-sm font-medium">Delete this workspace</h4>
 
             <p className="text-muted-foreground max-w-prose text-sm">
-                            Permanently removes the workspace, all of its projects, settings, and member access. This example
-                            simulates the request — no real data exists to delete.
-              Account Profile and inbox preferences remain available.
+              Permanently removes the workspace, all of its projects, settings, and member access. This example
+              simulates the request — no real data exists to delete. Account Profile and inbox preferences remain
+              available.
             </p>
-
           </div>
 
           <Button
@@ -71,9 +66,8 @@ export function DangerZoneSection({
               setDialogOpen(true);
             }}
           >
-                        Delete workspace
+            Delete workspace
           </Button>
-
         </div>
 
         {deleteBlockedReason && (
@@ -81,24 +75,22 @@ export function DangerZoneSection({
             {deleteBlockedReason}
           </p>
         )}
-
       </div>
-            {/* Persistent deletion outcome (toast is additional feedback, never the only one). */}
+      {/* Persistent deletion outcome (toast is additional feedback, never the only one). */}
 
       <div aria-live="polite">
-
         {deleted && (
           <p ref={resultRef} tabIndex={-1} role="status" className="text-sm font-medium">
-                        The workspace was deleted (simulated). Reload the page to reset this example.
+            The workspace was deleted (simulated). Reload the page to reset this example.
           </p>
         )}
 
         {failure && (
           <Alert variant="destructive">
-                        <AlertTitle>Workspace deletion failed</AlertTitle>
+            <AlertTitle>Workspace deletion failed</AlertTitle>
 
             <AlertDescription>
-                            <p>{failure}</p>
+              <p>{failure}</p>
 
               <Button
                 type="button"
@@ -110,33 +102,27 @@ export function DangerZoneSection({
                   setDialogOpen(true);
                 }}
               >
-                                Retry deletion
+                Retry deletion
               </Button>
-
             </AlertDescription>
-
           </Alert>
         )}
-
       </div>
 
       <AlertDialog open={dialogOpen} onOpenChange={onOpenChange}>
-
         <AlertDialogContent
           onCloseAutoFocus={(event) => {
             event.preventDefault();
             restoreFocus();
           }}
         >
-
           <AlertDialogHeader>
-                        <AlertDialogTitle>Delete this workspace?</AlertDialogTitle>
+            <AlertDialogTitle>Delete this workspace?</AlertDialogTitle>
 
             <AlertDialogDescription>
-                            This permanently deletes the workspace and everything in it. Cancel keeps the workspace unchanged; the
-                            request is simulated by this example.
+              This permanently deletes the workspace and everything in it. Cancel keeps the workspace unchanged; the
+              request is simulated by this example.
             </AlertDialogDescription>
-
           </AlertDialogHeader>
 
           {deleteBlockedReason && (
@@ -147,14 +133,13 @@ export function DangerZoneSection({
 
           {deleting && (
             <p role="status" className="text-sm">
-                            Deleting workspace…
+              Deleting workspace…
             </p>
           )}
 
           <AlertDialogFooter>
-
             <AlertDialogCancel disabled={deleting} onClick={() => setDialogOpen(false)}>
-                            Cancel
+              Cancel
             </AlertDialogCancel>
 
             <AlertDialogAction
@@ -166,15 +151,11 @@ export function DangerZoneSection({
                 void confirmDelete();
               }}
             >
-                            Delete workspace permanently
+              Delete workspace permanently
             </AlertDialogAction>
-
           </AlertDialogFooter>
-
         </AlertDialogContent>
-
       </AlertDialog>
-
     </div>
   );
 }

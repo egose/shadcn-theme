@@ -84,16 +84,14 @@ export default function SettingsExample() {
       title="Account and Workspace Settings"
       description="The product area below is the example: a ContentSidebar-driven settings area with deterministic save states, permission and plan gating, clipboard feedback, and a destructive action. The surrounding catalog chrome is not part of it."
     >
-
       <ExampleStateToolbar value={viewState} onValueChange={setViewState} states={['loading', 'error', 'loaded']} />
-            {/* Catalog tooling: deterministic outcomes, clearly labeled as preview controls. */}
+      {/* Catalog tooling: deterministic outcomes, clearly labeled as preview controls. */}
 
       <div
         role="group"
         aria-label="Simulated settings outcomes (catalog tooling, not part of the product surface)"
         className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-md border border-dashed p-2 text-sm"
       >
-
         <OutcomePicker
           label="Simulated save outcome"
           operation="save"
@@ -102,26 +100,22 @@ export default function SettingsExample() {
         />
 
         <span className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs">Clipboard behavior:</span>
+          <span className="text-muted-foreground text-xs">Clipboard behavior:</span>
 
           <ToggleGroup
             type="single"
             value={clipboardBehavior}
             onValueChange={(value) => value && setClipboardBehavior(value as ClipboardBehavior)}
           >
-
             <ToggleGroupItem value="real" aria-label="Use the real clipboard">
-                            Real clipboard
+              Real clipboard
             </ToggleGroupItem>
 
             <ToggleGroupItem value="force-failure" aria-label="Force clipboard failure">
-                            Force failure
+              Force failure
             </ToggleGroupItem>
-
           </ToggleGroup>
-
         </span>
-
       </div>
 
       <h2 ref={settingsHeadingRef} tabIndex={-1} className="text-lg font-medium">
@@ -130,29 +124,25 @@ export default function SettingsExample() {
 
       {viewState === 'loading' && (
         <div className="space-y-3" role="status" aria-label="Loading settings">
-
           <Skeleton className="h-8 w-2/3" />
 
           <Skeleton className="h-24 w-full" />
 
           <Skeleton className="h-24 w-full" />
-
         </div>
       )}
 
       {viewState === 'error' && (
         <Alert variant="destructive">
-                    <AlertTitle>Settings could not be loaded</AlertTitle>
+          <AlertTitle>Settings could not be loaded</AlertTitle>
 
           <AlertDescription>
-                        <p>Something went wrong while loading the workspace settings. Retry to load them again.</p>
+            <p>Something went wrong while loading the workspace settings. Retry to load them again.</p>
 
             <Button type="button" variant="secondary" size="sm" className="mt-2" onClick={() => setViewState('loaded')}>
-                            Retry
+              Retry
             </Button>
-
           </AlertDescription>
-
         </Alert>
       )}
 
@@ -170,7 +160,6 @@ export default function SettingsExample() {
           }}
         />
       )}
-
     </ExamplePage>
   );
 }

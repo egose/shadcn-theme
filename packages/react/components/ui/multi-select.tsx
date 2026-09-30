@@ -183,17 +183,14 @@ const MultiSelector = ({
         disabled,
       }}
     >
-
       <Command
         onKeyDown={handleKeyDown}
         className={cn('flex flex-col overflow-visible bg-transparent', className)}
         dir={dir}
         {...props}
       >
-                {children}
-
+        {children}
       </Command>
-
     </MultiSelectContext.Provider>
   );
 };
@@ -218,7 +215,6 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
         )}
         {...props}
       >
-
         {value.map((item, index) => (
           <Badge
             key={item.value}
@@ -228,7 +224,7 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
             )}
             variant="secondary"
           >
-                        <span className="text-xs">{item.label}</span>
+            <span className="text-xs">{item.label}</span>
 
             <button
               aria-label={`Remove ${item.label} option`}
@@ -246,16 +242,13 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
               }}
               className="inline-flex cursor-pointer items-center justify-center rounded-md p-1 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:bg-red-100 focus-visible:outline-none disabled:cursor-not-allowed"
             >
-                            <span className="sr-only">Remove {item.label} option</span>
+              <span className="sr-only">Remove {item.label} option</span>
 
               <IconX className="h-3.5 w-3.5" />
-
             </button>
-
           </Badge>
         ))}
-                {children}
-
+        {children}
       </div>
     );
   },
@@ -317,8 +310,7 @@ const MultiSelectorContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
 
   return (
     <div ref={ref} className="relative">
-            {children}
-
+      {children}
     </div>
   );
 });
@@ -337,13 +329,11 @@ const MultiSelectorList = forwardRef<
         className,
       )}
     >
-            {children}
+      {children}
 
       <CommandEmpty>
-                <span className="text-muted-foreground">No results found</span>
-
+        <span className="text-muted-foreground">No results found</span>
       </CommandEmpty>
-
     </CommandList>
   );
 });
@@ -391,9 +381,8 @@ const MultiSelectorItem = forwardRef<
       )}
       onMouseDown={mousePreventDefault}
     >
-            {children}
-            {isIncluded && <IconCheck className="h-4 w-4" />}
-
+      {children}
+      {isIncluded && <IconCheck className="h-4 w-4" />}
     </CommandItem>
   );
 });

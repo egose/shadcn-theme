@@ -30,7 +30,6 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
 
   return (
     <div className="space-y-4">
-
       <PageHeader
         title="Customers"
         description="Search, filter, and manage customer records."
@@ -40,12 +39,10 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
           </Button>
         }
       />
-            {model.customerCount === 0 && <p role="status">No customers yet. Add the first customer to get started.</p>}
+      {model.customerCount === 0 && <p role="status">No customers yet. Add the first customer to get started.</p>}
 
       <div className="flex flex-wrap items-end gap-3">
-
         <div className="space-y-1">
-
           <Label id={searchLabelId} htmlFor="customer-search">
             Search customers
           </Label>
@@ -59,53 +56,46 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
             value={model.query}
             onChange={(event) => model.onQueryChange(event.target.value)}
           />
-
         </div>
 
         <div className="space-y-1">
-                    <Label id={statusLabelId}>Filter by status</Label>
+          <Label id={statusLabelId}>Filter by status</Label>
 
           <NativeSelect
             aria-labelledby={statusLabelId}
             value={model.statusFilter}
             onChange={(event) => model.onStatusChange(event.target.value as StatusFilter)}
           >
-                        <NativeSelectOption value="all">All statuses</NativeSelectOption>
-                        <NativeSelectOption value="active">Active</NativeSelectOption>
-                        <NativeSelectOption value="invited">Invited</NativeSelectOption>
-                        <NativeSelectOption value="archived">Archived</NativeSelectOption>
-
+            <NativeSelectOption value="all">All statuses</NativeSelectOption>
+            <NativeSelectOption value="active">Active</NativeSelectOption>
+            <NativeSelectOption value="invited">Invited</NativeSelectOption>
+            <NativeSelectOption value="archived">Archived</NativeSelectOption>
           </NativeSelect>
-
         </div>
 
         <div className="space-y-1">
-                    <Label id={planLabelId}>Filter by plan</Label>
+          <Label id={planLabelId}>Filter by plan</Label>
 
           <NativeSelect
             aria-labelledby={planLabelId}
             value={model.planFilter}
             onChange={(event) => model.onPlanChange(event.target.value as PlanFilter)}
           >
-                        <NativeSelectOption value="all">All plans</NativeSelectOption>
-                        <NativeSelectOption value="free">Free</NativeSelectOption>
-                        <NativeSelectOption value="pro">Pro</NativeSelectOption>
-                        <NativeSelectOption value="team">Team</NativeSelectOption>
-
+            <NativeSelectOption value="all">All plans</NativeSelectOption>
+            <NativeSelectOption value="free">Free</NativeSelectOption>
+            <NativeSelectOption value="pro">Pro</NativeSelectOption>
+            <NativeSelectOption value="team">Team</NativeSelectOption>
           </NativeSelect>
-
         </div>
 
         <Button type="button" variant="secondary" appearance="outline" onClick={model.onResetFilters}>
-                    Reset filters
+          Reset filters
         </Button>
-
       </div>
 
       <p role="status" aria-live="polite" className="text-muted-foreground text-sm">
-                {model.filteredCount === 1 ? '1 customer' : `${model.filteredCount} customers`}
-                {model.filteredCount > 0 && ` — showing ${model.rangeStart}\u2013${model.rangeEnd}`}
-
+        {model.filteredCount === 1 ? '1 customer' : `${model.filteredCount} customers`}
+        {model.filteredCount > 0 && ` — showing ${model.rangeStart}\u2013${model.rangeEnd}`}
       </p>
 
       {model.customerCount > 0 && model.filteredCount === 0 && (
@@ -114,18 +104,14 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
 
       {model.filteredCount > 0 && (
         <>
-
           <CustomerTable {...model.records} />
 
           <CustomerCards {...model.records} />
 
           {model.pageCount > 1 && (
             <Pagination aria-label="Customer pages">
-
               <PaginationContent>
-
                 <PaginationItem>
-
                   <PaginationPrevious
                     href="#customers"
                     aria-disabled={model.page === 1}
@@ -135,12 +121,10 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
                       if (model.page > 1) model.onPageChange(model.page - 1);
                     }}
                   />
-
                 </PaginationItem>
 
                 {Array.from({ length: model.pageCount }, (_, index) => index + 1).map((pageNumber) => (
                   <PaginationItem key={pageNumber}>
-
                     <PaginationLink
                       href="#customers"
                       isActive={pageNumber === model.page}
@@ -149,15 +133,12 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
                         model.onPageChange(pageNumber);
                       }}
                     >
-                                            {pageNumber}
-
+                      {pageNumber}
                     </PaginationLink>
-
                   </PaginationItem>
                 ))}
 
                 <PaginationItem>
-
                   <PaginationNext
                     href="#customers"
                     aria-disabled={model.page === model.pageCount}
@@ -167,17 +148,12 @@ export function CustomerListView({ model, searchRef }: CustomerListViewProps) {
                       if (model.page < model.pageCount) model.onPageChange(model.page + 1);
                     }}
                   />
-
                 </PaginationItem>
-
               </PaginationContent>
-
             </Pagination>
           )}
-
         </>
       )}
-
     </div>
   );
 }

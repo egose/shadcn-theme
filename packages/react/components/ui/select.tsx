@@ -33,14 +33,11 @@ const SelectTrigger = React.forwardRef<
       )}
       {...props}
     >
-            {children}
+      {children}
 
       <SelectPrimitive.Icon asChild>
-
         <ChevronDownIcon className="text-muted-foreground size-4 pointer-events-none" />
-
       </SelectPrimitive.Icon>
-
     </SelectPrimitive.Trigger>
   );
 });
@@ -49,7 +46,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
   function SelectContent({ className, children, position = 'item-aligned', align = 'center', ...props }, ref) {
     return (
       <SelectPrimitive.Portal>
-
         <SelectPrimitive.Content
           ref={ref}
           data-slot="select-content"
@@ -64,7 +60,6 @@ const SelectContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
           align={align}
           {...props}
         >
-
           <SelectScrollUpButton />
 
           <SelectPrimitive.Viewport
@@ -74,14 +69,11 @@ const SelectContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
               position === 'popper' && '',
             )}
           >
-                      {children}
-
+            {children}
           </SelectPrimitive.Viewport>
 
           <SelectScrollDownButton />
-
         </SelectPrimitive.Content>
-
       </SelectPrimitive.Portal>
     );
   },
@@ -107,18 +99,12 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
       )}
       {...props}
     >
-
       <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
-
         <SelectPrimitive.ItemIndicator>
-
           <CheckIcon className="pointer-events-none" />
-
         </SelectPrimitive.ItemIndicator>
-
       </span>
-            <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 }
@@ -143,9 +129,7 @@ function SelectScrollUpButton({ className, ...props }: React.ComponentProps<type
       )}
       {...props}
     >
-
       <ChevronUpIcon />
-
     </SelectPrimitive.ScrollUpButton>
   );
 }
@@ -163,9 +147,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-
       <ChevronDownIcon />
-
     </SelectPrimitive.ScrollDownButton>
   );
 }

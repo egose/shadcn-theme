@@ -41,7 +41,6 @@ describe('FormMultiSelect visible labels', () => {
       const onChange = vi.fn();
       const field = (label: string) => (
         <StrictMode>
-
           <FormMultiSelect
             id={id}
             name="Customer choices"
@@ -50,7 +49,6 @@ describe('FormMultiSelect visible labels', () => {
             value={[]}
             onChange={onChange}
           />
-
         </StrictMode>
       );
       const { container, rerender } = render(field('Customers'));
@@ -160,9 +158,7 @@ describe('FormMultiSelect option refreshes', () => {
     const value = [northwind.value, acme.value];
     const field = (data: FormMultiSelectProps['data']) => (
       <StrictMode>
-
         <FormMultiSelect name="customers" data={data} value={value} onChange={onChange} />
-
       </StrictMode>
     );
     const { rerender } = render(field([]));

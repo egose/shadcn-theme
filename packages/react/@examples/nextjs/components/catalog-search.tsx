@@ -21,12 +21,10 @@ export function CatalogSearch({ entries }: { entries: CatalogListing[] }) {
 
   return (
     <div className="space-y-4">
-
       <div className="space-y-2">
-                <Label htmlFor={id}>Search examples</Label>
+        <Label htmlFor={id}>Search examples</Label>
 
         <div className="flex flex-wrap gap-2">
-
           <Input
             ref={input}
             id={id}
@@ -47,34 +45,28 @@ export function CatalogSearch({ entries }: { entries: CatalogListing[] }) {
           >
             Clear search
           </Button>
-
         </div>
 
         <p id={`${id}-help`} className="text-sm text-muted-foreground">
-                    Search titles, descriptions, and capabilities in this section.
+          Search titles, descriptions, and capabilities in this section.
         </p>
 
         <p id={`${id}-results`} role="status" className="text-sm text-muted-foreground">
-                    {results.length} of {entries.length} examples
+          {results.length} of {entries.length} examples
         </p>
-
       </div>
-            {results.length === 0 && <p>No examples match “{query}”. Try fewer words or clear the search.</p>}
+      {results.length === 0 && <p>No examples match “{query}”. Try fewer words or clear the search.</p>}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-
         {results.map((entry) => (
           <article key={entry.url} className="min-w-0 space-y-3 rounded-xl border bg-background p-5">
-
             <h2 className="text-lg font-semibold">
-
               <Link href={entry.url} className="underline-offset-4 hover:underline focus-visible:underline">
                 {entry.title}
               </Link>
-
             </h2>
-                        <p className="text-sm leading-6 text-muted-foreground">{entry.description}</p>
-                        <p className="break-all text-xs font-medium text-muted-foreground">{entry.url}</p>
+            <p className="text-sm leading-6 text-muted-foreground">{entry.description}</p>
+            <p className="break-all text-xs font-medium text-muted-foreground">{entry.url}</p>
 
             {entry.capabilities.length > 0 && (
               <p className="text-sm">
@@ -85,30 +77,22 @@ export function CatalogSearch({ entries }: { entries: CatalogListing[] }) {
 
             {entry.related.length > 0 && (
               <div className="space-y-1 text-sm">
-                                <p className="font-medium">Related examples</p>
+                <p className="font-medium">Related examples</p>
 
                 <ul className="space-y-1">
-
                   {entry.related.map((related) => (
                     <li key={related.url}>
-
                       <Link href={related.url} className="text-muted-foreground underline underline-offset-4">
                         {related.title}
                       </Link>
-
                     </li>
                   ))}
-
                 </ul>
-
               </div>
             )}
-
           </article>
         ))}
-
       </div>
-
     </div>
   );
 }

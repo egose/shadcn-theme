@@ -70,29 +70,24 @@ export function CustomerNameDialog({
         if (!open) onCancel();
       }}
     >
-
       <DialogContent
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           onRestoreFocus();
         }}
       >
-
         <DialogHeader>
-                    <DialogTitle>{mode === 'add' ? 'Add customer' : `Rename ${initialName}`}</DialogTitle>
+          <DialogTitle>{mode === 'add' ? 'Add customer' : `Rename ${initialName}`}</DialogTitle>
 
           <DialogDescription>
-
             {mode === 'add'
               ? 'Create a customer record. This example simulates the save — no backend is contacted.'
               : 'The new name is saved to this session only.'}
-
           </DialogDescription>
-
         </DialogHeader>
 
         <div className="space-y-2 py-2">
-                    <Label htmlFor="customer-name">Customer name</Label>
+          <Label htmlFor="customer-name">Customer name</Label>
 
           <Input
             ref={inputRef}
@@ -116,14 +111,13 @@ export function CustomerNameDialog({
 
           {error !== null && (
             <p id="customer-name-error" role="alert" className="text-sm text-destructive">
-                            {error}
-
+              {error}
             </p>
           )}
 
           {submitting && (
             <p role="status" className="text-sm">
-                            Saving customer…
+              Saving customer…
             </p>
           )}
 
@@ -132,25 +126,19 @@ export function CustomerNameDialog({
               {failure}
             </p>
           )}
-
         </div>
-                {catalogControl}
+        {catalogControl}
 
         <DialogFooter>
-
           <Button type="button" variant="secondary" disabled={submitting} onClick={onCancel}>
-                        Cancel
+            Cancel
           </Button>
 
           <Button type="button" loading={submitting} onClick={submit}>
-                        {mode === 'add' ? 'Add customer' : 'Save name'}
-
+            {mode === 'add' ? 'Add customer' : 'Save name'}
           </Button>
-
         </DialogFooter>
-
       </DialogContent>
-
     </Dialog>
   );
 }

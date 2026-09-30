@@ -32,22 +32,19 @@ export function CustomerArchiveDialog({
         onCancel();
       }}
     >
-
       <AlertDialogContent
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           onRestoreFocus();
         }}
       >
-
         <AlertDialogHeader>
-                    <AlertDialogTitle>Archive {customerName}?</AlertDialogTitle>
+          <AlertDialogTitle>Archive {customerName}?</AlertDialogTitle>
 
           <AlertDialogDescription>
-                        Archived customers are removed from active views but their records are kept. This example simulates the
-                        archive request. Cancel keeps the customer unchanged.
+            Archived customers are removed from active views but their records are kept. This example simulates the
+            archive request. Cancel keeps the customer unchanged.
           </AlertDialogDescription>
-
         </AlertDialogHeader>
 
         {submitting && (
@@ -57,7 +54,6 @@ export function CustomerArchiveDialog({
         )}
 
         <AlertDialogFooter>
-
           <AlertDialogCancel disabled={submitting} onClick={onCancel}>
             Cancel
           </AlertDialogCancel>
@@ -70,13 +66,10 @@ export function CustomerArchiveDialog({
               void onConfirm();
             }}
           >
-                        Archive customer
+            Archive customer
           </AlertDialogAction>
-
         </AlertDialogFooter>
-
       </AlertDialogContent>
-
     </AlertDialog>
   );
 }

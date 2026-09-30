@@ -19,9 +19,8 @@ function DateForm() {
   });
   return (
     <>
-
       <LaunchDateField control={methods.control} />
-            <button type="button">After date</button>
+      <button type="button">After date</button>
 
       <button type="button" onClick={() => methods.setFocus('launchDate')}>
         Focus date
@@ -30,8 +29,7 @@ function DateForm() {
       <button type="button" onClick={() => void methods.trigger('launchDate', { shouldFocus: true })}>
         Validate date
       </button>
-            <p>{methods.formState.touchedFields.launchDate ? 'Date touched' : 'Date untouched'}</p>
-
+      <p>{methods.formState.touchedFields.launchDate ? 'Date touched' : 'Date untouched'}</p>
     </>
   );
 }

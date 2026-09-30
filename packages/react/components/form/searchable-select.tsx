@@ -96,18 +96,14 @@ export const FormSearchableSelect = React.forwardRef<HTMLButtonElement, FormSear
         onBlurCapture={focus.onBlurCapture}
         className={cn('$form-searchable-select space-y-1', classNames?.wrapper)}
       >
-
         {label && (
           <Label htmlFor={id} className={classNames?.label} required={required}>
-                      {label}
-
+            {label}
           </Label>
         )}
 
         <Popover open={open} onOpenChange={setOpen}>
-
           <PopoverTrigger asChild>
-
             <Button
               ref={ref}
               id={id}
@@ -118,26 +114,20 @@ export const FormSearchableSelect = React.forwardRef<HTMLButtonElement, FormSear
               disabled={disabled}
               className={cn('w-full justify-between border-input!', classNames?.input)}
             >
-
               {selectedValue ? _options.find((opt) => opt.value === selectedValue)?.label : placeholder || 'Select...'}
 
               <ChevronsUpDown className="opacity-50" />
-
             </Button>
-
           </PopoverTrigger>
 
           <PopoverContent ref={focus.contentRef} onCloseAutoFocus={focus.onCloseAutoFocus} className="w-full p-0">
-
             <Command>
-
               <CommandInput placeholder={`Search ${label ?? 'option'}...`} className="h-9" />
 
               <CommandList>
-                              <CommandEmpty>No option found.</CommandEmpty>
+                <CommandEmpty>No option found.</CommandEmpty>
 
                 <CommandGroup>
-
                   {_options.map((option) => (
                     <CommandItem
                       key={option.value}
@@ -145,23 +135,16 @@ export const FormSearchableSelect = React.forwardRef<HTMLButtonElement, FormSear
                       keywords={[option.label]}
                       onSelect={handleSelect}
                     >
-                                          {option.label}
+                      {option.label}
 
                       <Check className={cn('ml-auto', selectedValue === option.value ? 'opacity-100' : 'opacity-0')} />
-
                     </CommandItem>
                   ))}
-
                 </CommandGroup>
-
               </CommandList>
-
             </Command>
-
           </PopoverContent>
-
         </Popover>
-
       </div>
     );
   },

@@ -63,13 +63,11 @@ export function Demo() {
 
   return (
     <SimpleLayout aslink={Link}>
-
       <Button variant="primary" size="default" onClick={() => copy('hello')}>
-                Copy
+        Copy
       </Button>
 
       <FormTextInput name="title" label="Title" required />
-
     </SimpleLayout>
   );
 }
@@ -141,9 +139,8 @@ the palette locally. For example, extend your global stylesheet with:
 
 ```tsx
 <section className="brand-theme">
-
   <Button variant="action" appearance="outline">
-        Branded action
+    Branded action
   </Button>
 </section>
 ```
@@ -249,9 +246,7 @@ export function CustomerForm() {
   });
   return (
     <FormProvider {...form}>
-
       <form onSubmit={form.handleSubmit((values) => console.log(values))}>
-
         <HookFormSearchableSelect
           name="customer"
           label="Customer"
@@ -262,10 +257,8 @@ export function CustomerForm() {
         <button type="button" onClick={() => form.setFocus('customer')}>
           Focus customer
         </button>
-                <button type="submit">Save</button>
-
+        <button type="submit">Save</button>
       </form>
-
     </FormProvider>
   );
 }
@@ -371,7 +364,6 @@ import Link from 'next/link';
     </p>
   }
 >
-
   <CustomerList />
 </SimpleLayout>;
 ```

@@ -71,9 +71,7 @@ describe('FormSelect contracts', () => {
     const onChange = vi.fn();
     render(
       <form aria-label="Customer form">
-
         <FormSelect name="customer" data={customers} defaultValue="cust_42" onChange={onChange} />
-
       </form>,
     );
     const form = screen.getByRole('form') as HTMLFormElement;
@@ -88,9 +86,7 @@ describe('FormSelect contracts', () => {
   it('passes required state through to the trigger and native form control', () => {
     const { container, rerender } = render(
       <form>
-
         <FormSelect name="customer" data={customers} required onChange={vi.fn()} />
-
       </form>,
     );
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-required', 'true');
@@ -100,9 +96,7 @@ describe('FormSelect contracts', () => {
 
     rerender(
       <form>
-
         <FormSelect name="customer" data={customers} required={false} onChange={vi.fn()} />
-
       </form>,
     );
     expect(screen.getByRole('combobox')).not.toHaveAttribute('aria-required', 'true');
@@ -114,9 +108,7 @@ describe('FormSelect contracts', () => {
     const onChange = vi.fn();
     const field = (value: string) => (
       <form aria-label="Customer form">
-
         <FormSelect name="customer" data={customers} defaultValue="cust_73" value={value} onChange={onChange} />
-
       </form>
     );
     const { rerender } = render(field('cust_42'));
