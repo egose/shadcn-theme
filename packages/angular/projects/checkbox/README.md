@@ -75,6 +75,8 @@ export class DemoModule {}
 
 Real selector: `hlm-checkbox` (element only). The host renders `class="contents peer"` so sibling label/description selectors (`peer-*`) keep working; `id` / `aria-*` attributes are nulled on the host and forwarded to the inner `brn-checkbox` instead. Set a visible label with a native `<label for>` — the component does not render label text itself.
 
+Omitted/null IDs use `HlmFormIdGenerator` from `@egose/shadcn-theme-ng/form-field`: `hlm-checkbox-${APP_ID}-${sequence}`. The fallback is allocated once per instance from the application-scoped service, so separate applications restart their sequence and matching server/client `APP_ID` plus component creation order reproduce IDs. Explicit IDs are preserved on the focusable button; reverting to null restores that instance's fallback. Supply distinct `APP_ID` values for multiple applications on one page and unique explicit IDs. Checkboxes nested inside separate native labels each receive their own generated label association through Spartan; existing label IDs are retained.
+
 ## API reference
 
 ### `HlmCheckbox` (`hlm-checkbox`)
@@ -83,7 +85,7 @@ Real selector: `hlm-checkbox` (element only). The host renders `class="contents 
 | -------------------------------------- | ----------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `checked`                              | `model<boolean \| 'indeterminate'>` | `false` | Checked state. Two-way bindable (`[(checked)]`). `'indeterminate'` renders the checked icon; clicking it resolves to `true`.                       |
 | `class` (`userClass`)                  | `ClassValue`                        | `''`    | Extra classes merged into the box.                                                                                                                 |
-| `id`                                   | `string \| null`                    | `null`  | Forwarded to inner `brn-checkbox`. Pair with `<label for>`.                                                                                        |
+| `id`                                   | `string \| null`                    | `null`  | Explicit native button ID, or application-scoped fallback when null. Pair explicit IDs with `<label for>`.                                         |
 | `aria-label` (`ariaLabel`)             | `string \| null`                    | `null`  | Forwarded aria-label.                                                                                                                              |
 | `aria-labelledby` (`ariaLabelledby`)   | `string \| null`                    | `null`  | Forwarded aria-labelledby.                                                                                                                         |
 | `aria-describedby` (`ariaDescribedby`) | `string \| null`                    | `null`  | Forwarded aria-describedby.                                                                                                                        |
@@ -101,6 +103,8 @@ Real selector: `hlm-checkbox` (element only). The host renders `class="contents 
 | `changed` | `boolean` | Emitted on user toggle with the new boolean (`!previous`). Note: toggling from `'indeterminate'` emits `true`. |
 
 ControlValueAccessor: `writeValue(value)`, `registerOnChange`, `registerOnTouched`, `setDisabledState(isDisabled)` (writes `formDisabled`, hence `disabledState`). `HLM_CHECKBOX_VALUE_ACCESSOR` (`NG_VALUE_ACCESSOR`, `forwardRef(HlmCheckbox)`, `multi: true`) is provided on the component.
+
+Both `[checked]` and CVA writes preserve `'indeterminate'`. The primitive forwards boolean checked and indeterminate separately to Spartan: the actual `button[role="checkbox"]` exposes `aria-checked="mixed"` and `data-state="indeterminate"`. An enabled click resolves mixed to `true`, then subsequent clicks toggle true/false; `changed` and CVA `onChange` emit the resulting boolean once. Thus clicking a partially selected table header selects its displayed page. Programmatic CVA writes do not call `changed`/`onChange` or touch the control; null resets to false. Any active input, wrapper, or form disabled lock blocks user toggles without discarding mixed state.
 
 ## Examples
 
@@ -307,7 +311,7 @@ export class ChangedCheckboxComponent {
 - The component renders a native-checkbox-equivalent `brn-checkbox` with `aria-label`/`labelledby`/`describedby` forwarding — always provide one: visible `<label for>` preferred, `aria-label` for icon-only rows.
 - `disabledState` adds `data-disabled`, `cursor-not-allowed`, and `opacity-50`; disabled boxes are skipped correctly because clicks early-return.
 - The check glyph is decorative (`lucideCheck` icon, no text) — state is exposed via `data-[state]` / native semantics, not the icon.
-- Tri-state: `'indeterminate'` is a visual/model state, not `aria-checked="mixed"` — if you need mixed semantics for a tree, add `aria-checked` handling at your own level and test with a screen reader.
+- Tri-state: `'indeterminate'` exposes `aria-checked="mixed"` on the focusable checkbox button. State and nested-label associations are covered by rendered browser DOM tests; screen-reader announcement behavior is not asserted by those tests.
 
 ## Theming / CSS variables
 

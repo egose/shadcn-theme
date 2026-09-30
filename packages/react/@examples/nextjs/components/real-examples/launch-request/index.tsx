@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useRef, useState, type MouseEvent } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import {
@@ -15,25 +15,23 @@ import {
 } from '@egose/shadcn-theme/components/ui/alert-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@egose/shadcn-theme/components/ui/alert';
 import { Button } from '@egose/shadcn-theme/components/ui/button';
-import { ToggleGroup, ToggleGroupItem } from '@egose/shadcn-theme/components/ui/toggle-group';
 import { HookFormCheckbox } from '@egose/shadcn-theme/components/form/hook-checkbox';
-import { HookFormDatePicker } from '@egose/shadcn-theme/components/form/hook-date-picker';
+import { FormError } from '@egose/shadcn-theme/components/form/error';
 import { HookFormMultiSelect } from '@egose/shadcn-theme/components/form/hook-multi-select';
 import { HookFormNativeSelect } from '@egose/shadcn-theme/components/form/hook-native-select';
-import { HookFormTextarea } from '@egose/shadcn-theme/components/form/hook-textarea';
-import { HookFormTextInput } from '@egose/shadcn-theme/components/form/hook-text-input';
+import { FormTextarea } from '@egose/shadcn-theme/components/form/textarea';
+import { FormTextInput } from '@egose/shadcn-theme/components/form/text-input';
 
 import { ExamplePage, ExampleSection } from '@/components/showcase-shell';
-import { simulate } from '../_shared/async-simulation';
+import { simulate, type SimulatedOutcome } from '../_shared/async-simulation';
 import { ExampleStateToolbar, type ExampleState } from '../_shared/example-state-toolbar';
+import { OutcomePicker } from '../_shared/outcome-picker';
 
 import { DebugStatePanel } from './components/debug-state-panel';
+import { LaunchDateField } from './components/launch-date-field';
 import { ReviewSummary } from './components/review-summary';
 import { DEFAULT_LAUNCH_REQUEST, ROLLOUT_WINDOW_OPTIONS, TEAM_OPTIONS } from './fixtures';
-import type { LaunchRequestValues, RequestStatus, SimulatedOutcomeChoice } from './types';
-
-/** Fixed delay for the simulated save request (keeps pending states observable). */
-const SAVE_DELAY_MS = 400;
+import type { LaunchRequestValues, RequestStatus } from './types';
 
 /** Tab order of fields, used to move focus to the first invalid field on submit. */
 const FIELD_ORDER: (keyof LaunchRequestValues)[] = [
@@ -48,32 +46,46 @@ const FIELD_ORDER: (keyof LaunchRequestValues)[] = [
 
 export default function LaunchRequestExample() {
   const [viewState, setViewState] = useState<ExampleState>('loaded');
-  const [status, setStatus] = useState<RequestStatus>('draft');
   const [saving, setSaving] = useState(false);
+  const saveInFlight = useRef(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedRevision, setSavedRevision] = useState(0);
   const [discardOpen, setDiscardOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const discardOpenerRef = useRef<HTMLButtonElement>(null);
+  const discardContentRef = useRef<HTMLDivElement>(null);
+  const discardFocusOwner = useRef<HTMLFormElement | null>(null);
+  const discardConfirmed = useRef(false);
   // Catalog control: which deterministic outcome the simulated save returns.
-  const [simulatedOutcome, setSimulatedOutcome] = useState<SimulatedOutcomeChoice>('success');
+  const [simulatedOutcome, setSimulatedOutcome] = useState<SimulatedOutcome>('success');
 
   const methods = useForm<LaunchRequestValues>({ defaultValues: DEFAULT_LAUNCH_REQUEST });
+  const fieldId = useId();
+  const { errors } = methods.formState;
   const isDirty = methods.formState.isDirty;
+  const status: RequestStatus = savedRevision === 0 ? 'draft' : isDirty ? 'unsaved' : 'submitted';
 
   async function onSubmit(data: LaunchRequestValues) {
-    if (saving) return; // duplicate-submit prevention
+    // Validation can settle multiple submissions before React renders the loading state.
+    if (saveInFlight.current) return;
+    saveInFlight.current = true;
     setSaving(true);
     setSaveError(null);
     try {
-      await simulate(data, {
+      const snapshot = structuredClone(data);
+      await simulate(snapshot, {
         outcome: simulatedOutcome,
-        delayMs: SAVE_DELAY_MS,
         failureMessage: 'The launch request could not be saved.',
       });
-      setStatus('submitted');
+      // Commit only the submitted snapshot. Keep edits made during the request,
+      // recomputing isDirty against the new defaults (even when an edit returned
+      // to an OLD default). keepDirtyValues would retain stale dirty flags.
+      methods.reset(snapshot, { keepValues: true });
       setSavedRevision((revision) => revision + 1);
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : 'The launch request could not be saved.');
     } finally {
+      saveInFlight.current = false;
       setSaving(false);
     }
   }
@@ -83,10 +95,34 @@ export default function LaunchRequestExample() {
     if (firstInvalid) methods.setFocus(firstInvalid);
   }
 
-  function confirmDiscard() {
+  function confirmDiscard(event: MouseEvent<HTMLButtonElement>) {
+    if (saveInFlight.current) {
+      // AlertDialogAction otherwise closes itself even when reset is rejected.
+      event.preventDefault();
+      return;
+    }
+    discardConfirmed.current = true;
     methods.reset();
     setSaveError(null);
     setDiscardOpen(false);
+  }
+
+  function restoreDiscardFocus(event: Event) {
+    // The external opener is not a Radix Trigger; own restoration explicitly.
+    event.preventDefault();
+    const owner = discardFocusOwner.current;
+    discardFocusOwner.current = null;
+    if (!owner?.isConnected || owner !== formRef.current) return;
+    const active = owner.ownerDocument.activeElement;
+    // Respect navigation/focus moved elsewhere during the closing animation.
+    if (active && active !== owner.ownerDocument.body && !discardContentRef.current?.contains(active)) return;
+    const opener = discardOpenerRef.current;
+    if (!discardConfirmed.current && opener?.isConnected && !opener.disabled) {
+      opener.focus();
+    } else {
+      // SX-02 registers the actual enabled input; wait until Radix close/reset settles.
+      methods.setFocus('projectName');
+    }
   }
 
   return (
@@ -94,36 +130,30 @@ export default function LaunchRequestExample() {
       title="Launch Request"
       description="A framed product preview: the launch request form below is the example; the surrounding catalog sidebar and header are not part of it. Fields are grouped by workflow (overview, schedule, ownership, approval) — it deliberately uses only the hook-form fields a launch request needs."
     >
-      <ExampleStateToolbar value={viewState} onValueChange={setViewState} states={['loading', 'error', 'loaded']} />
-
+      <ExampleStateToolbar
+        value={viewState}
+        onValueChange={(next) => {
+          if (next !== 'loaded') {
+            // Leaving the view cancels only the dialog, never the retained draft.
+            discardFocusOwner.current = null;
+            setDiscardOpen(false);
+          }
+          setViewState(next);
+        }}
+        states={['loading', 'error', 'loaded']}
+      />
       {/* Catalog tooling: lets a reviewer pick the deterministic save outcome. */}
-      <div
-        role="group"
-        aria-label="Simulated save outcome (catalog control, not part of the product surface)"
-        className="flex flex-wrap items-center gap-2 rounded-md border border-dashed p-2 text-sm"
-      >
-        <span className="text-muted-foreground text-xs">Simulated save outcome:</span>
-        <ToggleGroup
-          type="single"
-          value={simulatedOutcome}
-          onValueChange={(value) => value && setSimulatedOutcome(value as SimulatedOutcomeChoice)}
-        >
-          <ToggleGroupItem value="success" aria-label="Simulate success">
-            Success
-          </ToggleGroupItem>
-          <ToggleGroupItem value="failure" aria-label="Simulate failure">
-            Failure
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
 
+      <OutcomePicker label="Simulated save outcome" value={simulatedOutcome} onValueChange={setSimulatedOutcome} />
       {viewState === 'loading' && <p role="status">Loading launch request…</p>}
 
       {viewState === 'error' && (
         <Alert variant="destructive">
           <AlertTitle>The launch request could not be loaded</AlertTitle>
+
           <AlertDescription>
             <p>Something went wrong while loading the request. Retry to load it again.</p>
+
             <Button type="button" variant="secondary" size="sm" className="mt-2" onClick={() => setViewState('loaded')}>
               Retry
             </Button>
@@ -134,19 +164,23 @@ export default function LaunchRequestExample() {
       {viewState === 'loaded' && (
         <FormProvider {...methods}>
           <form
+            ref={formRef}
             noValidate
-            onSubmit={methods.handleSubmit(onSubmit, onInvalid)}
-            className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]"
+            onSubmit={(event) => void methods.handleSubmit(onSubmit, onInvalid)(event)}
+            className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,1fr)]"
           >
             <div className="space-y-6">
               {/* Persistent, visible save outcome (not toast-only). */}
+
               <div aria-live="polite">
                 {saveError && (
                   <Alert variant="destructive">
                     <AlertTitle>Save failed</AlertTitle>
+
                     <AlertDescription>{saveError} Your edits were kept and you can try again.</AlertDescription>
                   </Alert>
                 )}
+
                 {!saveError && savedRevision > 0 && (
                   <p role="status" className="text-sm font-medium">
                     Launch request submitted (revision {savedRevision}).
@@ -157,6 +191,7 @@ export default function LaunchRequestExample() {
               {methods.formState.submitCount > 0 && !methods.formState.isValid && (
                 <div role="alert" className="rounded-md border border-destructive/50 bg-destructive/5 p-3">
                   <p className="text-destructive text-sm font-medium">The request could not be submitted yet:</p>
+
                   <ul className="text-destructive mt-1 list-inside list-disc space-y-0.5 text-sm">
                     {FIELD_ORDER.filter((field) => methods.getFieldState(field, methods.formState).invalid).map(
                       (field) => (
@@ -169,27 +204,55 @@ export default function LaunchRequestExample() {
 
               <ExampleSection title="Overview" description="What is launching and why.">
                 <div className="grid gap-4">
-                  <HookFormTextInput
-                    name="projectName"
-                    label="Project name"
-                    rules={{ required: 'Project name is required.' }}
-                  />
-                  <HookFormTextarea
-                    name="summary"
-                    label="Launch summary"
-                    rows={4}
-                    rules={{ required: 'Launch summary is required.' }}
-                  />
+                  <div>
+                    <FormTextInput
+                      id={`${fieldId}-project`}
+                      name="projectName"
+                      label="Project name"
+                      required
+                      aria-invalid={!!errors.projectName}
+                      aria-describedby={errors.projectName ? `${fieldId}-project-error` : undefined}
+                      inputProps={methods.register('projectName', {
+                        required: 'Project name is required.',
+                        validate: (value) => value.trim().length > 0 || 'Project name is required.',
+                      })}
+                    />
+
+                    {errors.projectName && (
+                      <div id={`${fieldId}-project-error`}>
+                        <FormError field="projectName" className="mt-1" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <FormTextarea
+                      id={`${fieldId}-summary`}
+                      name="summary"
+                      label="Launch summary"
+                      rows={4}
+                      required
+                      aria-invalid={!!errors.summary}
+                      aria-describedby={errors.summary ? `${fieldId}-summary-error` : undefined}
+                      inputProps={methods.register('summary', {
+                        required: 'Launch summary is required.',
+                        validate: (value) => value.trim().length > 0 || 'Launch summary is required.',
+                      })}
+                    />
+
+                    {errors.summary && (
+                      <div id={`${fieldId}-summary-error`}>
+                        <FormError field="summary" className="mt-1" />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </ExampleSection>
 
               <ExampleSection title="Schedule" description="When the launch rolls out.">
                 <div className="grid gap-4 md:grid-cols-2">
-                  <HookFormDatePicker
-                    name="launchDate"
-                    label="Launch date"
-                    rules={{ required: 'Launch date is required.' }}
-                  />
+                  <LaunchDateField control={methods.control} />
+
                   <HookFormNativeSelect
                     name="rolloutWindow"
                     label="Rollout window"
@@ -201,14 +264,27 @@ export default function LaunchRequestExample() {
 
               <ExampleSection title="Ownership" description="Who is accountable for the launch.">
                 <div className="grid gap-4">
-                  <HookFormTextInput
-                    name="ownerEmail"
-                    label="Owner email"
-                    rules={{
-                      required: 'Owner email is required.',
-                      pattern: { value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/, message: 'Enter a valid email address.' },
-                    }}
-                  />
+                  <div>
+                    <FormTextInput
+                      id={`${fieldId}-owner`}
+                      name="ownerEmail"
+                      label="Owner email"
+                      required
+                      aria-invalid={!!errors.ownerEmail}
+                      aria-describedby={errors.ownerEmail ? `${fieldId}-owner-error` : undefined}
+                      inputProps={methods.register('ownerEmail', {
+                        required: 'Owner email is required.',
+                        pattern: { value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/, message: 'Enter a valid email address.' },
+                      })}
+                    />
+
+                    {errors.ownerEmail && (
+                      <div id={`${fieldId}-owner-error`}>
+                        <FormError field="ownerEmail" className="mt-1" />
+                      </div>
+                    )}
+                  </div>
+
                   <HookFormMultiSelect
                     name="teams"
                     label="Owning teams"
@@ -231,14 +307,22 @@ export default function LaunchRequestExample() {
                 <Button type="submit" loading={saving} disabled={saving}>
                   Submit launch request
                 </Button>
+
                 <Button
+                  ref={discardOpenerRef}
                   type="button"
                   variant="secondary"
                   disabled={!isDirty || saving}
-                  onClick={() => setDiscardOpen(true)}
+                  onClick={() => {
+                    if (saveInFlight.current || !isDirty) return;
+                    discardConfirmed.current = false;
+                    discardFocusOwner.current = formRef.current;
+                    setDiscardOpen(true);
+                  }}
                 >
                   Discard changes
                 </Button>
+
                 <p role="status" className="text-muted-foreground text-sm">
                   {saving
                     ? 'Saving…'
@@ -247,26 +331,36 @@ export default function LaunchRequestExample() {
                       : 'All changes are reflected in the saved request.'}
                 </p>
               </div>
+
+              {saving && (
+                <p className="text-muted-foreground text-sm">
+                  Saving the submitted snapshot. You can keep editing; newer changes will remain unsaved.
+                </p>
+              )}
             </div>
 
             <div className="space-y-4">
-              <ReviewSummary control={methods.control} status={status} />
+              <ReviewSummary control={methods.control} status={status} savedRevision={savedRevision} />
+
               <DebugStatePanel control={methods.control} />
             </div>
           </form>
-
           {/* Confirmation before discarding dirty changes. */}
+
           <AlertDialog open={discardOpen} onOpenChange={setDiscardOpen}>
-            <AlertDialogContent>
+            <AlertDialogContent ref={discardContentRef} onCloseAutoFocus={restoreDiscardFocus}>
               <AlertDialogHeader>
                 <AlertDialogTitle>Discard unsaved changes?</AlertDialogTitle>
+
                 <AlertDialogDescription>
                   This resets every field back to the last saved launch request. This cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
+
               <AlertDialogFooter>
                 <AlertDialogCancel>Keep editing</AlertDialogCancel>
-                <AlertDialogAction variant="danger" onClick={confirmDiscard}>
+
+                <AlertDialogAction variant="danger" disabled={saving} onClick={confirmDiscard}>
                   Discard changes
                 </AlertDialogAction>
               </AlertDialogFooter>

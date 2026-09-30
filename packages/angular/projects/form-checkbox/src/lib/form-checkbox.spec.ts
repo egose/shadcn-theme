@@ -64,10 +64,24 @@ describe('EgFormCheckbox', () => {
     fixture.componentInstance.disabled.set(true);
     fixture.detectChanges();
     expect(control().disabled).toBeTrue();
+    control().click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.controls.value.value).toBeFalse();
+    expect(fixture.componentInstance.form.controls.value.touched).toBeFalse();
     fixture.componentInstance.disabled.set(false);
     fixture.componentInstance.form.controls.value.disable();
     fixture.detectChanges();
     expect(control().disabled).toBeTrue();
+    control().click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.controls.value.value).toBeFalse();
+    fixture.componentInstance.form.controls.value.enable();
+    fixture.detectChanges();
+    expect(control().disabled).toBeFalse();
+    control().click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.controls.value.value).toBeTrue();
+    expect(control().getAttribute('aria-checked')).toBe('true');
   });
 
   it('writes user toggles back to the control', () => {
@@ -76,6 +90,17 @@ describe('EgFormCheckbox', () => {
     control().click();
     fixture.detectChanges();
     expect(fixture.componentInstance.form.controls.value.value).toBeTrue();
+    expect(control().getAttribute('aria-checked')).toBe('true');
+    control().click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.controls.value.value).toBeFalse();
+    expect(control().getAttribute('aria-checked')).toBe('false');
+    fixture.componentInstance.form.controls.value.setValue(true);
+    fixture.detectChanges();
+    expect(control().getAttribute('aria-checked')).toBe('true');
+    fixture.componentInstance.form.reset();
+    fixture.detectChanges();
+    expect(control().getAttribute('aria-checked')).toBe('false');
   });
 
   it('coerces the bare required attribute (shows the * marker)', () => {

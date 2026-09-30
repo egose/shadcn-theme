@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="tw:contents">
+  <hlm-dialog-header>
+    <h3 hlmDialogTitle>Change role for {{ context.memberName }}</h3>
+    <p hlmDialogDescription>Current role: {{ context.currentRole }}. Saving updates this local roster.</p>
+  </hlm-dialog-header>
+  <div class="tw:grid tw:gap-2 tw:py-4">
+    <label hlmLabel for="role-select">New role</label>
+    <hlm-native-select selectId="role-select" formControlName="role" data-testid="role-select">
+      @for (role of roleOptions; track role) {
+      <option [value]="role">{{ role }}</option>
+      }
+    </hlm-native-select>
+  </div>
+  <hlm-dialog-footer>
+    <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
+    <button hlmButton type="submit" data-testid="role-submit">Save role</button>
+  </hlm-dialog-footer>
+</form>

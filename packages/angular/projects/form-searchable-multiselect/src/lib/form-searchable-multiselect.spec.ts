@@ -1,9 +1,11 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormSearchableMultiselect } from './form-searchable-multiselect';
 import { provideEgFormSearchableMultiselectConfig } from './form-searchable-multiselect.token';
+import { SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormSearchableMultiselect],
@@ -16,7 +18,11 @@ import { provideEgFormSearchableMultiselectConfig } from './form-searchable-mult
       [class]="userClass()"
       error="Tags required"
       hint="Choose tags"
-      [options]="options"
+      [options]="options()"
+      searchLabel="Find tags"
+      searchPlaceholder="Filter tags…"
+      emptyMessage="No tags found"
+      [removeLabel]="removeLabel"
       required
     />
   </form>`,
@@ -28,7 +34,8 @@ class Host {
   readonly id = signal<string | undefined>('tags');
   readonly disabled = signal(false);
   readonly userClass = signal('');
-  readonly options = [{ value: 'angular', label: 'Angular' }];
+  readonly options = signal([{ value: 'angular', label: 'Angular' }]);
+  readonly removeLabel = (option: SelectOption) => `Unassign ${option.label}`;
 }
 
 describe('EgFormSearchableMultiselect', () => {
@@ -72,6 +79,69 @@ describe('EgFormSearchableMultiselect', () => {
     expect(trigger().disabled).toBeTrue();
   });
 
+  it('forwards search copy and preserves async form assignments across filters, locks and reset', async () => {
+    const host = fixture.componentInstance;
+    const control = host.form.controls.value;
+    host.options.set([]);
+    control.setValue(['missing', 'angular']);
+    await fixture.whenStable();
+    const changes = jasmine.createSpy('valueChanges');
+    control.valueChanges.subscribe(changes);
+    (fixture.nativeElement.querySelector('button[hlmpopovertrigger]') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const overlay = TestBed.inject(OverlayContainer).getContainerElement();
+    const search = overlay.querySelector<HTMLInputElement>('input[type="search"]')!;
+    const searchFor = async (value: string) => {
+      search.value = value;
+      search.dispatchEvent(new Event('input', { bubbles: true }));
+      await fixture.whenStable();
+    };
+    const options = () => Array.from(overlay.querySelectorAll<HTMLButtonElement>('[role="checkbox"]'));
+    expect(search.labels![0].textContent).toContain('Find tags');
+    expect(search.placeholder).toBe('Filter tags…');
+    expect(overlay.querySelector('[role="status"]')!.textContent).toContain('No tags found');
+    await searchFor('react');
+    host.options.set([
+      { value: 'angular', label: 'Angular' },
+      { value: 'react', label: 'React' },
+    ]);
+    await fixture.whenStable();
+    expect(options().length).toBe(1);
+    expect(fixture.nativeElement.querySelector('button[aria-label="Unassign Angular"]')).not.toBeNull();
+    expect(changes).not.toHaveBeenCalled();
+    expect(control.untouched).toBeTrue();
+    options()[0].click();
+    await fixture.whenStable();
+    expect(control.value).toEqual(['missing', 'angular', 'react']);
+    expect(changes).toHaveBeenCalledOnceWith(['missing', 'angular', 'react']);
+    expect(control.touched).toBeTrue();
+    await searchFor('angular');
+    expect(options()[0].getAttribute('aria-checked')).toBe('true');
+    host.disabled.set(true);
+    await fixture.whenStable();
+    expect(search.disabled).toBeTrue();
+    options()[0].click();
+    await searchFor('no-match');
+    expect(options().length).toBe(1);
+    expect(changes).toHaveBeenCalledTimes(1);
+    host.disabled.set(false);
+    control.disable({ emitEvent: false });
+    await fixture.whenStable();
+    expect(search.disabled).toBeTrue();
+    control.enable({ emitEvent: false });
+    await fixture.whenStable();
+    expect(search.disabled).toBeFalse();
+    control.reset();
+    await fixture.whenStable();
+    expect(options()[0].getAttribute('aria-checked')).toBe('false');
+    expect(control.value).toEqual([]);
+    expect(control.untouched).toBeTrue();
+    expect(changes.calls.allArgs()).toEqual([[['missing', 'angular', 'react']], [[]]]);
+    await searchFor('');
+    expect(options().length).toBe(2);
+    expect(changes).toHaveBeenCalledTimes(2);
+  });
+
   it('applies userClass to the host while keeping the full-width base', () => {
     const host = () => fixture.nativeElement.querySelector('eg-form-searchable-multiselect') as HTMLElement;
     expect(host().className).toContain('tw:w-full');
@@ -79,6 +149,39 @@ describe('EgFormSearchableMultiselect', () => {
     fixture.detectChanges();
     expect(host().className).toContain('tw:w-full');
     expect(host().className).toContain('tw:max-w-xs');
+  });
+
+  it('keeps async assignments through relabeling and chip edits, then renders external writes and reset', async () => {
+    const host = fixture.componentInstance;
+    const control = host.form.controls.value;
+    const values = Object.freeze(['missing', 'angular']) as unknown as string[];
+    host.options.set([]);
+    control.setValue(values);
+    await fixture.whenStable();
+    const changes = jasmine.createSpy('valueChanges');
+    control.valueChanges.subscribe(changes);
+    expect(fixture.nativeElement.textContent).toContain('2 selected');
+    host.options.set([{ value: 'angular', label: 'Angular updated' }]);
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('Angular updated');
+    expect(changes).not.toHaveBeenCalled();
+    expect(control.untouched).toBeTrue();
+    const chips = fixture.nativeElement.querySelectorAll('eg-searchable-multiselect button:not([hlmpopovertrigger])');
+    (chips[1] as HTMLButtonElement).click();
+    await fixture.whenStable();
+    expect(control.value).toEqual(['missing']);
+    expect(control.touched).toBeTrue();
+    expect(changes).toHaveBeenCalledOnceWith(['missing']);
+    expect(values).toEqual(['missing', 'angular']);
+    control.setValue(['angular']);
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('Angular updated');
+    expect(fixture.nativeElement.textContent).not.toContain('missing');
+    control.reset();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('0 selected');
+    expect(control.untouched).toBeTrue();
+    expect(changes.calls.allArgs()).toEqual([[['missing']], [['angular']], [[]]]);
   });
 });
 

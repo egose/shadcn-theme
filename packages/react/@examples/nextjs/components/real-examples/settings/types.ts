@@ -4,9 +4,6 @@
  * (fixed IDs and dates via `_shared/fixtures.ts` conventions).
  */
 
-/** Deterministic outcome the catalog tooling chooses for simulated saves/copies. */
-export type SimulatedOutcomeChoice = 'success' | 'failure';
-
 /** Clipboard behavior chosen by the catalog tooling. */
 export type ClipboardBehavior = 'real' | 'force-failure';
 
@@ -27,6 +24,7 @@ export type ProfileDraft = {
 
 export type DigestFrequency = 'off' | 'daily' | 'weekly';
 
+/** Account inbox preferences; the read-only workspace security policy is not a saved field. */
 export type NotificationDraft = {
   mentions: boolean;
   productUpdates: boolean;

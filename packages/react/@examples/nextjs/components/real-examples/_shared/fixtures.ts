@@ -5,9 +5,11 @@
  * directory (`<slug>/fixtures.ts`); this module holds only the shared,
  * domain-neutral conventions they all follow:
  *
- * 1. Dates are fixed ISO 8601 UTC strings (never `new Date()`), so snapshots
- *    and renders are identical across builds, clocks, and time zones. Use
- *    `FIXTURE_NOW` as "today" and `addDaysUtc` only to offset it.
+ * 1. Event timestamps are fixed ISO 8601 UTC strings (never the wall clock).
+ *    Use `FIXTURE_NOW` and `addDaysUtc` for fixed instants; local formatting
+ *    can still change their displayed day, so deterministic display needs an
+ *    explicit timezone. Business calendar dates instead use fixed YYYY-MM-DD
+ *    strings (e.g. launch dates), without conversion to UTC instants.
  * 2. IDs come from `stableId` — readable, collision-free, and identical on
  *    every run (no `Math.random`, no time-based IDs).
  * 3. Text lengths vary: `SHORT_LABEL`/`LONG_LABEL` exercise truncation and

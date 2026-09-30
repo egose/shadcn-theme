@@ -61,7 +61,7 @@ import { HlmInputOtpModule } from '@egose/shadcn-theme-ng/input-otp';
 export class MyModule {}
 ```
 
-Exported from `src/public-api.ts`: `HlmInputOtp`, `HlmInputOtpGroup`, `HlmInputOtpSeparator`, `HlmInputOtpSlot`, `HlmInputOtpFakeCaret`, plus `HlmInputOtpImports` and `HlmInputOtpModule`.
+Exported from `src/public-api.ts`: `HlmInputOtp`, `HlmInputOtpControl`, `HlmInputOtpGroup`, `HlmInputOtpSeparator`, `HlmInputOtpSlot`, `HlmInputOtpFakeCaret`, plus `HlmInputOtpImports` and `HlmInputOtpModule`.
 
 ## Anatomy / Structure
 
@@ -88,6 +88,32 @@ Brain inputs on `brn-input-otp` (from `@spartan-ng/brain/input-otp`): `length` (
 
 ## API reference
 
+### `hlm-input-otp` — `HlmInputOtpControl`
+
+Use this component for native-input accessibility forwarding. It extends `BrnInputOtp` with
+a declarative input template and retains its inputs, outputs, CVA, paste and focus behavior.
+`HlmInputOtpImports` / `HlmInputOtpModule` include it; a separate brain import is unnecessary.
+Compose it with `HlmInputOtpSlot` (the raw brain slot's private injection token is not supported).
+
+- `[aria-describedby]` (`string | null`, default `null`) reaches the native input and merges
+  with enclosing Spartan field description IDs, deduplicated. Bind only IDs of mounted elements.
+- `required` (boolean-coerced, default `false`) exposes native `aria-required`. Add Angular
+  validators separately; native `aria-invalid` follows the bound form control.
+- `inputId` connects a normal `<label for>` to the one focusable native input.
+
+```html
+<label for="verification">Verification code</label>
+<hlm-input-otp [length]="4" inputId="verification" aria-describedby="verification-help" required>
+  <div hlmInputOtpGroup>
+    <hlm-input-otp-slot index="0" />
+    <hlm-input-otp-slot index="1" />
+    <hlm-input-otp-slot index="2" />
+    <hlm-input-otp-slot index="3" />
+  </div>
+</hlm-input-otp>
+<p id="verification-help">Enter the four-character code.</p>
+```
+
 ### `brn-input-otp[hlmInputOtp]` — `HlmInputOtp`
 
 Pure styling directive (`data-slot="input-otp"`, flex row, dims on `has-disabled`). No inputs/outputs — bind `length`, `value`, `disabled`, `inputId`, … on the `brn-input-otp` element itself.
@@ -102,7 +128,7 @@ Slot cluster wrapper (`data-slot="input-otp-group"`). No inputs/outputs. Use one
 | ------- | -------------------------------------------------- | -------------------------------------------------------- |
 | `index` | `number` (**required**, `numberAttribute` coerced) | Zero-based position of the character this slot displays. |
 
-Renders `<brn-input-otp-slot [index]>` internally; active slot gets the `ring` highlight, invalid state the destructive border.
+Under `brn-input-otp`, renders `<brn-input-otp-slot [index]>`; under `hlm-input-otp`, reads the adapter's public context and renders the same character/caret and state attributes declaratively. Active slots get the `ring` highlight.
 
 ### `hlm-input-otp-separator` — `HlmInputOtpSeparator`
 
@@ -267,17 +293,15 @@ export class LengthsExample {}
 
 ```ts
 import { Component, signal } from '@angular/core';
-import { BrnInputOtp } from '@spartan-ng/brain/input-otp';
 import { HlmInputOtpImports } from '@egose/shadcn-theme-ng/input-otp';
 import { HlmError } from '@egose/shadcn-theme-ng/form-field';
 
 @Component({
   standalone: true,
-  imports: [BrnInputOtp, HlmInputOtpImports, HlmError],
+  imports: [HlmInputOtpImports, HlmError],
   template: `
     <label for="otp-verify">Verification code</label>
-    <brn-input-otp
-      hlmInputOtp
+    <hlm-input-otp
       [length]="6"
       inputId="otp-verify"
       inputMode="numeric"
@@ -286,7 +310,7 @@ import { HlmError } from '@egose/shadcn-theme-ng/form-field';
       [value]="code()"
       (valueChange)="code.set($event); error.set(null)"
       (completed)="verify()"
-      aria-describedby="otp-error"
+      [aria-describedby]="error() ? 'otp-error' : null"
     >
       <div hlmInputOtpGroup>
         <hlm-input-otp-slot index="0" />
@@ -299,7 +323,7 @@ import { HlmError } from '@egose/shadcn-theme-ng/form-field';
         <hlm-input-otp-slot index="4" />
         <hlm-input-otp-slot index="5" />
       </div>
-    </brn-input-otp>
+    </hlm-input-otp>
     @if (error()) {
       <hlm-error id="otp-error">{{ error() }}</hlm-error>
     }
@@ -366,7 +390,7 @@ export class PasteExample {
 
 - Always render a visible `<label>` bound via `inputId` — the hidden native input is what AT focuses; without the label the purpose is unclear.
 - `inputMode="numeric"` (digits) vs `text` (alphanumeric) selects the right mobile keyboard; `inputAutocomplete="one-time-code"` lets browsers/OS autofill SMS codes.
-- Announce failures with a text error (`<hlm-error>` + `aria-describedby`), never by slot color alone.
+- Associate failures with text (`<hlm-error>` + `hlm-input-otp`'s `[aria-describedby]`), never by slot color alone. The legacy brain component has no native description input. `HlmError` is not a live region; browser DOM/focus tests do not establish screen-reader announcements.
 - Keep `length` aligned with what the backend expects and validate `minLength(length)` on the form control so incomplete codes cannot submit.
 
 ## Theming / CSS variables

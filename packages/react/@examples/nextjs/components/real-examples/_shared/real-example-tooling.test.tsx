@@ -1,8 +1,11 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ExampleStateToolbar, type ExampleState } from './example-state-toolbar';
-import { isSimulatedError, simulate } from './async-simulation';
+import { isSimulatedError, simulate, type SimulatedOutcome } from './async-simulation';
+import { OutcomePicker } from './outcome-picker';
 import { EMPTY_RESULTS, FIXTURE_NOW, LONG_LABEL, addDaysUtc, avatarFallbackFor, stableId } from './fixtures';
 
 // Vitest globals are disabled, so RTL auto-cleanup never registers.
@@ -39,6 +42,59 @@ describe('ExampleStateToolbar', () => {
   });
 });
 
+describe('OutcomePicker', () => {
+  function Picker({ label = 'Simulated mutation outcome', operation }: { label?: string; operation?: string }) {
+    const [value, setValue] = useState<SimulatedOutcome>('success');
+    return <OutcomePicker label={label} operation={operation} value={value} onValueChange={setValue} />;
+  }
+
+  it('labels a keyboard-reachable single choice and cannot clear the current outcome', async () => {
+    const user = userEvent.setup();
+    render(<Picker />);
+    const group = screen.getByRole('radiogroup', { name: 'Simulated mutation outcome:' });
+    expect(group.getAttribute('aria-describedby')).toBeTruthy();
+    expect(screen.getByText('Catalog control, not part of the product surface.').id).toBe(
+      group.getAttribute('aria-describedby'),
+    );
+    const success = within(group).getByRole('radio', { name: 'Simulate success' });
+    const failure = within(group).getByRole('radio', { name: 'Simulate failure' });
+    expect(success.getAttribute('aria-checked')).toBe('true');
+    expect(failure.getAttribute('aria-checked')).toBe('false');
+    await user.tab();
+    expect(document.activeElement).toBe(success);
+    await user.keyboard('{ArrowRight}');
+    await waitFor(() => expect(document.activeElement).toBe(failure));
+    await user.keyboard(' ');
+    expect(failure.getAttribute('aria-checked')).toBe('true');
+    expect(success.getAttribute('aria-checked')).toBe('false');
+    await user.click(failure);
+    expect(failure.getAttribute('aria-checked')).toBe('true');
+    await user.keyboard('{ArrowLeft}');
+    await waitFor(() => expect(document.activeElement).toBe(success));
+    await user.keyboard('{Enter}');
+    expect(success.getAttribute('aria-checked')).toBe('true');
+    expect(failure.getAttribute('aria-checked')).toBe('false');
+  });
+
+  it('keeps multiple labels and operation-specific choices independent', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Picker />
+        <Picker label="Simulated save outcome" operation="save" />
+      </>,
+    );
+    const mutation = screen.getByRole('radiogroup', { name: 'Simulated mutation outcome:' });
+    const save = screen.getByRole('radiogroup', { name: 'Simulated save outcome:' });
+    expect(mutation.getAttribute('aria-labelledby')).not.toBe(save.getAttribute('aria-labelledby'));
+    await user.click(within(save).getByRole('radio', { name: 'Simulate save failure' }));
+    expect(within(save).getByRole('radio', { name: 'Simulate save failure' }).getAttribute('aria-checked')).toBe(
+      'true',
+    );
+    expect(within(mutation).getByRole('radio', { name: 'Simulate success' }).getAttribute('aria-checked')).toBe('true');
+  });
+});
+
 describe('simulate (deterministic async simulation)', () => {
   it('resolves identical data for identical inputs', async () => {
     const payload = { id: 'customer-001', name: 'Ava Stone' };
@@ -54,11 +110,11 @@ describe('simulate (deterministic async simulation)', () => {
     await expect(attempt()).rejects.toMatchObject({ __simulated: true });
   });
 
-  it('honors the fixed delay before resolving', async () => {
+  it('defaults to 400ms before resolving', async () => {
     vi.useFakeTimers();
     try {
       let settled = false;
-      const pending = simulate('ok', { outcome: 'success', delayMs: 400 }).then(() => {
+      const pending = simulate('ok', { outcome: 'success' }).then(() => {
         settled = true;
       });
       await vi.advanceTimersByTimeAsync(399);

@@ -22,6 +22,3 @@ export interface Customer {
    */
   actionsEnabled: boolean;
 }
-
-/** Explicit, deterministic outcome for simulated mutations. */
-export type MutationOutcome = 'success' | 'failure';

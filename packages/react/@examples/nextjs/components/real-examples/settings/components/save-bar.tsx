@@ -1,5 +1,7 @@
 'use client';
 
+import { useId } from 'react';
+
 import { Button } from '@egose/shadcn-theme/components/ui/button';
 
 import type { SaveStatus } from '../types';
@@ -10,7 +12,16 @@ import type { SaveStatus } from '../types';
  * them (status text or a destructive alert); this bar always conveys the
  * current SaveStatus as text, never by color alone.
  */
-export function SaveBar({ status, onDiscard }: { status: SaveStatus; onDiscard: () => void }) {
+export function SaveBar({
+  status,
+  onDiscard,
+  saveBlockedReason,
+}: {
+  status: SaveStatus;
+  onDiscard: () => void;
+  saveBlockedReason?: string | null;
+}) {
+  const reasonId = useId();
   const statusText =
     status === 'pristine'
       ? 'No unsaved changes.'
@@ -24,17 +35,30 @@ export function SaveBar({ status, onDiscard }: { status: SaveStatus; onDiscard: 
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button type="submit" loading={status === 'saving'} disabled={status !== 'unsaved' && status !== 'error'}>
+      <Button
+        type="submit"
+        loading={status === 'saving'}
+        disabled={!!saveBlockedReason || (status !== 'unsaved' && status !== 'error')}
+        aria-describedby={saveBlockedReason ? reasonId : undefined}
+      >
         Save changes
       </Button>
+
       {(status === 'unsaved' || status === 'error') && (
         <Button type="button" variant="secondary" appearance="outline" onClick={onDiscard}>
           Discard changes
         </Button>
       )}
+
       <p role="status" aria-live="polite" className="text-muted-foreground text-sm">
         {statusText}
       </p>
+
+      {saveBlockedReason && (
+        <p id={reasonId} role="status" className="text-muted-foreground text-sm">
+          {saveBlockedReason}
+        </p>
+      )}
     </div>
   );
 }

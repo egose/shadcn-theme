@@ -1,0 +1,42 @@
+<app-settings-section
+  sectionId="settings-danger-zone"
+  title="Danger zone"
+  description="Leaving or deleting ends this local workspace session. Each action asks for confirmation first."
+>
+  <div
+    role="region"
+    aria-label="Destructive workspace actions"
+    data-testid="danger-zone"
+    class="tw:grid tw:min-w-0 tw:gap-3 tw:rounded-xl tw:border tw:border-rose-300 tw:bg-rose-50 tw:p-4"
+  >
+    <p class="tw:min-w-0 tw:break-words tw:text-sm tw:text-rose-900">
+      Leaving removes your access; deletion removes the workspace for everyone. Opening either confirmation cancels any
+      pending save and preserves drafts until confirmed. Recovery requires explicitly restoring this preview's fixtures.
+    </p>
+    <div class="tw:flex tw:min-w-0 tw:flex-wrap tw:gap-2">
+      <button
+        hlmButton
+        type="button"
+        variant="secondary"
+        appearance="outline"
+        data-testid="leave-workspace"
+        [disabled]="readOnly() || busy()"
+        [title]="readOnly() ? readOnlyMessage : 'Leave this workspace'"
+        (click)="leaveWorkspace.emit()"
+      >
+        Leave workspace
+      </button>
+      <button
+        hlmButton
+        type="button"
+        variant="danger"
+        data-testid="delete-workspace"
+        [disabled]="readOnly() || busy()"
+        [title]="readOnly() ? readOnlyMessage : 'Delete this workspace'"
+        (click)="deleteWorkspace.emit()"
+      >
+        Delete workspace
+      </button>
+    </div>
+  </div>
+</app-settings-section>

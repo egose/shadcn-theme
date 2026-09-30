@@ -1,0 +1,51 @@
+<app-settings-section
+  sectionId="settings-workspace"
+  title="Workspace"
+  description="The shared name, URL slug, and plan for this workspace."
+>
+  <div [formGroup]="form()" class="tw:grid tw:min-w-0 tw:gap-4">
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="workspace-name">Workspace name</label>
+      <input
+        hlmInput
+        id="workspace-name"
+        data-testid="workspace-name"
+        formControlName="workspaceName"
+        autocomplete="organization"
+        [attr.aria-invalid]="workspaceNameError() !== null"
+        [attr.aria-describedby]="workspaceNameError() !== null ? 'workspace-name-error' : null"
+      />
+      @if (workspaceNameError(); as error) {
+      <p id="workspace-name-error" data-testid="workspace-name-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="workspace-slug">Workspace slug</label>
+      <input
+        hlmInput
+        id="workspace-slug"
+        data-testid="workspace-slug"
+        formControlName="slug"
+        autocomplete="off"
+        [attr.aria-describedby]="
+          slugError() !== null ? 'workspace-slug-hint workspace-slug-error' : 'workspace-slug-hint'
+        "
+        [attr.aria-invalid]="slugError() !== null"
+      />
+      <p id="workspace-slug-hint" class="tw:text-xs tw:text-slate-500">
+        Lowercase letters, numbers, and hyphens. Used in workspace URLs.
+      </p>
+      @if (slugError(); as error) {
+      <p id="workspace-slug-error" data-testid="workspace-slug-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="workspace-plan">Plan</label>
+      <hlm-native-select selectId="workspace-plan" formControlName="planId" data-testid="workspace-plan">
+        @for (plan of plans; track plan.id) {
+        <option [value]="plan.id">{{ plan.name }}</option>
+        }
+      </hlm-native-select>
+    </div>
+  </div>
+</app-settings-section>

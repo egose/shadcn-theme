@@ -187,7 +187,10 @@ export type VariantStyleType = NonNullable<VariantProps<typeof buttonVariants>['
 /**
  * Props for the {@link Button} component. Pick `variant`, `size`, and
  * `appearance` to control the visual style, and pass `loading` to swap the
- * label for a spinner that inherits the button's text color. Consumer className
+ * label for a spinner that inherits the button's text color. Native buttons are
+ * disabled when loading or when `disabled` is true: `disabled={false}` cannot
+ * override loading. When loading ends, the caller's disabled state applies.
+ * Consumer className
  * overrides are merged after all appearance styles. Legacy link and ghost
  * variants remain supported. `asChild` (from Radix `Slot`) forwards props onto the
  * immediate child instead of rendering a `<button>`.
@@ -233,12 +236,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, appearance, loading }), className)}
         ref={ref}
         aria-busy={loading || undefined}
-        disabled={loading || props.disabled}
         {...props}
+        disabled={loading || props.disabled}
       >
         {loading ? (
           <div className="relative inline-flex items-center justify-center w-full">
             <span className="invisible">{children}</span>
+
             <span className="absolute inset-0 flex items-center justify-center">
               <Spinner size="small" className="size-4 text-current" />
             </span>

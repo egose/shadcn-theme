@@ -1,0 +1,162 @@
+<section class="tw:min-w-0 tw:space-y-6">
+  <app-demo-header
+    title="Support Inbox"
+    description="Search, assign, reply to requesters, and resolve conversations. Explore deterministic preview states without a backend."
+  />
+  <app-example-state-toolbar
+    [viewState]="viewState()"
+    (viewStateChange)="setPreview($event)"
+    [readOnly]="readOnly()"
+    (readOnlyChange)="setReadOnly($event)"
+    [(simulateFailure)]="simulateFailure"
+  />
+  @switch (viewState()) { @case ('loading') {
+  <div role="status" aria-label="Loading tickets" data-testid="tickets-loading" class="tw:space-y-3">
+    @for (slot of loadingSlots; track slot) {
+    <div class="tw:flex tw:items-center tw:gap-3 tw:rounded-2xl tw:border tw:border-slate-200 tw:p-4">
+      <hlm-skeleton class="tw:h-10 tw:w-10 tw:rounded-full" />
+      <div class="tw:flex tw:min-w-0 tw:flex-1 tw:flex-col tw:gap-2">
+        <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-48" /><hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-64" />
+      </div>
+    </div>
+    }
+  </div>
+  } @case ('empty') {
+  <div hlmEmpty data-testid="empty-preview" class="tw:border-slate-200 tw:bg-white">
+    <div hlmEmptyHeader>
+      <div hlmEmptyMedia variant="icon">📥</div>
+      <h3 hlmEmptyTitle>Inbox zero</h3>
+      <p hlmEmptyDescription>Every ticket is resolved. New requests appear here.</p>
+    </div>
+    <div hlmEmptyContent><button hlmButton type="button" (click)="setPreview('loaded')">Show fixtures</button></div>
+  </div>
+  } @case ('error') {
+  <div role="alert" data-testid="tickets-error" class="tw:grid tw:gap-3">
+    <eg-basic-alert
+      variant="danger"
+      title="Tickets failed to load"
+      [description]="loadError() ?? 'Tickets failed to load.'"
+    />
+    <div><button hlmButton type="button" data-testid="retry-tickets" (click)="reload()">Retry</button></div>
+  </div>
+  } @default {
+  <form [formGroup]="filterForm" class="tw:grid tw:min-w-0 tw:gap-3 sm:tw:grid-cols-2" aria-label="Ticket filters">
+    <div class="tw:grid tw:min-w-0 tw:gap-2 sm:tw:col-span-2">
+      <label hlmLabel for="ticket-search">Search tickets</label>
+      <input
+        hlmInput
+        id="ticket-search"
+        type="search"
+        formControlName="search"
+        data-testid="ticket-search"
+        aria-describedby="ticket-search-hint"
+      />
+      <p id="ticket-search-hint" class="tw:text-xs tw:text-slate-500">Search by ticket ID, subject, or requester.</p>
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="ticket-status">Status</label>
+      <hlm-native-select selectId="ticket-status" formControlName="status" data-testid="status-filter">
+        @for (status of statusOptions; track status) {
+        <option [value]="status">{{ status === 'All' ? 'All statuses' : status }}</option>
+        }
+      </hlm-native-select>
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="ticket-assignee">Assignee</label>
+      <hlm-native-select selectId="ticket-assignee" formControlName="assignee" data-testid="assignee-filter">
+        @for (assignee of assigneeOptions; track assignee) {
+        <option [value]="assignee">{{ assignee === 'All' ? 'All assignees' : assignee }}</option>
+        }
+      </hlm-native-select>
+    </div>
+  </form>
+  <p role="status" data-testid="ticket-count" class="tw:text-sm tw:text-slate-600">{{ countSummary() }}</p>
+  @if (filteredTickets().length === 0) {
+  <div hlmEmpty data-testid="no-ticket-results" class="tw:border-slate-200 tw:bg-white">
+    <div hlmEmptyHeader>
+      <div hlmEmptyMedia variant="icon">🔎</div>
+      <h3 hlmEmptyTitle id="no-ticket-results-heading" tabindex="-1">No tickets match these filters</h3>
+      <p hlmEmptyDescription>
+        No ticket matches the current search, status and assignee filters. Clear the filters to see the full inbox
+        again.
+      </p>
+    </div>
+    <div hlmEmptyContent>
+      <button
+        hlmButton
+        variant="secondary"
+        appearance="outline"
+        type="button"
+        data-testid="clear-ticket-filters"
+        (click)="clearFilters()"
+      >
+        Clear filters
+      </button>
+    </div>
+  </div>
+  } @else {
+  <div class="tw:grid tw:min-w-0 tw:gap-4 md:tw:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
+    <section
+      aria-label="Ticket list"
+      data-testid="ticket-list-pane"
+      [class]="mobileView() === 'detail' ? 'tw:hidden tw:min-w-0 md:tw:block' : 'tw:block tw:min-w-0'"
+    >
+      <app-support-ticket-list
+        [tickets]="filteredTickets()"
+        [selectedId]="selectedTicket()?.id ?? null"
+        [hasFilters]="hasActiveFilters()"
+        (selectTicket)="selectTicket($event)"
+        (clearFilters)="clearFilters()"
+      />
+    </section>
+    @if (selectedTicket(); as ticket) { @if (selectedReply(); as reply) {
+    <article
+      aria-label="Ticket detail"
+      data-testid="ticket-detail-pane"
+      [class]="mobileView() === 'list' ? 'tw:hidden tw:min-w-0 md:tw:block' : 'tw:block tw:min-w-0'"
+      class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4 sm:tw:p-6"
+    >
+      <app-support-ticket-detail
+        [ticket]="ticket"
+        [reply]="reply"
+        [readOnly]="readOnly()"
+        [simulateFailure]="simulateReplyFailure()"
+        (failureChange)="simulateReplyFailure.set($event)"
+        (back)="backToList()"
+        (send)="sendReply()"
+        (resolve)="resolveSelected()"
+        (reopen)="reopenSelected()"
+        (assign)="assignSelected($event)"
+      />
+    </article>
+    } }
+  </div>
+  } @if (outcome() || selectedReply()?.outcome(); as result) {
+  <p role="status" data-testid="inbox-outcome" class="tw:min-w-0 tw:break-words tw:text-sm tw:text-slate-700">
+    {{ result }}
+  </p>
+  } @if (readOnly()) {
+  <p class="tw:text-xs tw:text-slate-500">{{ READ_ONLY_MESSAGE }}</p>
+  } } }
+  <div class="tw:space-y-2">
+    <p class="tw:text-xs tw:text-slate-500">
+      Reset and reload discard all local drafts and changes. Preview or read-only changes cancel pending sends and keep
+      drafts.
+    </p>
+    <div class="tw:flex tw:flex-wrap tw:gap-2">
+      <button hlmButton variant="secondary" type="button" data-testid="reload-inbox" (click)="reload()">
+        Simulate reload
+      </button>
+      <button
+        hlmButton
+        variant="secondary"
+        appearance="outline"
+        type="button"
+        data-testid="reset-inbox"
+        (click)="reset()"
+      >
+        Reset inbox
+      </button>
+    </div>
+  </div>
+</section>

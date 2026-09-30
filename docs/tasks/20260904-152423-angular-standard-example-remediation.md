@@ -1273,7 +1273,7 @@ within 5000ms`, one browser DISCONNECT); the same specs pass 17/17 in
 - `pnpm --dir packages/angular test:example-boundary` → 5/5 pass.
 - `pnpm --dir packages/angular test:dependency-contract` →
   pass. `test:public-api` → pass. `test:variants` → 3/3 pass.
-- `CHROME_BIN=<repo-local headless shell, absolute> pnpm --dir
+- `CHROME_BIN=<repo-root>/packages/angular/.puppeteer-cache/.../chrome-headless-shell pnpm --dir
 packages/angular test:libraries` → exit 0 (bare run without
   `CHROME_BIN` fails to launch — pre-existing environment prerequisite,
   same as ANGEX-01/02).

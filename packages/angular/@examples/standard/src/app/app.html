@@ -18,8 +18,8 @@
   [searchResultTemplate]="searchResult"
   [searchLoader]="loadDemoRoutes"
   [searchResultLabel]="searchResultLabel"
-  [searchPlaceholder]="'Jump to a component'"
-  [searchEmptyText]="'No matching component demos'"
+  [searchPlaceholder]="'Find components and workflows'"
+  [searchEmptyText]="'No matching components or workflows'"
   (searchResultSelected)="navigateToSearchResult($event)"
 >
   <router-outlet />
@@ -27,8 +27,9 @@
 
 <ng-template #searchResult let-result>
   <div class="tw:flex tw:flex-col tw:gap-0.5">
-    <span class="tw:text-xs tw:font-medium tw:text-foreground/75">{{ result.group }}</span>
+    <span class="tw:text-xs tw:font-medium tw:text-foreground/75">{{ result.context }} · {{ result.group }}</span>
     <span class="tw:text-sm tw:text-foreground">{{ result.label }}</span>
+    <span class="tw:text-xs tw:text-foreground/75">{{ result.description }}</span>
   </div>
 </ng-template>
 <ng-template #sidebarContent let-close="close">
@@ -82,7 +83,7 @@
     <div class="tw:rounded-2xl tw:border tw:border-dashed tw:border-slate-300 tw:bg-slate-50 tw:p-4">
       <p class="tw:text-xs tw:font-semibold tw:uppercase tw:tracking-[0.2em] tw:text-slate-500">Quick tip</p>
       <p class="tw:mt-2 tw:text-sm tw:leading-6 tw:text-slate-600">
-        Use the header search to jump directly to any packaged component demo.
+        Use the header search to find components and business workflows by title, category, or description.
       </p>
     </div>
   </div>

@@ -170,6 +170,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'resizable',
+      capabilities: ['Split view', 'Panel resizing'],
       route: 'static',
       title: 'Resizable',
       description: 'Resizable panels for split-view layouts.',
@@ -190,6 +191,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'scroll-area',
+      capabilities: ['Overflow', 'Scroll containers'],
       route: 'dynamic',
       title: 'Scroll Area',
       description: 'Custom scroll containers with themed scrollbars.',
@@ -314,6 +316,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'pagination',
+      capabilities: ['Page navigation'],
       route: 'dynamic',
       title: 'Pagination',
       description: 'Page navigation with active, previous, and next states.',
@@ -335,6 +338,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'sheet',
+      capabilities: ['Off-canvas detail'],
       route: 'static',
       title: 'Sheet',
       description: 'Off-canvas panels for supporting workflows.',
@@ -401,6 +405,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'table',
+      capabilities: ['Tabular data'],
       route: 'dynamic',
       title: 'Table',
       description: 'Responsive tables with headers, rows, and totals.',
@@ -408,6 +413,7 @@ export const componentsSection = defineSection({
     },
     {
       slug: 'item',
+      capabilities: ['List row composition'],
       route: 'dynamic',
       title: 'Item',
       description: 'Flexible list rows with media, content, and actions.',

@@ -69,21 +69,17 @@ export const CATALOG_KIND_PATHS: Record<CatalogKind, string> = {
 };
 
 /**
- * Reviewed baseline size: the registry replaced a 69-demo route table and
- * menu, and ANGEX-08 added the menu demo (70). Contract tests assert the
- * component count never drops below this without deliberately lowering the
- * baseline (intentional removal) — otherwise an accidental removal breaks
- * nothing self-derived.
+ * Reviewed AEX-06 inventory: 87 publishable projects, 86 visual demos and
+ * the intentionally nonvisual utils project. The executable inventory gate
+ * also compares exact project/catalog/directory membership.
  */
-export const REVIEWED_COMPONENT_BASELINE = 70;
+export const REVIEWED_COMPONENT_BASELINE = 86;
 
 /**
- * Reviewed baseline size for the real-example catalog, established by
- * ANGEX-09 (pricing, team management, settings, support inbox). Contract
- * tests assert the example count never drops below this without deliberately
- * lowering the baseline — adding a flow only appends an entry.
+ * Reviewed AEX-06 workflows: pricing, team management, settings, support
+ * inbox and signup. Intentional removals require reviewing this floor.
  */
-export const REVIEWED_EXAMPLE_BASELINE = 4;
+export const REVIEWED_EXAMPLE_BASELINE = 5;
 
 /** Presentation shared by the category trigger and its fly-out introduction. */
 const CATALOG_CATEGORIES: Record<string, { description: string; icon: string }> = {
@@ -429,6 +425,15 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     description: 'Capture longer answers with consistent form validation and layout.',
     icon: lucideType,
     load: () => import('../pages/components/form-textarea/form-textarea').then((m) => m.FormTextareaPage),
+  },
+  {
+    slug: 'phone-input',
+    title: 'Phone Input',
+    category: 'Forms & Inputs',
+    kind: 'component',
+    description: 'Edit masked phone numbers with raw or formatted models, correction, reset, and readonly states.',
+    icon: lucideTextCursorInput,
+    load: () => import('../pages/components/phone-input/phone-input').then((m) => m.PhoneInputPage),
   },
   {
     slug: 'form-phone-input',
@@ -920,7 +925,7 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     title: 'Pricing',
     category: 'Product Flows',
     kind: 'example',
-    description: 'Compare subscription plans, switch billing periods, and choose a tier.',
+    description: 'Compare subscription plans and confirm integer seat totals for a captured billing period.',
     icon: lucideCreditCard,
     load: () => import('../pages/examples/pricing/pricing').then((m) => m.PricingExamplePage),
   },
@@ -929,7 +934,7 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     title: 'Team Management',
     category: 'Product Flows',
     kind: 'example',
-    description: 'Invite teammates, review members, and manage access in one place.',
+    description: 'Invite teammates, search members, and confirm stable-ID bulk role changes with retry and local undo.',
     icon: lucideUsers,
     load: () => import('../pages/examples/team-management/team-management').then((m) => m.TeamManagementExamplePage),
   },
@@ -938,7 +943,8 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     title: 'Settings',
     category: 'Product Flows',
     kind: 'example',
-    description: 'Explore a complete preferences screen with editable account settings.',
+    description:
+      'Save profile, workspace, and notification preferences while preserving newer drafts and guarding departure.',
     icon: lucideSettings,
     load: () => import('../pages/examples/settings/settings').then((m) => m.SettingsExamplePage),
   },
@@ -947,7 +953,7 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     title: 'Support Inbox',
     category: 'Product Flows',
     kind: 'example',
-    description: 'Browse support conversations and work through incoming requests.',
+    description: 'Search tickets, reassign conversations, and send or retry ticket-owned reply drafts.',
     icon: lucideMessageSquare,
     load: () => import('../pages/examples/support-inbox/support-inbox').then((m) => m.SupportInboxExamplePage),
   },
@@ -956,7 +962,7 @@ export const CATALOG_ENTRIES: CatalogEntry[] = [
     title: 'Signup Flow',
     category: 'Product Flows',
     kind: 'example',
-    description: 'Multi-step signup with a validated form per step, from account details to terms acceptance.',
+    description: 'Complete validated onboarding, review account details and terms, then submit, retry, or start over.',
     icon: lucideUserPlus,
     load: () => import('../pages/examples/signup-flow/signup-flow').then((m) => m.SignupFlowExamplePage),
   },

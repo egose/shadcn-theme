@@ -1,16 +1,13 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendar, lucideX } from '@ng-icons/lucide';
-import {
-  BrnDateInput,
-  type BrnDatePickerTriggerBase,
-  provideBrnDatePickerTrigger,
-} from '@spartan-ng/brain/date-picker';
+import { type BrnDatePickerTriggerBase, provideBrnDatePickerTrigger } from '@spartan-ng/brain/date-picker';
 import { HlmInputGroup, HlmInputGroupImports } from '@egose/shadcn-theme-ng/input-group';
 import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
 import type { BooleanInput } from '@angular/cdk/coercion';
 import type { ClassValue } from 'clsx';
 import { injectHlmDateRangePickerConfig } from './hlm-date-range-picker.token';
+import { HlmConstrainedDateInput } from './hlm-constrained-date-input';
 
 @Component({
   selector: 'hlm-date-range-input',
@@ -30,7 +27,8 @@ import { injectHlmDateRangePickerConfig } from './hlm-date-range-picker.token';
       [placeholder]="placeholder()"
       [readonly]="readonly()"
       [disabled]="_disabled()"
-      [forceInvalid]="forceInvalid()"
+      [attr.aria-invalid]="forceInvalid() || inputInvalid() ? 'true' : null"
+      [attr.data-matches-spartan-invalid]="forceInvalid() || inputInvalid() ? 'true' : null"
       [class]="$inputClass()"
       (click)="_handleClick()"
       (keydown.arrowDown)="_open()"
@@ -64,7 +62,7 @@ import { injectHlmDateRangePickerConfig } from './hlm-date-range-picker.token';
     </hlm-input-group-addon>
   `,
 })
-export class HlmDateRangeInput<T> extends BrnDateInput<[T, T]> implements BrnDatePickerTriggerBase {
+export class HlmDateRangeInput<T> extends HlmConstrainedDateInput<[T, T]> implements BrnDatePickerTriggerBase {
   private readonly _config = injectHlmDateRangePickerConfig<T>();
 
   /** Native `name` attribute forwarded to the inner `<input>`. */
@@ -90,8 +88,8 @@ export class HlmDateRangeInput<T> extends BrnDateInput<[T, T]> implements BrnDat
 
   /**
    * Parses input text into a date range. Return `null` for invalid
-   * input - the picker's range is cleared while the text is preserved so
-   * the user can fix it.
+   * input. Rejected text stays editable and aria-invalid; the committed value
+   * is preserved. Empty text explicitly clears on blur/Enter.
    *
    * Defaults to `parseDate` from `HlmDateRangePickerConfig`.
    */

@@ -19,6 +19,7 @@ export const formSection = defineSection({
     },
     {
       slug: 'date-picker',
+      capabilities: ['Controlled date selection'],
       route: 'static',
       title: 'Date Picker',
       description: 'Date selection with labels and controlled values.',
@@ -107,6 +108,7 @@ export const formSection = defineSection({
     },
     {
       slug: 'hook-multi-select',
+      capabilities: ['React Hook Form', 'Multiple selection'],
       route: 'dynamic',
       title: 'Hook Multi Select',
       description: 'Multi-select chips integrated with react-hook-form state.',

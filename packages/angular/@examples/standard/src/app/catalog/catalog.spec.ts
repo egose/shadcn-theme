@@ -3,6 +3,7 @@ import {
   CATALOG_KIND_PATHS,
   CatalogEntry,
   REVIEWED_COMPONENT_BASELINE,
+  REVIEWED_EXAMPLE_BASELINE,
   catalogChildRoutes,
   catalogEntriesByKind,
   catalogLink,
@@ -42,6 +43,16 @@ describe('catalog registry', () => {
     expect(catalogEntriesByKind('component').length).toBeGreaterThanOrEqual(REVIEWED_COMPONENT_BASELINE);
   });
 
+  it('keeps the reviewed five-workflow baseline and direct phone primitive discoverable', () => {
+    expect(catalogEntriesByKind('example').length).toBeGreaterThanOrEqual(REVIEWED_EXAMPLE_BASELINE);
+    const phone = CATALOG_ENTRIES.find((entry) => entry.slug === 'phone-input')!;
+    expect(phone.kind).toBe('component');
+    expect(catalogLink(phone)).toBe('/components/phone-input');
+    expect(catalogMenuGroups('component').flatMap((group) => group.items.map((item) => item.link))).toContain(
+      '/components/phone-input',
+    );
+  });
+
   it('registers every entry with a lazy loader that resolves to a component', async () => {
     expect(CATALOG_ENTRIES.length).toBeGreaterThan(1);
     const failures: string[] = [];
@@ -54,7 +65,7 @@ describe('catalog registry', () => {
     expect(failures)
       .withContext(`entries whose loader resolved to no component: ${failures.join(', ')}`)
       .toEqual([]);
-  });
+  }, 30000);
 
   it('derives one lazy child route per registered entry of a kind', () => {
     const components = catalogEntriesByKind('component');

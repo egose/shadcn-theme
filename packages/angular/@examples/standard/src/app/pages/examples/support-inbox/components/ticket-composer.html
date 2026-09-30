@@ -1,0 +1,97 @@
+<form [formGroup]="reply().form" (ngSubmit)="send.emit()" novalidate class="tw:mt-5 tw:grid tw:gap-2">
+  <label hlmLabel for="reply-body">Reply to {{ ticket().requester }}</label>
+  <textarea
+    hlmTextarea
+    id="reply-body"
+    data-testid="reply-body"
+    class="tw:min-h-[120px] tw:w-full"
+    formControlName="body"
+    placeholder="Write a reply as plain text"
+    [forceInvalid]="!!bodyError()"
+    [attr.aria-describedby]="bodyError() ? 'reply-hint reply-body-error' : 'reply-hint'"
+  ></textarea>
+  <p id="reply-hint" class="tw:text-xs tw:text-slate-500">
+    2–2000 characters after trimming. Drafts stay with each ticket. Retry sends the current draft.
+  </p>
+  @if (bodyError(); as error) {
+  <p id="reply-body-error" data-testid="reply-body-error" role="alert" class="tw:text-sm tw:text-red-600">
+    {{ error }}
+  </p>
+  } @if (ticket().status === 'Resolved') {
+  <p data-testid="reply-resolved-note" class="tw:text-xs tw:text-slate-500">
+    This ticket is resolved. Reopen it to send another reply.
+  </p>
+  } @if (reply().pending()) {
+  <p role="status" data-testid="reply-pending" class="tw:text-xs tw:text-slate-500">
+    Sending for {{ ticket().id }}. You can keep drafting; resolve is available after sending finishes.
+  </p>
+  }
+  <label class="tw:inline-flex tw:cursor-pointer tw:items-center tw:gap-2 tw:text-sm tw:text-slate-700">
+    <input
+      type="checkbox"
+      class="tw:h-4 tw:w-4 tw:accent-slate-900"
+      [checked]="simulateFailure()"
+      (change)="failureChange.emit($any($event.target).checked)"
+      data-testid="simulate-reply-failure"
+    />
+    Simulate reply failure
+  </label>
+  <div class="tw:flex tw:flex-wrap tw:gap-2">
+    <button
+      hlmButton
+      type="submit"
+      size="sm"
+      data-testid="reply-submit"
+      [disabled]="readOnly() || reply().pending() || ticket().status === 'Resolved'"
+      [title]="readOnly() ? READ_ONLY_MESSAGE : 'Send reply as plain text'"
+    >
+      {{ reply().pending() ? 'Sending…' : 'Send reply' }}
+    </button>
+    @if (ticket().status === 'Resolved') {
+    <button
+      hlmButton
+      variant="secondary"
+      type="button"
+      size="sm"
+      data-testid="ticket-reopen"
+      [disabled]="readOnly() || reply().pending()"
+      [title]="readOnly() ? READ_ONLY_MESSAGE : 'Reopen ' + ticket().id"
+      (click)="reopen.emit()"
+    >
+      Reopen ticket
+    </button>
+    } @else {
+    <button
+      hlmButton
+      variant="secondary"
+      type="button"
+      size="sm"
+      data-testid="ticket-resolve"
+      [disabled]="readOnly() || reply().pending()"
+      [title]="readOnly() ? READ_ONLY_MESSAGE : 'Resolve ' + ticket().id"
+      (click)="resolve.emit()"
+    >
+      Resolve ticket
+    </button>
+    }
+  </div>
+</form>
+@if (reply().error(); as failure) {
+<div role="alert" data-testid="reply-error" class="tw:mt-3 tw:grid tw:gap-2">
+  <eg-basic-alert variant="danger" title="Reply failed to send" [description]="failure" />
+  <div>
+    <button
+      hlmButton
+      variant="secondary"
+      appearance="outline"
+      size="sm"
+      type="button"
+      data-testid="reply-retry"
+      [disabled]="readOnly() || reply().pending() || ticket().status === 'Resolved'"
+      (click)="send.emit()"
+    >
+      Retry reply
+    </button>
+  </div>
+</div>
+}

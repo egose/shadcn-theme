@@ -1,20 +1,17 @@
-import { addDaysUtc, FIXTURE_NOW } from '../_shared/fixtures';
-
 import type { LaunchRequestValues } from './types';
 
 /**
  * Fixed initial launch request.
  *
- * The launch date is derived from the shared `FIXTURE_NOW` constant, never
- * from `new Date()`, so the rendered summary and payloads are identical
- * across builds and time zones.
+ * The launch date is a calendar day, not an instant. Keep it date-only through
+ * the form and submitted payload so local picker display cannot shift the day.
  */
 
 export const DEFAULT_LAUNCH_REQUEST: LaunchRequestValues = {
   projectName: 'Insights Hub',
   summary:
     'Coordinate launch copy, QA sign-off, and customer success enablement before the public rollout of the new analytics workspace.',
-  launchDate: new Date(addDaysUtc(FIXTURE_NOW, 21)),
+  launchDate: '2026-03-30',
   rolloutWindow: 'morning',
   ownerEmail: 'ava@company.com',
   teams: ['product', 'design'],

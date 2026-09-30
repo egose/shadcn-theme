@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import { Alert, AlertDescription, AlertTitle } from '@egose/shadcn-theme/components/ui/alert';
 import { Avatar, AvatarFallback } from '@egose/shadcn-theme/components/ui/avatar';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@egose/shadcn-theme/components/ui/field';
@@ -9,16 +7,20 @@ import { Input } from '@egose/shadcn-theme/components/ui/input';
 import { Textarea } from '@egose/shadcn-theme/components/ui/textarea';
 
 import { avatarFallbackFor } from '../../_shared/fixtures';
-import { INITIAL_PROFILE, SAVE_ERROR_HINT } from '../fixtures';
-import type { SimulatedOutcomeChoice } from '../types';
+import { SAVE_ERROR_HINT } from '../fixtures';
+import type { SettingsSession } from '../use-settings-session';
 import { SaveBar } from './save-bar';
-import { useSaveSection } from './use-save-section';
 
-export function ProfileSection({ saveOutcome }: { saveOutcome: SimulatedOutcomeChoice }) {
-  const { draft, update, status, save, discard } = useSaveSection(INITIAL_PROFILE, saveOutcome);
-  // Avatar "upload" is simulated locally: we never read file bytes, we only
-  // acknowledge the chosen file name so the flow stays offline and portable.
-  const [avatarFileName, setAvatarFileName] = useState<string | null>(null);
+export function ProfileSection({
+  state,
+  avatarFileName,
+  onAvatarChange,
+}: {
+  state: SettingsSession['profile'];
+  avatarFileName: string | null;
+  onAvatarChange: (name: string | null) => void;
+}) {
+  const { draft, update, status, save, discard } = state;
 
   return (
     <form
@@ -37,29 +39,36 @@ export function ProfileSection({ saveOutcome }: { saveOutcome: SimulatedOutcomeC
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="settings-display-name">Display name</FieldLabel>
+
           <Input
             id="settings-display-name"
             value={draft.displayName}
             onChange={(event) => update({ displayName: event.target.value })}
           />
         </Field>
+
         <Field>
           <FieldLabel htmlFor="settings-bio">Bio</FieldLabel>
+
           <Textarea id="settings-bio" value={draft.bio} onChange={(event) => update({ bio: event.target.value })} />
         </Field>
+
         <Field>
           <FieldLabel htmlFor="settings-avatar">Avatar photo</FieldLabel>
+
           <div className="flex items-center gap-3">
             <Avatar aria-label={`Avatar preview for ${draft.displayName}`}>
               <AvatarFallback>{avatarFallbackFor(draft.displayName)}</AvatarFallback>
             </Avatar>
+
             <Input
               id="settings-avatar"
               type="file"
               accept="image/*"
-              onChange={(event) => setAvatarFileName(event.target.files?.[0]?.name ?? null)}
+              onChange={(event) => onAvatarChange(event.target.files?.[0]?.name ?? null)}
             />
           </div>
+
           <FieldDescription>
             {avatarFileName
               ? `Selected “${avatarFileName}” — the upload itself is simulated by this example.`

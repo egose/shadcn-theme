@@ -8,6 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "node scripts/test-ci.mjs",
+    "check:inventory": "node scripts/check-inventory.mjs",
+    "test:inventory": "node --test scripts/inventory.test.mjs",
     "smoke:deploy": "node scripts/deployment-smoke.mjs",
     "install:browser": "puppeteer browsers install chrome-headless-shell",
     "sync:aliases": "node scripts/sync-example-aliases.mjs"

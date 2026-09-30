@@ -19,9 +19,9 @@ import {
   type MenuItem,
   type UserMenuSection,
 } from '@egose/shadcn-theme-ng/layout-simple';
-import { catalogEntriesByKind, catalogLink, catalogMenuGroups } from './catalog/catalog';
+import { CATALOG_ENTRIES, catalogLink, catalogMenuGroups } from './catalog/catalog';
 
-type DemoRoute = { label: string; link: string; group: string };
+type DemoRoute = { label: string; link: string; group: string; context: string; description: string };
 
 // Menu groups, search options, and counts are all derived from the single
 // typed registry in `catalog/catalog.ts` (ANGEX-04). Adding or renaming a
@@ -119,23 +119,25 @@ export class App {
     window.open('https://github.com/egose/shadcn-theme', '_blank', 'noopener');
   }
 
-  private readonly componentRoutes: DemoRoute[] = catalogEntriesByKind('component').map((entry) => ({
+  private readonly demoRoutes: DemoRoute[] = CATALOG_ENTRIES.map((entry) => ({
     label: entry.title,
     link: catalogLink(entry),
     group: entry.category,
+    context: entry.kind === 'component' ? 'Component' : 'Business example',
+    description: entry.description,
   }));
 
-  readonly searchResultLabel = (value: DemoRoute) => `${value.group} ${value.label}`;
+  readonly searchResultLabel = (value: DemoRoute) => `${value.context} · ${value.group} · ${value.label}`;
 
   loadDemoRoutes = async ({ search }: { search: string }): Promise<DemoRoute[]> => {
     const query = search.trim().toLowerCase();
     if (!query) {
-      return this.componentRoutes.slice(0, 8);
+      return this.demoRoutes.slice(0, 8);
     }
 
-    return this.componentRoutes
+    return this.demoRoutes
       .filter((item) => {
-        const haystack = `${item.group} ${item.label}`.toLowerCase();
+        const haystack = `${item.group} ${item.label} ${item.description}`.toLowerCase();
         return haystack.includes(query);
       })
       .slice(0, 8);

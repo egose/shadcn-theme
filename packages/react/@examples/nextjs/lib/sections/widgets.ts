@@ -23,6 +23,7 @@ export const widgetsSection = defineSection({
     },
     {
       slug: 'content-sidebar',
+      capabilities: ['Section navigation', 'Switchable panels'],
       route: 'static',
       title: 'Content Sidebar',
       description: 'Sidebar paired with switchable content panels and breadcrumbs.',

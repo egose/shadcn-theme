@@ -1,0 +1,25 @@
+<form [formGroup]="form" (ngSubmit)="confirm()" novalidate class="tw:contents">
+  <hlm-dialog-header>
+    <h3 hlmDialogTitle>Delete {{ context.expectedSlug }}?</h3>
+    <p hlmDialogDescription>
+      This deletes the workspace and discards its unsaved settings in this local preview. Type
+      <strong>{{ context.expectedSlug }}</strong> below to confirm. Only explicit preview recovery restores fixtures.
+    </p>
+  </hlm-dialog-header>
+  <div class="tw:grid tw:gap-2 tw:py-4">
+    <label hlmLabel for="delete-confirm">Workspace slug</label>
+    <input
+      hlmInput
+      id="delete-confirm"
+      data-testid="delete-confirm-input"
+      formControlName="confirmation"
+      autocomplete="off"
+    />
+  </div>
+  <hlm-dialog-footer>
+    <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
+    <button hlmButton type="submit" variant="danger" data-testid="delete-confirm-submit" [disabled]="!matches()">
+      Delete workspace
+    </button>
+  </hlm-dialog-footer>
+</form>

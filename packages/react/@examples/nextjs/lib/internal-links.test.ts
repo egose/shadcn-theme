@@ -32,6 +32,19 @@ function staticHrefs(source: string): string[] {
 }
 
 describe('internal links', () => {
+  it('every related-example reference resolves to another registered example', () => {
+    for (const section of [componentsSection, formSection, widgetsSection, realExamplesSection]) {
+      for (const entry of section.entries) {
+        const related = entry.related ?? [];
+        expect(new Set(related).size, `${entry.url} duplicate related links`).toBe(related.length);
+        for (const url of related) {
+          expect(registryUrls.has(url), `${entry.url} -> ${url}`).toBe(true);
+          expect(url).not.toBe(entry.url);
+        }
+      }
+    }
+  });
+
   it('no example source links to a dead internal /docs route', () => {
     for (const file of sourceFiles) {
       const text = fs.readFileSync(file, 'utf8');

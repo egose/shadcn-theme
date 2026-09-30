@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, DestroyRef, inject, input, OnInit } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import {
   HlmFormField,
@@ -22,6 +22,7 @@ import {
 } from '@egose/shadcn-theme-ng/autocomplete';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { injectEgFormAutocompleteConfig } from './form-autocomplete.token';
 
 @Component({
@@ -63,7 +64,13 @@ import { injectEgFormAutocompleteConfig } from './form-autocomplete.token';
       }
 
       <div hlmAutocomplete [formControlName]="cnm" [disabled]="effectiveDisabled()" [class]="$controlClass()">
-        <hlm-autocomplete-input [inputId]="effectiveId()" [placeholder]="placeholder()" [class]="$inputClass()" />
+        <hlm-autocomplete-input
+          [inputId]="effectiveId()"
+          [placeholder]="placeholder()"
+          [aria-describedby]="describedBy()"
+          [required]="rqrd"
+          [class]="$inputClass()"
+        />
         <hlm-autocomplete-content>
           <div hlmAutocompleteList>
             <div hlmAutocompleteGroup>
@@ -90,12 +97,22 @@ import { injectEgFormAutocompleteConfig } from './form-autocomplete.token';
     </hlm-form-field>
   `,
 })
-export class EgFormAutocomplete {
+export class EgFormAutocomplete implements OnInit {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-autocomplete');
   private readonly _config = injectEgFormAutocompleteConfig();
   private readonly _shared = injectEgFormSharedConfig();
+
+  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    // Submit/reset may change message visibility without changing the field's value or validity.
+    this.formGroupDirective.form.events
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._cdr.markForCheck());
+  }
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -108,6 +125,8 @@ export class EgFormAutocomplete {
    */
   autoError = input<boolean>(true);
   hint = input<string | undefined>(undefined);
+  /** Consumer-owned description IDs, merged with the current error and hint IDs. */
+  ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
 
   id = input<string | undefined>(undefined);
   placeholder = input<string>('Type to search…');
@@ -158,6 +177,11 @@ export class EgFormAutocomplete {
     return this.disabled() || !!this.formGroupDirective.form.get(this.controlName())?.disabled;
   }
 
+  protected describedBy(): string | null {
+    const ids = [this.ariaDescribedBy(), this.showError() ? this.errorId() : this.hint() ? this.hintId() : null];
+    return [...new Set(ids.filter(Boolean).join(' ').split(/\s+/).filter(Boolean))].join(' ') || null;
+  }
+
   // Styling
   userClass = input<ClassValue>('', { alias: 'class' });
   labelClass = input<string>('');
@@ -167,8 +191,6 @@ export class EgFormAutocomplete {
   hintClass = input<string>('');
 
   // Computed classes (library base < global config < per-instance).
-  // NOTE: the autocomplete input exposes no aria-describedby, so error/hint
-  // ids render without an input-level describedby link.
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
   $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
   $controlClass = computed(() => hlm(this._shared.controlClass, this._config.controlClass, this.controlClass()));

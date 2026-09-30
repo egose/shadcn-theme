@@ -1,7 +1,8 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
+import { HlmDialogService } from '@egose/shadcn-theme-ng/dialog';
+import { from } from 'rxjs';
 import { TeamManagementExamplePage } from './team-management';
 import {
   EXAMPLE_MEMBERS,
@@ -13,6 +14,13 @@ import {
 
 function overlayPane(): HTMLElement | null {
   return document.querySelector<HTMLElement>('.cdk-overlay-pane');
+}
+
+function mockConfirmation(answer: Promise<boolean>) {
+  return spyOn(TestBed.inject(HlmDialogService), 'open').and.returnValue({
+    closed$: from(answer),
+    close: jasmine.createSpy('close'),
+  } as unknown as ReturnType<HlmDialogService['open']>);
 }
 
 /** Finds the overlay pane containing the given text (menus and dialogs stack in separate panes). */
@@ -123,6 +131,169 @@ describe('TeamManagementExamplePage', () => {
   it('lazy-loads through the registry entry', async () => {
     const loaded = await import('./team-management').then((m) => m.TeamManagementExamplePage);
     expect(loaded).toBe(TeamManagementExamplePage);
+  });
+
+  it('rejects a removal confirmed after permission changes', async () => {
+    const { fixture, host } = setup();
+    let confirm!: (value: boolean) => void;
+    mockConfirmation(new Promise<boolean>((resolve) => (confirm = resolve)));
+    const page = fixture.componentInstance as unknown as {
+      readOnly: { set(value: boolean): void };
+      requestRemove(member: (typeof EXAMPLE_MEMBERS)[number]): Promise<void>;
+    };
+    const pending = page.requestRemove(EXAMPLE_MEMBERS[1]);
+    page.readOnly.set(true);
+    fixture.detectChanges();
+    confirm(true);
+    await pending;
+    fixture.detectChanges();
+    expect(countText(host)).toContain('of 8 members');
+    expect(host.querySelector('[data-testid="member-outcome"]')).toBeNull();
+  });
+
+  it('cannot undo a removal in readonly mode', async () => {
+    const { fixture, host } = setup();
+    mockConfirmation(Promise.resolve(true));
+    const page = fixture.componentInstance as unknown as {
+      readOnly: { set(value: boolean): void };
+      requestRemove(member: (typeof EXAMPLE_MEMBERS)[number]): Promise<void>;
+      undoRemove(): void;
+    };
+    await page.requestRemove(EXAMPLE_MEMBERS[1]);
+    page.readOnly.set(true);
+    fixture.detectChanges();
+    page.undoRemove();
+    fixture.detectChanges();
+    expect(countText(host)).toContain('of 7 members');
+  });
+
+  it('validates trimmed invitation names before closing', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setOverlayInput('invite-name', '   ');
+    setOverlayInput('invite-email', 'new@example.com');
+    overlayButton('Send invite')!.click();
+    await settle(fixture);
+    expect(overlayPane()?.querySelector('[data-testid="invite-name-error"]')).not.toBeNull();
+    expect(countText(host)).toContain('of 8 members');
+  });
+
+  it('rejects duplicate email case-insensitively with an associated control error', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setOverlayInput('invite-name', 'Another Ada');
+    setOverlayInput('invite-email', EXAMPLE_MEMBERS[0].email.toUpperCase());
+    overlayButton('Send invite')!.click();
+    await settle(fixture);
+    expect(overlayPane()?.querySelector('[data-testid="invite-email-error"]')?.textContent).toContain('already');
+    expect(overlayField<HTMLInputElement>('invite-email', 'input')?.getAttribute('aria-describedby')).toContain(
+      'invite-email-error',
+    );
+    expect(countText(host)).toContain('of 8 members');
+  });
+
+  it('associates normalized name errors, accepts padded valid values, and preserves literal text', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setOverlayInput('invite-email', '  NEW.PERSON@EXAMPLE.COM  ');
+    for (const name of ['', '   ', ' x ']) {
+      setOverlayInput('invite-name', name);
+      overlayButton('Send invite')!.click();
+      await settle(fixture);
+      const input = overlayField<HTMLInputElement>('invite-name', 'input')!;
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      expect(input.getAttribute('aria-describedby')).toContain('invite-name-error');
+      expect(overlayPane()?.querySelector('#invite-name-error')).not.toBeNull();
+    }
+    setOverlayInput('invite-name', ' AB ');
+    overlayButton('Send invite')!.click();
+    await settle(fixture);
+    expect(await waitForOverlayGone(fixture)).toBeTrue();
+    expect(host.querySelector('[data-testid="member-row-member-ab"]')?.textContent).toContain('new.person@example.com');
+    expect(host.querySelector('[data-testid="member-outcome"]')?.textContent).toContain('AB invited');
+
+    (host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setOverlayInput('invite-name', '<b>Literal Name</b>');
+    setOverlayInput('invite-email', 'literal@example.com');
+    overlayButton('Send invite')!.click();
+    await settle(fixture);
+    expect(await waitForOverlayGone(fixture)).toBeTrue();
+    const row = host.querySelector('[data-testid="member-row-member-b-literal-name-b"]');
+    expect(row?.textContent).toContain('<b>Literal Name</b>');
+    expect(row?.querySelector('b')).toBeNull();
+  });
+
+  it('rechecks duplicate emails against live roster changes while the invite dialog is open', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setOverlayInput('invite-name', 'Ivy Chen');
+    setOverlayInput('invite-email', 'ivy@example.com');
+    const page = fixture.componentInstance as unknown as { members: { set(members: readonly unknown[]): void } };
+    page.members.set([...EXAMPLE_MEMBERS, { ...EXAMPLE_MEMBERS[0], id: 'incoming-ivy', email: 'IVY@example.com' }]);
+    overlayButton('Send invite')!.click();
+    await settle(fixture);
+    expect(overlayPane()?.querySelector('#invite-email-error')?.textContent).toContain('already');
+    expect(overlayField<HTMLInputElement>('invite-email', 'input')?.getAttribute('aria-invalid')).toBe('true');
+    expect(countText(host)).toContain('of 9 members');
+  });
+
+  it('returns focus on invite, role, removal and bulk cancellation without changing the roster', async () => {
+    const { fixture, host } = setup();
+    const invite = host.querySelector<HTMLButtonElement>('[data-testid="invite-member"]')!;
+    invite.focus();
+    invite.click();
+    await settle(fixture);
+    overlayButton('Cancel')!.click();
+    await settle(fixture);
+    await waitForOverlayGone(fixture);
+    expect(document.activeElement).toBe(invite);
+
+    await openRowMenu(fixture, host, EXAMPLE_MEMBERS[1].id);
+    overlayButton('Change role')!.click();
+    await settle(fixture);
+    overlayDialogButton('Change role for Bo Lindqvist', 'Cancel')!.click();
+    await settle(fixture);
+    await waitForOverlayGone(fixture);
+    expect(document.activeElement).toBe(host.querySelector(`[data-testid="menu-table-${EXAMPLE_MEMBERS[1].id}"]`));
+
+    await openRowMenu(fixture, host, EXAMPLE_MEMBERS[1].id);
+    overlayButton('Remove')!.click();
+    await settle(fixture);
+    expect(overlayPaneContaining('Remove Bo Lindqvist?')?.textContent).not.toContain('30 days');
+    overlayDialogButton('Remove Bo Lindqvist?', 'Cancel')!.click();
+    await settle(fixture);
+    await waitForOverlayGone(fixture);
+    expect(document.activeElement).toBe(host.querySelector(`[data-testid="menu-table-${EXAMPLE_MEMBERS[1].id}"]`));
+
+    host.querySelector<HTMLElement>('eg-table-row-selection [role="checkbox"]')!.click();
+    await settle(fixture);
+    const bulk = host.querySelector<HTMLButtonElement>('[data-testid="bulk-change"]')!;
+    bulk.focus();
+    bulk.click();
+    await settle(fixture);
+    expect(overlayPaneContaining('Change 1 selected members to Viewer?')?.textContent).toContain(EXAMPLE_MEMBERS[0].id);
+    overlayDialogButton('Change 1 selected members to Viewer?', 'Cancel')!.click();
+    await settle(fixture);
+    await waitForOverlayGone(fixture);
+    expect(document.activeElement).toBe(bulk);
+    expect(countText(host)).toContain('of 8 members');
+    expect(host.querySelector('[data-testid="member-outcome"]')).toBeNull();
+  });
+
+  it('closes a real owned confirmation on destruction instead of leaving an actionable overlay', async () => {
+    const { fixture, host } = setup();
+    await openRowMenu(fixture, host, EXAMPLE_MEMBERS[1].id);
+    overlayButton('Remove')!.click();
+    await settle(fixture);
+    expect(overlayPaneContaining('Remove Bo Lindqvist?')).not.toBeNull();
+    fixture.destroy();
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    expect(overlayPaneContaining('Remove Bo Lindqvist?')).toBeNull();
   });
 
   it('renders one h2 title first with no h1 and no heading skips', () => {
@@ -343,7 +514,7 @@ describe('TeamManagementExamplePage', () => {
     expect(details).withContext('menu offers View details').not.toBeNull();
     details!.click();
     await settle(fixture);
-    expect(host.querySelector('[data-testid="member-outcome"]')?.textContent).toContain(
+    expect(host.querySelector('[data-testid="member-details"]')?.textContent).toContain(
       'Bo Lindqvist · bo.lindqvist@example.com · Member · Active',
     );
   });
@@ -371,14 +542,13 @@ describe('TeamManagementExamplePage', () => {
 
   it('keeps the member when destructive confirmation is rejected', async () => {
     const { fixture, host } = setup();
-    const confirmation = TestBed.inject(EgConfirmationDialogService);
-    spyOn(confirmation, 'showConfirmationDialog').and.resolveTo(false);
+    const confirmation = mockConfirmation(Promise.resolve(false));
 
     await openRowMenu(fixture, host, 'member-bo-lindqvist');
     overlayButton('Remove')!.click();
     await settle(fixture);
 
-    expect(confirmation.showConfirmationDialog).toHaveBeenCalled();
+    expect(confirmation).toHaveBeenCalled();
     expect(host.querySelector('[data-testid="member-row-member-bo-lindqvist"]')).not.toBeNull(
       'rejected confirmation keeps the member',
     );
@@ -388,20 +558,20 @@ describe('TeamManagementExamplePage', () => {
 
   it('removes on confirmation with a visible single-use undo outcome', async () => {
     const { fixture, host } = setup();
-    const confirmation = TestBed.inject(EgConfirmationDialogService);
-    spyOn(confirmation, 'showConfirmationDialog').and.resolveTo(true);
+    const confirmation = mockConfirmation(Promise.resolve(true));
 
     await openRowMenu(fixture, host, 'member-bo-lindqvist');
     overlayButton('Remove')!.click();
     await settle(fixture);
 
-    expect(confirmation.showConfirmationDialog).toHaveBeenCalled();
+    expect(confirmation).toHaveBeenCalled();
 
     expect(host.querySelector('[data-testid="member-row-member-bo-lindqvist"]')).toBeNull();
     expect(countText(host)).toContain('of 7 members');
     const outcome = host.querySelector('[data-testid="member-outcome"]');
     expect(outcome?.textContent).toContain('Bo Lindqvist removed');
-    expect(outcome?.textContent).toContain('Undo restores access');
+    expect(outcome?.textContent).toContain('Undo restores this local member once');
+    expect(outcome?.textContent).not.toContain('30 days');
 
     (host.querySelector('[data-testid="undo-remove"]') as HTMLButtonElement).click();
     fixture.detectChanges();
@@ -468,10 +638,7 @@ describe('TeamManagementExamplePage', () => {
     expect((host.querySelector('[data-testid="invite-member"]') as HTMLButtonElement).disabled).toBeTrue();
     expect(
       (host.querySelector('[data-testid="menu-table-member-ada-okafor"]') as HTMLButtonElement).disabled,
-    ).toBeTrue();
-    expect(
-      (host.querySelector('[data-testid="menu-card-member-ada-okafor"]') as HTMLButtonElement).disabled,
-    ).toBeTrue();
+    ).toBeFalse();
     expect(host.textContent).toContain('Read-only preview');
 
     // Alternate paths cannot invoke mutations even when called directly.
@@ -484,24 +651,18 @@ describe('TeamManagementExamplePage', () => {
     expect(countText(host)).toContain('of 8 members');
   });
 
-  it('offers stacked cards as the narrow-screen alternative to the table', () => {
+  it('uses one selectable roster and one pager with the same member presentation', () => {
     const { host } = setup();
-    const tableWrap = host.querySelector('[data-testid="member-table-wrap"]');
-    expect(tableWrap?.className).toContain('tw:hidden');
-    expect(tableWrap?.className).toContain('md:tw:block');
-
-    const cards = host.querySelector('[data-testid="member-cards"]');
-    expect(cards).not.toBeNull();
-    expect(cards?.className).toContain('md:tw:hidden');
+    expect(host.querySelectorAll('eg-data-table').length).toBe(1);
+    expect(host.querySelectorAll('nav[aria-label="Member pages"]').length).toBe(1);
+    expect(host.querySelector('eg-data-table-pagination')).toBeNull();
     for (const member of EXAMPLE_MEMBERS.slice(0, 3)) {
-      const card = host.querySelector(`[data-testid="member-card-${member.id}"]`);
-      expect(card).withContext(`card for ${member.id}`).not.toBeNull();
+      const card = host.querySelector(`[data-testid="member-row-${member.id}"]`);
+      expect(card).withContext(`presentation for ${member.id}`).not.toBeNull();
       expect(card?.querySelector('h3')?.textContent).toContain(member.name);
       expect(card?.textContent).toContain(member.role);
       expect(card?.textContent).toContain(member.status);
-      expect(card?.querySelector(`[data-testid="menu-card-${member.id}"]`)).not.toBeNull(
-        'cards expose the same row actions as the table',
-      );
+      expect(host.querySelector(`[data-testid="menu-table-${member.id}"]`)).not.toBeNull();
     }
   });
 

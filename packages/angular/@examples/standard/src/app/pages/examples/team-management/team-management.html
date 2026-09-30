@@ -1,0 +1,268 @@
+<section class="tw:min-w-0 tw:space-y-6">
+  <app-demo-header
+    title="Team Management"
+    description="Search, filter, page, invite, change roles, and remove workspace members in a deterministic local preview."
+  />
+  <app-example-state-toolbar
+    [viewState]="viewState()"
+    (viewStateChange)="setViewState($event)"
+    [readOnly]="readOnly()"
+    (readOnlyChange)="setReadOnly($event)"
+    [(simulateFailure)]="simulateFailure"
+  />
+  <p class="tw:text-sm tw:text-slate-600">
+    Reset/reload discard local changes. Permission or preview changes cancel pending work and expire undo. Details
+    remain readable in read-only mode.
+  </p>
+  @if (sessionNotice(); as notice) {
+  <p role="status" data-testid="member-session-notice" class="tw:text-sm">{{ notice }}</p>
+  } @switch (viewState()) { @case ('loading') {
+  <div role="status" aria-label="Loading members" data-testid="members-loading" class="tw:space-y-3">
+    @for (slot of loadingSlots; track slot) {
+    <hlm-skeleton class="tw:h-20 tw:w-full tw:rounded-2xl" />
+    }
+  </div>
+  } @case ('empty') {
+  <div hlmEmpty data-testid="empty-preview">
+    <div hlmEmptyHeader>
+      <h3 hlmEmptyTitle>No members yet</h3>
+      <p hlmEmptyDescription>Invite teammates to start sharing this workspace.</p>
+    </div>
+    <div hlmEmptyContent>
+      <button hlmButton type="button" (click)="setViewState('loaded')">Return to roster</button>
+    </div>
+  </div>
+  } @case ('error') {
+  <div role="alert" data-testid="members-error" class="tw:grid tw:gap-3">
+    <eg-basic-alert
+      variant="danger"
+      title="Members failed to load"
+      [description]="loadError() ?? 'Members failed to load.'"
+    />
+    <div><button hlmButton type="button" data-testid="retry-load" (click)="reload()">Retry</button></div>
+  </div>
+  } @default {
+  <div class="tw:flex tw:min-w-0 tw:flex-col tw:gap-3 lg:tw:flex-row lg:tw:items-end">
+    <form [formGroup]="filterForm" class="tw:contents">
+      <div class="tw:grid tw:min-w-0 tw:flex-1 tw:gap-3 sm:tw:grid-cols-3">
+        <div class="tw:grid tw:min-w-0 tw:gap-2">
+          <label for="member-search" class="tw:text-sm tw:font-medium">Search</label>
+          <div hlmInputGroup class="tw:flex tw:min-w-0 tw:items-center tw:bg-white">
+            <span hlmInputGroupText aria-hidden="true">⌕</span>
+            <input
+              hlmInputGroupInput
+              id="member-search"
+              data-testid="member-search"
+              class="tw:min-w-0"
+              formControlName="search"
+              placeholder="Name or email"
+              autocomplete="off"
+            />
+            @if (hasSearch()) {
+            <button hlmInputGroupButton type="button" data-testid="clear-search" (click)="clearSearch()">Clear</button>
+            }
+          </div>
+        </div>
+        <div class="tw:grid tw:min-w-0 tw:gap-2">
+          <label for="status-filter" class="tw:text-sm tw:font-medium">Status</label>
+          <hlm-native-select selectId="status-filter" formControlName="status" data-testid="status-filter">
+            @for (status of statusOptions; track status) {
+            <option [value]="status">{{ status === 'All' ? 'All statuses' : status }}</option>
+            }
+          </hlm-native-select>
+        </div>
+        <div class="tw:grid tw:min-w-0 tw:gap-2">
+          <label for="role-filter" class="tw:text-sm tw:font-medium">Role</label>
+          <hlm-native-select selectId="role-filter" formControlName="role" data-testid="role-filter">
+            @for (role of roleOptions; track role) {
+            <option [value]="role">{{ role === 'All' ? 'All roles' : role }}</option>
+            }
+          </hlm-native-select>
+        </div>
+      </div>
+    </form>
+    <div>
+      <button
+        hlmButton
+        type="button"
+        data-testid="invite-member"
+        [disabled]="mutationDisabled()"
+        (click)="inviteMember()"
+      >
+        Invite teammate
+      </button>
+    </div>
+  </div>
+  <p role="status" data-testid="member-count" class="tw:text-sm tw:text-slate-600">{{ rangeSummary() }}</p>
+
+  <section aria-labelledby="bulk-heading" class="tw:grid tw:min-w-0 tw:gap-3 tw:rounded-xl tw:border tw:p-4">
+    <h3 id="bulk-heading" class="tw:font-semibold">Bulk role change</h3>
+    <p id="selection-scope" class="tw:text-sm tw:text-slate-600">
+      Select up to three members on this page. Filtering or paging drops members no longer displayed; sorting keeps
+      their IDs. Reset, reload, or permission/preview changes clear selection. Changing the selection, page, filters, or
+      target role cancels pending bulk work.
+    </p>
+    <p role="status" data-testid="selected-members" class="tw:break-words tw:text-sm">
+      {{ selectedMembers().length }} selected on this page. @for (member of selectedMembers(); track member.id) {
+      <span> {{ member.name }} ({{ member.id }})</span>
+      }
+    </p>
+    <div class="tw:flex tw:min-w-0 tw:flex-col tw:gap-2 sm:tw:flex-row sm:tw:items-end">
+      <div class="tw:grid tw:min-w-0 tw:gap-2">
+        <label for="bulk-role" class="tw:text-sm tw:font-medium">New role for selected members</label>
+        <hlm-native-select selectId="bulk-role" [formControl]="bulkRole" data-testid="bulk-role">
+          @for (role of assignableRoles; track role) {
+          <option [value]="role">{{ role }}</option>
+          }
+        </hlm-native-select>
+      </div>
+      <button
+        hlmButton
+        type="button"
+        data-testid="bulk-change"
+        [disabled]="mutationDisabled() || selectedMembers().length === 0"
+        (click)="changeSelectedRoles()"
+      >
+        Review role change
+      </button>
+    </div>
+    @if (operation() === 'bulk-confirm') {
+    <p role="status">Waiting for bulk role confirmation…</p>
+    } @if (operation() === 'bulk-save') {
+    <p role="status" data-testid="bulk-pending">Updating selected members…</p>
+    } @if (bulkError(); as error) {
+    <div role="alert" data-testid="bulk-error" class="tw:grid tw:gap-2 tw:text-sm">
+      <p>{{ error }}</p>
+      @if (canRetryBulk()) {
+      <div>
+        <button hlmButton variant="secondary" type="button" data-testid="bulk-retry" (click)="retryBulk()">
+          Retry confirmed change
+        </button>
+      </div>
+      }
+    </div>
+    }
+  </section>
+
+  @if (filteredMembers().length === 0) { @if (hasActiveFilters()) {
+  <div hlmEmpty data-testid="no-results">
+    <div hlmEmptyHeader>
+      <h3 hlmEmptyTitle>No members match these filters</h3>
+      <p hlmEmptyDescription>Try a different name, email, status, or role.</p>
+    </div>
+    <div hlmEmptyContent>
+      <button hlmButton variant="secondary" type="button" data-testid="clear-filters" (click)="clearFilters()">
+        Clear search and filters
+      </button>
+    </div>
+  </div>
+  } @else {
+  <div hlmEmpty data-testid="empty-members">
+    <div hlmEmptyHeader>
+      <h3 hlmEmptyTitle>Workspace member list is empty</h3>
+      <p hlmEmptyDescription>Invite someone new or restore the deterministic fixtures.</p>
+    </div>
+    <div hlmEmptyContent>
+      <button
+        hlmButton
+        type="button"
+        data-testid="invite-empty"
+        [disabled]="mutationDisabled()"
+        (click)="inviteMember()"
+      >
+        Invite teammate</button
+      ><button hlmButton variant="secondary" type="button" data-testid="restore-fixtures" (click)="reload()">
+        Restore fixtures
+      </button>
+    </div>
+  </div>
+  } } @else { @for (version of rosterSessions(); track version.id) {
+  <app-member-roster
+    [members]="visibleMembers()"
+    [disabled]="mutationDisabled()"
+    (selectionChange)="selectMembers($event)"
+    (viewDetails)="showDetails($event)"
+    (changeRole)="openRoleDialog($event)"
+    (remove)="requestRemove($event)"
+  />
+  }
+  <nav hlmPagination aria-label="Member pages" data-testid="member-pagination">
+    <ul hlmPaginationContent class="tw:flex-wrap">
+      <li>
+        <button
+          hlmPaginationPrevious
+          type="button"
+          data-testid="members-previous"
+          (click)="goToPage(safePage() - 1)"
+          [disabled]="safePage() === 1"
+        >
+          Previous
+        </button>
+      </li>
+      @for (pageNumber of pageNumbers(); track pageNumber) {
+      <li hlmPaginationItem>
+        <button
+          hlmPaginationLink
+          type="button"
+          [isActive]="safePage() === pageNumber"
+          [attr.data-testid]="'members-page-' + pageNumber"
+          (click)="goToPage(pageNumber)"
+        >
+          {{ pageNumber }}
+        </button>
+      </li>
+      }
+      <li>
+        <button
+          hlmPaginationNext
+          type="button"
+          data-testid="members-next"
+          (click)="goToPage(safePage() + 1)"
+          [disabled]="safePage() === pageCount()"
+        >
+          Next
+        </button>
+      </li>
+    </ul>
+  </nav>
+  } @if (details(); as member) {
+  <div role="status" data-testid="member-details" class="tw:break-words tw:rounded-xl tw:border tw:p-4 tw:text-sm">
+    {{ member.name }} · {{ member.email }} · {{ member.role }} · {{ member.status }} · joined {{ member.joinedAtIso }}.
+  </div>
+  } @if (outcome(); as result) {
+  <div
+    role="status"
+    tabindex="-1"
+    data-testid="member-outcome"
+    class="tw:grid tw:gap-2 tw:rounded-2xl tw:border tw:border-emerald-200 tw:bg-emerald-50 tw:p-4 tw:text-sm tw:text-emerald-900"
+  >
+    <p class="tw:min-w-0 tw:break-words">{{ result.message }}</p>
+    @if (result.canUndo) {
+    <div>
+      <button
+        hlmButton
+        variant="secondary"
+        appearance="outline"
+        size="sm"
+        type="button"
+        data-testid="undo-remove"
+        [disabled]="mutationDisabled()"
+        (click)="undoRemove()"
+      >
+        Undo removal
+      </button>
+    </div>
+    }
+  </div>
+  } @if (readOnly()) {
+  <p class="tw:text-xs tw:text-slate-500">{{ READ_ONLY_MESSAGE }}</p>
+  } } }
+  <div class="tw:flex tw:flex-wrap tw:gap-2">
+    <button hlmButton variant="secondary" type="button" data-testid="reload-members" (click)="reload()">
+      Simulate reload
+    </button>
+    <button hlmButton variant="secondary" type="button" data-testid="reset-members" (click)="resetFixtures()">
+      Reset fixtures
+    </button>
+  </div>
+</section>

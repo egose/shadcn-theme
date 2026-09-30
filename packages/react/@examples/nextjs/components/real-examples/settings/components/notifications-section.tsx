@@ -12,18 +12,18 @@ import {
 import { RadioGroup, RadioGroupItem } from '@egose/shadcn-theme/components/ui/radio-group';
 import { Switch } from '@egose/shadcn-theme/components/ui/switch';
 
-import { CURRENT_ROLE, INITIAL_NOTIFICATIONS, SAVE_ERROR_HINT } from '../fixtures';
-import type { DigestFrequency, SimulatedOutcomeChoice } from '../types';
+import { CURRENT_ROLE, SAVE_ERROR_HINT } from '../fixtures';
+import type { DigestFrequency } from '../types';
+import type { SettingsSession } from '../use-settings-session';
 import { SaveBar } from './save-bar';
-import { useSaveSection } from './use-save-section';
 
 /**
  * Merges registerable switches into the persisted draft, while the
  * permission-disabled "Security alerts" switch stays fixed (not editable
  * for this role) and is described programmatically.
  */
-export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOutcomeChoice }) {
-  const { draft, update, status, save, discard } = useSaveSection(INITIAL_NOTIFICATIONS, saveOutcome);
+export function NotificationsSection({ state }: { state: SettingsSession['notifications'] }) {
+  const { draft, update, status, save, discard } = state;
 
   return (
     <form
@@ -36,7 +36,11 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
     >
       <div className="space-y-1">
         <h3 className="text-lg font-medium">Notifications</h3>
-        <p className="text-muted-foreground text-sm">Choose which events reach your inbox.</p>
+
+        <p className="text-muted-foreground text-sm">
+          Account inbox preferences apply across your workspaces and remain available after a workspace is deleted.
+          Saving updates mentions, product updates, and digest frequency only.
+        </p>
       </div>
 
       <FieldGroup>
@@ -47,11 +51,15 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
             onCheckedChange={(checked) => update({ mentions: checked })}
             aria-labelledby="settings-notify-mentions-label"
           />
+
           <div className="flex flex-col gap-1">
             <FieldLabel id="settings-notify-mentions-label" htmlFor="settings-notify-mentions">
               Mentions
             </FieldLabel>
-            <FieldDescription>Notify me when someone @-mentions me in a comment.</FieldDescription>
+
+            <FieldDescription>
+              Notify me when someone @-mentions me in a comment in any of my workspaces.
+            </FieldDescription>
           </div>
         </Field>
 
@@ -62,6 +70,7 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
             onCheckedChange={(checked) => update({ productUpdates: checked })}
             aria-labelledby="settings-notify-product-label"
           />
+
           <div className="flex flex-col gap-1">
             <FieldLabel id="settings-notify-product-label" htmlFor="settings-notify-product">
               Product updates
@@ -72,6 +81,7 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
 
         {/* Permission-disabled control: the reason is real text referenced by
             aria-describedby, not styling alone. */}
+
         <Field orientation="horizontal" data-disabled="true">
           <Switch
             id="settings-notify-security"
@@ -80,13 +90,16 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
             aria-labelledby="settings-notify-security-label"
             aria-describedby="settings-notify-security-reason"
           />
+
           <div className="flex flex-col gap-1">
             <FieldLabel id="settings-notify-security-label" htmlFor="settings-notify-security">
               Security alerts
             </FieldLabel>
+
             <FieldDescription id="settings-notify-security-reason">
-              Security alerts are mandatory for every workspace member. Only an owner can change this setting — you are
-              signed in as an {CURRENT_ROLE}.
+              Workspace policy reference, not saved with these account preferences: security alerts are mandatory while
+              you are a member of an existing workspace. Only an owner can change that workspace policy — your example
+              role is {CURRENT_ROLE}.
             </FieldDescription>
           </div>
         </Field>
@@ -94,6 +107,7 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
         <FieldSet>
           <FieldLegend>Digest frequency</FieldLegend>
           <FieldDescription>How often we bundle lower-priority notifications.</FieldDescription>
+
           <RadioGroup
             aria-label="Digest frequency"
             value={draft.digestFrequency}
@@ -102,18 +116,23 @@ export function NotificationsSection({ saveOutcome }: { saveOutcome: SimulatedOu
           >
             <div className="flex items-center gap-2">
               <RadioGroupItem value="off" id="settings-digest-off" />
+
               <FieldLabel htmlFor="settings-digest-off" className="font-normal">
                 Off
               </FieldLabel>
             </div>
+
             <div className="flex items-center gap-2">
               <RadioGroupItem value="daily" id="settings-digest-daily" />
+
               <FieldLabel htmlFor="settings-digest-daily" className="font-normal">
                 Daily
               </FieldLabel>
             </div>
+
             <div className="flex items-center gap-2">
               <RadioGroupItem value="weekly" id="settings-digest-weekly" />
+
               <FieldLabel htmlFor="settings-digest-weekly" className="font-normal">
                 Weekly
               </FieldLabel>

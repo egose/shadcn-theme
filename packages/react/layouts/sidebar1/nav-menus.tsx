@@ -18,13 +18,20 @@ import { cn } from '../../utils/ui';
 
 export interface IMenuSubItem {
   title: string;
+  /** Destination passed as both href and to to the supplied router/link component. */
   url?: string;
   icon?: React.ElementType;
   isActive?: boolean;
+  /**
+   * Called with this item's title on activation, including URL links.
+   * A child handler takes precedence over its parent handler. If absent, the
+   * parent handler receives the child's title as a fallback; never both.
+   */
   onClick?: (title: string) => void;
 }
 
 export interface IMenuItem extends IMenuSubItem {
+  /** Nonempty children render a group toggle, which does not invoke onClick. */
   subItems?: IMenuSubItem[];
 }
 
@@ -42,7 +49,12 @@ function SidebarMenuLink({ item, as: LinkComponent }: { item: IMenuSubItem; as: 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={item.isActive} tooltip={item.title} onClick={() => setOpenMobile(false)}>
-        <Comp to={item.url} href={item.url} onClick={() => item.onClick?.(item.title)}>
+        <Comp
+          type={Comp === 'button' ? 'button' : undefined}
+          to={item.url}
+          href={item.url}
+          onClick={() => item.onClick?.(item.title)}
+        >
           {item.icon && <item.icon />}
           <span>{item.title}</span>
         </Comp>
@@ -59,7 +71,7 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
     <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={item.title}>
+          <SidebarMenuButton type="button" tooltip={item.title}>
             {item.icon && <item.icon />}
             <span>{item.title}</span>
 
@@ -76,9 +88,10 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
                 <SidebarMenuSubItem key={subItem.title}>
                   <SidebarMenuSubButton asChild isActive={subItem.isActive} onClick={() => setOpenMobile(false)}>
                     <Comp
+                      type={Comp === 'button' ? 'button' : undefined}
                       to={subItem.url}
                       href={subItem.url}
-                      onClick={() => item.onClick?.(subItem.title)}
+                      onClick={() => (subItem.onClick ?? item.onClick)?.(subItem.title)}
                       className="block w-full"
                     >
                       {subItem.icon && <subItem.icon />}
@@ -95,6 +108,12 @@ function SidebarMenuCollapsible({ item, as: LinkComponent }: { item: IMenuItem; 
   );
 }
 
+/**
+ * Sidebar navigation under SidebarProvider and TooltipProvider. URL items use
+ * aslink; action-only items and group toggles use non-submit buttons. Leaf
+ * activation closes the mobile sidebar even without a handler; toggling a
+ * group leaves it open. Callbacks do not suppress link/router navigation.
+ */
 export function NavMenus({ menus, aslink }: { menus: INavMenu[]; aslink: React.ElementType }) {
   return menus.map((menu) => {
     return (

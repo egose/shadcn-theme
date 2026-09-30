@@ -6,6 +6,7 @@ import {
   computed,
   contentChild,
   forwardRef,
+  inject,
   input,
   linkedSignal,
   output,
@@ -18,9 +19,12 @@ import { BrnFieldControl, provideBrnLabelable } from '@spartan-ng/brain/field';
 import type { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
 import type { BrnOverlayState } from '@spartan-ng/brain/overlay';
 import { BrnPopover } from '@spartan-ng/brain/popover';
+import { injectDateAdapter } from '@spartan-ng/brain/date-time';
+import { BrnCalendar } from '@spartan-ng/brain/calendar';
 import { HlmCalendar } from '@egose/shadcn-theme-ng/calendar';
 import { HlmPopoverImports } from '@egose/shadcn-theme-ng/popover';
 import { injectHlmDatePickerConfig } from './hlm-date-picker.token';
+import { HlmDatePickerCommitState, isSelectableDate } from './hlm-date-picker-commit';
 
 export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -31,7 +35,12 @@ export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
 @Component({
   selector: 'hlm-date-picker',
   imports: [HlmPopoverImports, HlmCalendar],
-  providers: [HLM_DATE_PICKER_VALUE_ACCESSOR, provideBrnDatePicker(HlmDatePicker), provideBrnLabelable(HlmDatePicker)],
+  providers: [
+    HlmDatePickerCommitState,
+    HLM_DATE_PICKER_VALUE_ACCESSOR,
+    provideBrnDatePicker(HlmDatePicker),
+    provideBrnLabelable(HlmDatePicker),
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnFieldControl],
   host: { class: 'tw:block tw:w-full tw:min-w-0 tw:max-w-full' },
@@ -58,6 +67,10 @@ export const HLM_DATE_PICKER_VALUE_ACCESSOR = {
 })
 export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAccessor {
   private readonly _config = injectHlmDatePickerConfig<T>();
+  private readonly _dateAdapter = injectDateAdapter<T>();
+  private readonly _commitState = inject(HlmDatePickerCommitState);
+  private readonly _calendar = viewChild(BrnCalendar<T>);
+  private _restoringCalendar = false;
 
   public readonly popover = viewChild.required(BrnPopover);
 
@@ -129,8 +142,17 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
   }
 
   protected _handleChange(value: T | undefined) {
-    if (this.disabledState()) return;
-    this.updateDate(value ?? null);
+    if (this._restoringCalendar) return;
+    if (!this.updateDate(value ?? null)) {
+      // Brain model signals have already changed before their output fires.
+      this._restoringCalendar = true;
+      try {
+        this._calendar()?.date.set(this._mutableDate());
+      } finally {
+        this._restoringCalendar = false;
+      }
+      return;
+    }
 
     if (this.autoCloseOnSelect()) {
       this._popoverState.set('closed');
@@ -138,23 +160,27 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
   }
 
   /**
-   * Commit a date to the picker. Updates the internal model, notifies form
-   * controls, and emits `dateChange`. Unlike `_handleChange`, this does not
-   * close the popover - it's intended to be called from a text input that
-   * is parsing user-entered values while typing.
+   * Commit a user value (null clears). Returns false without changing/emitting
+   * the model when disabled or when the raw/transformed date is invalid or
+   * outside the adapter's inclusive whole-day min/max bounds.
    */
-  public updateDate(value: T | null) {
-    if (this.disabledState()) return;
+  public updateDate(value: T | null): boolean {
+    if (this.disabledState()) return false;
+    if (value != null && !isSelectableDate(this._dateAdapter, value, this.min(), this.max())) return false;
     const transformedDate = value != null ? this.transformDate()(value) : undefined;
+    if (value != null && !isSelectableDate(this._dateAdapter, transformedDate!, this.min(), this.max())) return false;
 
     this._mutableDate.set(transformedDate);
+    this._commitState.changed();
     this._onChange?.(transformedDate ?? null);
     this.dateChange.emit(transformedDate ?? null);
+    return true;
   }
 
-  /** CONTROL VALUE ACCESSOR */
+  /** Programmatic CVA write: transforms without enforcing user constraints or emitting. Clears rejected text. */
   public writeValue(value: T | null): void {
-    this._mutableDate.set(value ? this.transformDate()(value) : undefined);
+    this._mutableDate.set(value != null ? this.transformDate()(value) : undefined);
+    this._commitState.changed();
   }
 
   public registerOnChange(fn: ChangeFn<T | null>): void {
@@ -183,6 +209,7 @@ export class HlmDatePicker<T> implements BrnDatePickerBase<T>, ControlValueAcces
 
   public reset() {
     this._mutableDate.set(undefined);
+    this._commitState.changed();
     this._onChange?.(null);
     this.dateChange.emit(null);
   }

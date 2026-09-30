@@ -1,0 +1,34 @@
+<form [formGroup]="form" (ngSubmit)="confirm()" novalidate class="tw:contents">
+  <hlm-dialog-header>
+    <h3 hlmDialogTitle>Confirm {{ context.planName }} plan</h3>
+    <p hlmDialogDescription class="tw:break-words">
+      {{ context.unitCopy }}. Enter seats to preview the confirmation total. No payment is collected.
+    </p>
+  </hlm-dialog-header>
+  <div class="tw:grid tw:min-w-0 tw:gap-2 tw:py-4">
+    <label hlmLabel for="plan-seats">Seats</label>
+    <input
+      hlmInput
+      id="plan-seats"
+      data-testid="plan-seats"
+      type="number"
+      required
+      min="1"
+      max="1000"
+      step="1"
+      formControlName="seats"
+      [attr.aria-invalid]="seatsError() ? 'true' : null"
+      [attr.aria-describedby]="seatsError() ? 'plan-seats-hint plan-seats-error' : 'plan-seats-hint'"
+    />
+    <p id="plan-seats-hint" class="tw:text-sm tw:text-slate-500">Enter a whole number from 1 to 1000.</p>
+    @if (seatsError(); as error) {
+    <p id="plan-seats-error" data-testid="plan-seats-error" role="alert" class="tw:text-sm tw:text-red-600">
+      {{ error }}
+    </p>
+    }
+  </div>
+  <hlm-dialog-footer>
+    <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
+    <button hlmButton type="submit" variant="primary" data-testid="plan-confirm">Confirm plan</button>
+  </hlm-dialog-footer>
+</form>

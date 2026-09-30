@@ -14,8 +14,7 @@
 // (directory index files, `404.html` fallback) and asserts over HTTP:
 //   - `/` → 200 (shell boots, client router redirects into the gallery)
 //   - every registry component route → 200 with its prerendered page title
-//   - the first `example`-kind entry too, once Wave 4 adds one (skipped until
-//     then — the derivation already covers the `examples/` surface)
+//   - every business example route → 200 with its prerendered page title
 //   - unknown component and root URLs → Pages-style 404 serving the fallback
 //     shell (which boots the SPA; wildcard rendering itself is covered by the
 //     Karma `wildcard recovery` suite)
@@ -30,9 +29,9 @@ import { readFile, readdir } from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readInventory, validateInventory } from './check-inventory.mjs';
 
 const exampleDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const catalogFile = path.join(exampleDir, 'src', 'app', 'catalog', 'catalog.ts');
 
 const args = process.argv.slice(2);
 const distFlag = args.indexOf('--dist');
@@ -40,34 +39,6 @@ const browserDir = path.resolve(
   exampleDir,
   distFlag === -1 ? path.join('dist', 'angular', 'browser') : args[distFlag + 1],
 );
-
-// Canonical registry entry shape (one entry per line in catalog.ts):
-//   { slug: 'menu', title: 'Menu', category: 'Overlays', kind: 'component', load: ... },
-const ENTRY_PATTERN =
-  /\{\s*slug:\s*'([^']+)'\s*,\s*title:\s*'([^']+)'\s*,\s*category:\s*'[^']*'\s*,\s*kind:\s*'(component|example)'/g;
-
-function readRegistry(source) {
-  const entries = [...source.matchAll(ENTRY_PATTERN)].map((match) => ({
-    slug: match[1],
-    title: match[2],
-    kind: match[3],
-  }));
-  const baseline = Number(source.match(/REVIEWED_COMPONENT_BASELINE\s*=\s*(\d+)/)?.[1] ?? NaN);
-  assert(entries.length > 0, `smoke: parsed no catalog entries from ${catalogFile} (pattern drift?)`);
-  assert(
-    Number.isInteger(baseline),
-    `smoke: could not read REVIEWED_COMPONENT_BASELINE from ${catalogFile}`,
-  );
-  const components = entries.filter((entry) => entry.kind === 'component');
-  assert(
-    components.length >= baseline,
-    `smoke: parsed ${components.length} component entries, below baseline ${baseline} (pattern drift?)`,
-  );
-  return entries;
-}
-
-const KIND_PATHS = { component: 'components', example: 'examples' };
-const linkFor = (entry) => `/${KIND_PATHS[entry.kind]}/${entry.slug}`;
 
 // Minimal GitHub Pages semantics: exact file, then directory index, then the
 // 404.html fallback shell (served with a 404 status, like Pages).
@@ -80,10 +51,7 @@ function createPagesLikeServer(root) {
   const server = http.createServer(async (request, response) => {
     const urlPath = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     const relative = urlPath.replace(/^\/+/, '').replace(/\0/g, '');
-    const candidates = [
-      path.join(root, relative),
-      path.join(root, relative, 'index.html'),
-    ];
+    const candidates = [path.join(root, relative), path.join(root, relative, 'index.html')];
     for (const candidate of candidates) {
       if (!candidate.startsWith(root)) continue;
       try {
@@ -107,9 +75,9 @@ function createPagesLikeServer(root) {
   return server;
 }
 
-async function prerenderedRouteDirs(root) {
+async function prerenderedRouteDirs(root, kindPaths) {
   const found = [];
-  for (const kindPath of Object.values(KIND_PATHS)) {
+  for (const kindPath of Object.values(kindPaths)) {
     let slugs = [];
     try {
       slugs = await readdir(path.join(root, kindPath));
@@ -129,8 +97,9 @@ async function prerenderedRouteDirs(root) {
 }
 
 async function main() {
-  const catalogSource = await readFile(catalogFile, 'utf8');
-  const entries = readRegistry(catalogSource);
+  const inventory = await readInventory();
+  validateInventory(inventory);
+  const { entries, kindPaths } = inventory;
   console.log(`smoke: registry yields ${entries.length} routes (no second slug list).`);
 
   const server = createPagesLikeServer(browserDir);
@@ -148,33 +117,19 @@ async function main() {
     const root = await readResponse(pages, '/');
     check('deployed root loads', root.status === 200 && root.body.includes('<app-root'), `HTTP ${root.status}`);
 
-    // Every registry component route loads its prerendered page directly.
-    for (const entry of entries.filter((candidate) => candidate.kind === 'component')) {
-      const response = await readResponse(pages, linkFor(entry));
+    // Both kinds use the same loop: no representative-route sampling or skips.
+    for (const entry of entries) {
+      const response = await readResponse(pages, entry.link);
       check(
-        `deep link ${linkFor(entry)} loads`,
+        `${entry.kind} deep link ${entry.link} loads`,
         response.status === 200 && response.body.includes(`>${entry.title}</h2>`),
         `HTTP ${response.status}`,
       );
     }
 
-    // One real example once Wave 4 adds an `example`-kind entry; until then
-    // the derivation stays ready and this step explicitly skips.
-    const firstExample = entries.find((entry) => entry.kind === 'example');
-    if (firstExample) {
-      const response = await readResponse(pages, linkFor(firstExample));
-      check(
-        `example deep link ${linkFor(firstExample)} loads`,
-        response.status === 200 && response.body.includes(`>${firstExample.title}</h2>`),
-        `HTTP ${response.status}`,
-      );
-    } else {
-      console.log('SKIP no example-kind registry entries yet (Wave 4 will extend this check automatically)');
-    }
-
     // Unknown URLs recover through the Pages fallback shell, which boots the
     // SPA so the tested root/child wildcards render the not-found page.
-    for (const unknown of ['/components/not-a-demo', '/not-a-route']) {
+    for (const unknown of [...Object.values(kindPaths).map((folder) => `/${folder}/not-a-demo`), '/not-a-route']) {
       const response = await readResponse(pages, unknown);
       check(
         `unknown URL ${unknown} recovers via fallback shell`,
@@ -184,8 +139,8 @@ async function main() {
     }
 
     // Reverse check: no prerendered route directory without a registry entry.
-    const registryLinks = new Set(entries.map(linkFor));
-    const orphans = (await prerenderedRouteDirs(browserDir)).filter((route) => !registryLinks.has(route));
+    const registryLinks = new Set(entries.map((entry) => entry.link));
+    const orphans = (await prerenderedRouteDirs(browserDir, kindPaths)).filter((route) => !registryLinks.has(route));
     check('prerendered output matches the registry exactly', orphans.length === 0, orphans.join(', '));
 
     assert.equal(failures.length, 0, `deployment smoke failures: ${failures.join('; ')}`);

@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   input,
   model,
   numberAttribute,
@@ -19,6 +20,7 @@ import { HlmPaginationItem } from './hlm-pagination-item';
 import { HlmPaginationLink } from './hlm-pagination-link';
 import { HlmPaginationNext } from './hlm-pagination-next';
 import { HlmPaginationPrevious } from './hlm-pagination-previous';
+import { pageCount } from './pagination-state';
 
 @Component({
   selector: 'hlm-numbered-pagination-query-params',
@@ -47,23 +49,23 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
           <li hlmPaginationItem>
             <hlm-pagination-previous
               [link]="link()"
-              [queryParams]="{ page: currentPage() - 1 }"
+              [queryParams]="{ page: _currentPage() - 1 }"
               queryParamsHandling="merge"
             />
           </li>
         }
 
-        @for (page of _pages(); track page) {
+        @for (page of _pages(); track $index) {
           <li hlmPaginationItem>
             @if (page === '...') {
               <hlm-pagination-ellipsis />
             } @else {
               <a
                 hlmPaginationLink
-                [link]="currentPage() !== page ? link() : undefined"
+                [link]="_currentPage() !== page ? link() : undefined"
                 [queryParams]="{ page }"
                 queryParamsHandling="merge"
-                [isActive]="currentPage() === page"
+                [isActive]="_currentPage() === page"
               >
                 {{ page }}
               </a>
@@ -75,7 +77,7 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
           <li hlmPaginationItem>
             <hlm-pagination-next
               [link]="link()"
-              [queryParams]="{ page: currentPage() + 1 }"
+              [queryParams]="{ page: _currentPage() + 1 }"
               queryParamsHandling="merge"
             />
           </li>
@@ -100,12 +102,14 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
 })
 export class HlmNumberedPaginationQueryParams {
   /**
-   * The current (active) page.
+   * The current page, floored and clamped; corrections emit currentPageChange.
+   * The parent owns reading/synchronizing the URL; corrections do not navigate.
    */
   public readonly currentPage = model.required<number>();
 
   /**
-   * The number of items per paginated page.
+   * The number of items per paginated page. Non-finite/non-positive sizes
+   * disable paging (one page) without rewriting this model.
    */
   public readonly itemsPerPage = model.required<number>();
 
@@ -125,7 +129,8 @@ export class HlmNumberedPaginationQueryParams {
   public readonly link = input<string>('.');
 
   /**
-   * The number of page links to show.
+   * Maximum window entries, including ellipses: floored and bounded to 1–100.
+   * Non-finite/non-positive values use the default of 7.
    */
   public readonly maxSize = input<number, NumberInput>(7, {
     transform: numberAttribute,
@@ -151,30 +156,23 @@ export class HlmNumberedPaginationQueryParams {
       : [...pageSizes, this.itemsPerPage()].sort((a, b) => a - b); // otherwise, add current page size and sort the array
   });
 
-  protected readonly _isFirstPageActive = computed(() => this.currentPage() === 1);
-  protected readonly _isLastPageActive = computed(() => this.currentPage() === this._lastPageNumber());
-
-  protected readonly _lastPageNumber = computed(() => {
-    if (this.totalItems() < 1) {
-      // when there are 0 or fewer (an error case) items, there are no "pages" as such,
-      // but it makes sense to consider a single, empty page as the last page.
-      return 1;
-    }
-    return Math.ceil(this.totalItems() / this.itemsPerPage());
-  });
-
-  protected readonly _pages = computed(() => {
-    const correctedCurrentPage = outOfBoundCorrection(this.totalItems(), this.itemsPerPage(), this.currentPage());
-
-    if (correctedCurrentPage !== this.currentPage()) {
-      // update the current page
-      untracked(() => this.currentPage.set(correctedCurrentPage));
-    }
-
-    return createPageArray(correctedCurrentPage, this.itemsPerPage(), this.totalItems(), this.maxSize());
-  });
+  protected readonly _currentPage = computed(() =>
+    outOfBoundCorrection(this.totalItems(), this.itemsPerPage(), this.currentPage()),
+  );
+  protected readonly _isFirstPageActive = computed(() => this._currentPage() === 1);
+  protected readonly _isLastPageActive = computed(() => this._currentPage() === this._lastPageNumber());
+  protected readonly _lastPageNumber = computed(() => pageCount(this.totalItems(), this.itemsPerPage()));
+  protected readonly _pages = computed(() =>
+    createPageArray(this._currentPage(), this.itemsPerPage(), this.totalItems(), this.maxSize()),
+  );
 
   constructor() {
     classes(() => 'tw:flex tw:items-center tw:justify-between tw:gap-2 tw:px-4 tw:py-2');
+    effect(() => {
+      const page = this._currentPage();
+      if (page !== this.currentPage()) {
+        untracked(() => this.currentPage.set(page));
+      }
+    });
   }
 }

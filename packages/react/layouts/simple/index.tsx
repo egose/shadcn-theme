@@ -60,7 +60,15 @@ export interface SimpleLayoutProps {
       link?: string;
     };
   };
+  /** Marks main busy and unmounts children while true; header/footer remain available. */
   loading?: boolean;
+  /**
+   * Content rendered only while loading. Null/undefined use the default
+   * "Loading…" status. Custom/localized content replaces that status entirely:
+   * provide role="status" with meaningful text (or an accessible name for
+   * non-text feedback); decorative spinners alone are insufficient.
+   */
+  loadingContent?: React.ReactNode;
   children?: React.ReactNode;
   aslink: React.ElementType;
 }
@@ -69,6 +77,10 @@ export interface SimpleLayoutProps {
  * Header + main + footer layout for content-light pages. Mobile-aware
  * (collapsible menu under 768px). Compose the inner pieces with the
  * `classNames` slots rather than overriding internal markup.
+ * While loading, main is aria-busy and shows loadingContent or a default status.
+ * Children unmount (they are not merely CSS-hidden) and remount when loading
+ * ends, resetting local form/component state. Keep drafts above the layout if
+ * they must persist. Header/footer remain mounted and usable.
  *
  * @example
  * <SimpleLayout
@@ -80,7 +92,7 @@ export interface SimpleLayoutProps {
  * </SimpleLayout>
  */
 export default function SimpleLayout(props: SimpleLayoutProps) {
-  const { logo, user, left, right, footer, classNames, loading, children, aslink } = props;
+  const { logo, user, left, right, footer, classNames, loading, loadingContent, children, aslink } = props;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -101,6 +113,7 @@ export default function SimpleLayout(props: SimpleLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
+
       <header
         className={cn(
           'px-4 py-2 flex items-center justify-between bg-gray-100 border-b border-gray-300',
@@ -115,8 +128,8 @@ export default function SimpleLayout(props: SimpleLayoutProps) {
               </LinkComponent>
             </div>
           )}
-
           {/* Left Menus */}
+
           <nav
             aria-label="Primary navigation"
             className={cn('flex space-x-4 items-center', classNames?.header?.left?.nav)}
@@ -154,8 +167,8 @@ export default function SimpleLayout(props: SimpleLayoutProps) {
             )}
           </nav>
         </div>
-
         {/* Right menus */}
+
         <nav
           aria-label="Secondary navigation"
           className={cn('hidden md:flex space-x-4 items-center', classNames?.header?.right?.nav)}
@@ -189,12 +202,13 @@ export default function SimpleLayout(props: SimpleLayoutProps) {
               </button>
             ),
           )}
+
           {userMenuSections.length > 0 && (
             <UserMenus sections={userMenuSections} trigger={user?.trigger} aslink={aslink} />
           )}
         </nav>
-
         {/* Mobile menu button */}
+
         <button
           type="button"
           aria-label="Toggle navigation"
@@ -205,21 +219,26 @@ export default function SimpleLayout(props: SimpleLayoutProps) {
           <Menu className="" />
         </button>
       </header>
-
       {/* Mobile menu */}
+
       {mobileMenuOpen && (
         <div className="w-full md:hidden">
           <MobileMenu sections={mobileMenuSections} aslink={aslink} onClick={toggleMobileMenu} />
         </div>
       )}
-
       {/* Main content */}
-      <main className={cn('p-4 flex flex-col flex-1', classNames?.content?.wrapper)}>
+
+      <main aria-busy={loading ?? false} className={cn('p-4 flex flex-col flex-1', classNames?.content?.wrapper)}>
+        {loading && (
+          <div className="flex items-center justify-center h-full">
+            {loadingContent ?? <p role="status">Loading…</p>}
+          </div>
+        )}
         {!loading && <div className="flex items-center justify-center h-full">{children}</div>}
         <div className={cn('flex-1', classNames?.content?.bottom)}></div>
       </main>
-
       {/* Footer */}
+
       {footer && (
         <footer
           className={cn(

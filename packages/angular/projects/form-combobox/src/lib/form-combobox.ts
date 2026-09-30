@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, DestroyRef, inject, input, OnInit, viewChild } from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import {
   HlmFormField,
@@ -25,8 +25,10 @@ import {
   HlmComboboxTrigger,
 } from '@egose/shadcn-theme-ng/combobox';
 import { BrnCombobox, BrnComboboxMultiple } from '@spartan-ng/brain/combobox';
+import { BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { injectEgFormComboboxConfig } from './form-combobox.token';
 
 @Component({
@@ -53,6 +55,7 @@ import { injectEgFormComboboxConfig } from './form-combobox.token';
     HlmComboboxMultiple,
     HlmComboboxPortal,
     HlmComboboxTrigger,
+    BrnFieldControlDescribedBy,
   ],
   providers: [{ provide: ControlContainer, useExisting: FormGroupDirective }],
   template: `
@@ -63,7 +66,7 @@ import { injectEgFormComboboxConfig } from './form-combobox.token';
 
     <hlm-form-field>
       @if (lbl) {
-        <label hlmLabel [for]="effectiveId()" [class]="$labelClass()"
+        <label hlmLabel [id]="labelId()" [for]="effectiveId()" [class]="$labelClass()"
           >{{ lbl }}
           @if (rqrd) {
             <span class="tw:text-red-500">*</span>
@@ -73,11 +76,21 @@ import { injectEgFormComboboxConfig } from './form-combobox.token';
 
       @if (mode() === 'single') {
         <hlm-combobox [formControlName]="cnm" [disabled]="effectiveDisabled()">
-          <hlm-combobox-trigger [buttonId]="effectiveId()" [class]="$controlClass()">
+          <hlm-combobox-trigger
+            [buttonId]="effectiveId()"
+            [aria-describedby]="describedBy()"
+            [required]="rqrd"
+            [class]="$controlClass()"
+          >
             {{ singleDisplay() ?? placeholder() }}
           </hlm-combobox-trigger>
           <hlm-combobox-content *hlmComboboxPortal>
-            <hlm-combobox-input [inputId]="effectiveId()" [placeholder]="placeholder()" />
+            <hlm-combobox-input
+              [inputId]="effectiveId() + '-search'"
+              [aria-labelledby]="lbl ? labelId() : null"
+              [aria-describedby]="describedBy()"
+              [placeholder]="placeholder()"
+            />
             <div hlmComboboxList>
               @for (option of options(); track option) {
                 <hlm-combobox-item [value]="option">{{ option }}</hlm-combobox-item>
@@ -92,7 +105,14 @@ import { injectEgFormComboboxConfig } from './form-combobox.token';
             @for (v of selectedValues(); track v) {
               <hlm-combobox-chip [value]="v">{{ v }}</hlm-combobox-chip>
             }
-            <input hlmComboboxChipInput [id]="effectiveId()" [placeholder]="placeholder()" />
+            <input
+              hlmComboboxChipInput
+              [id]="effectiveId()"
+              [placeholder]="placeholder()"
+              brnFieldControlDescribedBy
+              [aria-describedby]="describedBy()"
+              [attr.aria-required]="rqrd || null"
+            />
           </hlm-combobox-chips>
           <hlm-combobox-content *hlmComboboxPortal>
             <div hlmComboboxList>
@@ -119,7 +139,7 @@ import { injectEgFormComboboxConfig } from './form-combobox.token';
     </hlm-form-field>
   `,
 })
-export class EgFormCombobox {
+export class EgFormCombobox implements OnInit {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-combobox');
@@ -127,6 +147,16 @@ export class EgFormCombobox {
   private readonly _shared = injectEgFormSharedConfig();
   private readonly _picker = viewChild(BrnComboboxMultiple<string>);
   private readonly _single = viewChild(BrnCombobox<string>);
+
+  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    // Submit/reset may change message visibility without changing the field's value or validity.
+    this.formGroupDirective.form.events
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._cdr.markForCheck());
+  }
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -139,6 +169,8 @@ export class EgFormCombobox {
    */
   autoError = input<boolean>(true);
   hint = input<string | undefined>(undefined);
+  /** Consumer-owned description IDs, merged with the current error and hint IDs in both modes. */
+  ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
 
   id = input<string | undefined>(undefined);
   placeholder = input<string>('Pick…');
@@ -156,6 +188,7 @@ export class EgFormCombobox {
   options = input<string[]>([]);
 
   readonly effectiveId = computed(() => this.controlId() || this.id() || this.generatedId);
+  readonly labelId = computed(() => `${this.effectiveId()}-label`);
   readonly errorId = computed(() => `${this.effectiveId()}-error`);
   readonly hintId = computed(() => `${this.effectiveId()}-hint`);
 
@@ -202,6 +235,11 @@ export class EgFormCombobox {
     return this.disabled() || !!this.formGroupDirective.form.get(this.controlName())?.disabled;
   }
 
+  protected describedBy(): string | null {
+    const ids = [this.ariaDescribedBy(), this.showError() ? this.errorId() : this.hint() ? this.hintId() : null];
+    return [...new Set(ids.filter(Boolean).join(' ').split(/\s+/).filter(Boolean))].join(' ') || null;
+  }
+
   // Styling
   userClass = input<ClassValue>('', { alias: 'class' });
   labelClass = input<string>('');
@@ -211,8 +249,6 @@ export class EgFormCombobox {
   hintClass = input<string>('');
 
   // Computed classes (library base < global config < per-instance).
-  // NOTE: the chip search input exposes no aria-describedby, so error/hint
-  // ids render without an input-level describedby link.
   $userClass = computed(() => hlm('tw:w-full', this.userClass()));
   $labelClass = computed(() => hlm('tw:mb-1', this._shared.labelClass, this._config.labelClass, this.labelClass()));
   $controlClass = computed(() => hlm(this._shared.controlClass, this._config.controlClass, this.controlClass()));

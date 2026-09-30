@@ -9,6 +9,7 @@ import { FormSearchableSelect } from './searchable-select';
 import type { FormSearchableSelectProps } from './searchable-select';
 import type { HookFormRules } from './types';
 
+/** RHF selection with composite onBlur/touched validation and trigger focus for setFocus/invalid submit. Optional onBlur runs after RHF's handler. */
 export function HookFormSearchableSelect<T extends FieldValues>({
   id,
   name,
@@ -17,6 +18,7 @@ export function HookFormSearchableSelect<T extends FieldValues>({
   rules,
   classNames,
   disabled = false,
+  onBlur,
   ...rest
 }: Omit<FormSearchableSelectProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;
@@ -32,9 +34,14 @@ export function HookFormSearchableSelect<T extends FieldValues>({
         control={control}
         name={name}
         rules={rules}
-        render={({ field: { onChange, value } }) => {
+        render={({ field: { onChange, value, onBlur: fieldOnBlur, ref } }) => {
           return (
             <FormSearchableSelect
+              ref={ref}
+              onBlur={() => {
+                fieldOnBlur();
+                onBlur?.();
+              }}
               id={id}
               name={name}
               label={label}

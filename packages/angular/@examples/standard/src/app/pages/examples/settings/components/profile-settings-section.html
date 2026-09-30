@@ -1,0 +1,49 @@
+<app-settings-section
+  sectionId="settings-profile"
+  title="Profile"
+  description="How your name and contact details appear across the workspace."
+>
+  <div [formGroup]="form()" class="tw:grid tw:min-w-0 tw:gap-4">
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="profile-display-name">Display name</label>
+      <input
+        hlmInput
+        id="profile-display-name"
+        data-testid="profile-display-name"
+        formControlName="displayName"
+        autocomplete="name"
+        [attr.aria-invalid]="displayNameError() !== null"
+        [attr.aria-describedby]="displayNameError() !== null ? 'profile-display-name-error' : null"
+      />
+      @if (displayNameError(); as error) {
+      <p id="profile-display-name-error" data-testid="profile-display-name-error" class="tw:text-sm tw:text-red-600">
+        {{ error }}
+      </p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="profile-email">Email</label>
+      <input
+        hlmInput
+        id="profile-email"
+        data-testid="profile-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-invalid]="emailError() !== null"
+        [attr.aria-describedby]="emailError() !== null ? 'profile-email-error' : null"
+      />
+      @if (emailError(); as error) {
+      <p id="profile-email-error" data-testid="profile-email-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="profile-timezone">Timezone</label>
+      <hlm-native-select selectId="profile-timezone" formControlName="timezone" data-testid="profile-timezone">
+        @for (timezone of timezones; track timezone) {
+        <option [value]="timezone">{{ timezone }}</option>
+        }
+      </hlm-native-select>
+    </div>
+  </div>
+</app-settings-section>

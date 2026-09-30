@@ -1,6 +1,6 @@
 # Searchable Multiselect (`@egose/shadcn-theme-ng/searchable-multiselect`)
 
-A shadcn/ui-style **multi-select with chips + popover picker** — selected values render as removable chips, and a popover holds the checkbox option list. There is no exact single shadcn/ui counterpart; it composes the `Popover`, `Button`, and `Checkbox` patterns into one opinionated control.
+A shadcn/ui-style **multi-select with chips + searchable popover picker** — selected values render as named removable chips, and a labeled local search filters the checkbox option list. There is no exact single shadcn/ui counterpart; it composes the `Popover`, `Button`, and `Checkbox` patterns into one opinionated control.
 
 It is a **standalone `ControlValueAccessor` component** (`EgSearchableMultiselect`), so it binds directly to Angular reactive forms (`formControlName`) and template-driven forms (`ngModel`) with a `string[]` value. Internally it reuses `HlmPopover`/`HlmCheckbox`/`HlmButton` — you do not import those yourself.
 
@@ -23,7 +23,7 @@ import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng/searchable-multi
 // import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng-tw/searchable-multiselect';
 ```
 
-Peer dependencies (see [package README](../../README.md) for versions): `@angular/core`, `@angular/common`. (No `@spartan-ng/brain` peer — popover/checkbox/button come along as regular library dependencies.)
+Peer dependencies include Angular and `@spartan-ng/brain` (`>=1.3.2 <2.0.0`); see the [package README](../../README.md) for the complete peer list and supported versions. The composed popover/checkbox/button implementations are included in the theme package, but their Spartan behavior is supplied by that peer.
 
 ## Imports
 
@@ -64,11 +64,13 @@ Renders (internally — you do not write this yourself):
     <span><!-- {{ placeholder }} or chip {{ item.label }} + ✕ button --></span>
   </div>
 
-  <!-- popover trigger + checkbox list -->
+  <!-- popover trigger + local search + checkbox list -->
   <hlm-popover>
     <button hlmPopoverTrigger hlmButton>N selected</button>
     <hlm-popover-content>
+      <label>Search options <input type="search" /></label>
       <label><!-- <hlm-checkbox> per option + label text --></label>
+      <div role="status" aria-live="polite"><!-- No matching options, when empty --></div>
     </hlm-popover-content>
   </hlm-popover>
 </eg-searchable-multiselect>
@@ -80,25 +82,47 @@ Real selector: `eg-searchable-multiselect` (element). The `✕` chip buttons and
 
 ### EgSearchableMultiselect (component, `ControlValueAccessor`)
 
-| Input                 | Type                  | Default                  | Description                                                                      |
-| --------------------- | --------------------- | ------------------------ | -------------------------------------------------------------------------------- |
-| `options`             | `SelectOption[]`      | `[]`                     | Full option list (`{ label, value }`)                                            |
-| `value`               | `string[]`            | `[]`                     | Selected values (one-way in; pairs with `valueChange` for two-way `[(value)]`)   |
-| `placeholder`         | `string`              | `'Start typing to add…'` | Text of the pill shown when nothing is selected                                  |
-| `id`                  | `string`              | `''`                     | `id` placed on the trigger button                                                |
-| `disabled`            | `boolean`             | `false`                  | Disables chips + trigger + checkboxes                                            |
-| `wrapperDisabled`     | `boolean`             | `false`                  | Second disable flag (e.g. set by wrapper form components); OR-ed with `disabled` |
-| `ariaLabel`           | `string \| undefined` | `undefined`              | `aria-label` for the trigger button                                              |
-| `ariaDescribedby`     | `string \| null`      | `null`                   | `aria-describedby` for the trigger button                                        |
-| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes on the host                                                        |
+| Input                 | Type                  | Default                  | Description                                                                                           |
+| --------------------- | --------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `options`             | `SelectOption[]`      | `[]`                     | Full option list (`{ label, value }`)                                                                 |
+| `value`               | `string[]`            | `[]`                     | Standalone selected IDs; pairs with `valueChange` for `[(value)]`. Ignored after the first CVA write. |
+| `placeholder`         | `string`              | `'Start typing to add…'` | Text of the pill shown when nothing is selected                                                       |
+| `id`                  | `string`              | `''`                     | `id` placed on the trigger button                                                                     |
+| `disabled`            | `boolean`             | `false`                  | Disables chips + trigger + search + checkboxes                                                        |
+| `wrapperDisabled`     | `boolean`             | `false`                  | Second disable flag (e.g. set by wrapper form components); OR-ed with `disabled`                      |
+| `ariaLabel`           | `string \| undefined` | `undefined`              | `aria-label` for the trigger button                                                                   |
+| `ariaDescribedby`     | `string \| null`      | `null`                   | `aria-describedby` for the trigger button                                                             |
+| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes on the host                                                                             |
 
-| Output        | Type       | Description                                          |
-| ------------- | ---------- | ---------------------------------------------------- |
-| `valueChange` | `string[]` | Emitted with the new value array on every add/remove |
+| Output        | Type       | Description                                                      |
+| ------------- | ---------- | ---------------------------------------------------------------- |
+| `valueChange` | `string[]` | Emitted with a new value array on each effective user add/remove |
 
 `ControlValueAccessor` contract: `writeValue(values)`, `registerOnChange`, `registerOnTouched`, `setDisabledState` are implemented, so `formControl` / `formControlName` / `ngModel` all work. Effective disabled state = `disabled() \|\| wrapperDisabled() \|\| formDisabled()` (the last set by forms via `setDisabledState`).
 
-API surprise worth knowing: despite the "searchable" name, the current template ships **no filter text field** — the popover shows the full checkbox list and empty state reads "No options". Treat `options` as the complete visible list (filter it yourself before passing it in if you need search). Also `value` is a plain `input`, not a `model`: form writes flow through `writeValue`, and user edits flow out through `valueChange` + the CVA `onChange` callback.
+`value` is a plain `input`, not a `model`: form writes flow through `writeValue`, and user edits flow out through `valueChange` + the CVA `onChange` callback.
+
+### Local search
+
+Additional copy inputs:
+
+- `searchLabel: string` (default `'Search options'`): visible, associated native search label; supply nonempty localized text.
+- `searchPlaceholder: string` (default `'Type to filter…'`): search input hint, separate from the empty-selection pill.
+- `emptyMessage: string` (default `'No matching options'`): polite live-region copy for no matches or no supplied options.
+- `removeLabel: (option: SelectOption) => string` (default ``option => `Remove ${option.label}` ``): pure formatter for each chip button's accessible name; unresolved labels are raw IDs.
+
+Pass the complete `options` list. The native search field trims the query and performs case-insensitive substring matching on **labels**, retaining source order. An empty/whitespace query restores all choices. Search is local to the supplied list: it does not search IDs, fetch remote options, or virtualize results. New option arrays and label replacements recompute the current filter immediately.
+
+Filtering hides checkbox rows only. All selections, including unresolved IDs, remain selected; chip labels still resolve from the complete options list. Search edits never emit `valueChange`/CVA changes or mark touched. The query persists across close/reopen and external value writes/resets; clear its text to restore all choices. The empty message occupies a persistent polite status region while the popover is open.
+
+### Selection ownership and asynchronous options
+
+- **Standalone:** `[value]` initializes selection, and each new input array replaces it (including `[]` to clear). User edits update the displayed selection immediately and emit `valueChange`; `[(value)]` keeps the parent synchronized. With one-way binding, local edits persist until a new input array arrives.
+- **Angular forms:** the first `writeValue` takes ownership for the component's lifetime. Subsequent `[value]` changes are ignored; use `formControl`, `formControlName`, or `ngModel` as the source of truth. Every form write replaces selection; `null` and `[]` clear it, including resets.
+- Selected IDs are stored independently of `options`, in value-array order. Unresolved IDs render as removable chips labeled with the raw ID and count toward the selected total. When options arrive or labels change, chips update automatically. When an option disappears, its chip falls back to the ID. Adding/removing another option never discards these unresolved IDs; explicitly remove their chips or write a replacement value to clear them.
+- External input/form writes and option updates never emit `valueChange`, call CVA `onChange`, or mark touched. Effective user adds/removes emit once per channel and call `onTouched`. Opening/focusing the picker alone does not mark touched; duplicate adds and absent removals are no-ops.
+- Disabled state combines the input, wrapper, and form flags. It blocks trigger/chip/search/checkbox edits, including when disabled with the panel open, while still accepting external value and option updates.
+- Input arrays and option objects are never mutated. Output and CVA callbacks receive separate fresh arrays. Supply unique selected IDs and unique option values, and replace arrays/option objects rather than mutating them in place so signal updates are observed.
 
 ## Examples
 
@@ -224,47 +248,44 @@ export class DisabledMultiComponent {
 
 Disabling via `formControl.disable()` works too — it flows through `setDisabledState`.
 
-### 5. Client-side search (filter `options` yourself)
+### 5. Local search with configurable copy
 
-Since the popover lists exactly what you pass in `options`, implement search by filtering upstream:
+Supply all options so hidden selections retain their labels:
 
 ```ts
-import { Component, computed, signal } from '@angular/core';
-import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng/searchable-multiselect';
+import { Component, signal } from '@angular/core';
+import { EgSearchableMultiselect, type SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
 
 @Component({
   selector: 'app-search-multi',
   standalone: true,
   imports: [EgSearchableMultiselect],
   template: `
-    <input
-      type="search"
-      placeholder="Filter options…"
-      [value]="query()"
-      (input)="query.set($any($event.target).value)"
-      aria-label="Filter options"
+    <eg-searchable-multiselect
+      [options]="frameworks"
+      [(value)]="selected"
+      ariaLabel="Framework assignments"
+      searchLabel="Find frameworks"
+      searchPlaceholder="Type a framework name…"
+      emptyMessage="No frameworks match your search"
+      [removeLabel]="removeFrameworkLabel"
     />
-    <eg-searchable-multiselect [options]="filtered()" [(value)]="selected" />
   `,
 })
 export class SearchMultiComponent {
-  readonly query = signal('');
   readonly selected = signal<string[]>([]);
-  private readonly all = [
+  readonly removeFrameworkLabel = (option: SelectOption) => `Unassign ${option.label}`;
+  readonly frameworks: SelectOption[] = [
     { label: 'Angular', value: 'angular' },
     { label: 'React', value: 'react' },
     { label: 'Vue', value: 'vue' },
     { label: 'Svelte', value: 'svelte' },
     { label: 'Solid', value: 'solid' },
   ];
-  readonly filtered = computed(() => {
-    const q = this.query().trim().toLowerCase();
-    return q ? this.all.filter((o) => o.label.toLowerCase().includes(q)) : this.all;
-  });
 }
 ```
 
-Note: selections whose option is currently filtered out stay selected internally (chips still show) but have no checkbox row until the filter matches again. Unknown values passed via `value`/`writeValue` that match no option are dropped from the chip row.
+The form wrapper `EgFormSearchableMultiselect` forwards the same `searchLabel`, `searchPlaceholder`, `emptyMessage`, and `removeLabel` inputs. For localization, the remove formatter receives the current label and value, so it can include an ID to distinguish duplicate display names.
 
 ### 6. Async options + reacting to changes
 
@@ -308,9 +329,10 @@ export class AsyncMultiComponent {
 ## Accessibility notes
 
 - The trigger is a real `<button>` — give it an accessible name via `ariaLabel` (or a visible `<label>` paired with `id`) and descriptions via `ariaDescribedby`.
-- Options render as native checkbox-backed `hlm-checkbox` rows inside `<label>` elements, so they are keyboard-operable and announced per option.
-- Chip `✕` buttons are real buttons and disabled along with the control; keep chip text concise so screen readers announce removals cleanly.
-- The empty state is a plain text pill (not focusable) — the popover trigger remains the single keyboard entry point, which keeps tab order simple.
+- Open the trigger with Enter/Space. With the default popover focus configuration, focus moves to the labeled native search field. Type to filter, clear the text to restore choices, and Tab/Shift+Tab among controls. Enter in search does not submit a surrounding form. Escape closes the popover and restores trigger focus.
+- Options use native buttons with checkbox roles inside `<label>` elements. Use Space/Enter to toggle a focused choice.
+- Chip `✕` buttons are named `Remove <label>` by default (`Remove <ID>` when unresolved); customize with `removeLabel`. They are disabled along with the control.
+- No matches (including an empty options list) displays `emptyMessage` in a polite, atomic status region. The search remains editable when there are no results. Browser DOM/focus tests verify these contracts; they do not constitute screen-reader testing.
 
 ## Theming / CSS variables
 

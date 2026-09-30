@@ -1,10 +1,16 @@
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import CustomersExample, { SEARCH_DEBOUNCE_MS } from './index';
+import CustomersExample from './index';
+import { SEARCH_DEBOUNCE_MS } from './use-customers-controller';
+import * as simulation from '../_shared/async-simulation';
 
 // Vitest globals are disabled, so RTL auto-cleanup never registers.
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.useRealTimers();
+});
 
 function renderExample() {
   render(<CustomersExample />);
@@ -16,7 +22,7 @@ function searchInput() {
 
 function resultCount() {
   // The result-count paragraph is the only persistent polite status region.
-  return screen.getByText(/customers?( — showing .+)?$/, { selector: 'p' });
+  return screen.getByText(/^\d+ customers?( — showing .+)?$/, { selector: 'p' });
 }
 
 function openMenuFor(name: string) {
@@ -93,7 +99,7 @@ describe('CustomersExample — inspectable states', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Error' }));
     expect(screen.getByRole('alert').textContent).toContain('Customers could not be loaded');
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    expect(resultCount().textContent).toBe('12 customers — showing 1–5');
+    expect(resultCount().textContent).toBe('0 customers');
   });
 
   it('shows a distinct filtered-empty state when no customers match', () => {
@@ -106,6 +112,49 @@ describe('CustomersExample — inspectable states', () => {
 });
 
 describe('CustomersExample — resource representations', () => {
+  it.each(['table', 'cards'] as const)(
+    'clamps the shared page after archiving the last-page rows from %s',
+    async (surface) => {
+      vi.useFakeTimers();
+      renderExample();
+      fireEvent.change(screen.getByLabelText('Filter by status'), { target: { value: 'active' } });
+      fireEvent.click(screen.getByRole('link', { name: '2' }));
+      expect(resultCount().textContent).toBe('8 customers — showing 6–8');
+
+      for (const name of ['Henrik Sorensen', 'Kira Tanaka', 'Leila Haddad']) {
+        const records =
+          surface === 'table' ? screen.getByRole('table') : screen.getByRole('list', { name: 'Customers (card list)' });
+        fireEvent.pointerDown(within(records).getByLabelText(`Actions for ${name}`));
+        fireEvent.click(screen.getByRole('menuitem', { name: 'Archive…' }));
+        fireEvent.click(screen.getByRole('button', { name: 'Archive customer' }));
+        await act(() => vi.advanceTimersByTimeAsync(400));
+        await act(() => vi.advanceTimersByTimeAsync(0));
+        expect(screen.queryByText(name)).toBeNull();
+      }
+
+      expect(resultCount().textContent).toBe('5 customers — showing 1–5');
+      expect(screen.queryByRole('navigation', { name: 'Customer pages' })).toBeNull();
+      expect(document.activeElement).toBe(searchInput());
+      const table = screen.getByRole('table');
+      const cards = screen.getByRole('list', { name: 'Customers (card list)' });
+      const actions = (element: HTMLElement) =>
+        within(element)
+          .getAllByRole('button')
+          .map((button) => button.getAttribute('aria-label'));
+      expect(actions(table)).toEqual(actions(cards));
+      expect(actions(table)).toHaveLength(5);
+      // The session, filters and clamped result survive temporary view unmounts.
+      fireEvent.click(screen.getByRole('button', { name: 'Loading' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Error' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+      expect(resultCount().textContent).toBe('5 customers — showing 1–5');
+      fireEvent.change(screen.getByLabelText('Filter by plan'), { target: { value: 'team' } });
+      expect(resultCount().textContent).toBe('2 customers — showing 1–2');
+      expect(within(screen.getByRole('table')).getByText('Farah Noor')).toBeTruthy();
+      expect(within(screen.getByRole('list', { name: 'Customers (card list)' })).getByText('Farah Noor')).toBeTruthy();
+    },
+  );
+
   it('renders one model as a captioned desktop table and a labeled card list', () => {
     renderExample();
     const table = screen.getByRole('table', {
@@ -248,5 +297,151 @@ describe('CustomersExample — add workflow', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('CustomersExample — recovery and settlement', () => {
+  it('falls back to search when a connected responsive opener cannot receive focus', async () => {
+    vi.useFakeTimers();
+    renderExample();
+    const trigger = openMenuFor('Ada Okafor');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Rename…' }));
+    // jsdom does not implement CSS visibility. Model the browser's no-op focus
+    // on a display:none table/card opener; EXB-08 also checks actual resizing.
+    vi.spyOn(trigger, 'focus').mockImplementation(() => {});
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(trigger.isConnected).toBe(true);
+    expect(document.activeElement).toBe(searchInput());
+  });
+
+  it('captures the outcome at submission while the retained dialog picker controls the next retry', async () => {
+    vi.useFakeTimers();
+    const operation = vi.spyOn(simulation, 'simulate');
+    renderExample();
+    fireEvent.click(screen.getByRole('button', { name: 'Add customer' }));
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getAllByRole('radiogroup')).toHaveLength(1);
+    fireEvent.change(screen.getByLabelText('Customer name'), { target: { value: 'Outcome snapshot' } });
+    fireEvent.click(within(dialog).getByRole('radio', { name: 'Simulate failure' }));
+    const submit = within(dialog).getByRole('button', { name: 'Add customer' });
+    fireEvent.click(submit);
+    fireEvent.click(within(dialog).getByRole('radio', { name: 'Simulate success' }));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(within(dialog).getByRole('alert').textContent).toContain('Could not add');
+    expect(operation).toHaveBeenNthCalledWith(1, 'Outcome snapshot', { outcome: 'failure' });
+    fireEvent.click(submit);
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(operation).toHaveBeenNthCalledWith(2, 'Outcome snapshot', { outcome: 'success' });
+    expect(screen.getByText('Added Outcome snapshot.')).toBeTruthy();
+    expect(screen.getAllByRole('radiogroup', { name: 'Simulated mutation outcome:' })).toHaveLength(1);
+  });
+
+  it.each(['add', 'rename'] as const)('retains failed %s input and retries the actual operation once', async (mode) => {
+    vi.useFakeTimers();
+    const operation = vi.spyOn(simulation, 'simulate');
+    renderExample();
+    fireEvent.click(screen.getByRole('radio', { name: 'Simulate failure' }));
+    if (mode === 'add') fireEvent.click(screen.getByRole('button', { name: 'Add customer' }));
+    else {
+      openMenuFor('Ada Okafor');
+      fireEvent.click(screen.getByRole('menuitem', { name: 'Rename…' }));
+    }
+    const input = screen.getByLabelText('Customer name');
+    fireEvent.change(input, { target: { value: 'Retained customer' } });
+    const submit = within(screen.getByRole('dialog')).getByRole('button', {
+      name: mode === 'add' ? 'Add customer' : 'Save name',
+    });
+    fireEvent.click(submit);
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(input).toHaveProperty('value', 'Retained customer');
+    expect(within(screen.getByRole('dialog')).getByRole('alert').textContent).toContain('No changes were made');
+    expect(document.activeElement).toBe(input);
+    fireEvent.click(screen.getByRole('radio', { name: 'Simulate success' }));
+    fireEvent.click(submit);
+    fireEvent.click(submit);
+    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(operation).toHaveBeenCalledTimes(2);
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(
+      screen.getByText(mode === 'add' ? 'Added Retained customer.' : 'Renamed Ada Okafor to Retained customer.'),
+    ).toBeTruthy();
+    expect(operation).toHaveBeenLastCalledWith('Retained customer', expect.any(Object));
+  });
+
+  it('starts with an actual empty dataset and adds the first visible customer', async () => {
+    vi.useFakeTimers();
+    renderExample();
+    fireEvent.change(screen.getByLabelText('Filter by plan'), { target: { value: 'team' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Empty' }));
+    expect(screen.queryByText('Ada Okafor')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Add customer' }));
+    fireEvent.change(screen.getByLabelText('Customer name'), { target: { value: 'First customer' } });
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Add customer' }));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(resultCount().textContent).toBe('1 customer — showing 1–1');
+    expect(screen.getAllByText('First customer')).toHaveLength(2);
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Add customer' }));
+  });
+
+  it.each(['rename', 'archive'] as const)('focuses search after filtered %s removes its opener', async (mode) => {
+    vi.useFakeTimers();
+    renderExample();
+    if (mode === 'rename') {
+      fireEvent.change(searchInput(), { target: { value: 'Ada Okafor' } });
+      await act(() => vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS));
+    } else fireEvent.change(screen.getByLabelText('Filter by status'), { target: { value: 'active' } });
+    const trigger = openMenuFor('Ada Okafor');
+    fireEvent.click(screen.getByRole('menuitem', { name: mode === 'rename' ? 'Rename…' : 'Archive…' }));
+    if (mode === 'rename') fireEvent.change(screen.getByLabelText('Customer name'), { target: { value: 'New name' } });
+    fireEvent.click(screen.getByRole('button', { name: mode === 'rename' ? 'Save name' : 'Archive customer' }));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(trigger.isConnected).toBe(false);
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(document.activeElement).toBe(searchInput());
+  });
+
+  it('retains archive failure feedback and retries from the restored row action', async () => {
+    vi.useFakeTimers();
+    const operation = vi.spyOn(simulation, 'simulate');
+    renderExample();
+    fireEvent.click(screen.getByRole('radio', { name: 'Simulate failure' }));
+    const trigger = openMenuFor('Ada Okafor');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Archive…' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Archive customer' }));
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(screen.getByRole('alert').textContent).toContain('Could not archive Ada Okafor');
+    expect(document.activeElement).toBe(trigger);
+    fireEvent.click(screen.getByRole('radio', { name: 'Simulate success' }));
+    openMenuFor('Ada Okafor');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Archive…' }));
+    const confirm = screen.getByRole('button', { name: 'Archive customer' });
+    fireEvent.click(confirm);
+    fireEvent.click(confirm);
+    fireEvent.keyDown(screen.getByRole('alertdialog'), { key: 'Escape' });
+    expect(screen.getByRole('alertdialog')).toBeTruthy();
+    expect(operation).toHaveBeenCalledTimes(2);
+    await act(() => vi.advanceTimersByTimeAsync(400));
+    expect(screen.getByText('Archived Ada Okafor.')).toBeTruthy();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('uses search on cancel when an already queued search removes the opener', async () => {
+    vi.useFakeTimers();
+    renderExample();
+    fireEvent.change(searchInput(), { target: { value: 'tanaka' } });
+    const trigger = openMenuFor('Ada Okafor');
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Rename…' }));
+    await act(() => vi.advanceTimersByTimeAsync(SEARCH_DEBOUNCE_MS));
+    expect(trigger.isConnected).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(document.activeElement).toBe(searchInput());
   });
 });

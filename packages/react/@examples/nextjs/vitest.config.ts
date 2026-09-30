@@ -12,6 +12,10 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    // Real-control workflow suites mount many portals and navigate repeatedly.
+    // Bound concurrency and allow the same budget as the longer launch cases.
+    maxWorkers: 2,
+    testTimeout: 15_000,
     include: ['**/*.test.{ts,tsx}'],
     exclude: ['node_modules/**', '.next/**', 'out/**'],
   },

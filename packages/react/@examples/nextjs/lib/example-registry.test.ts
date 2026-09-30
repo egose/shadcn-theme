@@ -2,12 +2,45 @@ import { describe, expect, it } from 'vitest';
 
 import type { ExampleSection } from './example-registry';
 import { componentsSection, formSection, realExamplesSection, widgetsSection } from './sections';
+import { listCatalog } from './example-registry';
+
+import ComponentsPage from '../app/components/[slug]/page';
+import FormPage from '../app/form/[slug]/page';
+import RealExamplesPage from '../app/real-examples/[slug]/page';
 
 const sections: ExampleSection[] = [componentsSection, formSection, widgetsSection, realExamplesSection];
 
 const allEntries = sections.flatMap((section) => section.entries);
 
 describe('example registry', () => {
+  it('discovers the support inbox and derives its primitive reverse links', () => {
+    const inbox = listCatalog(realExamplesSection, sections).find(
+      (entry) => entry.url === '/real-examples/support-inbox',
+    )!;
+    expect(inbox.capabilities).toContain('Per-ticket drafts');
+    for (const slug of ['resizable', 'scroll-area', 'sheet', 'item']) {
+      expect(inbox.related.some((link) => link.url === `/components/${slug}`)).toBe(true);
+      const primitive = listCatalog(componentsSection, sections).find((entry) => entry.url === `/components/${slug}`)!;
+      expect(primitive.related).toContainEqual({ title: 'Support Inbox', url: '/real-examples/support-inbox' });
+    }
+  });
+
+  it('retains not-found handling for unknown dynamic slugs', async () => {
+    for (const Page of [ComponentsPage, FormPage, RealExamplesPage]) {
+      await expect(Page({ params: Promise.resolve({ slug: 'not-a-real-slug' }) })).rejects.toThrow(
+        'NEXT_HTTP_ERROR_FALLBACK;404',
+      );
+    }
+  });
+
+  it('keeps discovery capabilities nonempty and distinct when supplied', () => {
+    for (const entry of allEntries) {
+      const capabilities = entry.capabilities ?? [];
+      expect(new Set(capabilities).size, entry.url).toBe(capabilities.length);
+      for (const capability of capabilities) expect(capability.trim().length, entry.url).toBeGreaterThan(0);
+    }
+  });
+
   it('has no duplicate URLs across the whole catalog', () => {
     const urls = allEntries.map((e) => e.url);
     expect(new Set(urls).size, `duplicate URLs: ${urls.filter((u, i) => urls.indexOf(u) !== i).join(', ')}`).toBe(

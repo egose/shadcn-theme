@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
 import { createColumnHelper, type SortingState } from '@tanstack/angular-table';
 import { EgDataTable, type EgPaginationNavMode } from '../public-api';
 import { defaultEgDataTableFeatures, type EgDataTableFeatures } from './eg-data-table-features';
@@ -238,6 +239,359 @@ function cellTexts(fixture: { nativeElement: HTMLElement }): string[] {
 }
 
 describe('EgDataTable', () => {
+  describe('selection identity', () => {
+    const identify = (person: Person) => person.email;
+
+    async function setup(layout: 'table' | 'grid' = 'table', stableIds = true) {
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', columns);
+      fixture.componentRef.setInput('gridColumns', columns);
+      fixture.componentRef.setInput('layout', layout);
+      fixture.componentRef.setInput('enableSelection', true);
+      fixture.componentRef.setInput('showToolbar', true);
+      fixture.componentRef.setInput('filterColumnId', 'email');
+      fixture.componentRef.setInput('data', PEOPLE);
+      if (stableIds) fixture.componentRef.setInput('getRowId', identify);
+      const emissions: (readonly Person[])[] = [];
+      fixture.componentInstance.selectionChange.subscribe((rows) => emissions.push(rows));
+      const settle = async () => {
+        fixture.detectChanges();
+        await fixture.whenStable();
+      };
+      const click = async (selector: string) => {
+        fixture.debugElement.query(By.css(selector)).nativeElement.click();
+        await settle();
+      };
+      const selectedNames = () =>
+        Array.from(fixture.nativeElement.querySelectorAll('[data-state="selected"]')).map((element) =>
+          (element as HTMLElement).textContent?.trim(),
+        );
+      const filter = async (value: string) => {
+        const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+        input.value = value;
+        input.dispatchEvent(new Event('input'));
+        await settle();
+      };
+      await settle();
+      return { fixture, emissions, settle, click, selectedNames, filter };
+    }
+
+    for (const layout of ['table', 'grid'] as const) {
+      it(`preserves stable identity through reorder, refresh, deletion and pre-filtering in ${layout}`, async () => {
+        const { fixture, emissions, settle, click, selectedNames } = await setup(layout);
+        await click('eg-table-row-selection [role="checkbox"]');
+        expect(emissions.at(-1)).toEqual([PEOPLE[0]]);
+        emissions.length = 0;
+
+        fixture.componentRef.setInput('data', [PEOPLE[1], PEOPLE[0]]);
+        await settle();
+        expect(selectedNames().length).toBe(1);
+        expect(selectedNames()[0]).toContain('Grace');
+        expect(emissions).toEqual([]);
+
+        const refreshed = { ...PEOPLE[0], name: 'Grace refreshed' };
+        fixture.componentRef.setInput('data', [PEOPLE[1], refreshed]);
+        await settle();
+        expect(emissions).toEqual([[refreshed]]);
+        expect(emissions[0][0]).toBe(refreshed);
+        expect(selectedNames()[0]).toContain('Grace refreshed');
+
+        fixture.componentRef.setInput('filterRows', (rows: readonly Person[]) =>
+          rows.filter((row) => row.email === identify(refreshed)),
+        );
+        await settle();
+        expect(selectedNames()[0]).toContain('Grace refreshed');
+        expect(emissions).toEqual([[refreshed]]);
+
+        emissions.length = 0;
+        fixture.componentRef.setInput('data', [PEOPLE[1]]);
+        await settle();
+        expect(emissions).toEqual([[]]);
+        expect(selectedNames()).toEqual([]);
+        fixture.componentRef.setInput('data', [refreshed, PEOPLE[1]]);
+        fixture.componentRef.setInput('filterRows', null);
+        await settle();
+        expect(selectedNames()).toEqual([]);
+        expect(emissions).toEqual([[]]);
+      });
+
+      it(`limits server selection to loaded IDs and never emits a replacement entity in ${layout}`, async () => {
+        const { fixture, emissions, settle, click, selectedNames } = await setup(layout);
+        const page = (items: Person[], offset = 0): EgPaginatedResponse<Person> => ({
+          items,
+          offset,
+          limit: 1,
+          total: 2,
+          hasPrevious: offset > 0,
+          hasNext: offset === 0,
+        });
+        fixture.componentRef.setInput('manualPagination', true);
+        fixture.componentRef.setInput('data', page([PEOPLE[0]]));
+        await settle();
+        await click('eg-table-row-selection [role="checkbox"]');
+        emissions.length = 0;
+
+        const refreshed = { ...PEOPLE[0] };
+        fixture.componentRef.setInput('data', page([refreshed]));
+        await settle();
+        expect(emissions).toEqual([[refreshed]]);
+        expect(emissions[0][0]).toBe(refreshed);
+        expect(selectedNames()[0]).toContain('Grace');
+
+        emissions.length = 0;
+        fixture.componentRef.setInput('data', page([PEOPLE[1]], 1));
+        await settle();
+        expect(emissions).toEqual([[]]);
+        expect(selectedNames()).toEqual([]);
+        fixture.componentRef.setInput('data', page([refreshed]));
+        await settle();
+        expect(selectedNames()).toEqual([]);
+        expect(emissions).toEqual([[]]);
+
+        await click('eg-table-row-selection [role="checkbox"]');
+        emissions.length = 0;
+        fixture.componentRef.setInput('data', null);
+        await settle();
+        fixture.componentRef.setInput('data', page([refreshed]));
+        await settle();
+        expect(emissions).toEqual([[]]);
+        expect(selectedNames()).toEqual([]);
+      });
+    }
+
+    it('keeps built-in filtered selections attached to their records and shares table/grid controls', async () => {
+      const { fixture, emissions, settle, click, selectedNames, filter } = await setup();
+      await click('eg-table-row-selection [role="checkbox"]');
+      emissions.length = 0;
+      await click('button[aria-label="Sort by name"]');
+      expect(selectedNames()[0]).toContain('Grace');
+      await filter('ada');
+      expect(selectedNames()).toEqual([]);
+      expect(emissions).toEqual([]);
+      expect(
+        fixture.nativeElement.querySelector('eg-table-head-selection [role="checkbox"]').getAttribute('aria-checked'),
+      ).toBe('false');
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(emissions.at(-1)).toEqual(PEOPLE);
+      await filter('');
+      expect(selectedNames().length).toBe(2);
+      await click('button[aria-label="Grid view"]');
+      expect(selectedNames().length).toBe(2);
+      // Sorted Ada is first in grid; clearing her must leave only Grace selected.
+      await click('eg-table-row-selection [role="checkbox"]');
+      expect(emissions.at(-1)).toEqual([PEOPLE[0]]);
+      await click('button[aria-label="Table view"]');
+      expect(selectedNames()[0]).toContain('Grace');
+      // Both the table model and the actual focusable checkbox expose mixed state.
+      expect(
+        fixture.debugElement
+          .query(By.css('eg-table-head-selection'))
+          .query(By.directive(HlmCheckbox))
+          .componentInstance.checked(),
+      ).toBe('indeterminate');
+      expect(
+        fixture.nativeElement.querySelector('eg-table-head-selection [role="checkbox"]').getAttribute('aria-checked'),
+      ).toBe('mixed');
+      await settle();
+      expect(emissions).toEqual([PEOPLE, [PEOPLE[0]]]);
+    });
+
+    it('preserves client selections across pages and header selection affects only the displayed page', async () => {
+      const { fixture, emissions, settle, click, selectedNames } = await setup();
+      fixture.componentRef.setInput('defaultPageSize', 1);
+      await settle();
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(emissions.at(-1)).toEqual([PEOPLE[0]]);
+      await click('button[aria-label="Go to next page"]');
+      expect(selectedNames()).toEqual([]);
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(emissions.at(-1)).toEqual(PEOPLE);
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(emissions.at(-1)).toEqual([PEOPLE[0]]);
+    });
+
+    it('selects only the displayed page when its mixed header is clicked', async () => {
+      const { fixture, emissions, settle, click, selectedNames } = await setup();
+      const third: Person = { name: 'Linus', email: 'linus@example.com' };
+      fixture.componentRef.setInput('data', [...PEOPLE, third]);
+      fixture.componentRef.setInput('defaultPageSize', 2);
+      await settle();
+      const headerState = () =>
+        fixture.nativeElement.querySelector('eg-table-head-selection [role="checkbox"]').getAttribute('aria-checked');
+      expect(headerState()).toBe('false');
+      await click('eg-table-row-selection [role="checkbox"]');
+      expect(headerState()).toBe('mixed');
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(headerState()).toBe('true');
+      expect(emissions.at(-1)).toEqual(PEOPLE);
+      await click('button[aria-label="Go to next page"]');
+      expect(selectedNames()).toEqual([]);
+      expect(headerState()).toBe('false');
+      await click('button[aria-label="Go to previous page"]');
+      expect(headerState()).toBe('true');
+      await click('eg-table-head-selection [role="checkbox"]');
+      expect(headerState()).toBe('false');
+      expect(emissions.at(-1)).toEqual([]);
+    });
+
+    for (const change of ['reorder', 'refresh', 'pre-filter'] as const) {
+      it(`clears no-ID selection on ${change} without emitting another entity`, async () => {
+        const { fixture, emissions, settle, click, selectedNames } = await setup('table', false);
+        await click('eg-table-row-selection [role="checkbox"]');
+        emissions.length = 0;
+        if (change === 'pre-filter') {
+          fixture.componentRef.setInput('filterRows', (rows: readonly Person[]) => rows.slice(1));
+        } else {
+          fixture.componentRef.setInput(
+            'data',
+            change === 'reorder' ? [...PEOPLE].reverse() : PEOPLE.map((row) => ({ ...row })),
+          );
+        }
+        await settle();
+        expect(emissions).toEqual([[]]);
+        expect(selectedNames()).toEqual([]);
+      });
+    }
+
+    it('preserves no-ID selection during built-in sorting/filtering while the source array is unchanged', async () => {
+      const { emissions, click, selectedNames, filter } = await setup('table', false);
+      await click('eg-table-row-selection [role="checkbox"]');
+      emissions.length = 0;
+      await click('button[aria-label="Sort by name"]');
+      expect(selectedNames()[0]).toContain('Grace');
+      await filter('ada');
+      expect(selectedNames()).toEqual([]);
+      await filter('');
+      expect(selectedNames()[0]).toContain('Grace');
+      expect(emissions).toEqual([]);
+    });
+
+    it('discards stable IDs removed by filterRows instead of restoring hidden selections later', async () => {
+      const { fixture, emissions, settle, click, selectedNames } = await setup();
+      await click('eg-table-row-selection [role="checkbox"]');
+      emissions.length = 0;
+      fixture.componentRef.setInput('filterRows', (rows: readonly Person[]) => rows.slice(1));
+      await settle();
+      expect(emissions).toEqual([[]]);
+      expect(selectedNames()).toEqual([]);
+      fixture.componentRef.setInput('filterRows', null);
+      await settle();
+      expect(selectedNames()).toEqual([]);
+      expect(emissions).toEqual([[]]);
+    });
+
+    it('clears no-ID selection on server page replacement', async () => {
+      const { fixture, emissions, settle, click, selectedNames } = await setup('table', false);
+      const page: EgPaginatedResponse<Person> = {
+        items: [PEOPLE[0]],
+        total: 2,
+        limit: 1,
+        offset: 0,
+        hasPrevious: false,
+        hasNext: true,
+      };
+      fixture.componentRef.setInput('manualPagination', true);
+      fixture.componentRef.setInput('data', page);
+      await settle();
+      await click('eg-table-row-selection [role="checkbox"]');
+      emissions.length = 0;
+      fixture.componentRef.setInput('data', { ...page, items: [PEOPLE[1]], offset: 1 });
+      await settle();
+      expect(emissions).toEqual([[]]);
+      expect(selectedNames()).toEqual([]);
+    });
+
+    it('reports selected rows in current source order after a stable-ID reorder', async () => {
+      const { fixture, emissions, settle, click } = await setup();
+      await click('eg-table-head-selection [role="checkbox"]');
+      emissions.length = 0;
+      fixture.componentRef.setInput('data', [...PEOPLE].reverse());
+      await settle();
+      expect(emissions).toEqual([[PEOPLE[1], PEOPLE[0]]]);
+    });
+
+    it('seeds stable IDs only for present rows and clears selection if the identity callback changes', async () => {
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', columns);
+      fixture.componentRef.setInput('data', [PEOPLE[0]]);
+      fixture.componentRef.setInput('getRowId', identify);
+      fixture.componentRef.setInput('enableSelection', true);
+      fixture.componentRef.setInput('initialRowSelection', {
+        [identify(PEOPLE[0])]: true,
+        [identify(PEOPLE[1])]: true,
+      });
+      const emissions: (readonly Person[])[] = [];
+      fixture.componentInstance.selectionChange.subscribe((rows) => emissions.push(rows));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions).toEqual([[PEOPLE[0]]]);
+      fixture.componentRef.setInput('data', PEOPLE);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions).toEqual([[PEOPLE[0]]]);
+      fixture.componentRef.setInput('getRowId', (person: Person) => person.name);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions).toEqual([[PEOPLE[0]], []]);
+      fixture.debugElement.query(By.css('eg-table-row-selection [role="checkbox"]')).nativeElement.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const refreshed = { ...PEOPLE[0] };
+      fixture.componentRef.setInput('data', [refreshed, PEOPLE[1]]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions).toEqual([[PEOPLE[0]], [], [PEOPLE[0]], [refreshed]]);
+      expect(emissions.at(-1)?.[0]).toBe(refreshed);
+    });
+
+    it('does not loop or renotify when an output handler reads signals and copies the data array', async () => {
+      const { fixture, emissions, settle, click } = await setup();
+      const consumerState = signal(0);
+      fixture.componentInstance.selectionChange.subscribe(() => {
+        consumerState();
+        fixture.componentRef.setInput('data', [...PEOPLE]);
+      });
+      await click('eg-table-row-selection [role="checkbox"]');
+      expect(emissions).toEqual([[], [PEOPLE[0]]]);
+      consumerState.set(1);
+      fixture.componentRef.setInput('isLoading', true);
+      await settle();
+      fixture.componentRef.setInput('isLoading', false);
+      await settle();
+      expect(emissions).toEqual([[], [PEOPLE[0]]]);
+    });
+  });
+
+  for (const layout of ['table', 'grid'] as const) {
+    it(`clears positional selection before a replacement can select another entity in ${layout} layout`, async () => {
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', columns);
+      fixture.componentRef.setInput('gridColumns', columns);
+      fixture.componentRef.setInput('layout', layout);
+      fixture.componentRef.setInput('enableSelection', true);
+      fixture.componentRef.setInput('data', [PEOPLE[0]]);
+      const emissions: (readonly Person[])[] = [];
+      fixture.componentInstance.selectionChange.subscribe((rows) => emissions.push(rows));
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      fixture.debugElement.query(By.css('eg-table-row-selection [role="checkbox"]')).nativeElement.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions.at(-1)).toEqual([PEOPLE[0]]);
+      emissions.length = 0;
+
+      fixture.componentRef.setInput('data', [PEOPLE[1]]);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(emissions).toEqual([[]]);
+      expect(fixture.nativeElement.querySelector('[data-state="selected"]')).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('eg-table-row-selection [role="checkbox"]').getAttribute('aria-checked'),
+      ).toBe('false');
+    });
+  }
+
   it('renders rows and headers from columns + data', async () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();

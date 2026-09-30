@@ -1,5 +1,7 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { SignupFlowExamplePage } from './signup-flow';
 
 function buttonByText(host: HTMLElement, text: string): HTMLButtonElement {
@@ -15,6 +17,7 @@ describe('SignupFlowExamplePage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] }).compileComponents();
+    spyOn(TestBed.inject(BreakpointObserver), 'observe').and.returnValue(of({ matches: false, breakpoints: {} }));
     fixture = TestBed.createComponent(SignupFlowExamplePage);
     fixture.detectChanges();
     host = fixture.nativeElement as HTMLElement;
@@ -76,14 +79,14 @@ describe('SignupFlowExamplePage', () => {
     expect(host.textContent).not.toContain('Account created');
   });
 
-  it('finish marks every step form touched and completes only when all valid', () => {
+  it('finish marks every step form touched and completes only when all valid', async () => {
     page.accountForm.controls.username.setValue('ada');
     page.accountForm.controls.email.setValue('ada@example.com');
     fixture.detectChanges();
     buttonByText(host, 'Next').click();
     fixture.detectChanges();
 
-    page.finish();
+    await page.finish();
     fixture.detectChanges();
 
     expect(page.completed()).toBeFalse();
@@ -92,7 +95,7 @@ describe('SignupFlowExamplePage', () => {
 
     page.prefsForm.controls.role.setValue('developer');
     page.prefsForm.controls.acceptTerms.setValue(true);
-    page.finish();
+    await page.finish();
     fixture.detectChanges();
 
     expect(page.completed()).toBeTrue();
@@ -100,7 +103,7 @@ describe('SignupFlowExamplePage', () => {
     expect(host.textContent).toContain('ada@example.com');
   });
 
-  it('completes the full flow through the UI', () => {
+  it('completes the full flow through the UI', async () => {
     page.accountForm.controls.username.setValue('grace');
     page.accountForm.controls.email.setValue('grace@example.com');
     fixture.detectChanges();
@@ -117,6 +120,9 @@ describe('SignupFlowExamplePage', () => {
     buttonByText(host, 'Finish').click();
     fixture.detectChanges();
 
+    expect(host.textContent).toContain('Creating your preview account');
+    await new Promise((resolve) => setTimeout(resolve, 160));
+    fixture.detectChanges();
     expect(host.textContent).toContain('Account created');
   });
 });

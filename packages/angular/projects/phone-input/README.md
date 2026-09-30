@@ -49,6 +49,22 @@ import { HlmPhoneInput, formatNanpPhoneNumber, type PhoneNumberFormatter } from 
 
 Model values may be `string | null | undefined`; non-digit characters are stripped defensively on write. An empty model renders as empty text (no dangling mask characters) and emits `null`. With `modelFormat: 'formatted'` the model holds display text instead of digits — useful when a backend expects the masked value; validators then apply to the formatted string.
 
+### Keyboard editing
+
+- With a collapsed caret, Backspace removes the preceding digit and Delete removes the following digit, skipping `)`, spaces, hyphens and other non-digit separators. Repeated deletion continues through the mask.
+- With a selection, only selected digits are removed. A punctuation-only selection collapses to its logical digit boundary without deleting an adjacent digit or emitting a model change.
+- Typing and paste replace the native selection, strip non-digits and respect `maxDigits`. The caret is restored after the preceding logical digit; clearing emits `null`. Only effective digit changes emit CVA changes, and blur marks the control touched. Programmatic writes format without emitting user changes.
+- Deletion uses the native cancelable `beforeinput` event's `inputType` and original selection. Other edits retain native editing followed by `input` normalization. Read-only and disabled controls reject edits. Custom formatters should preserve digit content/order and add only non-digit separators so logical positions map correctly.
+
+The source regression suites and real Chrome keyboard/clipboard probe can be run from the repository root:
+
+```bash
+pnpm --dir packages/angular test:library phone-input form-phone-input
+node packages/angular/test/phone-keyboard-probe.mjs
+```
+
+The probe reuses installed Puppeteer and the shared Chrome resolver (`CHROME_BIN` or the package browser cache), compiles only an opt-in Angular test fixture, and uses Home/Arrow/Shift, Backspace/Delete, typing and Ctrl+C/Ctrl+V. Its Karma port defaults to `9877` (override with `PHONE_KEYBOARD_PORT`). It checks both primitive and wrapper controls; no published artifacts are needed.
+
 ### `formatNanpPhoneNumber(digits)`
 
 North-American numbering plan formatter: `4` → `(4`, `4155` → `(415) 5`, `4155552671` → `(415) 555-2671`, truncated to 10 digits. Pass a custom `PhoneNumberFormatter` for other plans (e.g. chunk-and-join national formats) together with a matching `maxDigits`.

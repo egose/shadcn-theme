@@ -56,7 +56,7 @@ describe('component gallery routes', () => {
     expect(failures)
       .withContext(`these lazy routes resolved to no component: ${failures.join(', ')}`)
       .toEqual([]);
-  });
+  }, 30000);
 });
 
 describe('route/menu contract', () => {
@@ -147,5 +147,7 @@ describe('wildcard recovery', () => {
       const leafRoute = router.routerState.snapshot.root.firstChild?.firstChild;
       expect(leafRoute?.routeConfig?.path).withContext(catalogLink(entry)).toEqual(entry.slug);
     }
-  });
+    // This catalog-wide integration check fetches every lazy route, including
+    // cold chunks. Give it a bounded budget distinct from a single-page spec.
+  }, 30000);
 });

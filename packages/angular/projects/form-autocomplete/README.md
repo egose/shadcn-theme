@@ -151,8 +151,10 @@ export class CityComponent {
 ## Accessibility notes
 
 - Label `for` ↔ input `inputId` wiring is automatic via `effectiveId` — always pass a `label`.
-- The autocomplete input exposes no `aria-describedby`, so error/hint ids render without an input-level link.
-- The required `*` is visual; pair with `Validators.required` so assistive tech and validation agree.
+- The native input's `aria-describedby` references the displayed error when invalid and touched/dirty/submitted, otherwise the hint. Correction/reset restores the hint; absent messages leave no wrapper-owned reference.
+- Optional `[aria-describedby]` (`string | null`, default `null`) adds consumer-owned IDs before the current message ID, with whitespace normalization and deduplication. Keep those external elements mounted; reserve `<effectiveId>-error` and `<effectiveId>-hint` for the wrapper. Use the input binding, not `[attr.aria-describedby]` on the wrapper host.
+- `required` supplies the visual `*` and native `aria-required`; configure `Validators.required` independently. Native invalid state continues to follow the form control.
+- Verification covers rendered DOM relationships and focus, not screen-reader announcement behavior. `HlmError` itself is not a live region.
 
 ## Theming / CSS variables
 

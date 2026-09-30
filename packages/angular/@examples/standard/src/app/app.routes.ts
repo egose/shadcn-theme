@@ -4,6 +4,7 @@ import { ComponentsLayout } from './pages/components/components';
 import { ExamplesLayout } from './pages/examples/examples';
 import { HomePage } from './pages/home/home';
 import { NotFoundPage } from './pages/not-found/not-found';
+import { settingsDepartureGuard } from './pages/examples/settings/settings-departure-guard';
 
 // Child routes, menu groups, and search options are all derived from the
 // typed registry in `catalog/catalog.ts`; do not hand-maintain path lists here.
@@ -24,7 +25,9 @@ export const routes: Routes = [
     path: 'examples',
     component: ExamplesLayout,
     children: [
-      ...catalogChildRoutes('example'),
+      ...catalogChildRoutes('example').map((route) =>
+        route.path === 'settings' ? { ...route, canDeactivate: [settingsDepartureGuard] } : route,
+      ),
       { path: '', redirectTo: 'pricing', pathMatch: 'full' },
       // Intentional child wildcard: unknown `/examples/<slug>` URLs render
       // the accessible not-found page instead of an empty examples shell.

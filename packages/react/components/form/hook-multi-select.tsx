@@ -10,6 +10,7 @@ import { FormMultiSelect } from './multi-select';
 import type { FormMultiSelectProps } from './multi-select';
 import type { HookFormRules } from './types';
 
+/** RHF selection with composite onBlur/touched validation and input focus for setFocus/invalid submit. Optional onBlur runs after RHF's handler. */
 export function HookFormMultiSelect<T extends FieldValues>({
   id,
   name,
@@ -18,6 +19,7 @@ export function HookFormMultiSelect<T extends FieldValues>({
   rules,
   classNames,
   disabled = false,
+  onBlur,
   ...rest
 }: Omit<FormMultiSelectProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;
@@ -33,9 +35,14 @@ export function HookFormMultiSelect<T extends FieldValues>({
         control={control}
         name={name}
         rules={rules}
-        render={({ field: { onChange, value } }) => {
+        render={({ field: { onChange, value, onBlur: fieldOnBlur, ref } }) => {
           return (
             <FormMultiSelect
+              ref={ref}
+              onBlur={() => {
+                fieldOnBlur();
+                onBlur?.();
+              }}
               id={id}
               name={name}
               label={label}

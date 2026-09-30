@@ -9,6 +9,7 @@ import { FormSelect } from './select';
 import type { FormSelectProps } from './select';
 import type { HookFormRules } from './types';
 
+/** RHF selection with composite onBlur/touched validation and trigger focus for setFocus/invalid submit. Optional onBlur runs after RHF's handler. */
 export function HookFormSelect<T extends FieldValues>({
   id,
   name,
@@ -17,6 +18,7 @@ export function HookFormSelect<T extends FieldValues>({
   rules,
   classNames,
   disabled = false,
+  onBlur,
   ...rest
 }: Omit<FormSelectProps, 'name' | 'onChange' | 'value'> & {
   rules?: HookFormRules<T>;
@@ -32,9 +34,14 @@ export function HookFormSelect<T extends FieldValues>({
         control={control}
         name={name}
         rules={rules}
-        render={({ field: { onChange, value } }) => {
+        render={({ field: { onChange, value, onBlur: fieldOnBlur, ref } }) => {
           return (
             <FormSelect
+              ref={ref}
+              onBlur={() => {
+                fieldOnBlur();
+                onBlur?.();
+              }}
               id={id}
               name={name}
               label={label}

@@ -158,7 +158,9 @@ export class PriceComponent {
 ## Accessibility notes
 
 - The label is linked via `aria-labelledby` (sliders have no `for`-compatible control); always pass a `label`.
-- `BrnSlider` currently accepts but does not render `aria-labelledby` on its host — the binding documents intent and activates if upstream renders it. Error/hint ids render without an input-level `describedby` link for the same reason.
+- Each focusable thumb carries `aria-labelledby`, form-control `aria-invalid`, and `aria-describedby` for the displayed error (invalid + touched/dirty/submitted), otherwise the hint. Correction/reset restores the hint, including range sliders.
+- Optional `[aria-describedby]` (`string | null`, default `null`) adds consumer-owned IDs before the current message ID, normalized and deduplicated. Keep external elements mounted and reserve `<effectiveId>-error` / `-hint` for the wrapper. Bind the input rather than `[attr.aria-describedby]` on the wrapper host.
+- The `required` asterisk remains visual; configure validators independently. The slider role does not support `aria-required`. `HlmError` is not a live region; automated DOM/focus coverage does not establish screen-reader announcement behavior.
 
 ## Theming / CSS variables
 

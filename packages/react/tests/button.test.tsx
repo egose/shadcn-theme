@@ -25,6 +25,42 @@ describe('public component behavior', () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ['omitted', {}],
+    ['false', { disabled: false }],
+    ['true', { disabled: true }],
+  ] as const)('protects activation across loading transitions with disabled %s', (_, disabledProps) => {
+    const onClick = vi.fn();
+    const renderButton = (loading: boolean) => (
+      <Button {...disabledProps} loading={loading} onClick={onClick}>
+        Save changes
+      </Button>
+    );
+    const { rerender } = render(renderButton(false));
+    const button = screen.getByRole('button', { name: /Save changes/ });
+    const callerDisabled = 'disabled' in disabledProps && disabledProps.disabled;
+
+    fireEvent.click(button);
+    expect(onClick).toHaveBeenCalledTimes(callerDisabled ? 0 : 1);
+    onClick.mockClear();
+
+    rerender(renderButton(true));
+    fireEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+
+    rerender(renderButton(false));
+    expect(button).not.toHaveAttribute('aria-busy');
+    if (callerDisabled) {
+      expect(button).toBeDisabled();
+    } else {
+      expect(button).toBeEnabled();
+    }
+    fireEvent.click(button);
+    expect(onClick).toHaveBeenCalledTimes(callerDisabled ? 0 : 1);
+  });
+
   it.each(['outline', 'outline-filled', 'ghost', 'link'] as const)(
     'lets consumer classes override %s colors, including the loading text color',
     (appearance) => {

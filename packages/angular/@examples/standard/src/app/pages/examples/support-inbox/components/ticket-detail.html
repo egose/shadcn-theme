@@ -1,0 +1,70 @@
+<button
+  hlmButton
+  variant="secondary"
+  appearance="outline"
+  size="sm"
+  type="button"
+  data-testid="back-to-tickets"
+  (click)="back.emit()"
+  class="tw:mb-4 md:tw:hidden"
+>
+  ← Back to tickets
+</button>
+<h3
+  id="ticket-detail-heading"
+  tabindex="-1"
+  data-testid="ticket-detail-heading"
+  class="tw:min-w-0 tw:break-words tw:text-base tw:font-semibold tw:text-slate-900"
+>
+  {{ ticket().subject }}
+</h3>
+<p class="tw:mt-1 tw:flex tw:min-w-0 tw:flex-wrap tw:items-center tw:gap-1.5 tw:text-xs tw:text-slate-500">
+  <span class="tw:break-words">{{ ticket().id }} · {{ ticket().requester }} · Assigned to {{ ticket().assignee }}</span>
+  <span hlmBadge [variant]="statusVariant(ticket().status)" [attr.data-testid]="'detail-status-' + ticket().id"
+    >{{ ticket().status }}</span
+  >
+  <span hlmBadge variant="secondary">{{ ticket().priority }}</span>
+</p>
+<p class="tw:mt-2 tw:min-w-0 tw:break-words tw:text-sm tw:text-slate-600">{{ ticket().description }}</p>
+<div class="tw:mt-3 tw:grid tw:min-w-0 tw:gap-2">
+  <label hlmLabel for="detail-assignee">Assign ticket</label>
+  <hlm-native-select
+    selectId="detail-assignee"
+    data-testid="detail-assignee"
+    [ngModel]="ticket().assignee"
+    [disabled]="readOnly()"
+    (ngModelChange)="assign.emit($event)"
+  >
+    @for (assignee of assignees; track assignee) {
+    <option [value]="assignee">{{ assignee }}</option>
+    }
+  </hlm-native-select>
+</div>
+<h4 class="tw:mt-5 tw:text-sm tw:font-semibold tw:text-slate-900">Conversation</h4>
+<ol aria-label="Conversation timeline" data-testid="ticket-detail-timeline" class="tw:mt-2 tw:space-y-3">
+  @for (message of ticket().messages; track message.id) {
+  <li
+    [attr.data-testid]="'message-' + message.id"
+    class="tw:min-w-0 tw:rounded-xl tw:border tw:border-slate-200 tw:bg-slate-50 tw:p-3"
+  >
+    <p class="tw:flex tw:min-w-0 tw:flex-wrap tw:items-baseline tw:gap-x-2 tw:text-xs tw:text-slate-500">
+      <span class="tw:break-words tw:font-semibold tw:text-slate-700">{{ message.author }}</span>
+      <span>{{ message.role === 'agent' ? 'Support agent' : 'Requester' }}</span>
+      <span class="tw:break-words">{{ message.createdAtIso | date: 'medium' : 'UTC' : 'en-US' }}</span>
+    </p>
+    <p class="tw:mt-1 tw:min-w-0 tw:break-words tw:whitespace-pre-wrap tw:text-sm tw:text-slate-800">
+      {{ message.body }}
+    </p>
+  </li>
+  }
+</ol>
+<app-support-ticket-composer
+  [ticket]="ticket()"
+  [reply]="reply()"
+  [readOnly]="readOnly()"
+  [simulateFailure]="simulateFailure()"
+  (failureChange)="failureChange.emit($event)"
+  (send)="send.emit()"
+  (resolve)="resolve.emit()"
+  (reopen)="reopen.emit()"
+/>

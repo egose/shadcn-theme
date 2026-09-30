@@ -5,6 +5,7 @@ import {
   booleanAttribute,
   computed,
   forwardRef,
+  inject,
   input,
   model,
   output,
@@ -15,6 +16,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck } from '@ng-icons/lucide';
 import { BrnCheckbox } from '@spartan-ng/brain/checkbox';
 import type { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
+import { HlmFormIdGenerator } from '@egose/shadcn-theme-ng/form-field';
 import { HlmIcon } from '@egose/shadcn-theme-ng/icon';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import type { ClassValue } from 'clsx';
@@ -30,10 +32,11 @@ export const HLM_CHECKBOX_VALUE_ACCESSOR = {
   imports: [BrnCheckbox, NgIcon, HlmIcon],
   template: `
     <brn-checkbox
-      [id]="id()"
+      [id]="_id()"
       [name]="name()"
       [class]="_computedClass()"
-      [checked]="checked()"
+      [checked]="checked() === true"
+      [indeterminate]="checked() === 'indeterminate'"
       [disabled]="disabledState()"
       [required]="required()"
       [aria-label]="ariaLabel()"
@@ -72,8 +75,11 @@ export class HlmCheckbox implements ControlValueAccessor {
     ),
   );
 
-  /** Used to set the id on the underlying brn element. */
+  /** Native checkbox ID. Null uses a stable application-scoped fallback; explicit IDs are preserved. */
   public readonly id = input<string | null>(null);
+
+  private readonly _generatedId = inject(HlmFormIdGenerator).generate('hlm-checkbox');
+  protected readonly _id = computed(() => this.id() ?? this._generatedId);
 
   /** Used to set the aria-label attribute on the underlying brn element. */
   public readonly ariaLabel = input<string | null>(null, { alias: 'aria-label' });
@@ -84,7 +90,7 @@ export class HlmCheckbox implements ControlValueAccessor {
   /** Used to set the aria-describedby attribute on the underlying brn element. */
   public readonly ariaDescribedby = input<string | null>(null, { alias: 'aria-describedby' });
 
-  /** The checked state of the checkbox. */
+  /** Tri-state model. Indeterminate exposes native aria-checked="mixed"; clicking it selects (true). */
   public readonly checked = model<CheckboxValue>(false);
 
   /** The name attribute of the checkbox. */
@@ -115,9 +121,9 @@ export class HlmCheckbox implements ControlValueAccessor {
     this.changed.emit(checked);
   }
 
-  /** CONTROL VALUE ACCESSOR */
-  writeValue(value: CheckboxValue): void {
-    this.checked.set(!!value);
+  /** Programmatic writes preserve indeterminate; null resets to false without changed/onChange notifications. */
+  writeValue(value: CheckboxValue | null): void {
+    this.checked.set(value === 'indeterminate' ? value : !!value);
   }
 
   registerOnChange(fn: ChangeFn<CheckboxValue>): void {

@@ -6,21 +6,12 @@
  * initials (no remote images). No random or current-time defaults anywhere.
  */
 
-export type MemberRole = 'Admin' | 'Member' | 'Viewer';
-export type MemberStatus = 'Active' | 'Invited' | 'Suspended';
+import type { MemberRole, RoleFilter, StatusFilter, TeamMember } from './team-management-types';
+export type { MemberRole, MemberStatus, RoleFilter, StatusFilter, TeamMember } from './team-management-types';
 
-export type StatusFilter = 'All' | MemberStatus;
-export type RoleFilter = 'All' | MemberRole;
+export const normalizeMemberEmail = (email: string): string => email.trim().toLowerCase();
 
-export interface TeamMember {
-  readonly id: string;
-  readonly name: string;
-  readonly email: string;
-  readonly role: MemberRole;
-  readonly status: MemberStatus;
-  /** Fixed UTC ISO join date — never derived from the current time. */
-  readonly joinedAtIso: string;
-}
+export const isMemberRole = (value: unknown): value is MemberRole => MEMBER_ROLES.includes(value as MemberRole);
 
 /** Fixed page size so filtering and pagination stay deterministic. */
 export const TEAM_PAGE_SIZE = 3;

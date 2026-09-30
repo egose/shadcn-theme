@@ -64,6 +64,8 @@ export const EG_FORM_TOGGLE_VALUE_ACCESSOR = {
           hlmToggle
           type="button"
           [id]="effectiveId()"
+          [attr.aria-describedby]="describedBy()"
+          [attr.aria-invalid]="showError() ? 'true' : null"
           [state]="_state() ? 'on' : 'off'"
           (stateChange)="_handleStateChange($event)"
           [disabled]="_disabled()"
@@ -117,6 +119,8 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
    */
   autoError = input<boolean>(true);
   hint = input<string | undefined>(undefined);
+  /** Consumer-owned description IDs, merged with the displayed error or hint on the button. */
+  ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
 
   id = input<string | undefined>(undefined);
   disabled = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
@@ -134,13 +138,14 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
 
   private readonly _status = signal<string | null>(null);
   private readonly _submitted = signal(false);
+  private readonly _interacted = signal(false);
 
   /**
    * Displayed message: explicit `error()` wins; otherwise (when `autoError()`)
    * auto-resolved from the control's `ValidationErrors`. Plain method (not a
    * computed): `ValidationErrors` is not a signal, so the control must be read
    * fresh on every change-detection pass (`showError()` re-evaluates with it
-   * via the `_status`/`_submitted` signals).
+   * via the `_status`/`_submitted`/`_interacted` signals).
    */
   protected resolvedError(): string | undefined {
     const explicit = this.error();
@@ -152,14 +157,16 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
   protected readonly showError = computed(() => {
     this._status();
     this._submitted();
+    this._interacted();
     const control = this._controlDir?.control;
-    return (
-      !!this.resolvedError() &&
-      !!control?.errors &&
-      (control.touched || control.dirty || !!this._formGroupDirective?.submitted)
-    );
+    return !!this.resolvedError() && !!control?.errors && (this._interacted() || this._submitted());
   });
   protected readonly showHint = computed(() => !this.showError() && !!this.hint());
+
+  protected describedBy(): string | null {
+    const ids = [this.ariaDescribedBy(), this.showError() ? this.errorId() : this.showHint() ? this.hintId() : null];
+    return [...new Set(ids.filter(Boolean).join(' ').split(/\s+/).filter(Boolean))].join(' ') || null;
+  }
 
   protected _onChange?: ChangeFn<boolean>;
   protected _onTouched?: TouchFn;
@@ -167,6 +174,9 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
   ngDoCheck(): void {
     const submitted = !!this._formGroupDirective?.submitted;
     if (this._submitted() !== submitted) this._submitted.set(submitted);
+    // Keep silent interaction updates (emitEvent: false) visible on the next check too.
+    const control = this._controlDir?.control;
+    this._interacted.set(!!control && (control.touched || control.dirty));
   }
 
   ngAfterViewInit(): void {
@@ -177,8 +187,11 @@ export class EgFormToggle implements ControlValueAccessor, AfterViewInit, DoChec
     this._controlDir = this._injector.get(FormControlName, null, { self: true, optional: true }) ?? null;
     const control = this._controlDir?.control;
     this._status.set(control?.status ?? null);
-    control?.statusChanges.pipe(takeUntilDestroyed(this._destroyRef)).subscribe((status) => {
-      this._status.set(status);
+    this._interacted.set(!!control && (control.touched || control.dirty));
+    // Touch/dirty/reset events must invalidate feedback even when status stays INVALID.
+    control?.events.pipe(takeUntilDestroyed(this._destroyRef)).subscribe(() => {
+      this._status.set(control.status);
+      this._interacted.set(control.touched || control.dirty);
     });
   }
 

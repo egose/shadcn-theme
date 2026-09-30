@@ -43,6 +43,10 @@ import { injectEgFormSearchableMultiselectConfig } from './form-searchable-multi
         [id]="effectiveId()"
         [options]="options()"
         [placeholder]="placeholder()"
+        [searchLabel]="searchLabel()"
+        [searchPlaceholder]="searchPlaceholder()"
+        [emptyMessage]="emptyMessage()"
+        [removeLabel]="removeLabel()"
         [formControlName]="cnm"
         [required]="rqrd"
         [wrapperDisabled]="disabled()"
@@ -128,6 +132,14 @@ export class EgFormSearchableMultiselect {
 
   // Multiselect-specific
   options = input<SelectOption[]>([]); // [{ label, value }]
+  /** Visible native search label; local label filtering preserves every selected form value. */
+  searchLabel = input<string>('Search options');
+  /** Search hint forwarded independently of the empty-selection placeholder. */
+  searchPlaceholder = input<string>('Type to filter…');
+  /** Polite live-region copy for an empty filtered option list. */
+  emptyMessage = input<string>('No matching options');
+  /** Pure accessible chip-remove name formatter; receives the resolved label or raw unresolved ID. */
+  removeLabel = input<(option: SelectOption) => string>((option) => `Remove ${option.label}`);
 
   // Styling classes
   userClass = input<ClassValue>('', { alias: 'class' });
