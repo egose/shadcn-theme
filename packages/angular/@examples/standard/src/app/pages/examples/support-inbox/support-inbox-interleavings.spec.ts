@@ -340,8 +340,10 @@ describe('Support inbox rendered interleavings and triage', () => {
       expect(ui.host.querySelectorAll('h2').length).toBe(1);
     };
     try {
-      // Karma's 320px window can reserve 15px for the runner scrollbar.
-      expect(window.matchMedia('(max-width: 320px)').matches).toBeTrue();
+      // Karma launches with --window-size=320,844 and the list/detail split
+      // uses the md (768px) breakpoint, so assert below-md rather than exactly
+      // 320px to tolerate outer-vs-inner width and scrollbar differences.
+      expect(window.matchMedia('(max-width: 767px)').matches).toBeTrue();
       ui.click('ticket-select-ticket-1041');
       await ui.settle();
       expect(getComputedStyle(ui.element('[data-testid="ticket-list-pane"]')).display).toBe('none');
