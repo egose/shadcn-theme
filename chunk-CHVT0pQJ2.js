@@ -1,0 +1,1 @@
+import{Lt as U,Wt as Vd,q as I}from"./chunk-CkEjiFbK.js";var i=class t{appId=I(Vd);nextId=0;generate(e){return`${e}-${this.appId}-${this.nextId++}`}static ɵfac=function(o){return new(o||t)};static ɵprov=U({token:t,factory:t.ɵfac,providedIn:`root`})};export{i as t};
