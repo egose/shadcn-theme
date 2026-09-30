@@ -5,10 +5,11 @@ import { lucideSearch, lucideX } from '@ng-icons/lucide';
 import { BrnAutocompleteAnchor, BrnAutocompleteClear, BrnAutocompleteInput } from '@spartan-ng/brain/autocomplete';
 import { HlmInputGroup, HlmInputGroupImports } from '@egose/shadcn-theme-ng/input-group';
 import { classes } from '@egose/shadcn-theme-ng/utils';
+import { BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 
 @Component({
   selector: 'hlm-autocomplete-input',
-  imports: [HlmInputGroupImports, NgIcon, BrnAutocompleteClear, BrnAutocompleteInput],
+  imports: [HlmInputGroupImports, NgIcon, BrnAutocompleteClear, BrnAutocompleteInput, BrnFieldControlDescribedBy],
   providers: [provideIcons({ lucideSearch, lucideX })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnAutocompleteAnchor, HlmInputGroup],
@@ -19,6 +20,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
       hlmInputGroupInput
       [id]="inputId()"
       [placeholder]="placeholder()"
+      brnFieldControlDescribedBy
+      [aria-describedby]="ariaDescribedBy()"
+      [attr.aria-required]="required() || null"
       [aria-invalid]="ariaInvalidOverride()"
       [forceInvalid]="forceInvalid()"
     />
@@ -52,6 +56,10 @@ export class HlmAutocompleteInput {
   public readonly inputId = input<string>(`hlm-autocomplete-input-${HlmAutocompleteInput._id++}`);
 
   public readonly placeholder = input<string>('');
+
+  /** Native input description IDs, merged with enclosing Spartan field descriptions. */
+  public readonly ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
+  public readonly required = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
   public readonly showSearch = input<boolean, BooleanInput>(true, { transform: booleanAttribute });
   public readonly showClear = input<boolean, BooleanInput>(false, { transform: booleanAttribute });

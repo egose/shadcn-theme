@@ -176,8 +176,10 @@ export class FruitSingleComponent {
 ## Accessibility notes
 
 - Label `for` ↔ chip-search-input `id` wiring is automatic via `effectiveId` — always pass a `label`.
-- The chip search input exposes no `aria-describedby`, so error/hint ids render without an input-level link.
-- The required `*` is visual; pair with `Validators.required` so assistive tech and validation agree.
+- Multiple mode connects the native chip input to the displayed error (invalid + touched/dirty/submitted), otherwise the hint. Single mode connects both the native trigger button and portaled search input. Correction/reset restores hint descriptions and obsolete message IDs disappear.
+- Optional `[aria-describedby]` (`string | null`, default `null`) adds consumer-owned IDs before the current message ID, with whitespace normalization and deduplication. Keep external elements mounted and reserve `<effectiveId>-error` / `-hint` for the wrapper. Use the input binding rather than `[attr.aria-describedby]` on the wrapper host.
+- Single mode uses `<effectiveId>` for the labeled trigger and `<effectiveId>-search` for its search input, labeled by `<effectiveId>-label`; this avoids duplicate IDs while open. The search filters options, so required/invalid state belongs to the selected-value trigger. Multiple mode exposes that state on its chip input.
+- `required` supplies the visual `*` and `aria-required` on the selected-value control; configure `Validators.required` independently. `HlmError` is not a live region; rendered DOM/focus tests do not establish screen-reader announcement behavior.
 
 ## Theming / CSS variables
 

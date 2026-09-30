@@ -5,10 +5,11 @@ import { lucideChevronDown, lucideX } from '@ng-icons/lucide';
 import { BrnComboboxAnchor, BrnComboboxImports, BrnComboboxPopoverTrigger } from '@spartan-ng/brain/combobox';
 import { HlmInputGroup, HlmInputGroupImports } from '@egose/shadcn-theme-ng/input-group';
 import { classes } from '@egose/shadcn-theme-ng/utils';
+import { BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 
 @Component({
   selector: 'hlm-combobox-input',
-  imports: [HlmInputGroupImports, NgIcon, BrnComboboxImports, BrnComboboxPopoverTrigger],
+  imports: [HlmInputGroupImports, NgIcon, BrnComboboxImports, BrnComboboxPopoverTrigger, BrnFieldControlDescribedBy],
   providers: [provideIcons({ lucideChevronDown, lucideX })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnComboboxAnchor, HlmInputGroup],
@@ -21,6 +22,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
       hlmInputGroupInput
       [id]="inputId()"
       [placeholder]="placeholder()"
+      brnFieldControlDescribedBy
+      [aria-describedby]="ariaDescribedBy()"
+      [attr.aria-labelledby]="ariaLabelledBy()"
       [forceInvalid]="forceInvalid()"
       [aria-invalid]="ariaInvalidOverride()"
     />
@@ -62,6 +66,10 @@ export class HlmComboboxInput {
 
   public readonly inputId = input<string>(`hlm-combobox-input-${HlmComboboxInput._id++}`);
   public readonly placeholder = input<string>('');
+
+  /** Native input description IDs, merged with enclosing Spartan field descriptions. */
+  public readonly ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
+  public readonly ariaLabelledBy = input<string | null>(null, { alias: 'aria-labelledby' });
 
   public readonly showTrigger = input<boolean, BooleanInput>(true, { transform: booleanAttribute });
   public readonly showClear = input<boolean, BooleanInput>(false, { transform: booleanAttribute });

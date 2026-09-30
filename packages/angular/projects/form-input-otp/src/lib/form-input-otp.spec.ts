@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormInputOtp } from './form-input-otp';
 import { provideEgFormInputOtpConfig } from './form-input-otp.token';
+import { expectDescriptions, verifyValidationDescriptions } from '../../../../test/validation-descriptions';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormInputOtp],
@@ -15,15 +16,20 @@ import { provideEgFormInputOtpConfig } from './form-input-otp.token';
       [length]="6"
       [disabled]="disabled()"
       error="Code required"
-      hint="Six digits"
-      required
+      [hint]="hint()"
+      [aria-describedby]="descriptions()"
+      [required]="required()"
     />
+    <p id="code-external">External code instructions</p>
   </form>`,
 })
 class Host {
   readonly form = new FormGroup({ value: new FormControl('', { nonNullable: true, validators: Validators.required }) });
   readonly id = signal<string | undefined>('code');
   readonly disabled = signal(false);
+  readonly hint = signal<string | undefined>('Six digits');
+  readonly descriptions = signal<string | null>(null);
+  readonly required = signal(true);
 }
 
 @Component({
@@ -54,10 +60,76 @@ describe('EgFormInputOtp', () => {
   });
   afterEach(() => fixture.destroy());
 
+  it('describes the native OTP input with the visible hint', () => {
+    const control = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(control.getAttribute('aria-describedby')).toBe('code-hint');
+  });
+
+  for (const interaction of ['touch', 'submit'] as const) {
+    it(`keeps native OTP descriptions current through ${interaction}, correction and reset`, async () => {
+      await verifyValidationDescriptions(
+        fixture,
+        () => [fixture.nativeElement.querySelector('input')],
+        fixture.componentInstance.form.controls.value,
+        '123456',
+        interaction,
+      );
+    });
+  }
+
+  it('retains external descriptions through hint removal and ID/required changes', () => {
+    const host = fixture.componentInstance;
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    host.descriptions.set('code-external code-external');
+    host.form.markAllAsTouched();
+    fixture.detectChanges();
+    expectDescriptions([input], ['code-external', 'code-error']);
+    expect(input.getAttribute('aria-required')).toBe('true');
+    host.id.set('new-code');
+    host.hint.set(undefined);
+    host.required.set(false);
+    fixture.detectChanges();
+    expectDescriptions([input], ['code-external', 'new-code-error']);
+    expect(input.labels?.[0].htmlFor).toBe('new-code');
+    expect(input.getAttribute('aria-required')).toBeNull();
+    host.form.controls.value.setValue('123456');
+    host.descriptions.set(null);
+    fixture.detectChanges();
+    expectDescriptions([input], []);
+  });
+
+  it('preserves native input, paste, slot/caret, blur and reset behavior in the adapter', () => {
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    const control = fixture.componentInstance.form.controls.value;
+    input.focus();
+    input.value = '12';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(control.value).toBe('12');
+    const slots = Array.from(fixture.nativeElement.querySelectorAll('hlm-input-otp-slot')) as HTMLElement[];
+    expect(slots[0].textContent?.trim()).toBe('1');
+    expect(slots[1].textContent?.trim()).toBe('2');
+    expect(slots[2].querySelector('hlm-input-otp-fake-caret')).not.toBeNull();
+    const data = new DataTransfer();
+    data.setData('text/plain', '6543210');
+    input.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(control.value).toBe('654321');
+    expect(input.value).toBe('654321');
+    input.blur();
+    fixture.detectChanges();
+    expect(control.touched).toBeTrue();
+    expect(fixture.nativeElement.querySelector('hlm-input-otp-fake-caret')).toBeNull();
+    control.reset();
+    fixture.detectChanges();
+    expect(input.value).toBe('');
+    expect(slots.every((slot) => !slot.textContent?.trim())).toBeTrue();
+  });
+
   it('renders one slot per length unit with label, error, and hint', () => {
     const slots = () => Array.from(fixture.nativeElement.querySelectorAll('hlm-input-otp-slot')) as HTMLElement[];
     expect(slots().length).toBe(6);
-    const control = () => fixture.nativeElement.querySelector('brn-input-otp input') as HTMLInputElement;
+    const control = () => fixture.nativeElement.querySelector('hlm-input-otp input') as HTMLInputElement;
     expect(control().id).toBe('code');
     expect(fixture.nativeElement.querySelector('label').htmlFor).toBe('code');
     fixture.componentInstance.form.controls.value.markAsTouched();
@@ -69,7 +141,7 @@ describe('EgFormInputOtp', () => {
   });
 
   it('honors wrapper and reactive-form disabled state', () => {
-    const control = () => fixture.nativeElement.querySelector('brn-input-otp input') as HTMLInputElement;
+    const control = () => fixture.nativeElement.querySelector('hlm-input-otp input') as HTMLInputElement;
     fixture.componentInstance.disabled.set(true);
     fixture.detectChanges();
     expect(control().disabled).toBeTrue();
@@ -92,7 +164,7 @@ describe('EgFormInputOtp global class defaults', () => {
 
   it('merges global config classes under per-instance classes', () => {
     const label = () => fixture.nativeElement.querySelector('label') as HTMLLabelElement;
-    const control = () => fixture.nativeElement.querySelector('brn-input-otp') as HTMLElement;
+    const control = () => fixture.nativeElement.querySelector('hlm-input-otp') as HTMLElement;
     const slots = () => Array.from(fixture.nativeElement.querySelectorAll('hlm-input-otp-slot')) as HTMLElement[];
     expect(slots().length).toBe(4);
     expect(label().className).toContain('tw:text-xs');

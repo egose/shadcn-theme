@@ -4,6 +4,7 @@ import {
   Component,
   booleanAttribute,
   computed,
+  effect,
   input,
   model,
   numberAttribute,
@@ -17,6 +18,7 @@ import { HlmPaginationItem } from './hlm-pagination-item';
 import { HlmPaginationLink } from './hlm-pagination-link';
 import { HlmPaginationNext } from './hlm-pagination-next';
 import { HlmPaginationPrevious } from './hlm-pagination-previous';
+import { pageCount } from './pagination-state';
 
 @Component({
   selector: 'hlm-numbered-pagination',
@@ -48,12 +50,12 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
             </li>
           }
 
-          @for (page of _pages(); track page) {
+          @for (page of _pages(); track $index) {
             <li hlmPaginationItem>
               @if (page === '...') {
                 <hlm-pagination-ellipsis />
               } @else {
-                <a hlmPaginationLink [isActive]="currentPage() === page" (click)="currentPage.set(page)">
+                <a hlmPaginationLink [isActive]="_currentPage() === page" (click)="currentPage.set(page)">
                   {{ page }}
                 </a>
               }
@@ -86,12 +88,14 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
 })
 export class HlmNumberedPagination {
   /**
-   * The current (active) page.
+   * The current (active) page, floored and clamped to the available range.
+   * Corrections emit currentPageChange once; empty/invalid paging uses page 1.
    */
   public readonly currentPage = model.required<number>();
 
   /**
-   * The number of items per paginated page.
+   * The number of items per paginated page. Non-finite/non-positive sizes
+   * disable paging (one page) without rewriting this model.
    */
   public readonly itemsPerPage = model.required<number>();
 
@@ -105,7 +109,8 @@ export class HlmNumberedPagination {
   });
 
   /**
-   * The number of page links to show.
+   * Maximum window entries, including ellipses: floored and bounded to 1–100.
+   * Non-finite/non-positive values use the default of 7.
    */
   public readonly maxSize = input<number, NumberInput>(7, {
     transform: numberAttribute,
@@ -131,35 +136,31 @@ export class HlmNumberedPagination {
       : [...pageSizes, this.itemsPerPage()].sort((a, b) => a - b); // otherwise, add current page size and sort the array
   });
 
-  protected readonly _isFirstPageActive = computed(() => this.currentPage() === 1);
-  protected readonly _isLastPageActive = computed(() => this.currentPage() === this._lastPageNumber());
+  protected readonly _currentPage = computed(() =>
+    outOfBoundCorrection(this.totalItems(), this.itemsPerPage(), this.currentPage()),
+  );
+  protected readonly _isFirstPageActive = computed(() => this._currentPage() === 1);
+  protected readonly _isLastPageActive = computed(() => this._currentPage() === this._lastPageNumber());
+  protected readonly _lastPageNumber = computed(() => pageCount(this.totalItems(), this.itemsPerPage()));
+  protected readonly _pages = computed(() =>
+    createPageArray(this._currentPage(), this.itemsPerPage(), this.totalItems(), this.maxSize()),
+  );
 
-  protected readonly _lastPageNumber = computed(() => {
-    if (this.totalItems() < 1) {
-      // when there are 0 or fewer (an error case) items, there are no "pages" as such,
-      // but it makes sense to consider a single, empty page as the last page.
-      return 1;
-    }
-    return Math.ceil(this.totalItems() / this.itemsPerPage());
-  });
-
-  protected readonly _pages = computed(() => {
-    const correctedCurrentPage = outOfBoundCorrection(this.totalItems(), this.itemsPerPage(), this.currentPage());
-
-    if (correctedCurrentPage !== this.currentPage()) {
-      // update the current page
-      untracked(() => this.currentPage.set(correctedCurrentPage));
-    }
-
-    return createPageArray(correctedCurrentPage, this.itemsPerPage(), this.totalItems(), this.maxSize());
-  });
+  constructor() {
+    effect(() => {
+      const page = this._currentPage();
+      if (page !== this.currentPage()) {
+        untracked(() => this.currentPage.set(page));
+      }
+    });
+  }
 
   protected goToPrevious(): void {
-    this.currentPage.set(this.currentPage() - 1);
+    this.currentPage.set(Math.max(1, this._currentPage() - 1));
   }
 
   protected goToNext(): void {
-    this.currentPage.set(this.currentPage() + 1);
+    this.currentPage.set(Math.min(this._lastPageNumber(), this._currentPage() + 1));
   }
 
   protected goToFirst(): void {
@@ -177,25 +178,21 @@ type Page = number | '...';
  * Checks that the instance.currentPage property is within bounds for the current page range.
  * If not, return a correct value for currentPage, or the current value if OK.
  *
- * Copied from 'ngx-pagination' package
+ * Empty/invalid totals or sizes use page 1. Finite pages are floored;
+ * non-finite pages use 1. Page counts saturate at Number.MAX_SAFE_INTEGER.
  */
 export function outOfBoundCorrection(totalItems: number, itemsPerPage: number, currentPage: number): number {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  if (totalPages < currentPage && 0 < totalPages) {
-    return totalPages;
-  }
-
-  if (currentPage < 1) {
-    return 1;
-  }
-
-  return currentPage;
+  const page = Number.isFinite(currentPage) ? Math.floor(currentPage) : 1;
+  return Math.max(1, Math.min(pageCount(totalItems, itemsPerPage), page));
 }
 
 /**
  * Returns an array of Page objects to use in the pagination controls.
  *
- * Copied from 'ngx-pagination' package
+ * Window math adapted from 'ngx-pagination'. Range is floored and bounded to
+ * 1–100 entries (including gaps); non-finite/non-positive ranges use 7.
+ * Ranges below 5 show a contiguous window containing the active page.
+ * Work and allocation are proportional to this bounded window, not total pages.
  */
 export function createPageArray(
   currentPage: number,
@@ -203,13 +200,19 @@ export function createPageArray(
   totalItems: number,
   paginationRange: number,
 ): Page[] {
-  // paginationRange could be a string if passed from attribute, so cast to number.
-  paginationRange = +paginationRange;
+  paginationRange =
+    Number.isFinite(paginationRange) && paginationRange > 0
+      ? Math.min(100, Math.max(1, Math.floor(paginationRange)))
+      : 7;
   const pages: Page[] = [];
 
-  // Return 1 as default page number
-  // Make sense to show 1 instead of empty when there are no items
-  const totalPages = Math.max(Math.ceil(totalItems / itemsPerPage), 1);
+  const totalPages = pageCount(totalItems, itemsPerPage);
+  currentPage = outOfBoundCorrection(totalItems, itemsPerPage, currentPage);
+  if (paginationRange < 5) {
+    const length = Math.min(totalPages, paginationRange);
+    const start = Math.max(1, Math.min(currentPage - Math.floor(length / 2), totalPages - length + 1));
+    return Array.from({ length }, (_, index) => start + index);
+  }
   const halfWay = Math.ceil(paginationRange / 2);
 
   const isStart = currentPage <= halfWay;

@@ -7,6 +7,7 @@ import { HlmComboboxMultiple, HlmCombobox } from '@egose/shadcn-theme-ng/combobo
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormCombobox } from './form-combobox';
 import { provideEgFormComboboxConfig } from './form-combobox.token';
+import { expectDescriptions, verifyValidationDescriptions } from '../../../../test/validation-descriptions';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormCombobox],
@@ -18,9 +19,11 @@ import { provideEgFormComboboxConfig } from './form-combobox.token';
       [disabled]="disabled()"
       [options]="options"
       error="Pick at least one"
-      hint="Add tags"
-      required
+      [hint]="hint()"
+      [aria-describedby]="descriptions()"
+      [required]="required()"
     />
+    <p id="tags-external">External tag instructions</p>
   </form>`,
 })
 class Host {
@@ -30,6 +33,9 @@ class Host {
   readonly id = signal<string | undefined>('tags');
   readonly disabled = signal(false);
   readonly options = ['Angular', 'React', 'Vue'];
+  readonly hint = signal<string | undefined>('Add tags');
+  readonly descriptions = signal<string | null>(null);
+  readonly required = signal(true);
 }
 
 @Component({
@@ -60,6 +66,44 @@ describe('EgFormCombobox', () => {
     fixture.detectChanges();
   });
   afterEach(() => fixture.destroy());
+
+  it('describes the multiple-mode chip input with the visible hint', () => {
+    const control = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(control.getAttribute('aria-describedby')).toBe('tags-hint');
+  });
+
+  for (const interaction of ['touch', 'submit'] as const) {
+    it(`keeps the multiple input described through ${interaction}, correction and reset`, async () => {
+      await verifyValidationDescriptions(
+        fixture,
+        () => [fixture.nativeElement.querySelector('input')],
+        fixture.componentInstance.form.controls.value,
+        ['Angular'],
+        interaction,
+      );
+    });
+  }
+
+  it('preserves multiple-mode consumer descriptions across hint, ID and required changes', () => {
+    const host = fixture.componentInstance;
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    host.descriptions.set('tags-external tags-external');
+    host.form.markAllAsTouched();
+    fixture.detectChanges();
+    expectDescriptions([input], ['tags-external', 'tags-error']);
+    expect(input.getAttribute('aria-required')).toBe('true');
+    host.id.set('new-tags');
+    host.hint.set(undefined);
+    host.required.set(false);
+    fixture.detectChanges();
+    expectDescriptions([input], ['tags-external', 'new-tags-error']);
+    expect(input.labels?.[0].htmlFor).toBe('new-tags');
+    expect(input.getAttribute('aria-required')).toBeNull();
+    host.form.controls.value.setValue(['Angular']);
+    host.descriptions.set(null);
+    fixture.detectChanges();
+    expectDescriptions([input], []);
+  });
 
   it('renders one item per option with label, error, and hint', async () => {
     // Portaled content only renders once the popover opens; open programmatically.
@@ -136,16 +180,23 @@ describe('EgFormCombobox global class defaults', () => {
       controlName="value"
       label="Fruit"
       mode="single"
+      [id]="id()"
       [options]="options"
       error="Fruit required"
-      hint="Pick one"
-      required
+      [hint]="hint()"
+      [aria-describedby]="descriptions()"
+      [required]="required()"
     />
+    <p id="single-external">External choice instructions</p>
   </form>`,
 })
 class SingleHost {
   readonly form = new FormGroup({ value: new FormControl<string | null>(null, Validators.required) });
   readonly options = ['Apple', 'Banana', 'Cherry'];
+  readonly id = signal('single-fruit');
+  readonly hint = signal<string | undefined>('Pick one');
+  readonly descriptions = signal<string | null>(null);
+  readonly required = signal(true);
 }
 
 describe('EgFormCombobox single mode', () => {
@@ -157,6 +208,69 @@ describe('EgFormCombobox single mode', () => {
     fixture.detectChanges();
   });
   afterEach(() => fixture.destroy());
+
+  it('describes the single-mode trigger with the visible hint', () => {
+    const control = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    const hint = fixture.nativeElement.querySelector('hlm-hint') as HTMLElement;
+    expect(control.getAttribute('aria-describedby')).toBe(hint.id);
+  });
+
+  const trigger = () => fixture.nativeElement.querySelector('hlm-combobox-trigger button') as HTMLButtonElement;
+  const search = () => document.querySelector('hlm-combobox-input input') as HTMLInputElement;
+  async function open() {
+    trigger().click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(search()).not.toBeNull();
+  }
+
+  for (const interaction of ['touch', 'submit'] as const) {
+    it(`keeps trigger and portaled search described through ${interaction}, correction and reset`, async () => {
+      await open();
+      search().focus();
+      expect(document.activeElement).toBe(search());
+      // Moving focus outside closes the popup; exercise its live descriptions while it stays open.
+      await verifyValidationDescriptions(
+        fixture,
+        () => [trigger(), search()],
+        fixture.componentInstance.form.controls.value,
+        'Apple',
+        interaction,
+        false,
+        () => [trigger()],
+      );
+      expect(trigger().id).not.toBe(search().id);
+      expect(trigger().labels?.[0].htmlFor).toBe(trigger().id);
+      expect(search().getAttribute('aria-labelledby')).toBe('single-fruit-label');
+      expect(search().getAttribute('aria-invalid')).toBeNull();
+    });
+  }
+
+  it('updates external descriptions and conditional IDs on both open single-mode controls', async () => {
+    await open();
+    const host = fixture.componentInstance;
+    host.descriptions.set('single-external single-external');
+    host.form.markAllAsTouched();
+    fixture.detectChanges();
+    expectDescriptions([trigger(), search()], ['single-external', 'single-fruit-error']);
+    expect(trigger().getAttribute('aria-required')).toBe('true');
+    // The popup search filters options; required/invalid belong to the selected-value trigger.
+    expect(search().getAttribute('aria-required')).toBeNull();
+    host.id.set('new-single');
+    host.hint.set(undefined);
+    host.required.set(false);
+    fixture.detectChanges();
+    expectDescriptions([trigger(), search()], ['single-external', 'new-single-error']);
+    expect(trigger().id).toBe('new-single');
+    expect(search().id).toBe('new-single-search');
+    expect(search().getAttribute('aria-labelledby')).toBe('new-single-label');
+    for (const element of [trigger(), search()]) expect(element.getAttribute('aria-required')).toBeNull();
+    host.form.controls.value.setValue('Apple');
+    host.descriptions.set(null);
+    fixture.detectChanges();
+    expectDescriptions([trigger(), search()], []);
+  });
 
   it('shows the selected value in the trigger', () => {
     const trigger = () => fixture.nativeElement.querySelector('hlm-combobox-trigger button') as HTMLButtonElement;

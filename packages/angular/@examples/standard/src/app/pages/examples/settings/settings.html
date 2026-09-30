@@ -1,0 +1,181 @@
+<section class="tw:min-w-0 tw:space-y-6">
+  <app-demo-header
+    title="Settings"
+    description="Edit profile, workspace, and notification settings with visible save feedback. The catalog toolbar switches this preview between loading, empty, error, and loaded views without a backend."
+  />
+  @if (terminal()) {
+  <div
+    class="tw:min-w-0 tw:space-y-4 tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-5"
+    data-testid="settings-terminal"
+  >
+    <h3 id="settings-terminal-title" tabindex="-1" class="tw:text-base tw:font-semibold">
+      {{ terminal() === 'deleted' ? 'Workspace deleted' : 'Workspace left' }}
+    </h3>
+    <p role="status" data-testid="danger-outcome" class="tw:break-words tw:text-sm">{{ dangerOutcome() }}</p>
+    <p class="tw:text-sm">
+      This local session has ended. Explicit recovery starts a new preview with the original fixtures.
+    </p>
+    <button hlmButton type="button" data-testid="settings-recover" (click)="recover()">Restore preview fixtures</button>
+  </div>
+  } @else {
+  <app-example-state-toolbar
+    [viewState]="viewState()"
+    (viewStateChange)="setPreview($event)"
+    [readOnly]="readOnly()"
+    (readOnlyChange)="setReadOnly($event)"
+    [(simulateFailure)]="simulateFailure"
+  />
+  <p class="tw:text-xs tw:text-slate-500">
+    Section navigation preserves edits. Preview and read-only changes cancel pending saves and confirmations, preserving
+    drafts. Reload explicitly discards local drafts and restores fixtures. The simulate reload failure toggle also makes
+    the next save fail.
+  </p>
+  @if (sessionNotice(); as notice) {
+  <p role="status" data-testid="settings-session-notice" class="tw:break-words tw:text-sm">{{ notice }}</p>
+  } @switch (viewState()) { @case ('loading') {
+  <div role="status" aria-label="Loading settings" class="tw:animate-pulse tw:space-y-3">
+    <div class="tw:h-5 tw:w-1/4 tw:rounded tw:bg-slate-200"></div>
+    <div class="tw:h-10 tw:w-full tw:rounded-xl tw:bg-slate-200"></div>
+    <div class="tw:h-10 tw:w-full tw:rounded-xl tw:bg-slate-200"></div>
+  </div>
+  } @case ('empty') {
+  <div class="tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-6 tw:text-center">
+    <h3 class="tw:text-base tw:font-semibold tw:text-slate-900">No settings found</h3>
+    <p class="tw:mt-1 tw:text-sm tw:text-slate-600">This is an empty-state preview. Your local draft is preserved.</p>
+    <button hlmButton type="button" class="tw:mt-4" (click)="setPreview('loaded')">Return to settings</button>
+  </div>
+  } @case ('error') {
+  <div role="alert" class="tw:rounded-2xl tw:border tw:border-rose-200 tw:bg-rose-50 tw:p-6 tw:text-center">
+    <h3 class="tw:text-base tw:font-semibold tw:text-rose-900">Settings failed to load</h3>
+    <p class="tw:mt-1 tw:text-sm tw:text-rose-700">{{ loadError() }}</p>
+    <button hlmButton type="button" class="tw:mt-4" (click)="reload()">Retry</button>
+  </div>
+  } @default {
+  <div class="tw:min-w-0 tw:space-y-4" data-testid="settings-loaded">
+    <nav
+      aria-label="Settings sections"
+      data-testid="settings-nav"
+      class="tw:min-w-0 tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-3"
+    >
+      <ul class="tw:flex tw:min-w-0 tw:flex-wrap tw:gap-2">
+        @for (section of sections; track section.id) {
+        <li>
+          <button
+            hlmButton
+            type="button"
+            size="sm"
+            [variant]="activeSection() === section.id ? 'default' : 'secondary'"
+            [attr.aria-current]="activeSection() === section.id ? 'true' : null"
+            [attr.data-testid]="'settings-nav-' + section.id"
+            (click)="selectSection(section.id)"
+          >
+            {{ section.label }}
+          </button>
+        </li>
+        }
+      </ul>
+    </nav>
+    @if (isDirty()) {
+    <p
+      role="status"
+      data-testid="dirty-warning"
+      class="tw:break-words tw:rounded-2xl tw:border tw:border-amber-200 tw:bg-amber-50 tw:p-3 tw:text-sm tw:text-amber-900"
+    >
+      You have unsaved changes. Section navigation preserves your edits. Leaving this route asks for confirmation.
+    </p>
+    } @if (formErrorSummary().length > 0) {
+    <div
+      role="alert"
+      data-testid="settings-form-errors"
+      class="tw:rounded-2xl tw:border tw:border-rose-200 tw:bg-rose-50 tw:p-4"
+    >
+      <p class="tw:text-sm tw:font-semibold tw:text-rose-900">Fix the following before saving:</p>
+      <ul class="tw:mt-1 tw:list-disc tw:space-y-1 tw:pl-5 tw:text-sm tw:text-rose-800">
+        @for (entry of formErrorSummary(); track entry) {
+        <li>{{ entry }}</li>
+        }
+      </ul>
+    </div>
+    }
+    <app-profile-settings-section [form]="profileForm" />
+    <app-workspace-settings-section [form]="workspaceForm" />
+    <app-notification-settings-section [form]="notificationsForm" />
+    <app-danger-zone-section
+      [readOnly]="readOnly()"
+      [busy]="confirmationPending()"
+      (leaveWorkspace)="leaveWorkspace()"
+      (deleteWorkspace)="deleteWorkspace()"
+    />
+    @if (readOnly()) {
+    <p data-testid="settings-readonly-note" class="tw:break-words tw:text-xs tw:text-slate-500">
+      {{ READ_ONLY_MESSAGE }} You are previewing as a workspace member: members cannot change settings, so ask an admin
+      to update these sections.
+    </p>
+    }
+    <div class="tw:flex tw:min-w-0 tw:flex-wrap tw:items-center tw:gap-2">
+      <button
+        hlmButton
+        type="button"
+        data-testid="settings-save"
+        [disabled]="!canSave()"
+        [title]="readOnly() ? READ_ONLY_MESSAGE : 'Save settings changes'"
+        (click)="save()"
+      >
+        Save changes
+      </button>
+      <button
+        hlmButton
+        variant="secondary"
+        appearance="outline"
+        type="button"
+        data-testid="settings-discard"
+        [disabled]="!canDiscard()"
+        (click)="discardChanges()"
+      >
+        Discard changes
+      </button>
+    </div>
+    @switch (saveState()) { @case ('pending') {
+    <p role="status" data-testid="settings-save-pending" class="tw:text-sm tw:text-slate-700">
+      Saving submitted settings… You can keep editing; newer changes remain unsaved.
+    </p>
+    } @case ('success') {
+    <p
+      role="status"
+      data-testid="settings-save-outcome"
+      class="tw:break-words tw:rounded-2xl tw:border tw:border-emerald-200 tw:bg-emerald-50 tw:p-4 tw:text-sm tw:text-emerald-900"
+    >
+      {{ saveOutcome() }}
+    </p>
+    } @case ('failure') {
+    <div role="alert" data-testid="settings-save-error" class="tw:grid tw:gap-3">
+      <eg-basic-alert
+        variant="danger"
+        title="Settings failed to save"
+        [description]="saveError() ?? 'Settings failed to save.'"
+      />
+      <p class="tw:text-sm">Your draft is preserved. Retry submits your current values.</p>
+      <div>
+        <button
+          hlmButton
+          type="button"
+          variant="secondary"
+          appearance="outline"
+          data-testid="settings-retry"
+          [disabled]="!canSave()"
+          (click)="save()"
+        >
+          Retry save
+        </button>
+      </div>
+    </div>
+    } }
+  </div>
+  } }
+  <div class="tw:flex tw:flex-wrap tw:gap-2">
+    <button hlmButton variant="secondary" type="button" data-testid="settings-reload" (click)="reload()">
+      Simulate reload (discard drafts)
+    </button>
+  </div>
+  }
+</section>

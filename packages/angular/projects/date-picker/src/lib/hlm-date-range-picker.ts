@@ -6,6 +6,7 @@ import {
   computed,
   contentChild,
   forwardRef,
+  inject,
   input,
   linkedSignal,
   output,
@@ -19,9 +20,12 @@ import { BrnFieldControl, provideBrnLabelable } from '@spartan-ng/brain/field';
 import type { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
 import type { BrnOverlayState } from '@spartan-ng/brain/overlay';
 import { BrnPopover } from '@spartan-ng/brain/popover';
+import { injectDateAdapter } from '@spartan-ng/brain/date-time';
+import { BrnCalendarRange } from '@spartan-ng/brain/calendar';
 import { HlmCalendarRange } from '@egose/shadcn-theme-ng/calendar';
 import { HlmPopoverImports } from '@egose/shadcn-theme-ng/popover';
 import { injectHlmDateRangePickerConfig } from './hlm-date-range-picker.token';
+import { HlmDatePickerCommitState, isSelectableDate } from './hlm-date-picker-commit';
 
 export const HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -33,6 +37,7 @@ export const HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR = {
   selector: 'hlm-date-range-picker',
   imports: [HlmPopoverImports, HlmCalendarRange],
   providers: [
+    HlmDatePickerCommitState,
     HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR,
     provideBrnDatePicker(HlmDateRangePicker),
     provideBrnLabelable(HlmDateRangePicker),
@@ -64,6 +69,10 @@ export const HLM_DATE_RANGE_PICKER_VALUE_ACCESSOR = {
 })
 export class HlmDateRangePicker<T> implements BrnDatePickerBase<[T, T]>, ControlValueAccessor {
   private readonly _config = injectHlmDateRangePickerConfig<T>();
+  private readonly _dateAdapter = injectDateAdapter<T>();
+  private readonly _commitState = inject(HlmDatePickerCommitState);
+  private readonly _calendar = viewChild(BrnCalendarRange<T>);
+  private _restoringCalendar = false;
 
   public readonly popover = viewChild.required(BrnPopover);
 
@@ -138,19 +147,31 @@ export class HlmDateRangePicker<T> implements BrnDatePickerBase<[T, T]>, Control
   }
 
   protected _handleStartDayChange(value: T | undefined) {
+    if (this._restoringCalendar) return;
+    if (this._disabled() || (value != null && !isSelectableDate(this._dateAdapter, value, this.min(), this.max()))) {
+      this._restoreCalendar();
+      return;
+    }
     this._start.set(value);
   }
 
   protected _handleEndDateChange(value: T | undefined): void {
-    this._end.set(value);
-    if (this._disabled()) return;
+    if (this._restoringCalendar) return;
+    if (this._disabled()) {
+      this._restoreCalendar();
+      return;
+    }
+    if (value == null) {
+      this._end.set(undefined);
+      return;
+    }
 
     const start = this._start();
-    if (start && value) {
-      const transformedDates = this.transformDates()([start, value]);
-      this._mutableDate.set(transformedDates);
-      this.dateChange.emit(transformedDates);
-      this._onChange?.(transformedDates);
+    if (start != null) {
+      if (!this.updateDate([start, value])) {
+        this._restoreCalendar();
+        return;
+      }
 
       if (this.autoCloseOnEndSelection()) {
         this._popoverState.set('closed');
@@ -158,36 +179,60 @@ export class HlmDateRangePicker<T> implements BrnDatePickerBase<[T, T]>, Control
     }
   }
 
+  private _restoreCalendar(): void {
+    this._start.set(this._mutableDate()?.[0]);
+    this._end.set(this._mutableDate()?.[1]);
+    this._restoringCalendar = true;
+    try {
+      this._calendar()?.startDate.set(this._start());
+      this._calendar()?.endDate.set(this._end());
+    } finally {
+      this._restoringCalendar = false;
+    }
+  }
+
   /**
-   * Commit a range to the picker. Updates the internal model, notifies form
-   * controls, and emits `dateChange`. Intended to be called from a text input
-   * that parses user-entered values. Pass `null` to clear the range.
+   * Commit a user range (null clears). Both raw/transformed endpoints must
+   * satisfy adapter whole-day bounds; the transformed range must be ordered.
+   * Returns false without changing/emitting the model on rejection or disabled.
    */
-  public updateDate(value: [T, T] | null) {
-    if (this._disabled()) return;
+  public updateDate(value: [T, T] | null): boolean {
+    if (this._disabled()) return false;
 
     if (!value) {
       this._mutableDate.set(undefined);
       this._start.set(undefined);
       this._end.set(undefined);
+      this._commitState.changed();
       this._onChange?.(null);
       this.dateChange.emit(null);
-      return;
+      return true;
     }
 
+    if (!this._isRangeAllowed(value)) return false;
     const transformedDates = this.transformDates()(value);
+    if (!this._isRangeAllowed(transformedDates) || this._dateAdapter.isAfter(transformedDates[0], transformedDates[1]))
+      return false;
     this._mutableDate.set(transformedDates);
     this._start.set(transformedDates[0]);
     this._end.set(transformedDates[1]);
+    this._commitState.changed();
     this._onChange?.(transformedDates);
     this.dateChange.emit(transformedDates);
+    return true;
+  }
+
+  private _isRangeAllowed(dates: [T, T]): boolean {
+    return (
+      dates?.length === 2 && dates.every((date) => isSelectableDate(this._dateAdapter, date, this.min(), this.max()))
+    );
   }
 
   public touched(): void {
     this._onTouched?.();
   }
 
-  /** CONTROL VALUE ACCESSOR */
+  /** Programmatic CVA write: transforms without enforcing user constraints or emitting. Clears rejected text. */
   public writeValue(value: [T, T] | null): void {
     untracked(() => {
       if (!value) {
@@ -195,6 +240,7 @@ export class HlmDateRangePicker<T> implements BrnDatePickerBase<[T, T]>, Control
       } else {
         this._mutableDate.set(this.transformDates()(value));
       }
+      this._commitState.changed();
     });
   }
 
@@ -222,6 +268,7 @@ export class HlmDateRangePicker<T> implements BrnDatePickerBase<[T, T]>, Control
     this._mutableDate.set(undefined);
     this._start.set(undefined);
     this._end.set(undefined);
+    this._commitState.changed();
     this._onChange?.(null);
     this.dateChange.emit(null);
   }

@@ -1,6 +1,15 @@
-import { CdkStep, CdkStepper, CdkStepperModule } from '@angular/cdk/stepper';
+import { CdkStep, CdkStepHeader, CdkStepper, CdkStepperModule } from '@angular/cdk/stepper';
 import { NgTemplateOutlet } from '@angular/common';
-import { booleanAttribute, ChangeDetectionStrategy, Component, input, numberAttribute, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  numberAttribute,
+  QueryList,
+  signal,
+  ViewChildren,
+} from '@angular/core';
 import type { TemplateRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HlmTooltip } from '@egose/shadcn-theme-ng/tooltip';
@@ -85,6 +94,7 @@ const stepTransition = cva('', {
     }
 
     <ng-template #stepHeaderTemplate let-step="step">
+      @let enabled = _isHeaderEnabled(step);
       <hlm-step-header
         cdkStepHeader
         class="tw:min-w-0"
@@ -101,16 +111,16 @@ const stepTransition = cva('', {
         [attr.aria-controls]="_getStepContentId(step.index())"
         [attr.aria-label]="step.ariaLabel || null"
         [attr.aria-labelledby]="!step.ariaLabel && step.ariaLabelledby ? step.ariaLabelledby : null"
-        [attr.aria-disabled]="!step.isNavigable() || (orientation === 'vertical' && step.isSelected()) ? 'true' : null"
+        [attr.aria-disabled]="enabled ? null : 'true'"
         [index]="step.index()"
         [state]="step.indicatorType()"
         [label]="step.stepLabelContent() || step.label"
         [selected]="step.isSelected()"
         [reached]="step.index() < selectedIndex"
-        [active]="step.isNavigable()"
+        [active]="enabled"
         [optional]="step.optional"
         [errorMessage]="step.errorMessage"
-        [disabled]="linear && !step.isNavigable()"
+        [disabled]="!enabled"
         [labelPosition]="orientation === 'horizontal' ? labelPosition() : 'end'"
         [indicatorMode]="indicatorMode()"
         [icon]="stepIcon(step)"
@@ -168,6 +178,9 @@ const stepTransition = cva('', {
 export class HlmStepper extends CdkStepper {
   private readonly _config = injectHlmStepperConfig();
 
+  // Headers are rendered in this component's view, not in CDK's projected content query.
+  @ViewChildren(CdkStepHeader) override _stepHeader = new QueryList<CdkStepHeader>();
+
   public readonly labelPosition = input<HlmStepperLabelPosition>('end');
   public readonly headerPosition = input<HlmStepperHeaderPosition>('top');
   public readonly indicatorMode = input<HlmStepperIndicatorMode>(this._config.defaultIndicatorMode);
@@ -195,27 +208,40 @@ export class HlmStepper extends CdkStepper {
       .subscribe();
   }
 
+  /** Touch and revalidate the current reactive form, then let CDK decide whether navigation is allowed. */
   override next(): void {
     const stepControl = this.selected?.stepControl;
 
     if (stepControl && typeof stepControl !== 'function') {
-      // Classic reactive-forms control: surface validation errors before a denied linear transition.
-      // Signal `Field` controls expose validity through invocation and need no touch pass.
+      // Preserve validation feedback for classic controls. Signal Fields are handled by CDK.
       stepControl.markAllAsTouched();
       stepControl.updateValueAndValidity();
     }
 
-    const invalid =
-      !!stepControl && (typeof stepControl === 'function' ? stepControl().invalid() : stepControl.invalid);
-    if (this.linear && invalid) {
-      return;
-    }
-
+    // CDK applies optional/completion overrides and checks all preceding controls, including pending ones.
     super.next();
   }
 
   protected stepIcon(step: CdkStep): string | null {
     return step instanceof HlmStep ? step.icon() : null;
+  }
+
+  /** Preview selection without touching forms or marking steps interacted; activation stays with CDK. */
+  protected _isHeaderEnabled(step: HlmStep): boolean {
+    const index = step.index();
+    if (index === this.selectedIndex) {
+      return true;
+    }
+    if (index < this.selectedIndex && !step.editable) {
+      return false;
+    }
+    return (
+      !this.linear ||
+      this.steps
+        .toArray()
+        .slice(0, index)
+        .every((previous) => previous instanceof HlmStep && previous._canExit(previous === this.selected))
+    );
   }
 
   protected _headerTooltip(step: CdkStep): string | TemplateRef<void> | null {

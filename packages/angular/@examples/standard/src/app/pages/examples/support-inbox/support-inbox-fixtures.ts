@@ -1,39 +1,24 @@
 /**
- * Support inbox example: typed models and deterministic fixtures.
+ * Support inbox example: deterministic fixtures and pure presentation helpers.
  *
  * Colocated with the owning flow. Dates are fixed UTC ISO strings, IDs are
  * stable, subjects vary in length, and reply text is rendered as text (never
  * arbitrary HTML). No random or current-time defaults anywhere.
  */
 
-export type TicketStatus = 'Open' | 'Pending' | 'Resolved';
-export type TicketPriority = 'Low' | 'Normal' | 'Urgent';
-export type TicketAssignee = 'Mara Chen' | 'Ravi Shah' | 'Unassigned';
-export type TicketRole = 'requester' | 'agent';
+import type { BadgeVariantType } from '@egose/shadcn-theme-ng/badge';
+import type { AssigneeFilter, StatusFilter, SupportTicket, TicketAssignee, TicketStatus } from './support-inbox-types';
 
-export type StatusFilter = 'All' | TicketStatus;
-export type AssigneeFilter = 'All' | TicketAssignee;
-
-export interface TicketMessage {
-  readonly id: string;
-  readonly author: string;
-  readonly role: TicketRole;
-  readonly body: string;
-  /** Fixed UTC ISO timestamp — never derived from the current time. */
-  readonly createdAtIso: string;
-}
-
-export interface SupportTicket {
-  readonly id: string;
-  readonly subject: string;
-  readonly status: TicketStatus;
-  readonly priority: TicketPriority;
-  readonly requester: string;
-  readonly assignee: TicketAssignee;
-  readonly description: string;
-  readonly updatedAtIso: string;
-  readonly messages: readonly TicketMessage[];
-}
+export type {
+  AssigneeFilter,
+  StatusFilter,
+  SupportTicket,
+  TicketAssignee,
+  TicketMessage,
+  TicketPriority,
+  TicketRole,
+  TicketStatus,
+} from './support-inbox-types';
 
 export const STATUS_FILTERS: readonly StatusFilter[] = ['All', 'Open', 'Pending', 'Resolved'];
 
@@ -161,15 +146,28 @@ export function requesterInitials(name: string): string {
 }
 
 /**
- * Deterministic ticket filtering: status/assignee equality. Pure so specs
+ * Deterministic ticket filtering: status/assignee equality and normalized search. Pure so specs
  * can assert the exact visible set for any filter combination.
  */
 export function filterTickets(
   tickets: readonly SupportTicket[],
   status: StatusFilter,
   assignee: AssigneeFilter,
+  search = '',
 ): SupportTicket[] {
+  const query = search.trim().toLowerCase();
   return tickets.filter(
-    (ticket) => (status === 'All' || ticket.status === status) && (assignee === 'All' || ticket.assignee === assignee),
+    (ticket) =>
+      (status === 'All' || ticket.status === status) &&
+      (assignee === 'All' || ticket.assignee === assignee) &&
+      [ticket.id, ticket.subject, ticket.requester].some((value) => value.toLowerCase().includes(query)),
   );
+}
+
+export function statusVariant(status: TicketStatus): BadgeVariantType {
+  return { Open: 'info', Pending: 'warning', Resolved: 'success' }[status] as BadgeVariantType;
+}
+
+export function freshTickets(): SupportTicket[] {
+  return EXAMPLE_TICKETS.map((ticket) => ({ ...ticket, messages: [...ticket.messages] }));
 }

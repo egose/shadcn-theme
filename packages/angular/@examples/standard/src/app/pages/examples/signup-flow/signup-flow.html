@@ -1,0 +1,168 @@
+<section class="tw:min-w-0 tw:space-y-6">
+  <app-demo-header
+    title="Signup Flow"
+    description="Create a local preview account with validated account details, preferences and required terms, then review and finish. No account is sent to a backend."
+  />
+  <app-example-state-toolbar
+    [viewState]="viewState()"
+    (viewStateChange)="setViewState($event)"
+    [readOnly]="readOnly()"
+    (readOnlyChange)="setReadOnly($event)"
+    [(simulateFailure)]="simulateFailure"
+  />
+  <p class="tw:text-xs tw:text-muted-foreground">
+    Preview or permission changes cancel pending work and retain values. Start over and reload discard the draft and
+    result. Fields are locked while creating the account; Back and step navigation remain available.
+  </p>
+  @if (notice()) {
+  <p role="status" class="tw:text-sm tw:text-muted-foreground">{{ notice() }}</p>
+  } @if (readOnly()) {
+  <p id="signup-readonly" class="tw:text-sm tw:text-muted-foreground">
+    {{ READ_ONLY_MESSAGE }} You can still review steps.
+  </p>
+  } @switch (viewState()) { @case ('loading') {
+  <p role="status">Loading signup preview…</p>
+  } @case ('empty') {
+  <section class="tw:space-y-3">
+    <h3 class="tw:text-lg tw:font-semibold">Signup is not available in this preview</h3>
+    <button hlmBtn type="button" (click)="setViewState('loaded')">Show signup</button>
+  </section>
+  } @case ('error') {
+  <section class="tw:space-y-3" role="alert">
+    <h3 class="tw:text-lg tw:font-semibold">Signup failed to load</h3>
+    <p>{{ loadError() ?? 'The preview could not load. Retry to start a blank signup.' }}</p>
+    <button hlmBtn type="button" (click)="reload()">Retry reload</button>
+  </section>
+  } @default { @if (submission(); as result) {
+  <section
+    class="tw:min-w-0 tw:max-w-xl tw:space-y-2 tw:[overflow-wrap:anywhere]"
+    aria-labelledby="signup-success-heading"
+  >
+    <h3 id="signup-success-heading" tabindex="-1" class="tw:text-lg tw:font-semibold">Account created</h3>
+    <p role="status" class="tw:text-sm">
+      Welcome, {{ result.username }} ({{ result.email }}) — signed up as {{ roleLabel(result.role) }}. This is a local
+      preview only.
+    </p>
+  </section>
+  } @else {
+  <div class="tw:min-w-0 tw:max-w-xl tw:space-y-4" [attr.aria-busy]="pending()">
+    <hlm-stepper
+      [linear]="true"
+      [orientation]="narrow()?.matches ? 'vertical' : 'horizontal'"
+      [animationsEnabled]="false"
+      stepperAriaLabel="Signup progress"
+      class="tw:block tw:w-full tw:min-w-0"
+    >
+      <hlm-step #accountStep label="Account" [stepControl]="accountForm">
+        <form
+          [formGroup]="accountForm"
+          [inert]="!accountStep.isSelected()"
+          class="tw:flex tw:min-w-0 tw:flex-col tw:gap-4"
+        >
+          <eg-form-text-input
+            controlName="username"
+            label="Username"
+            hint="At least 3 characters after trimming spaces."
+            autocomplete="username"
+            [required]="true"
+            [readonly]="fieldsLocked()"
+          />
+          <eg-form-text-input
+            controlName="email"
+            label="Email"
+            type="email"
+            hint="Use an email address for this local preview."
+            autocomplete="email"
+            [required]="true"
+            [readonly]="fieldsLocked()"
+          />
+          <div class="tw:flex tw:justify-end">
+            <button hlmBtn type="button" hlmStepperNext>Next</button>
+          </div>
+        </form>
+      </hlm-step>
+      <hlm-step #preferencesStep label="Preferences" [stepControl]="prefsForm">
+        <form
+          [formGroup]="prefsForm"
+          [inert]="!preferencesStep.isSelected()"
+          class="tw:flex tw:min-w-0 tw:flex-col tw:gap-4"
+        >
+          <eg-form-select
+            controlName="role"
+            label="Role"
+            placeholder="Select a role"
+            hint="What best describes you?"
+            [required]="true"
+            [options]="roles"
+            [disabled]="fieldsLocked()"
+          />
+          <eg-form-checkbox
+            controlName="acceptTerms"
+            label="Accept terms and conditions"
+            hint="Required to create your account."
+            [required]="true"
+            [disabled]="fieldsLocked()"
+          />
+          <div class="tw:flex tw:flex-wrap tw:justify-between tw:gap-2">
+            <button hlmBtn type="button" variant="outline" hlmStepperPrevious>Back</button>
+            <button hlmBtn type="button" hlmStepperNext>Next</button>
+          </div>
+        </form>
+      </hlm-step>
+      <hlm-step #reviewStep label="Review">
+        <div [inert]="!reviewStep.isSelected()" class="tw:flex tw:min-w-0 tw:flex-col tw:gap-4">
+          <dl data-testid="signup-review" class="tw:grid tw:min-w-0 tw:gap-2 tw:text-sm tw:[overflow-wrap:anywhere]">
+            <div>
+              <dt class="tw:text-muted-foreground">Username</dt>
+              <dd>{{ accountForm.controls.username.value.trim() }}</dd>
+            </div>
+            <div>
+              <dt class="tw:text-muted-foreground">Email</dt>
+              <dd>{{ normalizeEmail(accountForm.controls.email.value) }}</dd>
+            </div>
+            <div>
+              <dt class="tw:text-muted-foreground">Role</dt>
+              <dd>{{ roleLabel(prefsForm.controls.role.value) }}</dd>
+            </div>
+            <div>
+              <dt class="tw:text-muted-foreground">Terms</dt>
+              <dd>{{ prefsForm.controls.acceptTerms.value ? 'Accepted' : 'Not accepted' }}</dd>
+            </div>
+          </dl>
+          <div class="tw:flex tw:flex-wrap tw:justify-between tw:gap-2">
+            <button hlmBtn type="button" variant="outline" hlmStepperPrevious>Back</button>
+            <button
+              hlmBtn
+              type="button"
+              [disabled]="fieldsLocked()"
+              [attr.aria-describedby]="readOnly() ? 'signup-readonly' : null"
+              (click)="finish()"
+            >
+              {{ pending() ? 'Creating…' : submitError() ? 'Retry signup' : 'Finish' }}
+            </button>
+          </div>
+        </div>
+      </hlm-step>
+    </hlm-stepper>
+    @if (pending()) {
+    <p role="status">Creating your preview account…</p>
+    } @if (submitError()) {
+    <p role="alert">{{ submitError() }}</p>
+    }
+    <label class="tw:flex tw:items-center tw:gap-2 tw:text-sm">
+      <input
+        type="checkbox"
+        [checked]="failSubmission()"
+        [disabled]="pending()"
+        (change)="failSubmission.set($any($event.target).checked)"
+        data-testid="signup-fail-submission"
+      />
+      Simulate signup failure (catalog tooling)
+    </label>
+  </div>
+  } } }
+  <div class="tw:flex tw:flex-wrap tw:gap-2">
+    <button hlmBtn type="button" variant="outline" (click)="startOver()">Start over</button>
+    <button hlmBtn type="button" variant="secondary" (click)="reload()">Simulate reload</button>
+  </div>
+</section>

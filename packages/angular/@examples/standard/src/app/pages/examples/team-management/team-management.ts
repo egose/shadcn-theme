@@ -1,709 +1,97 @@
-import { DatePipe } from '@angular/common';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BrnDialogRef, injectBrnDialogContext } from '@spartan-ng/brain/dialog';
-import { HlmAvatar, HlmAvatarFallback } from '@egose/shadcn-theme-ng/avatar';
-import { HlmBadge, type BadgeVariantType } from '@egose/shadcn-theme-ng/badge';
-import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
+import { Component, DestroyRef, ElementRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { defaultIfEmpty, firstValueFrom, take } from 'rxjs';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
-import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
-import {
-  HlmDialogDescription,
-  HlmDialogFooter,
-  HlmDialogHeader,
-  HlmDialogService,
-  HlmDialogTitle,
-} from '@egose/shadcn-theme-ng/dialog';
-import { HlmDropdownMenuImports } from '@egose/shadcn-theme-ng/dropdown-menu';
+import { EgBasicAlert } from '@egose/shadcn-theme-ng/basic-alert';
+import { EgConfirmationDialog } from '@egose/shadcn-theme-ng/confirmation-dialog';
+import { HlmDialogService } from '@egose/shadcn-theme-ng/dialog';
 import { HlmEmptyImports } from '@egose/shadcn-theme-ng/empty';
-import { HlmInput } from '@egose/shadcn-theme-ng/input';
 import { HlmInputGroupImports } from '@egose/shadcn-theme-ng/input-group';
-import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmNativeSelectImports } from '@egose/shadcn-theme-ng/native-select';
 import { HlmPaginationImports } from '@egose/shadcn-theme-ng/pagination';
 import { HlmSkeleton } from '@egose/shadcn-theme-ng/skeleton';
-import {
-  HlmCaption,
-  HlmTable,
-  HlmTableContainer,
-  HlmTBody,
-  HlmTd,
-  HlmTh,
-  HlmTHead,
-  HlmTr,
-} from '@egose/shadcn-theme-ng/table';
 import { DemoHeaderComponent } from '../../../shared/demo-header';
-import { EXAMPLE_READ_ONLY_MESSAGE, ExampleViewState } from '../../../shared/real-examples/example-view-state';
+import { EXAMPLE_READ_ONLY_MESSAGE, type ExampleViewState } from '../../../shared/real-examples/example-view-state';
 import { ExampleStateToolbarComponent } from '../../../shared/real-examples/example-state-toolbar';
 import { simulateExampleLoad } from '../../../shared/real-examples/async-simulator';
 import {
   EXAMPLE_MEMBERS,
   INVITED_MEMBER_JOINED_AT_ISO,
   MEMBER_ROLES,
-  MemberRole,
   ROLE_FILTERS,
-  RoleFilter,
   STATUS_FILTERS,
-  StatusFilter,
   TEAM_PAGE_SIZE,
-  TeamMember,
   filterMembers,
-  memberInitials,
+  isMemberRole,
+  normalizeMemberEmail,
   slugifyMemberId,
 } from './team-management-fixtures';
+import type {
+  BulkRoleRequest,
+  InviteMemberContext,
+  InviteMemberResult,
+  MemberOperation,
+  MemberOutcome,
+  MemberRole,
+  RoleChangeContext,
+  RoleChangeResult,
+  RoleFilter,
+  StatusFilter,
+  TeamMember,
+} from './team-management-types';
+import { InviteMemberDialog } from './components/invite-member-dialog';
+import { ChangeRoleDialog } from './components/change-role-dialog';
+import { MemberRoster } from './components/member-roster';
 
-export interface InviteMemberResult {
-  readonly name: string;
-  readonly email: string;
-  readonly role: MemberRole;
-}
-
-export interface RoleChangeContext {
-  readonly memberName: string;
-  readonly currentRole: MemberRole;
-}
-
-export interface RoleChangeResult {
-  readonly role: MemberRole;
-}
-
-interface MemberOutcome {
-  readonly message: string;
-  readonly canUndo: boolean;
-}
-
-/**
- * Invite-member dialog. Carries its own typed form so name, email, and role
- * are validated before the page records a visible outcome. Inviting only
- * previews the roster change; no backend is involved.
- */
-@Component({
-  imports: [
-    ReactiveFormsModule,
-    HlmButton,
-    HlmDialogDescription,
-    HlmDialogFooter,
-    HlmDialogHeader,
-    HlmDialogTitle,
-    HlmInput,
-    HlmLabel,
-    HlmNativeSelectImports,
-  ],
-  template: `
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="tw:contents">
-      <hlm-dialog-header>
-        <h3 hlmDialogTitle>Invite teammate</h3>
-        <p hlmDialogDescription>
-          Send a workspace invitation. The new member joins with Invited status and the chosen role.
-        </p>
-      </hlm-dialog-header>
-
-      <div class="tw:grid tw:gap-3 tw:py-4">
-        <div class="tw:grid tw:gap-2">
-          <label hlmLabel for="invite-name">Full name</label>
-          <input hlmInput id="invite-name" data-testid="invite-name" formControlName="name" autocomplete="name" />
-          @if (nameError(); as error) {
-            <p data-testid="invite-name-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
-          }
-        </div>
-        <div class="tw:grid tw:gap-2">
-          <label hlmLabel for="invite-email">Work email</label>
-          <input
-            hlmInput
-            id="invite-email"
-            data-testid="invite-email"
-            type="email"
-            formControlName="email"
-            autocomplete="email"
-          />
-          @if (emailError(); as error) {
-            <p data-testid="invite-email-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
-          }
-        </div>
-        <div class="tw:grid tw:gap-2">
-          <label hlmLabel for="invite-role">Role</label>
-          <hlm-native-select selectId="invite-role" formControlName="role" data-testid="invite-role">
-            @for (role of roleOptions; track role) {
-              <option [value]="role">{{ role }}</option>
-            }
-          </hlm-native-select>
-        </div>
-      </div>
-
-      <hlm-dialog-footer>
-        <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
-        <button hlmButton type="submit" variant="primary" data-testid="invite-submit">Send invite</button>
-      </hlm-dialog-footer>
-    </form>
-  `,
-  host: { class: 'tw:flex tw:flex-col tw:gap-2' },
-})
-export class InviteMemberDialog {
-  private readonly _dialogRef = inject<BrnDialogRef<InviteMemberResult | null>>(BrnDialogRef);
-  private readonly _fb = inject(FormBuilder);
-
-  protected readonly roleOptions = MEMBER_ROLES;
-  protected readonly form = this._fb.nonNullable.group({
-    name: this._fb.nonNullable.control('', {
-      validators: [Validators.required, Validators.minLength(2)],
-    }),
-    email: this._fb.nonNullable.control('', {
-      validators: [Validators.required, Validators.email],
-    }),
-    role: this._fb.nonNullable.control<MemberRole>('Member', {
-      validators: [Validators.required],
-    }),
-  });
-
-  protected nameError(): string | null {
-    const control = this.form.controls.name;
-    if (!control.touched || control.valid) return null;
-    if (control.hasError('required')) return 'Enter the teammate’s full name';
-    if (control.hasError('minlength')) return 'Use at least 2 characters for the name';
-    return 'Enter a valid name';
-  }
-
-  protected emailError(): string | null {
-    const control = this.form.controls.email;
-    if (!control.touched || control.valid) return null;
-    if (control.hasError('required')) return 'Enter a work email address';
-    if (control.hasError('email')) return 'Enter a valid email like sam@example.com';
-    return 'Enter a valid email address';
-  }
-
-  protected cancel(): void {
-    this._dialogRef.close(null);
-  }
-
-  protected submit(): void {
-    this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-    const value = this.form.getRawValue();
-    this._dialogRef.close({ name: value.name.trim(), email: value.email.trim(), role: value.role });
-  }
-}
-
-/**
- * Role-change dialog. Opens from the row actions menu with the member's
- * current role preselected; saving records one visible outcome on the page.
- */
-@Component({
-  imports: [
-    ReactiveFormsModule,
-    HlmButton,
-    HlmDialogDescription,
-    HlmDialogFooter,
-    HlmDialogHeader,
-    HlmDialogTitle,
-    HlmLabel,
-    HlmNativeSelectImports,
-  ],
-  template: `
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="tw:contents">
-      <hlm-dialog-header>
-        <h3 hlmDialogTitle>Change role for {{ context.memberName }}</h3>
-        <p hlmDialogDescription>Current role: {{ context.currentRole }}. Saving updates the roster immediately.</p>
-      </hlm-dialog-header>
-
-      <div class="tw:grid tw:gap-2 tw:py-4">
-        <label hlmLabel for="role-select">New role</label>
-        <hlm-native-select selectId="role-select" formControlName="role" data-testid="role-select">
-          @for (role of roleOptions; track role) {
-            <option [value]="role">{{ role }}</option>
-          }
-        </hlm-native-select>
-      </div>
-
-      <hlm-dialog-footer>
-        <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
-        <button hlmButton type="submit" variant="primary" data-testid="role-submit">Save role</button>
-      </hlm-dialog-footer>
-    </form>
-  `,
-  host: { class: 'tw:flex tw:flex-col tw:gap-2' },
-})
-export class ChangeRoleDialog {
-  private readonly _dialogRef = inject<BrnDialogRef<RoleChangeResult | null>>(BrnDialogRef);
-  protected readonly context = injectBrnDialogContext<RoleChangeContext>();
-  private readonly _fb = inject(FormBuilder);
-
-  protected readonly roleOptions = MEMBER_ROLES;
-  protected readonly form = this._fb.nonNullable.group({
-    role: this._fb.nonNullable.control<MemberRole>(this.context.currentRole, {
-      validators: [Validators.required],
-    }),
-  });
-
-  protected cancel(): void {
-    this._dialogRef.close(null);
-  }
-
-  protected submit(): void {
-    this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-    this._dialogRef.close({ role: this.form.getRawValue().role });
-  }
-}
-
-/**
- * Row actions menu shared by the desktop table and the narrow-screen cards.
- * Mutation items stay disabled in read-only previews; the page also guards
- * each handler so alternate paths cannot invoke mutations either.
- */
-@Component({
-  selector: 'app-member-actions',
-  imports: [HlmButton, HlmDropdownMenuImports],
-  template: `
-    <div>
-      <button
-        hlmButton
-        variant="secondary"
-        appearance="outline"
-        size="sm"
-        type="button"
-        [hlmDropdownMenuTrigger]="menu"
-        [disabled]="readOnly()"
-        [title]="readOnly() ? readOnlyMessage : 'Member actions for ' + member().name"
-        [attr.aria-label]="'Member actions for ' + member().name"
-        [attr.data-testid]="testId()"
-      >
-        Actions
-      </button>
-      <ng-template #menu>
-        <div hlmDropdownMenu>
-          <div hlmDropdownMenuLabel>{{ member().name }}</div>
-          <div hlmDropdownMenuSeparator></div>
-          <button hlmDropdownMenuItem type="button" (click)="viewDetails.emit(member())">View details</button>
-          <button hlmDropdownMenuItem type="button" [disabled]="readOnly()" (click)="changeRole.emit(member())">
-            Change role
-          </button>
-          <button hlmDropdownMenuItem type="button" [disabled]="readOnly()" (click)="remove.emit(member())">
-            Remove
-          </button>
-        </div>
-      </ng-template>
-    </div>
-  `,
-})
-export class MemberActionsMenu {
-  readonly member = input.required<TeamMember>();
-  readonly readOnly = input(false);
-  readonly testPrefix = input('member-menu');
-  readonly viewDetails = output<TeamMember>();
-  readonly changeRole = output<TeamMember>();
-  readonly remove = output<TeamMember>();
-
-  protected readonly readOnlyMessage = EXAMPLE_READ_ONLY_MESSAGE;
-  protected readonly testId = computed(() => `${this.testPrefix()}-${this.member().id}`);
-}
-
-/**
- * Customer/team-member management product flow.
- *
- * Responsive roster composed from package primitives only: table, input
- * group, native selects, badges, avatars, dropdown menus, dialogs,
- * pagination, skeletons, empty states, an alert, and the confirmation
- * service. Search, status/role filtering, and pagination are deterministic;
- * changing filters resets to the first page, removal clamps a page made
- * invalid, destructive removal requires explicit confirmation with a visible
- * undo outcome, and narrow screens get stacked cards instead of a squeezed
- * table. Loading, empty, error, and loaded previews run through the shared
- * catalog tooling without a backend.
- */
 @Component({
   selector: 'app-team-management-example',
   imports: [
-    DatePipe,
     DemoHeaderComponent,
     ExampleStateToolbarComponent,
-    HlmAvatar,
-    HlmAvatarFallback,
-    HlmBadge,
     HlmButton,
     EgBasicAlert,
-    HlmCaption,
-    HlmTable,
-    HlmTableContainer,
-    HlmTBody,
-    HlmTd,
-    HlmTh,
-    HlmTHead,
-    HlmTr,
-    HlmDropdownMenuImports,
     HlmEmptyImports,
     HlmInputGroupImports,
     HlmNativeSelectImports,
     HlmPaginationImports,
     HlmSkeleton,
-    MemberActionsMenu,
+    MemberRoster,
     ReactiveFormsModule,
   ],
-  template: `
-    <section class="tw:min-w-0 tw:space-y-6">
-      <app-demo-header
-        title="Team Management"
-        description="Search, filter, page, invite, change roles, and remove workspace members. The catalog toolbar switches this preview between loading, empty, error, and loaded views without a backend."
-      />
-
-      <app-example-state-toolbar
-        [(viewState)]="viewState"
-        [(readOnly)]="readOnly"
-        [(simulateFailure)]="simulateFailure"
-      />
-
-      @switch (viewState()) {
-        @case ('loading') {
-          <div role="status" aria-label="Loading members" data-testid="members-loading" class="tw:space-y-3">
-            @for (slot of loadingSlots; track slot) {
-              <div class="tw:flex tw:items-center tw:gap-3 tw:rounded-2xl tw:border tw:border-slate-200 tw:p-4">
-                <hlm-skeleton class="tw:h-10 tw:w-10 tw:rounded-full" />
-                <div class="tw:flex tw:min-w-0 tw:flex-1 tw:flex-col tw:gap-2">
-                  <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-48" />
-                  <hlm-skeleton class="tw:h-4 tw:w-full tw:max-w-64" />
-                </div>
-              </div>
-            }
-          </div>
-        }
-        @case ('empty') {
-          <div hlmEmpty data-testid="empty-preview" class="tw:border-slate-200 tw:bg-white">
-            <div hlmEmptyHeader>
-              <div hlmEmptyMedia variant="icon">👥</div>
-              <h3 hlmEmptyTitle>No members yet</h3>
-              <p hlmEmptyDescription>Invite teammates to start sharing this workspace.</p>
-            </div>
-            <div hlmEmptyContent>
-              <button hlmButton type="button" (click)="viewState.set('loaded')">Show fixtures</button>
-            </div>
-          </div>
-        }
-        @case ('error') {
-          <div role="alert" data-testid="members-error" class="tw:grid tw:gap-3">
-            <eg-basic-alert
-              variant="danger"
-              title="Members failed to load"
-              [description]="loadError() ?? 'Members failed to load.'"
-            />
-            <div>
-              <button hlmButton type="button" data-testid="retry-load" (click)="reload()">Retry</button>
-            </div>
-          </div>
-        }
-        @default {
-          <div class="tw:flex tw:min-w-0 tw:flex-col tw:gap-3 lg:tw:flex-row lg:tw:items-end">
-            <form [formGroup]="filterForm" class="tw:contents">
-              <div class="tw:grid tw:min-w-0 tw:flex-1 tw:gap-3 sm:tw:grid-cols-3">
-                <div class="tw:grid tw:min-w-0 tw:gap-2">
-                  <label class="tw:text-sm tw:font-medium tw:text-slate-700" for="member-search">Search</label>
-                  <div hlmInputGroup class="tw:flex tw:min-w-0 tw:items-center tw:bg-white">
-                    <span hlmInputGroupText aria-hidden="true">⌕</span>
-                    <input
-                      hlmInputGroupInput
-                      id="member-search"
-                      data-testid="member-search"
-                      class="tw:min-w-0"
-                      formControlName="search"
-                      placeholder="Name or email"
-                      autocomplete="off"
-                    />
-                    @if (hasSearch()) {
-                      <button hlmInputGroupButton type="button" data-testid="clear-search" (click)="clearSearch()">
-                        Clear
-                      </button>
-                    }
-                  </div>
-                </div>
-                <div class="tw:grid tw:min-w-0 tw:gap-2">
-                  <label class="tw:text-sm tw:font-medium tw:text-slate-700" for="status-filter">Status</label>
-                  <hlm-native-select selectId="status-filter" formControlName="status" data-testid="status-filter">
-                    @for (status of statusOptions; track status) {
-                      <option [value]="status">{{ status === 'All' ? 'All statuses' : status }}</option>
-                    }
-                  </hlm-native-select>
-                </div>
-                <div class="tw:grid tw:min-w-0 tw:gap-2">
-                  <label class="tw:text-sm tw:font-medium tw:text-slate-700" for="role-filter">Role</label>
-                  <hlm-native-select selectId="role-filter" formControlName="role" data-testid="role-filter">
-                    @for (role of roleOptions; track role) {
-                      <option [value]="role">{{ role === 'All' ? 'All roles' : role }}</option>
-                    }
-                  </hlm-native-select>
-                </div>
-              </div>
-            </form>
-            <div class="tw:flex tw:shrink-0 tw:flex-wrap tw:gap-2">
-              <button
-                hlmButton
-                type="button"
-                data-testid="invite-member"
-                [disabled]="readOnly()"
-                [title]="readOnly() ? READ_ONLY_MESSAGE : 'Invite a teammate to this workspace'"
-                (click)="inviteMember()"
-              >
-                Invite teammate
-              </button>
-            </div>
-          </div>
-
-          <p role="status" data-testid="member-count" class="tw:text-sm tw:text-slate-600">
-            {{ rangeSummary() }}
-          </p>
-
-          @if (filteredMembers().length === 0) {
-            @if (hasActiveFilters()) {
-              <div hlmEmpty data-testid="no-results" class="tw:border-slate-200 tw:bg-white">
-                <div hlmEmptyHeader>
-                  <div hlmEmptyMedia variant="icon">🔎</div>
-                  <h3 hlmEmptyTitle>No members match these filters</h3>
-                  <p hlmEmptyDescription>
-                    No workspace member matches the current search and filters. Try a different name, email, status, or
-                    role.
-                  </p>
-                </div>
-                <div hlmEmptyContent>
-                  <button
-                    hlmButton
-                    variant="secondary"
-                    appearance="outline"
-                    type="button"
-                    data-testid="clear-filters"
-                    (click)="clearFilters()"
-                  >
-                    Clear search and filters
-                  </button>
-                </div>
-              </div>
-            } @else {
-              <div hlmEmpty data-testid="empty-members" class="tw:border-slate-200 tw:bg-white">
-                <div hlmEmptyHeader>
-                  <div hlmEmptyMedia variant="icon">👥</div>
-                  <h3 hlmEmptyTitle>Workspace member list is empty</h3>
-                  <p hlmEmptyDescription>
-                    Every member was removed and no fixtures are loaded. Invite someone new or restore the deterministic
-                    fixtures.
-                  </p>
-                </div>
-                <div hlmEmptyContent class="tw:items-center">
-                  <div class="tw:flex tw:flex-wrap tw:justify-center tw:gap-2">
-                    <button
-                      hlmButton
-                      type="button"
-                      data-testid="invite-empty"
-                      [disabled]="readOnly()"
-                      (click)="inviteMember()"
-                    >
-                      Invite teammate
-                    </button>
-                    <button
-                      hlmButton
-                      variant="secondary"
-                      appearance="outline"
-                      type="button"
-                      data-testid="restore-fixtures"
-                      (click)="reload()"
-                    >
-                      Restore fixtures
-                    </button>
-                  </div>
-                </div>
-              </div>
-            }
-          } @else {
-            <!-- Desktop table; narrow screens get the stacked cards below instead. -->
-            <div
-              hlmTableContainer
-              data-testid="member-table-wrap"
-              class="tw:hidden tw:max-w-full tw:overflow-x-auto md:tw:block"
-            >
-              <table hlmTable data-testid="member-table">
-                <caption hlmCaption>
-                  Workspace members with role, status, join date, and row actions.
-                </caption>
-                <thead hlmTHead>
-                  <tr hlmTr>
-                    <th hlmTh scope="col">Member</th>
-                    <th hlmTh scope="col">Role</th>
-                    <th hlmTh scope="col">Status</th>
-                    <th hlmTh scope="col">Joined</th>
-                    <th hlmTh scope="col"><span class="tw:sr-only">Actions</span></th>
-                  </tr>
-                </thead>
-                <tbody hlmTBody>
-                  @for (member of visibleMembers(); track member.id) {
-                    <tr hlmTr [attr.data-testid]="'member-row-' + member.id">
-                      <td hlmTd>
-                        <span class="tw:flex tw:min-w-0 tw:items-center tw:gap-3">
-                          <hlm-avatar aria-hidden="true">
-                            <span hlmAvatarFallback>{{ initials(member) }}</span>
-                          </hlm-avatar>
-                          <span class="tw:min-w-0">
-                            <span class="tw:block tw:truncate tw:font-medium tw:text-slate-900">
-                              {{ member.name }}
-                            </span>
-                            <span class="tw:block tw:truncate tw:text-xs tw:text-slate-500">
-                              {{ member.email }}
-                            </span>
-                          </span>
-                        </span>
-                      </td>
-                      <td hlmTd>{{ member.role }}</td>
-                      <td hlmTd>
-                        <span hlmBadge [variant]="statusVariant(member.status)">{{ member.status }}</span>
-                      </td>
-                      <td hlmTd>{{ member.joinedAtIso | date: 'mediumDate' : 'UTC' : 'en-US' }}</td>
-                      <td hlmTd>
-                        <app-member-actions
-                          [member]="member"
-                          [readOnly]="readOnly()"
-                          testPrefix="menu-table"
-                          (viewDetails)="showDetails($event)"
-                          (changeRole)="openRoleDialog($event)"
-                          (remove)="requestRemove($event)"
-                        />
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Narrow-screen alternative to the data table: stacked member cards. -->
-            <ul
-              aria-label="Workspace members"
-              data-testid="member-cards"
-              class="tw:grid tw:min-w-0 tw:gap-3 md:tw:hidden"
-            >
-              @for (member of visibleMembers(); track member.id) {
-                <li
-                  [attr.data-testid]="'member-card-' + member.id"
-                  class="tw:min-w-0 tw:rounded-2xl tw:border tw:border-slate-200 tw:bg-white tw:p-4"
-                >
-                  <div class="tw:flex tw:min-w-0 tw:items-center tw:gap-3">
-                    <hlm-avatar aria-hidden="true">
-                      <span hlmAvatarFallback>{{ initials(member) }}</span>
-                    </hlm-avatar>
-                    <div class="tw:min-w-0 tw:flex-1">
-                      <h3 class="tw:truncate tw:text-sm tw:font-semibold tw:text-slate-900">{{ member.name }}</h3>
-                      <p class="tw:truncate tw:text-xs tw:text-slate-500">{{ member.email }}</p>
-                    </div>
-                  </div>
-                  <p
-                    class="tw:mt-3 tw:flex tw:min-w-0 tw:flex-wrap tw:items-center tw:gap-2 tw:text-xs tw:text-slate-500"
-                  >
-                    <span class="tw:break-words">{{ member.role }} · joined</span>
-                    <span class="tw:break-words">
-                      {{ member.joinedAtIso | date: 'mediumDate' : 'UTC' : 'en-US' }}
-                    </span>
-                    <span hlmBadge [variant]="statusVariant(member.status)">{{ member.status }}</span>
-                  </p>
-                  <div class="tw:mt-3 tw:flex tw:flex-wrap tw:gap-2">
-                    <app-member-actions
-                      [member]="member"
-                      [readOnly]="readOnly()"
-                      testPrefix="menu-card"
-                      (viewDetails)="showDetails($event)"
-                      (changeRole)="openRoleDialog($event)"
-                      (remove)="requestRemove($event)"
-                    />
-                  </div>
-                </li>
-              }
-            </ul>
-
-            <nav hlmPagination aria-label="Member pages" data-testid="member-pagination">
-              <ul hlmPaginationContent class="tw:flex-wrap">
-                <li>
-                  <button
-                    hlmPaginationPrevious
-                    type="button"
-                    data-testid="members-previous"
-                    (click)="goToPage(safePage() - 1)"
-                    [disabled]="safePage() === 1"
-                  >
-                    Previous
-                  </button>
-                </li>
-                @for (pageNumber of pageNumbers(); track pageNumber) {
-                  <li hlmPaginationItem>
-                    <button
-                      hlmPaginationLink
-                      type="button"
-                      [isActive]="safePage() === pageNumber"
-                      [attr.data-testid]="'members-page-' + pageNumber"
-                      (click)="goToPage(pageNumber)"
-                    >
-                      {{ pageNumber }}
-                    </button>
-                  </li>
-                }
-                <li>
-                  <button
-                    hlmPaginationNext
-                    type="button"
-                    data-testid="members-next"
-                    (click)="goToPage(safePage() + 1)"
-                    [disabled]="safePage() === pageCount()"
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          }
-
-          @if (outcome(); as result) {
-            <div
-              role="status"
-              data-testid="member-outcome"
-              class="tw:grid tw:gap-2 tw:rounded-2xl tw:border tw:border-emerald-200 tw:bg-emerald-50 tw:p-4 tw:text-sm tw:text-emerald-900"
-            >
-              <p class="tw:min-w-0 tw:break-words">{{ result.message }}</p>
-              @if (result.canUndo) {
-                <div>
-                  <button
-                    hlmButton
-                    variant="secondary"
-                    appearance="outline"
-                    size="sm"
-                    type="button"
-                    data-testid="undo-remove"
-                    (click)="undoRemove()"
-                  >
-                    Undo removal
-                  </button>
-                </div>
-              }
-            </div>
-          }
-          @if (readOnly()) {
-            <p class="tw:text-xs tw:text-slate-500">{{ READ_ONLY_MESSAGE }}</p>
-          }
-        }
-      }
-
-      <div class="tw:flex tw:flex-wrap tw:gap-2">
-        <button hlmButton variant="secondary" type="button" (click)="reload()">Simulate reload</button>
-      </div>
-    </section>
-  `,
+  templateUrl: './team-management.html',
 })
 export class TeamManagementExamplePage {
   private readonly _fb = inject(FormBuilder);
   private readonly _dialogs = inject(HlmDialogService);
-  private readonly _confirm = inject(EgConfirmationDialogService);
+  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private _alive = true;
+  private _session = 0;
+  private _closeDialog: (() => void) | null = null;
+  private _lastRemoved: { member: TeamMember; index: number } | null = null;
+  private readonly _bulkRequest = signal<BulkRoleRequest | null>(null);
 
   protected readonly viewState = signal<ExampleViewState>('loaded');
   protected readonly readOnly = signal(false);
   protected readonly simulateFailure = signal(false);
+  private _observedState: ExampleViewState = 'loaded';
+  private _observedReadOnly = false;
   protected readonly members = signal<readonly TeamMember[]>(EXAMPLE_MEMBERS);
   protected readonly outcome = signal<MemberOutcome | null>(null);
+  protected readonly details = signal<TeamMember | null>(null);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly operation = signal<MemberOperation | null>(null);
+  protected readonly bulkError = signal<string | null>(null);
+  protected readonly sessionNotice = signal<string | null>(null);
+  protected readonly bulkRole = new FormControl<MemberRole>('Viewer', { nonNullable: true });
+  protected readonly rosterVersion = signal(0);
+  protected readonly rosterSessions = computed(() => [{ id: this.rosterVersion() }]);
+  protected readonly canRetryBulk = computed(() => this._bulkRequest() !== null && !this.mutationDisabled());
   protected readonly page = signal(1);
-  private _lastRemoved: { member: TeamMember; index: number } | null = null;
-
+  private readonly _selectedIds = signal<readonly string[]>([]);
   protected readonly filterForm = this._fb.nonNullable.group({
-    search: this._fb.nonNullable.control(''),
+    search: '',
     status: this._fb.nonNullable.control<StatusFilter>('All'),
     role: this._fb.nonNullable.control<RoleFilter>('All'),
   });
@@ -712,205 +100,424 @@ export class TeamManagementExamplePage {
   });
   private readonly _filters = computed(() => ({
     search: this._rawFilters().search ?? '',
-    status: this._rawFilters().status ?? ('All' as StatusFilter),
-    role: this._rawFilters().role ?? ('All' as RoleFilter),
+    status: this._rawFilters().status ?? 'All',
+    role: this._rawFilters().role ?? 'All',
   }));
-
-  constructor() {
-    // Filters invalidate the current page: always restart from the first page.
-    this.filterForm.valueChanges.subscribe(() => {
-      this.page.set(1);
-    });
-  }
-
   protected readonly loadingSlots = [0, 1, 2];
   protected readonly statusOptions = STATUS_FILTERS;
   protected readonly roleOptions = ROLE_FILTERS;
+  protected readonly assignableRoles = MEMBER_ROLES;
   protected readonly READ_ONLY_MESSAGE = EXAMPLE_READ_ONLY_MESSAGE;
-
+  protected readonly mutationDisabled = computed(
+    () => this.readOnly() || this.viewState() !== 'loaded' || this.operation() !== null,
+  );
   protected readonly filteredMembers = computed(() => {
     const filters = this._filters();
     return filterMembers(this.members(), filters.search, filters.status, filters.role);
   });
-
   protected readonly hasSearch = computed(() => this._filters().search.trim() !== '');
-
   protected readonly hasActiveFilters = computed(() => {
     const filters = this._filters();
     return filters.search.trim() !== '' || filters.status !== 'All' || filters.role !== 'All';
   });
-
   protected readonly pageCount = computed(() => Math.max(1, Math.ceil(this.filteredMembers().length / TEAM_PAGE_SIZE)));
-
   protected readonly safePage = computed(() => Math.min(Math.max(this.page(), 1), this.pageCount()));
-
   protected readonly pageNumbers = computed(() => Array.from({ length: this.pageCount() }, (_, index) => index + 1));
-
-  protected readonly visibleMembers = computed(() => {
-    const start = (this.safePage() - 1) * TEAM_PAGE_SIZE;
-    return this.filteredMembers().slice(start, start + TEAM_PAGE_SIZE);
-  });
-
+  protected readonly visibleMembers = computed(() =>
+    this.filteredMembers().slice((this.safePage() - 1) * TEAM_PAGE_SIZE, this.safePage() * TEAM_PAGE_SIZE),
+  );
+  protected readonly selectedMembers = computed(() =>
+    this.visibleMembers().filter((member) => this._selectedIds().includes(member.id)),
+  );
   protected readonly rangeSummary = computed(() => {
     const total = this.filteredMembers().length;
-    if (total === 0) return 'Showing 0 members.';
-    const start = (this.safePage() - 1) * TEAM_PAGE_SIZE + 1;
-    const end = Math.min(start + TEAM_PAGE_SIZE - 1, total);
-    return `Showing ${start}–${end} of ${total} members · Page ${this.safePage()} of ${this.pageCount()}.`;
+    if (!total) return 'Showing 0 members.';
+    return `Showing ${(this.safePage() - 1) * TEAM_PAGE_SIZE + 1}–${Math.min(this.safePage() * TEAM_PAGE_SIZE, total)} of ${total} members · Page ${this.safePage()} of ${this.pageCount()}.`;
   });
 
-  protected initials(member: TeamMember): string {
-    return memberInitials(member.name);
+  constructor() {
+    effect(() => {
+      this.viewState();
+      this.readOnly();
+      untracked(() => this._syncSession());
+    });
+    this.filterForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this._cancelBulk();
+      this.page.set(1);
+    });
+    this.bulkRole.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this._cancelBulk());
+    this._destroyRef.onDestroy(() => {
+      this._alive = false;
+      this._invalidate();
+    });
   }
 
-  protected statusVariant(status: TeamMember['status']): BadgeVariantType {
-    switch (status) {
-      case 'Active':
-        return 'success';
-      case 'Invited':
-        return 'warning';
-      case 'Suspended':
-        return 'destructive';
+  protected setViewState(state: ExampleViewState): void {
+    this.viewState.set(state);
+    this._syncSession();
+  }
+  protected setReadOnly(value: boolean): void {
+    this.readOnly.set(value);
+    this._syncSession();
+  }
+
+  /** Every entry and settlement synchronizes permission/preview boundaries, even before effects run. */
+  private _syncSession(): void {
+    if (this._observedState === this.viewState() && this._observedReadOnly === this.readOnly()) return;
+    const permissionChanged = this._observedReadOnly !== this.readOnly();
+    const wasPending = this.operation() !== null || this._observedState === 'loading';
+    this._observedState = this.viewState();
+    this._observedReadOnly = this.readOnly();
+    this._invalidate();
+    if (wasPending)
+      this.sessionNotice.set(
+        'Pending work was cancelled by a permission or preview change. Start the action again to retry.',
+      );
+    if (permissionChanged && this.viewState() === 'loading') {
+      this.viewState.set('loaded');
+      this._observedState = 'loaded';
+    }
+  }
+
+  private _invalidate(): void {
+    this._session++;
+    const close = this._closeDialog;
+    this._closeDialog = null;
+    this.operation.set(null);
+    this._lastRemoved = null;
+    this._bulkRequest.set(null);
+    this.bulkError.set(null);
+    this.outcome.set(null);
+    this.details.set(null);
+    this._clearSelection();
+    close?.();
+  }
+
+  private _clearSelection(): void {
+    this._selectedIds.set([]);
+    this.rosterVersion.update((value) => value + 1);
+  }
+  private _canStart(): boolean {
+    this._syncSession();
+    return this._alive && !this.mutationDisabled();
+  }
+  private _current(token: number): boolean {
+    this._syncSession();
+    return this._alive && token === this._session;
+  }
+  private _canCommit(token: number): boolean {
+    return this._current(token) && !this.readOnly() && this.viewState() === 'loaded';
+  }
+  private _memberCurrent(member: TeamMember): boolean {
+    return this.members().find((row) => row.id === member.id) === member;
+  }
+  private _emailExists(email: string): boolean {
+    return this.members().some((member) => normalizeMemberEmail(member.email) === normalizeMemberEmail(email));
+  }
+  private _begin(operation: MemberOperation): number {
+    this.sessionNotice.set(null);
+    this.operation.set(operation);
+    return ++this._session;
+  }
+  private _record(message: string): void {
+    this._lastRemoved = null;
+    this.details.set(null);
+    this.outcome.set({ message, canUndo: false });
+  }
+
+  private _focusAfterRender(testId: string): void {
+    const token = this._session;
+    setTimeout(() => {
+      if (this._current(token))
+        this._host.nativeElement.querySelector<HTMLElement>(`[data-testid="${testId}"]`)?.focus();
+    });
+  }
+
+  /** Open the public confirmation component directly so this session owns its close handle. */
+  private async _confirm(context: { title: string; description: string }): Promise<boolean> {
+    const ref = this._dialogs.open<boolean>(EgConfirmationDialog, {
+      context,
+      contentClass: 'tw:w-full tw:max-w-[425px] tw:break-words',
+    });
+    const close = () => ref.close(false);
+    this._closeDialog = close;
+    try {
+      return (
+        (await firstValueFrom(
+          ref.closed$.pipe(take(1), takeUntilDestroyed(this._destroyRef), defaultIfEmpty(false)),
+        )) ?? false
+      );
+    } finally {
+      if (this._closeDialog === close) this._closeDialog = null;
     }
   }
 
   protected clearSearch(): void {
     this.filterForm.controls.search.setValue('');
   }
-
   protected clearFilters(): void {
     this.filterForm.setValue({ search: '', status: 'All', role: 'All' });
   }
-
   protected goToPage(page: number): void {
+    this._cancelBulk();
     this.page.set(Math.min(Math.max(page, 1), this.pageCount()));
   }
 
   protected inviteMember(): void {
-    if (this.readOnly()) {
-      return;
-    }
-    const dialogRef = this._dialogs.open<InviteMemberResult | null>(InviteMemberDialog, {
+    if (!this._canStart()) return;
+    const token = this._begin('invite');
+    const ref = this._dialogs.open<InviteMemberResult | null>(InviteMemberDialog, {
+      context: { emailExists: (email) => this._emailExists(email) } satisfies InviteMemberContext,
       contentClass: 'tw:w-full tw:max-w-[425px]',
     });
-    dialogRef.closed$.subscribe((result) => {
-      if (result == null) {
+    this._closeDialog = () => ref.close(null);
+    ref.closed$.pipe(take(1), takeUntilDestroyed(this._destroyRef)).subscribe((result) => {
+      if (!this._canCommit(token)) return;
+      this.operation.set(null);
+      this._closeDialog = null;
+      if (!result) {
+        this._focusAfterRender('invite-member');
         return;
       }
+      const name = result.name.trim();
+      const email = normalizeMemberEmail(result.email);
+      if (
+        name.length < 2 ||
+        !email ||
+        Validators.email(new FormControl(email)) ||
+        !isMemberRole(result.role) ||
+        this._emailExists(email)
+      )
+        return;
       const taken = new Set(this.members().map((member) => member.id));
-      const base = slugifyMemberId(result.name);
+      const base = slugifyMemberId(name);
       let id = base;
       let suffix = 2;
-      while (taken.has(id)) {
-        id = `${base}-${suffix}`;
-        suffix += 1;
-      }
+      while (taken.has(id)) id = `${base}-${suffix++}`;
       const member: TeamMember = {
         id,
-        name: result.name,
-        email: result.email,
+        name,
+        email,
         role: result.role,
         status: 'Invited',
         joinedAtIso: INVITED_MEMBER_JOINED_AT_ISO,
       };
       this.members.update((list) => [...list, member]);
-      this._lastRemoved = null;
       const filters = this._filters();
-      if (filterMembers([member], filters.search, filters.status, filters.role).length === 1) {
-        this.page.set(this.pageCount());
-      }
-      this.outcome.set({
-        message: `${member.name} invited as ${member.role}. They now appear with Invited status.`,
-        canUndo: false,
-      });
+      if (filterMembers([member], filters.search, filters.status, filters.role).length) this.page.set(this.pageCount());
+      this._record(`${member.name} invited as ${member.role}. They now appear with Invited status. No email was sent.`);
+      this._focusAfterRender('member-outcome');
     });
   }
 
   protected openRoleDialog(member: TeamMember): void {
-    if (this.readOnly()) {
-      return;
-    }
-    const dialogRef = this._dialogs.open<RoleChangeResult | null>(ChangeRoleDialog, {
+    if (!this._canStart() || !this._memberCurrent(member)) return;
+    const token = this._begin('role');
+    const ref = this._dialogs.open<RoleChangeResult | null>(ChangeRoleDialog, {
       context: { memberName: member.name, currentRole: member.role } satisfies RoleChangeContext,
       contentClass: 'tw:w-full tw:max-w-[425px]',
     });
-    dialogRef.closed$.subscribe((result) => {
-      if (result == null || result.role === member.role) {
-        return;
-      }
-      this.members.update((list) =>
-        list.map((candidate) => (candidate.id === member.id ? { ...candidate, role: result.role } : candidate)),
-      );
-      this._lastRemoved = null;
-      this.outcome.set({ message: `${member.name} is now ${result.role}.`, canUndo: false });
+    this._closeDialog = () => ref.close(null);
+    ref.closed$.pipe(take(1), takeUntilDestroyed(this._destroyRef)).subscribe((result) => {
+      if (!this._canCommit(token)) return;
+      this.operation.set(null);
+      this._closeDialog = null;
+      this._focusAfterRender(`menu-table-${member.id}`);
+      if (!result || !isMemberRole(result.role) || result.role === member.role || !this._memberCurrent(member)) return;
+      this.members.update((list) => list.map((row) => (row.id === member.id ? { ...row, role: result.role } : row)));
+      this.page.set(this.safePage());
+      this._record(`${member.name} is now ${result.role}.`);
+      this._focusAfterRender('member-outcome');
     });
   }
 
   protected showDetails(member: TeamMember): void {
-    this._lastRemoved = null;
-    this.outcome.set({
-      message:
-        `${member.name} · ${member.email} · ${member.role} · ${member.status} · ` + `joined ${member.joinedAtIso}.`,
-      canUndo: false,
-    });
+    const current = this.members().find((row) => row.id === member.id);
+    if (this._alive && current) this.details.set(current);
   }
 
   protected async requestRemove(member: TeamMember): Promise<void> {
-    if (this.readOnly()) {
-      return;
-    }
-    const confirmed = await this._confirm.showConfirmationDialog({
+    if (!this._canStart() || !this._memberCurrent(member)) return;
+    const token = this._begin('remove');
+    const confirmed = await this._confirm({
       title: `Remove ${member.name}?`,
-      description: `${member.name} loses workspace access immediately. Undo restores access within 30 days.`,
+      description:
+        'This removes the member only from this local preview. Undo is single-use until the next successful mutation, permission/preview change, reset, reload, or leaving this page. No real access changes.',
     });
-    if (!confirmed) {
-      return;
-    }
+    if (!this._canCommit(token)) return;
+    this.operation.set(null);
+    this._focusAfterRender(`menu-table-${member.id}`);
+    if (!confirmed || !this._memberCurrent(member)) return;
     const list = this.members();
-    const index = list.findIndex((candidate) => candidate.id === member.id);
-    if (index === -1) {
-      return;
-    }
-    this._lastRemoved = { member: list[index], index };
-    this.members.set(list.filter((candidate) => candidate.id !== member.id));
-    // Removal can invalidate the current page: clamp back into range.
-    this.page.set(Math.min(this.page(), this.pageCount()));
+    this._lastRemoved = { member, index: list.indexOf(member) };
+    this.members.set(list.filter((row) => row.id !== member.id));
+    this.page.set(this.safePage());
+    this.details.set(null);
     this.outcome.set({
-      message: `${member.name} removed. Undo restores access within 30 days.`,
+      message: `${member.name} removed. Undo restores this local member once, until the next successful mutation or session change. No real access changed.`,
       canUndo: true,
     });
+    this._focusAfterRender('member-outcome');
   }
 
   protected undoRemove(): void {
+    if (!this._canStart()) return;
     const removed = this._lastRemoved;
-    if (!removed) {
+    if (
+      !removed ||
+      this.members().some((member) => member.id === removed.member.id) ||
+      this._emailExists(removed.member.email)
+    )
       return;
-    }
-    this._lastRemoved = null;
     this.members.update((list) => {
       const next = [...list];
       next.splice(Math.min(removed.index, next.length), 0, removed.member);
       return next;
     });
-    this.outcome.set({
-      message: `${removed.member.name} restored with ${removed.member.role} access.`,
-      canUndo: false,
+    this._record(`${removed.member.name} restored with ${removed.member.role} access in this local preview only.`);
+    this._focusAfterRender('member-outcome');
+  }
+
+  protected selectMembers(members: readonly TeamMember[]): void {
+    const ids = members
+      .filter((member) => this.visibleMembers().some((row) => row.id === member.id))
+      .map((member) => member.id);
+    const previous = this._selectedIds();
+    if (ids.length !== previous.length || ids.some((id) => !previous.includes(id))) this._cancelBulk();
+    this._selectedIds.set(ids);
+  }
+
+  private _cancelBulk(): void {
+    if (this.operation() === 'bulk-confirm' || this.operation() === 'bulk-save') {
+      this._session++;
+      this.operation.set(null);
+      const close = this._closeDialog;
+      this._closeDialog = null;
+      close?.();
+      this.bulkError.set(
+        'Bulk change cancelled because its selection, page, filters, or role changed. Select members and confirm again.',
+      );
+    } else {
+      this.bulkError.set(null);
+    }
+    this._bulkRequest.set(null);
+  }
+
+  private _bulkCurrent(request: BulkRoleRequest): boolean {
+    const selected = this.selectedMembers();
+    return (
+      request.members.length > 0 &&
+      request.members.length <= TEAM_PAGE_SIZE &&
+      isMemberRole(request.role) &&
+      request.role === this.bulkRole.value &&
+      selected.length === request.members.length &&
+      request.members.every((member) => this._memberCurrent(member) && selected.some((row) => row.id === member.id))
+    );
+  }
+
+  protected async changeSelectedRoles(): Promise<void> {
+    if (!this._canStart()) return;
+    const request: BulkRoleRequest = { members: [...this.selectedMembers()], role: this.bulkRole.value };
+    if (!this._bulkCurrent(request)) return;
+    const token = this._begin('bulk-confirm');
+    this.bulkError.set(null);
+    const confirmed = await this._confirm({
+      title: `Change ${request.members.length} selected members to ${request.role}?`,
+      description: `Only these member IDs will change: ${request.members.map((member) => `${member.name} (${member.id})`).join(', ')}. This is a local preview.`,
     });
+    if (!this._canCommit(token)) return;
+    this.operation.set(null);
+    if (!confirmed) {
+      this._focusAfterRender('bulk-change');
+      return;
+    }
+    if (!this._bulkCurrent(request)) {
+      this.bulkError.set('The selected members changed. Select members and confirm again.');
+      return;
+    }
+    this._bulkRequest.set(request);
+    await this._saveBulk(request);
+  }
+
+  protected async retryBulk(): Promise<void> {
+    const request = this._bulkRequest();
+    if (!this._canStart() || !request) return;
+    if (!this._bulkCurrent(request)) {
+      this._bulkRequest.set(null);
+      this.bulkError.set('The selected members changed. Select members and confirm again.');
+      return;
+    }
+    await this._saveBulk(request);
+  }
+
+  private async _saveBulk(request: BulkRoleRequest): Promise<void> {
+    const token = this._begin('bulk-save');
+    this.bulkError.set(null);
+    try {
+      await simulateExampleLoad(null, {
+        shouldFail: this.simulateFailure(),
+        errorMessage: 'Bulk role change failed. No members changed.',
+      });
+      if (!this._canCommit(token)) return;
+      if (!this._bulkCurrent(request)) {
+        this._bulkRequest.set(null);
+        this.bulkError.set('The selected members changed. Select members and confirm again.');
+        return;
+      }
+      const ids = new Set(request.members.map((member) => member.id));
+      this.members.update((list) =>
+        list.map((member) => (ids.has(member.id) ? { ...member, role: request.role } : member)),
+      );
+      this._bulkRequest.set(null);
+      this._record(`${ids.size} selected members now have ${request.role} roles in this local preview.`);
+      this.page.set(this.safePage());
+      this._clearSelection();
+      this._focusAfterRender('member-outcome');
+    } catch (error) {
+      if (this._canCommit(token)) {
+        if (!this._bulkCurrent(request)) {
+          this._bulkRequest.set(null);
+          this.bulkError.set('The selected members changed. Select members and confirm again.');
+        } else {
+          this.bulkError.set(error instanceof Error ? error.message : 'Bulk role change failed. No members changed.');
+        }
+      }
+    } finally {
+      if (this._current(token)) this.operation.set(null);
+    }
+  }
+
+  protected resetFixtures(): void {
+    if (!this._alive) return;
+    this._invalidate();
+    this.members.set(EXAMPLE_MEMBERS);
+    this.clearFilters();
+    this.page.set(1);
+    this.loadError.set(null);
+    this.setViewState('loaded');
+    this.sessionNotice.set('Local changes were discarded and fixtures restored.');
   }
 
   protected async reload(): Promise<void> {
-    this.viewState.set('loading');
+    if (!this._alive) return;
+    this._invalidate();
+    this.setViewState('loading');
     this.loadError.set(null);
+    this.sessionNotice.set(null);
+    const token = this._session;
     try {
       const members = await simulateExampleLoad(EXAMPLE_MEMBERS, { shouldFail: this.simulateFailure() });
+      if (!this._current(token)) return;
       this.members.set(members);
-      this.outcome.set(null);
-      this._lastRemoved = null;
+      this.clearFilters();
       this.page.set(1);
-      this.viewState.set('loaded');
+      this.setViewState('loaded');
+      this.sessionNotice.set('Local changes were discarded and fixtures reloaded.');
     } catch (error) {
+      if (!this._current(token)) return;
       this.loadError.set(error instanceof Error ? error.message : 'Members failed to load.');
-      this.viewState.set('error');
+      this.setViewState('error');
+      this.sessionNotice.set(null);
     }
   }
 }

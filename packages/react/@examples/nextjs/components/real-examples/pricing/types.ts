@@ -27,6 +27,3 @@ export type FaqEntry = {
   question: string;
   answer: string;
 };
-
-/** Explicit simulated outcome for the plan-change request (deterministic). */
-export type UpgradeOutcome = 'success' | 'failure';

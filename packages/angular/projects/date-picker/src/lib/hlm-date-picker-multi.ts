@@ -6,6 +6,7 @@ import {
   computed,
   contentChild,
   forwardRef,
+  inject,
   input,
   linkedSignal,
   numberAttribute,
@@ -19,9 +20,12 @@ import { BrnFieldControl, provideBrnLabelable } from '@spartan-ng/brain/field';
 import type { ChangeFn, TouchFn } from '@spartan-ng/brain/forms';
 import type { BrnOverlayState } from '@spartan-ng/brain/overlay';
 import { BrnPopover } from '@spartan-ng/brain/popover';
+import { injectDateAdapter } from '@spartan-ng/brain/date-time';
+import { BrnCalendarMulti } from '@spartan-ng/brain/calendar';
 import { HlmCalendarMulti } from '@egose/shadcn-theme-ng/calendar';
 import { HlmPopoverImports } from '@egose/shadcn-theme-ng/popover';
 import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
+import { HlmDatePickerCommitState, isSelectableDate } from './hlm-date-picker-commit';
 
 export const HLM_DATE_PICKER_MUTLI_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -33,6 +37,7 @@ export const HLM_DATE_PICKER_MUTLI_VALUE_ACCESSOR = {
   selector: 'hlm-date-picker-multi',
   imports: [HlmPopoverImports, HlmCalendarMulti],
   providers: [
+    HlmDatePickerCommitState,
     HLM_DATE_PICKER_MUTLI_VALUE_ACCESSOR,
     provideBrnDatePicker(HlmDatePickerMulti),
     provideBrnLabelable(HlmDatePickerMulti),
@@ -64,6 +69,10 @@ export const HLM_DATE_PICKER_MUTLI_VALUE_ACCESSOR = {
 })
 export class HlmDatePickerMulti<T> implements BrnDatePickerBase<T[]>, ControlValueAccessor {
   private readonly _config = injectHlmDatePickerMultiConfig<T>();
+  private readonly _dateAdapter = injectDateAdapter<T>();
+  private readonly _commitState = inject(HlmDatePickerCommitState);
+  private readonly _calendar = viewChild(BrnCalendarMulti<T>);
+  private _restoringCalendar = false;
 
   public readonly popover = viewChild.required(BrnPopover);
 
@@ -78,7 +87,7 @@ export class HlmDatePickerMulti<T> implements BrnDatePickerBase<T[]>, ControlVal
   /** The maximum date that can be selected. */
   public readonly max = input<T>();
 
-  /** The minimum selectable dates.  */
+  /** Deselection floor; selection can grow from empty below this count. Explicit clear is allowed. */
   public readonly minSelection = input<number, NumberInput>(undefined, {
     transform: numberAttribute,
   });
@@ -141,14 +150,18 @@ export class HlmDatePickerMulti<T> implements BrnDatePickerBase<T[]>, ControlVal
   }
 
   protected _handleChange(value: T[] | undefined) {
-    if (value === undefined) return;
+    if (this._restoringCalendar || value === undefined) return;
 
-    if (this._disabled()) return;
-    const transformedDate = value !== undefined ? this.transformDates()(value) : value;
-
-    this._mutableDate.set(transformedDate);
-    this._onChange?.(transformedDate);
-    this.dateChange.emit(transformedDate);
+    if (!this.updateDate(value)) {
+      // Restore the calendar's already-mutated model without a second user commit.
+      this._restoringCalendar = true;
+      try {
+        this._calendar()?.date.set(this._mutableDate());
+      } finally {
+        this._restoringCalendar = false;
+      }
+      return;
+    }
 
     if (this.autoCloseOnMaxSelection() && this._mutableDate()?.length === this.maxSelection()) {
       this._popoverState.set('closed');
@@ -156,26 +169,43 @@ export class HlmDatePickerMulti<T> implements BrnDatePickerBase<T[]>, ControlVal
   }
 
   /**
-   * Commit dates to the picker. Updates the internal model, notifies form
-   * controls, and emits `dateChange`. Intended to be called from a text input
-   * that parses user-entered values. Pass `null` to clear the selection.
+   * Commit user dates, validating raw and transformed dates/counts. Returns
+   * false without changing/emitting on rejection. Min selection prevents
+   * reductions below the floor, but permits growth from empty. Null explicitly
+   * clears (emits []), bypassing the selection floor and transform.
    */
-  public updateDate(value: T[] | null) {
-    if (this._disabled()) return;
+  public updateDate(value: T[] | null): boolean {
+    if (this._disabled()) return false;
+    if (value && !this._isSelectionAllowed(value)) return false;
     const transformedDate = value ? this.transformDates()(value) : undefined;
+    if (value && (!transformedDate || !this._isSelectionAllowed(transformedDate))) return false;
 
     this._mutableDate.set(transformedDate);
+    this._commitState.changed();
     this._onChange?.(transformedDate ?? []);
     this.dateChange.emit(transformedDate ?? []);
+    return true;
+  }
+
+  private _isSelectionAllowed(dates: T[]): boolean {
+    const min = this.minSelection();
+    const max = this.maxSelection();
+    const currentCount = this._mutableDate()?.length ?? 0;
+    return (
+      !(max != null && dates.length > max) &&
+      !(min != null && dates.length < min && dates.length < currentCount) &&
+      dates.every((date) => isSelectableDate(this._dateAdapter, date, this.min(), this.max()))
+    );
   }
 
   public touched(): void {
     this._onTouched?.();
   }
 
-  /** CONTROL VALUE ACCESSOR */
+  /** Programmatic CVA write: transforms without enforcing user constraints or emitting. Clears rejected text. */
   public writeValue(value: T[] | null): void {
     this._mutableDate.set(value ? this.transformDates()(value) : undefined);
+    this._commitState.changed();
   }
 
   public registerOnChange(fn: ChangeFn<T[]>): void {
@@ -200,6 +230,7 @@ export class HlmDatePickerMulti<T> implements BrnDatePickerBase<T[]>, ControlVal
 
   public reset() {
     this._mutableDate.set(undefined);
+    this._commitState.changed();
     this._onChange?.([]);
     this.dateChange.emit([]);
   }

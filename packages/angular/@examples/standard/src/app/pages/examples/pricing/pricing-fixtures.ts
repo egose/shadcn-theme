@@ -1,5 +1,5 @@
 /**
- * Pricing example: typed models and deterministic fixtures.
+ * Pricing example: deterministic fixtures and pure presentation helpers.
  *
  * Colocated with the owning flow (ANGEX-09 keeps domain blocks local until
  * repeated use proves a shared abstraction). Dates are fixed UTC ISO
@@ -7,20 +7,12 @@
  * realistic copy differences. No random or current-time defaults anywhere.
  */
 
-export type BillingCadence = 'monthly' | 'annual';
+import type { BillingCadence, ExamplePlan, PricingComparisonRow, PricingFaq } from './pricing-types';
+export type { BillingCadence, ExamplePlan, PricingComparisonRow, PricingFaq } from './pricing-types';
 
-export interface ExamplePlan {
-  readonly id: string;
-  readonly name: string;
-  readonly monthlyCents: number;
-  readonly annualCents: number;
-  readonly blurb: string;
-  /** Per-plan feature bullets rendered as a semantic list on each card. */
-  readonly features: readonly string[];
-  readonly recommended: boolean;
-  readonly current: boolean;
-  /** Contact-only plans (enterprise) never open the confirmation dialog. */
-  readonly contactOnly: boolean;
+/** Used at both form validation and dialog-result commit boundaries. */
+export function isValidSeatCount(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value >= 1 && value <= 1000;
 }
 
 /** Fixed UTC anchor all pricing copy derives from — never "today". */
@@ -74,13 +66,6 @@ export const EXAMPLE_PLANS: readonly ExamplePlan[] = [
   },
 ];
 
-export interface PricingComparisonRow {
-  readonly feature: string;
-  readonly starter: string;
-  readonly team: string;
-  readonly enterprise: string;
-}
-
 /** Concise feature comparison rendered as a semantic table (text, never color alone). */
 export const PRICING_COMPARISON_ROWS: readonly PricingComparisonRow[] = [
   { feature: 'Projects', starter: 'Up to 3', team: 'Unlimited', enterprise: 'Unlimited' },
@@ -89,12 +74,6 @@ export const PRICING_COMPARISON_ROWS: readonly PricingComparisonRow[] = [
   { feature: 'Single sign-on (SSO)', starter: 'Not included', team: 'Add-on', enterprise: 'Included' },
   { feature: 'Support', starter: 'Community support', team: 'Priority email support', enterprise: 'Dedicated support' },
 ];
-
-export interface PricingFaq {
-  readonly id: string;
-  readonly question: string;
-  readonly answer: string;
-}
 
 /** FAQ disclosure content with stable IDs for testing. */
 export const PRICING_FAQS: readonly PricingFaq[] = [

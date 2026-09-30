@@ -29,6 +29,8 @@ import type { ClassValue } from 'clsx';
       hlmBtn
       data-slot="combobox-trigger"
       [id]="buttonId()"
+      [aria-describedby]="ariaDescribedBy()"
+      [attr.aria-required]="required() || null"
       [class]="_computedClass()"
       [variant]="variant()"
       [forceInvalid]="forceInvalid()"
@@ -49,6 +51,10 @@ export class HlmComboboxTrigger {
   );
 
   public readonly buttonId = input<string>(`hlm-combobox-trigger-${HlmComboboxTrigger._id++}`);
+
+  /** Native button description IDs, merged with enclosing Spartan field descriptions. */
+  public readonly ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
+  public readonly required = input<boolean, BooleanInput>(false, { transform: booleanAttribute });
 
   public readonly variant = input<ButtonVariants['variant']>('outline');
 

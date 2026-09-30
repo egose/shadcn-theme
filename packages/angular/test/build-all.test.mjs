@@ -62,6 +62,27 @@ test('dependency cycles report the cycle instead of appending projects', () => {
   assert.throws(() => orderProjects(['beta', 'alpha'], dependencies), /alpha -> beta -> alpha/);
 });
 
+test('test-only reverse imports do not create a production build cycle', async () => {
+  const workspace = await workspaceFixture();
+  await writeFile(
+    path.join(workspace, 'projects/beta/src/public-api.ts'),
+    "export { alpha } from '@egose/shadcn-theme-ng/alpha';\n",
+  );
+  await writeFile(
+    path.join(workspace, 'projects/alpha/src/keyboard.spec.ts'),
+    "import { beta } from '@egose/shadcn-theme-ng/beta';\n",
+  );
+  const calls = [];
+  await buildAngularPackage({
+    workspaceDir: workspace,
+    buildProject: async (root, project) => {
+      calls.push(project);
+      await emitProject(root, project);
+    },
+  });
+  assert.deepEqual(calls, ['alpha', 'beta']);
+});
+
 test('a failed project aggregates diagnostics and removes partial output', async () => {
   const workspace = await workspaceFixture();
   const calls = [];

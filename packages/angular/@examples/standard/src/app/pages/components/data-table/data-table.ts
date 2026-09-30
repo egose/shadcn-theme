@@ -82,11 +82,12 @@ function slice(pageIndex: number): EgPaginatedResponse<Payment> {
       <app-demo-section
         kicker="Client"
         title="Sort, filter, select"
-        description="Filter input, sortable email header, auto selection column, and footer pager running fully client-side."
+        description="Filter, sort, select, and page client-side. Stable payment IDs keep selection attached to the same records across immutable refreshes."
       >
         <eg-data-table
           [columns]="columns"
           [data]="payments()"
+          [getRowId]="getPaymentId"
           [enableSelection]="true"
           [showToolbar]="true"
           filterColumnId="email"
@@ -217,6 +218,7 @@ function slice(pageIndex: number): EgPaginatedResponse<Payment> {
   `,
 })
 export class DataTablePage {
+  protected readonly getPaymentId = (payment: Payment): string => payment.id;
   protected readonly density = signal<HlmTableSize>('default');
   protected readonly columns = helper.columns([
     helper.accessor('status', {

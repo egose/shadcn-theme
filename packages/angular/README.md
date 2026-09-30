@@ -167,9 +167,46 @@ export class DemoComponent {
 }
 ```
 
+## Searchable multiselect
+
+`EgSearchableMultiselect` provides local, case-insensitive label search, named removable chips, and a `string[]` CVA. Import it directly from its public subpath:
+
+```ts
+import { Component, signal } from '@angular/core';
+import { EgSearchableMultiselect } from '@egose/shadcn-theme-ng/searchable-multiselect';
+
+@Component({
+  selector: 'app-assignees',
+  imports: [EgSearchableMultiselect],
+  template: `
+    <eg-searchable-multiselect
+      [options]="people"
+      [(value)]="selected"
+      ariaLabel="Assignees"
+      searchLabel="Find people"
+      searchPlaceholder="Type a name…"
+      emptyMessage="No people match"
+    />
+  `,
+})
+export class AssigneesComponent {
+  readonly people = [
+    { value: 'ada', label: 'Ada Lovelace' },
+    { value: 'grace', label: 'Grace Hopper' },
+  ];
+  readonly selected = signal<string[]>(['ada']);
+}
+```
+
+Use `@egose/shadcn-theme-ng-tw/searchable-multiselect` for the prefixed variant. Pass the complete options list: the trimmed query filters labels in source order without changing selected IDs or chip labels. Clearing the query restores choices. Async option replacements update labels and results; unresolved selections retain their IDs. Search is local to supplied options, with no remote requests or virtualization. The query persists across closing/reopening and external value resets.
+
+The native search is visibly labeled, empty results use a polite status region, and chip buttons are named `Remove <label>` (raw ID when unresolved). Customize names with `[removeLabel]="formatter"`, where `formatter: (option: SelectOption) => string` is pure and `SelectOption` comes from the same subpath. Search edits neither emit selection changes nor touch forms. Input/wrapper/form disabled flags block search and selection edits. With default popover focus settings, opening focuses search; Tab reaches checkbox buttons, Space/Enter toggles them, and Escape closes and restores trigger focus. Enter in search does not submit a form.
+
+For reactive or template-driven forms, import `ReactiveFormsModule` or `FormsModule` and bind `formControl`/`formControlName` or `ngModel` instead of `value`. CVA writes own selection after the first write; null/empty arrays clear it without user emissions. Standalone new `[value]` arrays replace local edits; `[(value)]` synchronizes the parent. Supply unique IDs and immutable array/option updates. `EgFormSearchableMultiselect` from `@egose/shadcn-theme-ng/form-searchable-multiselect` adds the form label/hint/error layout and forwards `searchLabel`, `searchPlaceholder`, `emptyMessage`, and `removeLabel`.
+
 ## Date picker values
 
-`hlm-date-picker` emits a native JS `Date` (or `null` when cleared) via the `dateChange` output. Read it in the
+By default, `hlm-date-picker` emits a native JS `Date` (or `null` when cleared) via the `dateChange` output. Read it in the
 controller with `(dateChange)`, a template ref (`picker.value()`), or a form binding (`ngModel`/`formControlName`,
 the picker is a `ControlValueAccessor`):
 
@@ -215,6 +252,87 @@ export class MyComponent {}
 `transformDate` runs on every path into the model (calendar selection, typed input, `writeValue`), so the controller
 then always sees local-midnight dates. Related: the picker stays open after selection by default; add the
 `autoCloseOnSelect` attribute (or set it in the same config) to close it on select.
+
+### Typed commits and constraints (single, range, multi)
+
+Text commits on blur or Enter. Both the parsed value and the configured transform result must satisfy
+`min`/`max`, inclusive of the adapter's entire boundary days. Comparisons and validity (`getTime` must be
+finite) use Spartan's configured date adapter; custom date types also need matching parse/format/transform
+config callbacks. A range's transformed endpoints must be ordered; a custom transform may sort them.
+The default range parser accepts a single date as a same-day range, but rejects an explicitly unparseable
+second endpoint.
+
+Multi-date commits cannot exceed `maxSelection`. Consistent with calendar selection, `minSelection` is a
+**deselection floor**: reducing the current count below it is rejected, but growing a selection from empty
+is allowed. Counts apply to the supplied arrays before and after transformation. Supply unique dates.
+At the calendar's maximum, its proposed reset to one new date is accepted only if the floor permits it.
+
+Rejected text remains editable across blur, Enter and refocus, with native `aria-invalid="true"` and invalid
+styling. It does **not** change the committed value or emit `dateChange`/CVA `onChange`; the interaction
+marks the control touched. `inputInvalid()` on the text-input component exposes this local state. It does
+not add Angular validation errors: validators still inspect the last committed form value. Use
+`ariaDescribedby` for application-specific guidance, and include `inputInvalid()` in submission eligibility
+if an unresolved draft should block submission. Existing `forceInvalid` is combined with this state.
+
+A successful text/calendar commit clears the local invalid state. Empty text or the clear button explicitly
+clears (`null` for single/range, `[]` for multi), bypassing transforms and the selection floor. Whitespace is
+passed to the configured parser. Enter retains the edit format so later blur can parse it; blur uses the
+display format. Rejected calendar selections restore the prior selection without emitting a replacement.
+
+`updateDate(value)` is the user-commit boundary and returns `false` on rejection/disabled, `true` on success.
+Programmatic CVA `writeValue` (including form `setValue`/reset) instead applies the transform **without**
+user-constraint enforcement or user emissions, and replaces rejected text even for repeated values/null.
+Standalone `[date]` updates retain their direct, untransformed input contract; they are not user commits.
+`reset()` remains an explicit programmatic clear that emits. Parse/transform callbacks should be pure and
+return values compatible with the configured adapter; parsing failure is represented by `null`.
+
+## Validation descriptions on composed fields
+
+`EgFormAutocomplete`, `EgFormInputOtp`, `EgFormSlider`, and `EgFormCombobox` connect the
+displayed hint or validation error to their actual native input, slider thumbs, or combobox
+trigger/search input. Errors replace hints when invalid and touched, dirty, or submitted;
+correction and form reset restore the appropriate hint. `HlmError` is styled text, not a live region.
+
+Use `[aria-describedby]="'external-help-id'"` on these wrappers to add external descriptions.
+The wrapper normalizes/deduplicates IDs and appends its current message ID. Keep consumer-owned
+description elements mounted, and reserve `<effectiveId>-error` / `-hint` for wrapper messages.
+`[attr.aria-describedby]` only targets the custom host and is not this forwarding contract.
+
+For primitive compositions, `HlmAutocompleteInput`, `HlmComboboxInput`, `HlmComboboxTrigger`,
+`HlmSlider`, and `HlmInputOtpControl` accept `[aria-describedby]` and merge it with descriptions
+registered by the enclosing Spartan field. Import `HlmInputOtpControl` (selector `hlm-input-otp`)
+or `HlmInputOtpImports` from `@egose/shadcn-theme-ng/input-otp`; it retains the brain OTP CVA and
+editing behavior while adding native-input descriptions, required and invalid state. Existing
+`brn-input-otp hlmInputOtp` compositions remain available.
+
+Single combobox mode labels its trigger with `<effectiveId>` and uses `<effectiveId>-search`
+for its separately labeled popup search. Required/invalid selection state stays on the trigger;
+the popup search filters options. Slider thumbs retain their labels and invalid state; the slider
+role has no `aria-required`. Configure Angular validators independently of wrapper `required`.
+Verification is rendered browser DOM/focus coverage, not screen-reader testing.
+
+## Numbered pagination
+
+Import `HlmNumberedPagination` or `HlmNumberedPaginationQueryParams` from
+`@egose/shadcn-theme-ng/pagination` (or the `-tw` package), then bind
+`[(currentPage)]`, `[(itemsPerPage)]` and `[totalItems]`.
+
+Both pagers floor/clamp the current page when totals, size or page inputs change.
+Empty/non-finite/non-positive totals or sizes produce one page with no previous/next;
+invalid sizes are not rewritten. Non-finite pages become 1. A correction emits
+`currentPageChange` once. Positive fractional totals/sizes use ceil division, with
+page counts capped at `Number.MAX_SAFE_INTEGER`. `maxSize` budgets window entries,
+including ellipses: finite positive values are floored/clamped to 1–100, otherwise 7.
+Ranges below 5 show a contiguous active-page window. Helpers `createPageArray` and
+`outOfBoundCorrection` use the same policy without side effects or allocation based
+on an unbounded page count.
+
+The query-params pager builds bounded `?page=` links using `queryParamsHandling="merge"`,
+preserving unrelated query parameters. The parent owns reading route changes and
+any URL synchronization: model corrections and size changes do not navigate. Handle
+`currentPageChange` in the parent if corrected URLs should be replaced, merging other
+parameters. Keep the previous total during loading if temporary zero results should
+not reset the page.
 
 ## Working example
 

@@ -77,7 +77,7 @@ function getDefaultConfig<T>(): HlmDateRangePickerConfig<T> {
 
       const end = parts.length === 2 ? new Date(parts[1]) : start;
 
-      return [start, isNaN(end.getTime()) ? start : end] as [T, T];
+      return isNaN(end.getTime()) ? null : ([start, end] as [T, T]);
     },
   };
 }

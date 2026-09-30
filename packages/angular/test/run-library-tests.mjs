@@ -3,6 +3,7 @@ import { mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 
 const selectedProjects = [
+  'data-table',
   'form-text-input',
   'form-textarea',
   'form-phone-input',
@@ -13,15 +14,19 @@ const selectedProjects = [
   'form-radio-group',
   'form-slider',
   'form-input-otp',
+  'input-otp',
   'form-toggle',
   'form-toggle-group',
   'form-autocomplete',
   'form-combobox',
   'form-checkbox',
+  'checkbox',
+  'date-picker',
   'form-date-picker',
   'form-date-picker-multi',
   'form-date-range-picker',
   'form-month-year-picker',
+  'searchable-multiselect',
   'form-searchable-multiselect',
   'utils',
   'layout-simple',
@@ -30,6 +35,7 @@ const selectedProjects = [
   'switch',
   'native-select',
   'stepper',
+  'pagination',
 ];
 const projects = process.argv.slice(2);
 const targets = projects.length ? projects : selectedProjects;

@@ -135,6 +135,38 @@ Real selectors (from source):
 
 ## API reference
 
+### User commits, invalid drafts, and programmatic writes
+
+The single, range and multi text inputs commit on **blur or Enter**. Both parsed and transformed values
+must have a finite `getTime` through the configured Spartan date adapter and satisfy inclusive whole-day
+`min`/`max` bounds (`startOfDay(min)` through `endOfDay(max)`). Provide matching parsing, formatting and
+pure transformation callbacks when using a custom adapter/date type. A transformed range must be ordered;
+custom transforms may sort endpoints. The default range parser still treats one date as a same-day range,
+but an explicitly unparseable second endpoint is rejected.
+
+For multi selection, `maxSelection` caps the raw and transformed array counts. `minSelection` is the
+calendar's **deselection floor**: reductions below it are rejected, while growth from empty is allowed.
+Supply unique dates. When the calendar proposes resetting a full selection to one new date, that reset
+must also satisfy the floor. Rejected calendar commits restore the previous selection without user emissions.
+
+On rejection the committed value stays unchanged, no `dateChange`/CVA `onChange` fires, and the input
+preserves editable text across blur, Enter and refocus. `inputInvalid()` exposes local rejection state;
+the native input receives `aria-invalid="true"` and invalid styling, combined with `forceInvalid`.
+The interaction touches the form control but does not install an Angular validator or overwrite its
+errors: form validators continue to see the last committed value. If unresolved drafts should block
+submission, include `inputInvalid()` in that decision. Use `ariaDescribedby` to associate explanatory text.
+
+A successful text/calendar commit, explicit clear, or external value write clears the local rejection.
+Empty text and the clear button bypass transforms and the selection floor, emitting `null` (single/range)
+or `[]` (multi); whitespace is passed to the parser. Enter keeps edit formatting for a subsequent blur;
+blur restores display formatting. Disabled/readonly text inputs do not commit or clear.
+
+`updateDate(value)` returns a boolean indicating whether a user commit was accepted. Programmatic CVA
+`writeValue` applies configured transforms without enforcing user constraints or emitting; it replaces
+rejected drafts, including repeated same-value/null writes. `[date]` remains a direct, untransformed
+standalone input. `reset()` is an explicit programmatic clear and emits. Month/year retains its existing
+brain-input lifecycle; this constraint/draft contract applies to single, range and multi pickers.
+
 ### `HlmDatePicker` — `hlm-date-picker`
 
 Single-date picker. Generic `<T>` (usually `Date`). Implements `BrnDatePickerBase<T>` + `ControlValueAccessor`, hosts `BrnFieldControl`.
@@ -230,15 +262,15 @@ Outputs/methods mirror `HlmDatePicker` (`dateChange: T | null`, `updateDate`, `o
 
 `HlmDatePickerInput<T>`, `HlmDateMultiInput<T>`, `HlmDateRangeInput<T>`, `HlmMonthYearInput<T>` extend `BrnDateInput` (inheriting `placeholder`, `inputId`, disabled/invalid wiring, clear-button and calendar-button behavior) and add:
 
-| Input                                  | Type                                                                            | Default                           | Notes                                                                  |
-| -------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------- |
-| `parseDate`                            | `(value: string) => T \| null` (or `T[] \| null` / `[T,T] \| null` per variant) | from matching `provideHlm*Config` | Return `null` for invalid text; picker clears while text is preserved. |
-| `formatInputDate` / `formatInputDates` | `(date) => string`                                                              | from config                       | Edit format shown while focused.                                       |
-| `ariaLabel` / `ariaDescribedby`        | `string`                                                                        | —                                 | Accessible labelling for the inner `<input>`.                          |
-| `name`                                 | `string \| undefined`                                                           | —                                 | Native `name` forwarded to the inner `<input>`.                        |
-| `readonly`                             | `boolean`                                                                       | `false`                           | Native `readonly` forwarded to the inner `<input>`.                    |
-| `class`                                | `ClassValue`                                                                    | `''`                              | Extra classes on the host group container.                             |
-| `inputClass`                           | `ClassValue`                                                                    | `''`                              | Extra classes on the inner `<input>` (e.g. text size).                 |
+| Input                                  | Type                                                                            | Default                           | Notes                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `parseDate`                            | `(value: string) => T \| null` (or `T[] \| null` / `[T,T] \| null` per variant) | from matching `provideHlm*Config` | Return `null` for invalid text; single/range/multi preserve the committed value and rejected text. |
+| `formatInputDate` / `formatInputDates` | `(date) => string`                                                              | from config                       | Edit format shown while focused.                                                                   |
+| `ariaLabel` / `ariaDescribedby`        | `string`                                                                        | —                                 | Accessible labelling for the inner `<input>`.                                                      |
+| `name`                                 | `string \| undefined`                                                           | —                                 | Native `name` forwarded to the inner `<input>`.                                                    |
+| `readonly`                             | `boolean`                                                                       | `false`                           | Native `readonly` forwarded to the inner `<input>`.                                                |
+| `class`                                | `ClassValue`                                                                    | `''`                              | Extra classes on the host group container.                                                         |
+| `inputClass`                           | `ClassValue`                                                                    | `''`                              | Extra classes on the inner `<input>` (e.g. text size).                                             |
 
 ### `HlmDatePickerTrigger` — `hlm-date-picker-trigger`
 

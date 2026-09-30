@@ -1,16 +1,13 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCalendar, lucideX } from '@ng-icons/lucide';
-import {
-  BrnDateInput,
-  type BrnDatePickerTriggerBase,
-  provideBrnDatePickerTrigger,
-} from '@spartan-ng/brain/date-picker';
+import { type BrnDatePickerTriggerBase, provideBrnDatePickerTrigger } from '@spartan-ng/brain/date-picker';
 import { HlmInputGroup, HlmInputGroupImports } from '@egose/shadcn-theme-ng/input-group';
 import { classes, hlm } from '@egose/shadcn-theme-ng/utils';
 import type { BooleanInput } from '@angular/cdk/coercion';
 import type { ClassValue } from 'clsx';
 import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
+import { HlmConstrainedDateInput } from './hlm-constrained-date-input';
 
 @Component({
   selector: 'hlm-date-multi-input',
@@ -30,7 +27,8 @@ import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
       [placeholder]="placeholder()"
       [readonly]="readonly()"
       [disabled]="_disabled()"
-      [forceInvalid]="forceInvalid()"
+      [attr.aria-invalid]="forceInvalid() || inputInvalid() ? 'true' : null"
+      [attr.data-matches-spartan-invalid]="forceInvalid() || inputInvalid() ? 'true' : null"
       [class]="$inputClass()"
       (click)="_handleClick()"
       (keydown.arrowDown)="_open()"
@@ -64,7 +62,7 @@ import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
     </hlm-input-group-addon>
   `,
 })
-export class HlmDateMultiInput<T> extends BrnDateInput<T[]> implements BrnDatePickerTriggerBase {
+export class HlmDateMultiInput<T> extends HlmConstrainedDateInput<T[]> implements BrnDatePickerTriggerBase {
   private readonly _config = injectHlmDatePickerMultiConfig<T>();
 
   /** Native `name` attribute forwarded to the inner `<input>`. */
@@ -88,9 +86,9 @@ export class HlmDateMultiInput<T> extends BrnDateInput<T[]> implements BrnDatePi
     classes(() => [this.userClass()]);
   }
   /**
-   * Parses input text into dates. Return `null` for invalid input - the
-   * picker's dates are cleared while the text is preserved so the user can
-   * fix it.
+   * Parses input text into dates. Return `null` for invalid input. Rejected
+   * text stays editable and aria-invalid; the committed value is preserved.
+   * Empty text explicitly clears on blur/Enter.
    *
    * Defaults to `parseDate` from `HlmDatePickerMultiConfig`.
    */

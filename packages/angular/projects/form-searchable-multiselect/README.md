@@ -100,6 +100,19 @@ No outputs. Readonly computeds/methods (usable via template ref): `effectiveId()
 
 `SelectOption` is `export interface SelectOption { label: string; value: string }` from `@egose/shadcn-theme-ng/searchable-multiselect`.
 
+### Local search and form values
+
+Additional copy inputs:
+
+- `searchLabel: string` (default `'Search options'`): visible native search label.
+- `searchPlaceholder: string` (default `'Type to filter…'`): hint inside the search input.
+- `emptyMessage: string` (default `'No matching options'`): polite status message for no matches or no supplied options.
+- `removeLabel: (option: SelectOption) => string` (default ``option => `Remove ${option.label}` ``): pure accessible chip-remove name formatter; unresolved labels are raw IDs.
+
+Pass the full options list. The inner control trims the query and matches label substrings case-insensitively in source order. Filtering retains hidden selections and their labels, including unresolved IDs written before asynchronous options arrive. Searching/clearing the query never changes or touches the form value. The query persists across closing/reopening and form resets; clearing its text restores all options. Wrapper and reactive-form disabled states disable the search even if the popover is already open.
+
+The search has an associated visible label, no-match feedback uses a polite live region, and each chip remove button has an accessible name. All four copy inputs above are forwarded unchanged. For example, on the wrapper in the complete reactive-form example below, add `searchLabel="Find tags" searchPlaceholder="Type a tag name…" emptyMessage="No tags match"`. Import `SelectOption` from the multiselect subpath to type a localized `[removeLabel]` callback. See the [multiselect usage](../searchable-multiselect/README.md#local-search) for keyboard and async ownership details. This is local label search, with no remote request or virtualization behavior.
+
 ## Examples
 
 ### 1. Basic reactive form
@@ -237,7 +250,8 @@ import { EgFormSearchableMultiselect } from '@egose/shadcn-theme-ng/form-searcha
         controlId="framework-picker"
         label="Frameworks"
         placeholder="Search frameworks…"
-        hint="Type to filter, Enter to add"
+        searchLabel="Find frameworks"
+        hint="Type to filter, then Tab to a checkbox and Space to select"
         [options]="frameworks"
         class="tw:max-w-md"
         labelClass="tw:font-semibold"

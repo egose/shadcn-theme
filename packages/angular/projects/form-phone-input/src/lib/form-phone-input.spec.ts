@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { configureLibraryTestBed } from '../../../../test/setup';
+import { editPhoneInput } from '../../../../test/phone-input-edit';
 import { EgFormPhoneInput } from './form-phone-input';
 import { provideEgFormPhoneInputConfig } from './form-phone-input.token';
 
@@ -109,6 +110,40 @@ describe('EgFormPhoneInput', () => {
     expect(control().value).toBe('(415) 555-2671');
     expect(fixture.componentInstance.form.controls.value.value).toBe('(415) 555-2671');
   });
+
+  for (const modelFormat of ['digits', 'formatted'] as const) {
+    it(`propagates separator deletion, replacement and clear in ${modelFormat} mode`, () => {
+      const model = fixture.componentInstance.form.controls.value;
+      fixture.componentInstance.modelFormat.set(modelFormat);
+      model.setValue('4155552671');
+      fixture.detectChanges();
+      const input = fixture.nativeElement.querySelector('hlm-phone-input input') as HTMLInputElement;
+      const changes: (string | null)[] = [];
+      model.valueChanges.subscribe((value) => changes.push(value));
+      input.focus();
+      input.setSelectionRange(9, 9);
+      editPhoneInput(input, 'deleteContentForward');
+      fixture.detectChanges();
+      expect(input.value).toBe('(415) 555-671');
+      expect(input.selectionStart).toBe(9);
+      expect(model.value).toBe(modelFormat === 'digits' ? '415555671' : '(415) 555-671');
+      input.setSelectionRange(3, 7);
+      editPhoneInput(input, 'insertText', '9');
+      fixture.detectChanges();
+      expect(input.value).toBe('(419) 556-71');
+      expect(input.selectionStart).toBe(4);
+      expect(model.value).toBe(modelFormat === 'digits' ? '41955671' : '(419) 556-71');
+      input.setSelectionRange(0, input.value.length);
+      editPhoneInput(input, 'deleteContentBackward');
+      fixture.detectChanges();
+      expect(model.value).toBeNull();
+      expect(changes.length).toBe(3);
+      input.blur();
+      fixture.detectChanges();
+      expect(model.touched).toBeTrue();
+      expect(input.getAttribute('aria-describedby')).toBe('phone-error');
+    });
+  }
 });
 
 describe('EgFormPhoneInput global class defaults', () => {

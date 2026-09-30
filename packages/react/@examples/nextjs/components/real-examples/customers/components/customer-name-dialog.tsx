@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Button } from '@egose/shadcn-theme/components/ui/button';
 import {
@@ -19,6 +19,8 @@ type CustomerNameDialogProps = {
   mode: 'add' | 'rename';
   initialName: string;
   submitting: boolean;
+  failure: string | null;
+  catalogControl: ReactNode;
   onCancel: () => void;
   onSubmit: (name: string) => void;
   /** Focus target after the dialog closes (Radix's default target is the row menu item, which is already unmounted). */
@@ -34,6 +36,8 @@ export function CustomerNameDialog({
   mode,
   initialName,
   submitting,
+  failure,
+  catalogControl,
   onCancel,
   onSubmit,
   onRestoreFocus,
@@ -42,8 +46,14 @@ export function CustomerNameDialog({
   // each time it opens.
   const [name, setName] = useState(initialName);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (failure && !submitting) inputRef.current?.focus();
+  }, [failure, submitting]);
 
   function submit() {
+    if (submitting) return;
     const trimmed = name.trim();
     if (trimmed.length === 0) {
       setError('Enter a customer name.');
@@ -60,29 +70,38 @@ export function CustomerNameDialog({
         if (!open) onCancel();
       }}
     >
+
       <DialogContent
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           onRestoreFocus();
         }}
       >
+
         <DialogHeader>
-          <DialogTitle>{mode === 'add' ? 'Add customer' : `Rename ${initialName}`}</DialogTitle>
+                    <DialogTitle>{mode === 'add' ? 'Add customer' : `Rename ${initialName}`}</DialogTitle>
+
           <DialogDescription>
+
             {mode === 'add'
               ? 'Create a customer record. This example simulates the save — no backend is contacted.'
               : 'The new name is saved to this session only.'}
+
           </DialogDescription>
+
         </DialogHeader>
+
         <div className="space-y-2 py-2">
-          <Label htmlFor="customer-name">Customer name</Label>
+                    <Label htmlFor="customer-name">Customer name</Label>
+
           <Input
+            ref={inputRef}
             id="customer-name"
             value={name}
             autoFocus
             disabled={submitting}
             aria-invalid={error !== null}
-            aria-describedby={error !== null ? 'customer-name-error' : undefined}
+            aria-describedby={error !== null ? 'customer-name-error' : failure ? 'customer-save-error' : undefined}
             onChange={(event) => {
               setName(event.target.value);
               if (error !== null) setError(null);
@@ -94,26 +113,44 @@ export function CustomerNameDialog({
               }
             }}
           />
+
           {error !== null && (
             <p id="customer-name-error" role="alert" className="text-sm text-destructive">
-              {error}
+                            {error}
+
             </p>
           )}
+
           {submitting && (
             <p role="status" className="text-sm">
-              Saving customer…
+                            Saving customer…
             </p>
           )}
+
+          {failure && (
+            <p id="customer-save-error" role="alert" className="text-sm text-destructive">
+              {failure}
+            </p>
+          )}
+
         </div>
+                {catalogControl}
+
         <DialogFooter>
+
           <Button type="button" variant="secondary" disabled={submitting} onClick={onCancel}>
-            Cancel
+                        Cancel
           </Button>
+
           <Button type="button" loading={submitting} onClick={submit}>
-            {mode === 'add' ? 'Add customer' : 'Save name'}
+                        {mode === 'add' ? 'Add customer' : 'Save name'}
+
           </Button>
+
         </DialogFooter>
+
       </DialogContent>
+
     </Dialog>
   );
 }

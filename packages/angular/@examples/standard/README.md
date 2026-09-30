@@ -2,7 +2,7 @@
 
 Consumer example for `@egose/shadcn-theme-ng`: a catalog of isolated
 component demos plus realistic product flows (pricing, team management,
-settings, support inbox) composed only from the package's public exports.
+settings, support inbox, signup) composed from the package's public exports.
 It uses Angular 22 standalone components, zoneless change detection, strict
 templates, and production bundle budgets.
 
@@ -19,8 +19,12 @@ pnpm --dir packages/angular install
 That links every dependency the example declares in its own
 `package.json` into `packages/angular/@examples/standard/node_modules`.
 The example manifest declares all of its direct imports (Angular,
-`@spartan-ng/brain`, icons, Sonner, `rxjs`, …); `@angular/cdk` is
-intentionally absent because no example source imports it directly.
+`@spartan-ng/brain`, icons, Sonner, `rxjs`, …). `@angular/cdk` is a direct
+dependency: responsive signup and member-roster layouts use its
+`BreakpointObserver`, and overlay tests use CDK tooling. The data-table demo
+also imports `@tanstack/angular-table` directly. The enclosing Angular
+workspace supplies TypeScript and Karma tooling; example-local Node inventory
+scripts use that TypeScript compiler API for source inspection.
 
 Headless-test prerequisite (local and CI): the Karma suite needs a
 Chrome-compatible binary. The repository-supported setup downloads it into
@@ -54,6 +58,8 @@ empty suite can never look like a green run.
 
 ```bash
 pnpm sync:aliases   # regenerate tsconfig path aliases + subpath imports from publishable-projects.json
+pnpm check:inventory # exact publishable-project/catalog/feature-directory coverage
+pnpm test:inventory  # Node regression tests for inventory drift and AST parsing
 pnpm smoke:deploy   # serve dist/angular/browser with Pages semantics and assert registry-derived routes over HTTP
 ```
 
@@ -116,7 +122,7 @@ source-mode build.
 ## Typed registry and directory conventions
 
 `src/app/catalog/catalog.ts` is the single source of truth. One
-`CatalogEntry` — `{ slug, title, category, kind, load }` — creates the lazy
+`CatalogEntry` — `{ slug, title, description, icon, category, kind, load }` — creates the lazy
 child route, the menu item, the search option, and any displayed count:
 
 - `kind: 'component'` → isolated primitive demo under
@@ -132,6 +138,24 @@ search options, and counts are all derived from the registry; contract
 tests (`catalog.spec.ts`, `app.routes.spec.ts`) fail on duplicate
 slugs/titles/links, missing loaders, or removals below the reviewed
 baselines (`REVIEWED_COMPONENT_BASELINE`, `REVIEWED_EXAMPLE_BASELINE`).
+Current reviewed floors are **86 component demos and five business flows**.
+`check:inventory` independently compares `publishable-projects.json`, actual
+package project directories, both catalog kinds and both feature-directory
+sets, then requires each route source file. All 87 publishable projects are
+accounted for: 86 demos and the explicit nonvisual `utils` exemption, whose
+`utils-usage.spec.ts` must exist. No prefix/hidden-folder exclusions apply.
+The gate rejects extras, omissions, duplicates, obsolete exemptions, missing
+metadata and loaders pointing outside their own feature. Its AST reader
+supports property reordering, comments, quote styles and multiline loaders;
+unsupported dynamic registry shapes fail explicitly instead of skipping entries.
+The same reader powers deployment smoke. Runtime lazy-loader tests still
+verify that each imported page export actually resolves.
+
+Header search matches title, category and description across both kinds,
+case-insensitively after trimming. Results retain registry order and are
+capped at eight (including blank queries); each displays **Component** or
+**Business example**, category, title and description. Component and business
+URLs retain their distinct `/components/` and `/examples/` prefixes.
 Real examples never appear in component menus and vice versa. Unknown URLs
 render an intentional accessible not-found page (`pages/not-found/`).
 
@@ -143,23 +167,132 @@ render an intentional accessible not-found page (`pages/not-found/`).
    plain `h3` markup, and keep package component markup visible at the call
    site (framing components only project content).
 2. Add one registry entry
-   `{ slug: '<slug>', title: '<Title>', category: '<Group>', kind: 'component', load: () => import('../pages/components/<slug>/<slug>').then((m) => m.<Name>Page) }`.
-3. Run `pnpm build` and `pnpm test:ci` — routing, menu, search, count,
+   `{ slug: '<slug>', title: '<Title>', description: '<Capability>', icon: lucideIcon, category: '<Group>', kind: 'component', load: () => import('../pages/components/<slug>/<slug>').then((m) => m.<Name>Page) }`.
+3. Run `pnpm check:inventory`, `pnpm test:inventory`, `pnpm build` and `pnpm test:ci` — routing, menu, search, count,
    heading-hierarchy, and responsive suites pick the entry up with no other
    edits.
 
 ### Adding a real example
 
-1. Create `src/app/pages/examples/<slug>/` with the route component,
-   colocated typed models, deterministic fixtures (`<slug>-fixtures.ts`),
+1. Create `src/app/pages/examples/<slug>/` with route orchestration in
+   `<slug>.ts`, a substantial template in `<slug>.html`, substantial domain/form
+   contracts in `<slug>-types.ts`, deterministic fixtures (`<slug>-fixtures.ts`),
    and a colocated `<slug>.spec.ts`. Reuse the shared state tooling
    (`src/app/shared/real-examples/`: `example-state-toolbar`,
    `async-simulator`, `example-view-state`) for loading/empty/error/loaded
    and read-only previews.
-2. Add one registry entry with `kind: 'example'`.
-3. Run `pnpm build`, `pnpm test:ci`, and `pnpm smoke:deploy` — the
+   Independently named UI pieces belong in `components/`, with external HTML
+   where substantial. Small files need no ceremonial split. Keep domain/session
+   policy in the route owner; a local controller is warranted only when it
+   clarifies ownership. Settings additionally owns its departure guard locally,
+   wired in `app.routes.ts`.
+2. Add one complete registry entry with `kind: 'example'`.
+3. Run `pnpm check:inventory`, `pnpm test:inventory`, `pnpm build`, `pnpm test:ci`, and `pnpm smoke:deploy` — the
    `/examples` routes, Examples catalog surface, and deployment smoke
    checks derive from the same entry.
+
+## Five business workflows and capability map
+
+- **`/examples/pricing`:** compare monthly/annual plans; confirm 1–1000 finite
+  integer seats and captured totals; cancel/reselect or view the Enterprise
+  contact outcome. Changing cadence clears pending/confirmed choices.
+  Composes `card`, `badge`, `dialog`, `input`, `button`, `separator`.
+- **`/examples/team-management`:** search/filter/page the roster; invite with
+  normalized names and duplicate-email checks; view details, change a role,
+  remove/undo, or confirm a bounded bulk role change and retry a simulated failure.
+  Composes `data-table` with `getRowId`, selection and responsive table/cards;
+  `pagination`, `input-group`, `native-select`, `dropdown-menu`, `dialog`,
+  `confirmation-dialog`.
+- **`/examples/settings`:** edit profile/workspace/notifications; save while
+  continuing to edit; retry failure, deliberately discard, navigate sections,
+  or confirm route departure. Leave/delete ends access until **Restore preview fixtures**.
+  Composes `input`, `label`, `native-select`, `checkbox`, `dialog`,
+  `confirmation-dialog`, `basic-alert`.
+- **`/examples/support-inbox`:** search ID/subject/requester and filter
+  status/assignee; reassign, resolve/reopen, compose separate ticket drafts,
+  send or retry, and move between list/detail on phones. Composes `input`,
+  `native-select`, `textarea`, `badge`, `button`, `basic-alert`, `empty`, `skeleton`.
+- **`/examples/signup-flow`:** complete validated account details, role and
+  required terms; go Back and edit; review human-readable labels, finish
+  asynchronously, retry, or Start over after success. Composes responsive linear
+  `stepper`, `form-text-input`, `form-select`, `form-checkbox`, `button`.
+
+The isolated `/components/phone-input` route shows the public `HlmPhoneInput`
+directly: default raw-digit and `modelFormat="formatted"` reactive models,
+selection correction and deletion across separators, editable reset to null,
+readonly copying and form-disabled state. The default NANP mask retains ten
+digits; masking does not validate a real phone number. For labeled wrapper
+validation, see `/components/form-phone-input`. The isolated `data-table`
+selection demo also supplies stable payment IDs. Date-picker variants and
+form wrappers have their own component routes; the five workflows demonstrate
+the capability combinations above rather than every package control.
+
+### State, draft and session contracts
+
+All five flows use shared `ExampleStateToolbarComponent`, `ExampleViewState`
+and deterministic `simulateExampleLoad` tooling for loaded/loading/empty/error
+previews and explicit failures. Toolbar previews are local demonstrations.
+Domain state stays feature-local in typed forms/signals; public package
+composition remains visible, with destruction-bound subscriptions.
+
+- **Support:** drafts, pending/error/retry state and revision tokens belong to
+  stable ticket IDs. Different tickets can send independently; duplicate sends
+  and resolve/reopen during that ticket's send are blocked. Success appends the
+  captured normalized text while preserving newer edits and other drafts.
+  Retry submits the current draft. Reassignment reapplies current filters.
+  Preview/readonly changes cancel sends and preserve drafts; reset/reload
+  explicitly discard drafts, local changes and filters.
+- **Settings:** a save commits its submitted snapshot and cleans only fields
+  unchanged since submission. Newer edits remain dirty; failure retains drafts
+  and retry submits current values. Section navigation only scrolls/focuses.
+  Dirty route departure asks for confirmation, including in readonly mode.
+  Preview/readonly changes invalidate saves/confirmations, close their overlays and preserve drafts;
+  reload restores fixtures. Opening leave/delete cancels a pending save;
+  accepted leave/delete is terminal until explicit fixture recovery.
+- **Team:** bulk selection is limited to the displayed page (maximum three).
+  Stable IDs survive reorder/immutable refresh when still displayed; filtering
+  and paging drop absent IDs without restoring them later. Confirmation/retry
+  belongs to the exact members and target role. Selection/filter/page/role
+  changes cancel pending bulk work; replaced targets require reconfirmation.
+  Failure changes no members. A successful mutation expires earlier undo;
+  only the latest local removal can be undone once, subject to identity and
+  permission guards. Session changes clear selection/undo; reset/reload
+  restores fixtures. Readonly still allows member details.
+- **Pricing:** selection captures offer identity, prices and cadence; both the
+  form and completion guard enforce integer seat bounds. Cancellation is a
+  visible outcome with reselection available. Cadence/preview/readonly changes
+  clear selections and close pending dialogs; reload restores monthly fixtures.
+  This is a local confirmation/contact preview with no payment collection.
+- **Signup:** Finish captures normalized username/email, role and accepted
+  terms; controls lock while pending. Failure retains values; retry uses current
+  values. Preview/readonly changes cancel pending work and preserve drafts and
+  completed results. Reload and Start over clear draft/result and step progress.
+  Submission and reload have separate failure controls. At widths below 640px
+  the stepper is vertical; hidden panels are inert. Success is an h3 with focus
+  and status feedback, and Start over returns focus to Username.
+
+Mutation handlers guard entry and commit, including current permission,
+identity and session as applicable. Stale completions after reset, reload,
+preview changes or destruction cannot publish false success or overwrite a
+newer session. Readonly permits reading/navigation; fixture-reset tooling is
+separate from domain mutation. These are local UI contracts, not backend
+authorization or persistence.
+
+### Focused verification (from repository root)
+
+```bash
+pnpm --dir packages/angular/@examples/standard exec ng test --watch=false --progress=false --include='src/app/pages/components/phone-input/**/*.spec.ts' --include='src/app/app.spec.ts' --include='src/app/catalog/**/*.spec.ts' --include='src/app/app.routes.spec.ts'
+pnpm --dir packages/angular/@examples/standard test:inventory
+pnpm --dir packages/angular/@examples/standard check:inventory
+pnpm --dir packages/angular test:example-boundary
+# For an individual business feature, replace <slug>:
+pnpm --dir packages/angular/@examples/standard exec ng test --watch=false --progress=false --include='src/app/pages/examples/<slug>/**/*.spec.ts'
+```
+
+`test:ci` does not forward `--include`; use `exec ng test` for targeted runs.
+For integration, run example `build`, full `test:ci`, the inventory and boundary
+gates, then deployment smoke after the fallback preparation below. These are
+source-mode checks; they do not establish installed-tarball compatibility.
 
 ## Fixtures, interaction, and accessibility expectations
 
@@ -209,3 +342,20 @@ fallback contract from the CSR shell before deploying:
   loads its prerendered `>Title</h2>`, unknown URLs fall back to the shell
   (the client router renders the not-found page), and every prerendered
   route directory maps back to a registry entry.
+
+Exact local preparation, from the repository root after `pnpm --dir
+packages/angular/@examples/standard build` (generated output is ignored):
+
+```bash
+cp packages/angular/@examples/standard/dist/angular/browser/index.csr.html packages/angular/@examples/standard/dist/angular/browser/index.html
+cp packages/angular/@examples/standard/dist/angular/browser/index.csr.html packages/angular/@examples/standard/dist/angular/browser/404.html
+cp packages/angular/@examples/standard/dist/angular/browser/index.csr.html packages/angular/@examples/standard/dist/angular/browser/components/index.html
+cp packages/angular/@examples/standard/dist/angular/browser/index.csr.html packages/angular/@examples/standard/dist/angular/browser/examples/index.html
+touch packages/angular/@examples/standard/dist/angular/browser/.nojekyll
+pnpm --dir packages/angular/@examples/standard smoke:deploy
+```
+
+Smoke validates source inventory first, then checks **all** component and
+business deep links over HTTP, including unknown URLs under both prefixes.
+It checks prerendered HTML and Pages fallback behavior; interactive client
+navigation and state transitions are exercised by the browser suites.

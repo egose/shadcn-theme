@@ -39,24 +39,51 @@ export type ExampleLink = {
 
 export type ShowcaseLoader = () => Promise<{ default: ComponentType }>;
 
-export type StaticEntry = {
+type EntryMetadata = {
   slug: string;
-  route: 'static';
   title: string;
   description: string;
+  /** Short, factual discovery terms; these are not test-coverage claims. */
+  capabilities?: string[];
+  /** Related registry URLs. Titles and reverse links are derived at listing time. */
+  related?: `/${SectionName}/${string}`[];
 };
 
-export type DynamicEntry = {
-  slug: string;
+export type StaticEntry = EntryMetadata & {
+  route: 'static';
+};
+
+export type DynamicEntry = EntryMetadata & {
   route: 'dynamic';
-  title: string;
-  description: string;
   load: ShowcaseLoader;
 };
 
 export type RegistryEntry = StaticEntry | DynamicEntry;
 
 export type ListedEntry = RegistryEntry & { url: string };
+
+/** Explicit serializable allowlist for the catalog's client boundary. */
+export type CatalogListing = ExampleLink & {
+  capabilities: string[];
+  related: Pick<ExampleLink, 'title' | 'url'>[];
+};
+
+export function listCatalog(section: ExampleSection, sections: ExampleSection[]): CatalogListing[] {
+  const allEntries = sections.flatMap((item) => item.entries);
+  return section.entries.map((entry) => ({
+    title: entry.title,
+    url: entry.url,
+    description: entry.description,
+    capabilities: [...(entry.capabilities ?? [])],
+    related: allEntries
+      .filter(
+        (other) =>
+          other.url !== entry.url &&
+          (entry.related?.some((url) => url === other.url) || other.related?.some((url) => url === entry.url)),
+      )
+      .map(({ title, url }) => ({ title, url })),
+  }));
+}
 
 export type SectionName = 'components' | 'form' | 'widgets' | 'real-examples';
 

@@ -3,9 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrnSlider } from '@spartan-ng/brain/slider';
-import { configureLibraryTestBed } from '../../../../test/setup';
+import { configureLibraryTestBed, settleDom } from '../../../../test/setup';
 import { EgFormSlider } from './form-slider';
 import { provideEgFormSliderConfig } from './form-slider.token';
+import { expectDescriptions, verifyValidationDescriptions } from '../../../../test/validation-descriptions';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormSlider],
@@ -17,13 +18,26 @@ import { provideEgFormSliderConfig } from './form-slider.token';
       [max]="100"
       [step]="5"
       [disabled]="disabled()"
-      hint="Drag the thumb"
+      [id]="id()"
+      [hint]="hint()"
+      [aria-describedby]="descriptions()"
+      error="Choose a minimum of 30"
+      required
     />
+    <p id="volume-external">External volume instructions</p>
   </form>`,
 })
 class Host {
-  readonly form = new FormGroup({ value: new FormControl<number[]>([20]) });
+  readonly form = new FormGroup({
+    value: new FormControl<number[]>([20], {
+      nonNullable: true,
+      validators: (control) => (control.value[0] < 30 ? { min: true } : null),
+    }),
+  });
   readonly disabled = signal(false);
+  readonly id = signal('volume');
+  readonly hint = signal<string | undefined>('Drag the thumb');
+  readonly descriptions = signal<string | null>(null);
 }
 
 @Component({
@@ -48,6 +62,59 @@ describe('EgFormSlider', () => {
   });
   afterEach(() => fixture.destroy());
 
+  it('describes every focusable thumb with the visible hint', () => {
+    fixture.componentInstance.form.controls.value.setValue([20, 80]);
+    fixture.detectChanges();
+    const thumbs = Array.from(fixture.nativeElement.querySelectorAll('[role="slider"]')) as HTMLElement[];
+    expect(thumbs.length).toBe(2);
+    const hint = fixture.nativeElement.querySelector('hlm-hint') as HTMLElement;
+    for (const thumb of thumbs) expect(thumb.getAttribute('aria-describedby')).toBe(hint.id);
+  });
+
+  for (const interaction of ['touch', 'submit'] as const) {
+    it(`keeps both thumbs described through ${interaction}, correction and reset`, async () => {
+      fixture.componentInstance.form.controls.value.setValue([20, 80]);
+      fixture.detectChanges();
+      // Focus requires measured thumbs; the focused runner does not load Tailwind CSS.
+      for (const thumb of fixture.nativeElement.querySelectorAll('[role="slider"]') as NodeListOf<HTMLElement>) {
+        thumb.style.display = 'inline-block';
+        thumb.style.width = '16px';
+        thumb.style.height = '16px';
+      }
+      await settleDom();
+      await settleDom();
+      fixture.detectChanges();
+      await verifyValidationDescriptions(
+        fixture,
+        () => Array.from(fixture.nativeElement.querySelectorAll('[role="slider"]')),
+        fixture.componentInstance.form.controls.value,
+        [40, 80],
+        interaction,
+      );
+    });
+  }
+
+  it('merges external descriptions across thumb-count, hint and ID changes', () => {
+    const host = fixture.componentInstance;
+    const thumbs = () => Array.from(fixture.nativeElement.querySelectorAll('[role="slider"]')) as HTMLElement[];
+    host.descriptions.set('volume-external volume-external');
+    host.form.markAllAsTouched();
+    fixture.detectChanges();
+    expectDescriptions(thumbs(), ['volume-external', 'volume-error']);
+    host.form.controls.value.setValue([20, 80]);
+    host.id.set('new-volume');
+    host.hint.set(undefined);
+    fixture.detectChanges();
+    expect(thumbs().length).toBe(2);
+    expectDescriptions(thumbs(), ['volume-external', 'new-volume-error']);
+    for (const thumb of thumbs()) expect(thumb.getAttribute('aria-labelledby')).toBe('new-volume-label');
+    host.form.controls.value.setValue([40]);
+    host.descriptions.set(null);
+    fixture.detectChanges();
+    expect(thumbs().length).toBe(1);
+    expectDescriptions(thumbs(), []);
+  });
+
   const slider = () => fixture.debugElement.query(By.css('hlm-slider')).injector.get(BrnSlider);
 
   it('wires the label to the slider and forwards min/max/step', () => {
@@ -55,8 +122,8 @@ describe('EgFormSlider', () => {
     expect(slider().min()).toBe(0);
     expect(slider().max()).toBe(100);
     expect(slider().step()).toBe(5);
-    // BrnSlider accepts aria-labelledby but does not render it yet; assert the wiring at the instance level.
     expect(slider().ariaLabelledby()).toBe(label().id);
+    expect(fixture.nativeElement.querySelector('[role="slider"]').getAttribute('aria-labelledby')).toBe(label().id);
   });
 
   it('writes control values through to the slider', () => {

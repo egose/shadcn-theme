@@ -108,7 +108,8 @@ async function getProjectDependencies(workspaceDir, name, knownProjects) {
   const files = await getAllFiles(path.join(workspaceDir, 'projects', name, 'src'));
   const dependencies = new Set();
   const importPattern = /@egose\/shadcn-theme-ng\/([a-z0-9-]+)/g;
-  for (const file of files.filter((candidate) => candidate.endsWith('.ts'))) {
+  // Match library tsconfig exclusions: browser specs may depend on a wrapper of the library under test.
+  for (const file of files.filter((candidate) => candidate.endsWith('.ts') && !candidate.endsWith('.spec.ts'))) {
     const content = await readFile(file, 'utf8');
     for (const match of content.matchAll(importPattern)) {
       if (match[1] !== name && knownProjects.has(match[1])) dependencies.add(match[1]);
@@ -226,7 +227,7 @@ function matchesTwAnimateUtilities(canonical) {
     if (twAnimateUtilities.stems.some((stem) => base.length > stem.length && base.startsWith(stem))) return true;
   }
   return false;
-};
+}
 
 function isTailwindCandidate(token) {
   const canonical = token.replace(/^tw:/, '');
@@ -378,7 +379,12 @@ export function transformJavaScriptClasses(source, bundle = '', fileName = 'arti
         visit(node.initializer, false, true, false);
         return;
       }
-      visit(node.initializer, selectionContext ? isClassValue : classContext || isClassValue, false, selectionContext && !isClassValue);
+      visit(
+        node.initializer,
+        selectionContext ? isClassValue : classContext || isClassValue,
+        false,
+        selectionContext && !isClassValue,
+      );
       return;
     }
 

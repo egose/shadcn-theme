@@ -385,4 +385,82 @@ describe('SupportInboxExamplePage', () => {
     fixture.detectChanges();
     expect(host.querySelector('[data-testid="ticket-ticket-1040"]')).not.toBeNull();
   });
+
+  it('isolates A → B → A drafts, including filter-induced selection changes', () => {
+    const { fixture, host, page } = setup();
+    setTextarea(host, 'Draft for Sam');
+    click(host, 'ticket-select-ticket-1041');
+    fixture.detectChanges();
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('');
+    setTextarea(host, 'Draft for Jordan');
+    click(host, 'ticket-select-ticket-1042');
+    fixture.detectChanges();
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('Draft for Sam');
+    page.filterForm.controls.assignee.setValue('Ravi Shah');
+    fixture.detectChanges();
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('Draft for Jordan');
+    click(host, 'clear-ticket-filters');
+    fixture.detectChanges();
+    click(host, 'ticket-select-ticket-1042');
+    fixture.detectChanges();
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('Draft for Sam');
+  });
+
+  it('settles the submitted ticket without clearing another ticket or a newer draft', async () => {
+    const { fixture, host } = setup();
+    setTextarea(host, 'Submitted for Sam');
+    click(host, 'reply-submit');
+    fixture.detectChanges();
+    setTextarea(host, 'Newer Sam draft');
+    click(host, 'ticket-select-ticket-1041');
+    fixture.detectChanges();
+    setTextarea(host, 'Unsent Jordan draft');
+    await settle(fixture);
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('Unsent Jordan draft');
+    expect(host.querySelector('[data-testid="ticket-detail-timeline"]')?.textContent).not.toContain(
+      'Submitted for Sam',
+    );
+    expect(host.querySelector('[data-testid="inbox-outcome"]')?.textContent ?? '').not.toContain('Reply sent to Sam');
+    click(host, 'ticket-select-ticket-1042');
+    fixture.detectChanges();
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe('Newer Sam draft');
+    expect(host.querySelector('[data-testid="ticket-detail-timeline"]')?.textContent).toContain('Submitted for Sam');
+  });
+
+  it('cancels a pending reply on a read-only transition and preserves its draft', async () => {
+    const { fixture, host, page } = setup();
+    setTextarea(host, 'Must not commit after permission change');
+    click(host, 'reply-submit');
+    page.readOnly.set(true);
+    fixture.detectChanges();
+    await settle(fixture);
+    page.readOnly.set(false);
+    fixture.detectChanges();
+    expect(host.querySelector('[data-testid="ticket-detail-timeline"]')?.textContent).not.toContain('Must not commit');
+    expect(host.querySelector<HTMLTextAreaElement>('#reply-body')?.value).toBe(
+      'Must not commit after permission change',
+    );
+    expect(host.querySelector('[data-testid="inbox-outcome"]')?.textContent ?? '').not.toContain('Reply sent');
+    expect(host.querySelector<HTMLButtonElement>('[data-testid="reply-submit"]')?.disabled).toBeFalse();
+  });
+
+  it('validates trimmed reply bounds and associates errors with the textarea', async () => {
+    const { fixture, host } = setup();
+    for (const [value, error] of [
+      ['   ', 'Write a reply'],
+      [' a ', 'at least 2'],
+      ['x'.repeat(2001), '2000'],
+    ]) {
+      setTextarea(host, value);
+      click(host, 'reply-submit');
+      fixture.detectChanges();
+      await settle(fixture);
+      const textarea = host.querySelector<HTMLTextAreaElement>('#reply-body')!;
+      const message = host.querySelector('[data-testid="reply-body-error"]');
+      expect(message?.textContent).toContain(error);
+      expect(textarea.getAttribute('aria-invalid')).toBe('true');
+      expect(textarea.getAttribute('aria-describedby')?.split(' ')).toContain(message?.id);
+    }
+    expect(host.querySelectorAll('[data-testid="ticket-detail-timeline"] li').length).toBe(2);
+  });
 });

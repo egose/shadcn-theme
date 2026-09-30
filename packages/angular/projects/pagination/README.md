@@ -144,11 +144,20 @@ For the `tw:` build, swap the specifier to `@egose/shadcn-theme-ng-tw/pagination
 | `currentPage`  | **model (required)** | `number`                                     | Two-way: `[(currentPage)]`. Clicks set it; out-of-range values are auto-corrected via `outOfBoundCorrection` |
 | `itemsPerPage` | **model (required)** | `number`                                     | Two-way: `[(itemsPerPage)]`, bound to the page-size `hlm-select`                                             |
 | `totalItems`   | input (required)     | `number` (number coercion)                   | Server or client total; `0`/negative collapses to a single empty page                                        |
-| `maxSize`      | input                | `number`, default `7` (number coercion)      | Max page links in the window (ellipsis logic from `ngx-pagination`)                                          |
+| `maxSize`      | input                | `number`, default `7` (number coercion)      | Window entries including ellipses; floored and bounded to 1–100; invalid/non-positive uses 7                 |
 | `showEdges`    | input                | `boolean`, default `true` (boolean coercion) | Shows prev/next edge buttons (hidden on first/last page respectively)                                        |
 | `pageSizes`    | input                | `number[]`, default `[10, 20, 50, 100]`      | Page-size menu; the current size is merged in + sorted if missing                                            |
 
 Layout: `flex justify-between` row — left count summary (`<b>total</b> total items | <b>pages</b> pages`), center pager, right `hlm-select` page-size picker. Previous/next are plain click handlers (`goToPrevious/goToNext`); page links set `currentPage` directly without routing.
+
+#### Normalization and numeric limits (both numbered pagers)
+
+- Page count is `ceil(totalItems / itemsPerPage)`, at least 1 and at most `Number.MAX_SAFE_INTEGER`. Finite positive fractional totals/sizes retain that division behavior, including sizes below 1. Overflowing positive division saturates at the safe-integer page limit.
+- Empty, negative or non-finite totals use one page. Non-positive or non-finite sizes (`0`, negative, `NaN`, `Infinity`) also use one page, **without rewriting `itemsPerPage`**. Supply a finite positive size to resume paging. The models are numeric; template number attributes such as `totalItems` and `maxSize` are coerced by Angular.
+- Finite `currentPage` values are floored and clamped to `[1, lastPage]`; non-finite values become 1. Changes to totals, size or the external page are reconciled by an effect, emitting `currentPageChange` once per correction. Valid models emit nothing. Bind `[(currentPage)]` to receive corrections.
+- All derived signals, including the page list, are side-effect-free. Rendering uses the corrected page immediately. Previous/next disappear at their bounds, and direct client-state navigation handlers are also clamped. Empty results show active page 1 and neither edge.
+- `maxSize` / helper `paginationRange` is a window-entry budget, including ellipses. Finite positive values are floored and clamped to **1–100**; non-finite/non-positive values fall back to **7**. Ranges below 5 use a contiguous window containing the active page; larger ranges retain the first/last/ellipsis layout. Work and allocation are proportional to `min(pageCount, normalizedRange)`, never to an unbounded total or range. The array-returning helper API is unchanged.
+- The summary displays the supplied total; normalization controls page count/navigation and does not repair the application's data. For asynchronous server loading, keep the last known total until the new count arrives if a temporary zero should not reset the page.
 
 ### `HlmNumberedPaginationQueryParams` (`hlm-numbered-pagination-query-params`)
 
@@ -160,11 +169,13 @@ Same models/inputs as `HlmNumberedPagination` **plus**:
 
 Every link (prev/numbered/next) navigates via `RouterLink` with `[queryParams]="{ page }"` and `queryParamsHandling="merge"`. The active page renders with `link === undefined` (no navigation) + `isActive`.
 
+The component **does not subscribe to the route or navigate on correction/size changes**. The parent reads `?page=` and supplies `currentPage`; link clicks navigate, then the parent's route subscription updates that model. Corrections emit `currentPageChange` but leave the URL unchanged. To canonicalize a corrected page in the URL, handle that output in the parent with `router.navigate([], { relativeTo: route, queryParams: { page }, queryParamsHandling: 'merge', replaceUrl: true })`. Keep unrelated parameters when doing so. Page-size URL persistence is also parent-owned.
+
 ### Helpers
 
 | Symbol                                                                    | Signature                                                 | Notes                                                                                                    |
 | ------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `outOfBoundCorrection(totalItems, itemsPerPage, currentPage)`             | `(number, number, number) => number`                      | Clamps to `[1, totalPages]` (from `ngx-pagination`)                                                      |
+| `outOfBoundCorrection(totalItems, itemsPerPage, currentPage)`             | `(number, number, number) => number`                      | Pure floor/clamp using the normalization policy above; empty/invalid paging returns 1                    |
 | `createPageArray(currentPage, itemsPerPage, totalItems, paginationRange)` | `(number, number, number, number) => (number \| '...')[]` | Window with `'...'` gaps; powers both numbered pagers                                                    |
 | `Page`                                                                    | `type Page = number \| '...'`                             | Not exported from public-api (internal to the pager file) — redeclare locally if you type custom windows |
 
@@ -246,7 +257,8 @@ export class PagerClientComponent {
 ### 3. Router `?page=` pager (server-driven)
 
 ```ts
-import { Component, signal, effect } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { HlmPaginationImports } from '@egose/shadcn-theme-ng/pagination';
 
@@ -261,7 +273,7 @@ import { HlmPaginationImports } from '@egose/shadcn-theme-ng/pagination';
       [totalItems]="total()"
       link="."
     />
-    <p class="tw:text-sm tw:text-muted-foreground">URL holds ?page={{ page }}.</p>
+    <p class="tw:text-sm tw:text-muted-foreground">Displayed page: {{ page() }}.</p>
   `,
 })
 export class PagerQueryComponent {
@@ -270,13 +282,10 @@ export class PagerQueryComponent {
   readonly total = signal(320);
 
   constructor(route: ActivatedRoute) {
-    effect(() => {
-      // keep ?page= as the source of truth on back/forward + deep links
-      const sub = route.queryParamMap.subscribe((params) => {
-        const p = Number(params.get('page') ?? 1);
-        this.page.set(Number.isFinite(p) && p >= 1 ? Math.floor(p) : 1);
-      });
-      return () => sub.unsubscribe();
+    // Read deep links and back/forward changes; the pager corrects model bounds.
+    // Corrections here update the displayed page, not the URL.
+    route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      this.page.set(Number(params.get('page') ?? 1));
     });
   }
 }
@@ -330,7 +339,7 @@ import { HlmPaginationImports, createPageArray } from '@egose/shadcn-theme-ng/pa
   template: `
     <nav hlmPagination>
       <ul hlmPaginationContent>
-        @for (p of window(); track p) {
+        @for (p of window(); track $index) {
           <li hlmPaginationItem>
             @if (p === '...') {
               <hlm-pagination-ellipsis />

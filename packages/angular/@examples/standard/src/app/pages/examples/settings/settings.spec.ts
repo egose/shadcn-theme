@@ -1,17 +1,17 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EgConfirmationDialogService } from '@egose/shadcn-theme-ng/confirmation-dialog';
 import { SettingsExamplePage } from './settings';
 import { EXAMPLE_SETTINGS, SETTINGS_SECTIONS, SETTINGS_SAVED_AT_ISO } from './settings-fixtures';
 
 type PageApi = {
+  confirm(context: { title: string; description: string }): Promise<boolean>;
   viewState: { set: (state: 'loading' | 'empty' | 'error' | 'loaded') => void };
   readOnly: { set: (value: boolean) => void };
   simulateFailure: { set: (value: boolean) => void };
   reload: () => Promise<void>;
   save: () => Promise<void>;
   discardChanges: () => Promise<void>;
-  selectSection: (id: string) => Promise<void>;
+  selectSection: (id: string) => void;
   leaveWorkspace: () => Promise<void>;
   deleteWorkspace: () => void;
 };
@@ -63,13 +63,12 @@ describe('SettingsExamplePage', () => {
     };
   }
 
-  function confirmNext(result: boolean): void {
-    const service = TestBed.inject(EgConfirmationDialogService);
-    const existing = service.showConfirmationDialog as unknown as jasmine.Spy | undefined;
+  function confirmNext(page: PageApi, result: boolean): void {
+    const existing = page.confirm as unknown as jasmine.Spy | undefined;
     if (existing && typeof existing.and?.resolveTo === 'function') {
       existing.and.resolveTo(result);
     } else {
-      spyOn(service, 'showConfirmationDialog').and.resolveTo(result);
+      spyOn(page, 'confirm').and.resolveTo(result);
     }
   }
 
@@ -262,45 +261,78 @@ describe('SettingsExamplePage', () => {
     setInput(host, 'profile-display-name', 'Ada Okafor Updated');
     fixture.detectChanges();
 
-    confirmNext(false);
+    confirmNext(page, false);
     await page.discardChanges();
     fixture.detectChanges();
     expect(inputValue(host, 'profile-display-name')).toBe('Ada Okafor Updated');
     expect(host.querySelector('[data-testid="dirty-warning"]')).not.toBeNull();
 
-    confirmNext(true);
+    confirmNext(page, true);
     await page.discardChanges();
     fixture.detectChanges();
     expect(inputValue(host, 'profile-display-name')).toBe('Ada Okafor');
     expect(host.querySelector('[data-testid="dirty-warning"]')).toBeNull();
   });
 
-  it('warns on dirty section navigation: reject stays, accept resets and moves', async () => {
+  it('focuses a section without confirming or discarding other sections drafts', async () => {
     const { fixture, host, page } = setup();
     setInput(host, 'workspace-name', 'Acme Temporary Name');
     fixture.detectChanges();
 
-    confirmNext(false);
+    const confirm = spyOn(page, 'confirm').and.resolveTo(true);
     await page.selectSection('settings-notifications');
     fixture.detectChanges();
     expect(inputValue(host, 'workspace-name')).toBe('Acme Temporary Name');
-    expect(host.querySelector('[data-testid="settings-nav-settings-profile"]')?.getAttribute('aria-current')).toBe(
-      'true',
-    );
-
-    confirmNext(true);
-    await page.selectSection('settings-notifications');
-    fixture.detectChanges();
-    expect(inputValue(host, 'workspace-name')).toBe('Acme Design System');
+    expect(confirm).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(host.querySelector('#settings-notifications-title'));
     expect(
       host.querySelector('[data-testid="settings-nav-settings-notifications"]')?.getAttribute('aria-current'),
     ).toBe('true');
   });
 
+  it('commits submission A while preserving draft B as dirty', async () => {
+    const { fixture, host, page } = setup();
+    setInput(host, 'profile-display-name', 'Submitted Ada');
+    const saving = page.save();
+    setInput(host, 'profile-display-name', 'Newer Ada');
+    await saving;
+    fixture.detectChanges();
+    expect(inputValue(host, 'profile-display-name')).toBe('Newer Ada');
+    expect(host.querySelector('[data-testid="dirty-warning"]')).not.toBeNull();
+    expect(host.querySelector('[data-testid="settings-save-outcome"]')?.textContent).toContain('Submitted Ada');
+    confirmNext(page, true);
+    await page.discardChanges();
+    fixture.detectChanges();
+    expect(inputValue(host, 'profile-display-name')).toBe('Submitted Ada');
+  });
+
+  it('cancels a pending save on readonly transition and retains the draft', async () => {
+    const { fixture, host, page } = setup();
+    setInput(host, 'profile-display-name', 'Unsaved Ada');
+    const saving = page.save();
+    page.readOnly.set(true);
+    fixture.detectChanges();
+    await saving;
+    fixture.detectChanges();
+    expect(host.querySelector('[data-testid="settings-save-outcome"]')).toBeNull();
+    expect(inputValue(host, 'profile-display-name')).toBe('Unsaved Ada');
+    expect(host.querySelector('[data-testid="dirty-warning"]')).not.toBeNull();
+  });
+
+  it('validates normalized required names and associates the slug error', () => {
+    const { fixture, host } = setup();
+    setInput(host, 'profile-display-name', '   ');
+    setInput(host, 'workspace-name', ' x ');
+    setInput(host, 'workspace-slug', 'INVALID');
+    fixture.detectChanges();
+    expect(host.querySelector('#profile-display-name-error')?.textContent).toContain('Enter a display name');
+    expect(host.querySelector('#workspace-name-error')?.textContent).toContain('at least 2');
+    expect(host.querySelector('#workspace-slug')?.getAttribute('aria-describedby')).toContain('workspace-slug-error');
+  });
+
   it('moves between sections without confirmation when nothing changed', async () => {
     const { fixture, host, page } = setup();
-    const service = TestBed.inject(EgConfirmationDialogService);
-    const spy = spyOn(service, 'showConfirmationDialog').and.resolveTo(true);
+    const spy = spyOn(page, 'confirm').and.resolveTo(true);
 
     await page.selectSection('settings-workspace');
     fixture.detectChanges();
@@ -343,17 +375,18 @@ describe('SettingsExamplePage', () => {
     expect(danger?.getAttribute('role')).toBe('region');
     expect(danger?.getAttribute('aria-label')).toBe('Destructive workspace actions');
 
-    confirmNext(false);
+    confirmNext(page, false);
     await page.leaveWorkspace();
     fixture.detectChanges();
     expect(host.querySelector('[data-testid="danger-outcome"]')).toBeNull();
 
-    confirmNext(true);
+    confirmNext(page, true);
     await page.leaveWorkspace();
     fixture.detectChanges();
     const outcomes = host.querySelectorAll('[data-testid="danger-outcome"]');
     expect(outcomes.length).toBe(1);
-    expect(outcomes[0].textContent).toContain('Leave request for Acme Design System recorded');
+    expect(outcomes[0].textContent).toContain('You left Acme Design System');
+    expect(host.querySelector('[data-testid="settings-loaded"]')).toBeNull();
   });
 
   it('requires the typed workspace slug before deletion can run', async () => {
@@ -384,14 +417,18 @@ describe('SettingsExamplePage', () => {
     const outcomes = host.querySelectorAll('[data-testid="danger-outcome"]');
     expect(outcomes.length).toBe(1);
     expect(outcomes[0].textContent).toContain('acme-design-system deleted');
+    expect(document.activeElement).toBe(host.querySelector('#settings-terminal-title'));
+    expect(host.querySelector('[data-testid="settings-loaded"]')).toBeNull();
   });
 
   it('rejects a mismatched typed slug and preserves values on cancel', async () => {
-    const { fixture, host, page } = setup();
+    const { fixture, host } = setup();
     setInput(host, 'profile-display-name', 'Ada Okafor Updated');
     fixture.detectChanges();
 
-    page.deleteWorkspace();
+    const trigger = host.querySelector<HTMLButtonElement>('[data-testid="delete-workspace"]')!;
+    trigger.focus();
+    trigger.click();
     await settle(fixture);
 
     const input = overlayPane()?.querySelector<HTMLInputElement>('[data-testid="delete-confirm-input"]');
@@ -408,6 +445,7 @@ describe('SettingsExamplePage', () => {
     expect(overlayPane()).toBeNull();
     expect(host.querySelector('[data-testid="danger-outcome"]')).toBeNull();
     expect(inputValue(host, 'profile-display-name')).toBe('Ada Okafor Updated');
+    expect(document.activeElement).toBe(trigger);
   });
 
   it('reloads through the deterministic simulator, honoring simulated failure', async () => {

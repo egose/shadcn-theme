@@ -6,6 +6,7 @@ import { Command as CommandPrimitive } from 'cmdk';
 import { type KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from 'react';
 
 import { cn } from '../../utils/ui';
+import { useSelectionInputRef } from '../../lib/selection-focus';
 import { Badge } from './badge';
 import { Command, CommandEmpty, CommandItem, CommandList } from './command';
 
@@ -33,7 +34,7 @@ interface MultiSelectContextProps {
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   activeIndex: number;
   setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
-  ref: React.RefObject<HTMLInputElement | null>;
+  ref: React.MutableRefObject<HTMLInputElement | null>;
   disabled: boolean;
 }
 
@@ -69,7 +70,7 @@ const MultiSelector = ({
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
 
   const onValueChangeHandler = useCallback(
     (val: MultiSelectValue) => {
@@ -182,21 +183,24 @@ const MultiSelector = ({
         disabled,
       }}
     >
+
       <Command
         onKeyDown={handleKeyDown}
         className={cn('flex flex-col overflow-visible bg-transparent', className)}
         dir={dir}
         {...props}
       >
-        {children}
+                {children}
+
       </Command>
+
     </MultiSelectContext.Provider>
   );
 };
 
 const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => {
-    const { value, onValueChange, activeIndex, disabled } = useMultiSelect();
+    const { value, onValueChange, activeIndex, disabled, ref: inputRef } = useMultiSelect();
 
     const mousePreventDefault = useCallback((e: React.MouseEvent) => {
       e.preventDefault();
@@ -214,6 +218,7 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
         )}
         {...props}
       >
+
         {value.map((item, index) => (
           <Badge
             key={item.value}
@@ -223,7 +228,8 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
             )}
             variant="secondary"
           >
-            <span className="text-xs">{item.label}</span>
+                        <span className="text-xs">{item.label}</span>
+
             <button
               aria-label={`Remove ${item.label} option`}
               type="button"
@@ -234,15 +240,22 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
                 event.stopPropagation();
 
                 onValueChange(item);
+                // Keyboard activation removes the focused badge button. Keep focus
+                // inside the field instead of dropping it onto document.body.
+                inputRef.current?.focus();
               }}
               className="inline-flex cursor-pointer items-center justify-center rounded-md p-1 transition-colors hover:bg-red-50 hover:text-red-700 focus-visible:bg-red-100 focus-visible:outline-none disabled:cursor-not-allowed"
             >
-              <span className="sr-only">Remove {item.label} option</span>
+                            <span className="sr-only">Remove {item.label} option</span>
+
               <IconX className="h-3.5 w-3.5" />
+
             </button>
+
           </Badge>
         ))}
-        {children}
+                {children}
+
       </div>
     );
   },
@@ -250,26 +263,42 @@ const MultiSelectorTrigger = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
 
 MultiSelectorTrigger.displayName = 'MultiSelectorTrigger';
 
+/** Forwards the actual input ref and composes caller blur/focus/click/value-change handlers with internal search behavior. Native input blur is distinct from FormMultiSelect's composite onBlur. */
 const MultiSelectorInput = forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, disabled: disabledProp, ...props }, _ref) => {
+>(({ className, disabled: disabledProp, onBlur, onFocus, onClick, onValueChange, ...props }, ref) => {
   const { setOpen, inputValue, setInputValue, activeIndex, setActiveIndex, ref: inputRef, disabled } = useMultiSelect();
+  const setInputRef = useSelectionInputRef(ref, inputRef);
 
   return (
     <CommandPrimitive.Input
       {...props}
       tabIndex={0}
-      ref={inputRef}
+      ref={setInputRef}
       value={inputValue}
       disabled={disabled || disabledProp}
-      onValueChange={activeIndex === -1 ? setInputValue : undefined}
-      onBlur={() => {
+      onValueChange={
+        activeIndex === -1
+          ? (value) => {
+              setInputValue(value);
+              onValueChange?.(value);
+            }
+          : undefined
+      }
+      onBlur={(event) => {
         setInputValue('');
         setOpen(false);
+        onBlur?.(event);
       }}
-      onFocus={() => setOpen(true)}
-      onClick={() => setActiveIndex(-1)}
+      onFocus={(event) => {
+        setOpen(true);
+        onFocus?.(event);
+      }}
+      onClick={(event) => {
+        setActiveIndex(-1);
+        onClick?.(event);
+      }}
       className={cn(
         'flex-1 border-none bg-transparent p-0 text-sm outline-none placeholder:text-muted-foreground focus:outline-none focus:ring-0',
         className,
@@ -288,7 +317,8 @@ const MultiSelectorContent = forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
 
   return (
     <div ref={ref} className="relative">
-      {children}
+            {children}
+
     </div>
   );
 });
@@ -307,10 +337,13 @@ const MultiSelectorList = forwardRef<
         className,
       )}
     >
-      {children}
+            {children}
+
       <CommandEmpty>
-        <span className="text-muted-foreground">No results found</span>
+                <span className="text-muted-foreground">No results found</span>
+
       </CommandEmpty>
+
     </CommandList>
   );
 });
@@ -358,8 +391,9 @@ const MultiSelectorItem = forwardRef<
       )}
       onMouseDown={mousePreventDefault}
     >
-      {children}
-      {isIncluded && <IconCheck className="h-4 w-4" />}
+            {children}
+            {isIncluded && <IconCheck className="h-4 w-4" />}
+
     </CommandItem>
   );
 });

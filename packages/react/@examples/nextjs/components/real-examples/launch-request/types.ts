@@ -5,8 +5,8 @@ export type LaunchRequestValues = {
   /** Overview */
   projectName: string;
   summary: string;
-  /** Schedule */
-  launchDate: Date | undefined;
+  /** Schedule: valid YYYY-MM-DD calendar date, or null when cleared; never a UTC instant. */
+  launchDate: string | null;
   rolloutWindow: string;
   /** Ownership */
   ownerEmail: string;
@@ -15,8 +15,5 @@ export type LaunchRequestValues = {
   confirmed: boolean;
 };
 
-/** Lifecycle status of the launch request itself. */
-export type RequestStatus = 'draft' | 'submitted';
-
-/** Explicit simulated outcome for the save request (deterministic). */
-export type SimulatedOutcomeChoice = 'success' | 'failure';
+/** Status of the current form values relative to the submitted revision. */
+export type RequestStatus = 'draft' | 'submitted' | 'unsaved';

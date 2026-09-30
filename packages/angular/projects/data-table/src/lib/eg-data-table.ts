@@ -10,6 +10,7 @@ import {
   output,
   signal,
   type TemplateRef,
+  untracked,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { HlmButton } from '@egose/shadcn-theme-ng/button';
@@ -316,6 +317,15 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   public readonly gridColumns = input<ColumnDef<EgDataTableFeatures, TData>[]>();
   /** Client rows, or a server page slice when `manualPagination` is set (`null` while loading). */
   public readonly data = input<readonly TData[] | EgPaginatedResponse<TData> | null>([]);
+  /**
+   * Pure stable identity callback, e.g. `(record) => record.id`. Return a unique
+   * string per entity, independent of position, and keep the callback reference stable.
+   * Selection survives refreshes only for IDs still in the supplied rows (after
+   * `filterRows`); server selection is limited to the loaded slice. Without this
+   * callback, IDs are positional and replacing the rows clears selection.
+   * Changing the callback clears selection. Update data immutably.
+   */
+  public readonly getRowId = input<(row: TData) => string>();
   /** When true, `data` is a server page slice and the table uses TanStack `manualPagination`. Sorting and filtering are then display-only: the slice is shown as-is while `sortingChange` / `filterChange` (`columnFiltersChange`) notify the caller to refetch. */
   public readonly manualPagination = input<boolean>(false);
   /** TanStack feature registry. Defaults to filtering + visibility + pagination + selection + sorting. */
@@ -350,7 +360,7 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   public readonly initialColumnFilters = input<ColumnFiltersState>([]);
   /** Seeds the column-visibility state once at creation. Later changes are ignored. */
   public readonly initialColumnVisibility = input<ColumnVisibilityState>({});
-  /** Seeds the row-selection state once at creation (keys are row ids). Later changes are ignored. */
+  /** Seeds selection once for current rows: keys come from `getRowId`, or positional indices without it. Missing IDs are discarded. Later changes are ignored. */
   public readonly initialRowSelection = input<RowSelectionState>({});
   /** Show the rows-per-page selector in the footer pager. */
   public readonly showPageSize = input<boolean>(true);
@@ -360,7 +370,7 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   public readonly navMode = input<EgPaginationNavMode>('icons');
   public readonly userClass = input<string>('', { alias: 'class' });
 
-  /** Emits the selected rows whenever selection changes (requires `enableSelection`). */
+  /** Emits on init and when selected row identities/order or object references change. Includes rows hidden by built-in filters/client pagination, but never rows absent from `data`/`filterRows`. */
   public readonly selectionChange = output<readonly TData[]>();
   /** Emits the target page index on pager navigation (primary hook for server fetching). */
   public readonly pageChange = output<number>();
@@ -383,7 +393,6 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   private readonly _sorting = signal<SortingState>([]);
   private readonly _columnFilters = signal<ColumnFiltersState>([]);
   private readonly _columnVisibility = signal<ColumnVisibilityState>({});
-  private readonly _rowSelection = signal<RowSelectionState>({});
   private readonly _clientPageIndex = signal<number>(0);
   // Linked so the bound `defaultPageSize` applies once inputs are set, while
   // pager-driven `set()` writes below are preserved until it changes again.
@@ -410,6 +419,39 @@ export class EgDataTable<TData extends RowData> implements OnInit {
     const filter = this.filterRows();
     return filter ? filter(rows) : rows;
   });
+
+  // TanStack uses data-reference changes to reset pagination. State/layout
+  // updates must not look like a new data set (including selecting page rows).
+  private readonly _tableItems = computed(() => {
+    // A different identity function must also rebuild TanStack's cached rows.
+    this.getRowId();
+    return [...this._items()];
+  });
+
+  // Reconcile synchronously with the data source, before either TanStack or the
+  // output can observe old positional keys against new records. An effect-based
+  // reset would permit a transient wrong-entity selection.
+  private readonly _rowSelection = linkedSignal<
+    { items: readonly TData[]; getRowId: ((row: TData) => string) | undefined },
+    RowSelectionState
+  >({
+    source: () => ({ items: this._items(), getRowId: this.getRowId() }),
+    computation: (source, previous) => {
+      if (!previous || source.getRowId !== previous.source.getRowId) return {};
+      if (!source.getRowId && source.items !== previous.source.items) return {};
+      return this._keepCurrentSelection(previous.value);
+    },
+  });
+
+  private _keepCurrentSelection(selection: RowSelectionState): RowSelectionState {
+    const getRowId = this.getRowId();
+    return Object.fromEntries(
+      this._items()
+        .map((row, index) => (getRowId ? getRowId(row) : String(index)))
+        .filter((id) => Object.hasOwn(selection, id) && selection[id])
+        .map((id) => [id, true]),
+    );
+  }
 
   private readonly _serverPageCount = computed(() => {
     const paginated = this._page();
@@ -453,7 +495,8 @@ export class EgDataTable<TData extends RowData> implements OnInit {
     return {
       features: this.features(),
       columns: this._finalColumns(),
-      data: [...this._items()],
+      data: this._tableItems(),
+      getRowId: this.getRowId(),
       manualPagination: server,
       manualSorting: server,
       manualFiltering: server,
@@ -502,10 +545,14 @@ export class EgDataTable<TData extends RowData> implements OnInit {
     };
   });
 
+  private readonly _selectedRows = computed(() => this._table.getSelectedRowModel().rows.map((row) => row.original), {
+    equal: (a, b) => a.length === b.length && a.every((row, index) => row === b[index]),
+  });
+
   private readonly _emitSelection = effect(() => {
-    this._rowSelection();
-    const selected = this._table.getSelectedRowModel().rows.map((row) => row.original);
-    this.selectionChange.emit(selected);
+    const selected = this._selectedRows();
+    // Consumer handlers may read signals; those reads must not retrigger us.
+    untracked(() => this.selectionChange.emit(selected));
   });
 
   /**
@@ -518,7 +565,7 @@ export class EgDataTable<TData extends RowData> implements OnInit {
     this._sorting.set([...this.initialSorting()]);
     this._columnFilters.set([...this.initialColumnFilters()]);
     this._columnVisibility.set({ ...this.initialColumnVisibility() });
-    this._rowSelection.set({ ...this.initialRowSelection() });
+    this._rowSelection.set(this._keepCurrentSelection(this.initialRowSelection()));
   }
 
   protected readonly _hasGrid = computed(() => this.gridColumns() !== undefined);

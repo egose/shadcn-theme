@@ -108,12 +108,14 @@ export class ServerPaymentsComponent {
   [gridColumns]="gridColumns"
   [data]="payments()"
   [enableSelection]="true"
+  [getRowId]="paymentId"
   [(layout)]="layout"
   (selectionChange)="onSelect($event)"
 />
 ```
 
 - `enableSelection` auto-prepends a checkbox column; `selectionChange` emits the selected rows.
+- Define `readonly paymentId = (payment: Payment): string => payment.id` on the host. `getRowId` is a pure callback returning a unique, stable string per entity; keep the callback reference stable.
 - `[(layout)]` toggles `'table' | 'grid'` (grid requires `gridColumns`). Column `meta: { hideInTable: true }` hides a column in table layout; `meta: { thumbnail: true }` renders it as the card banner.
 - Sortable plain-string headers get an inline sort button; richer headers should use `EgDataTableColumnHeader` via `flexRenderComponent` (no type arguments needed — its `column` input accepts any TanStack column through the `EgSortableColumn` structural type):
 
@@ -125,6 +127,14 @@ helper.accessor('email', {
   header: ({ column }) => flexRenderComponent(EgDataTableColumnHeader, { inputs: { column, title: 'Email' } }),
 });
 ```
+
+### Selection identity and scope
+
+- **Stable IDs:** supply `getRowId` whenever rows can be refreshed, reordered, or fetched from a server. Selection follows IDs still present in the supplied rows, and refreshes emit the current objects, not stale snapshots. Removed IDs are discarded and are not selected if they later return. Changing the callback clears selection.
+- **Server pages:** selection is scoped to the loaded slice, not an accumulated cross-page bulk-action set. Replacing a page keeps only selected IDs also in the new slice. Refreshing the same slice preserves selection when IDs match. Passing `null` or an empty slice clears it; keep the current slice and set `isLoading` if selection should survive loading a refresh.
+- **Client filtering/paging:** `filterRows` defines the available selection scope; removing a row there discards its selection. Built-in column filters and client pagination only hide rows: hidden selections remain in `selectionChange`. Header selection toggles only the displayed page; table and grid share selection. The footer selection count describes the filtered subset.
+- **Without `getRowId`:** existing positional `initialRowSelection` keys (`'0'`, `'1'`, etc.) remain supported for the initial rows. Replacing the source array (including a same-record refresh) or changing the `filterRows` result array clears selection rather than transferring an index to a different entity. Built-in sorting/filtering/paging with the same source array preserves it. This intentionally tightens the former unsafe positional behavior.
+- **Updates and outputs:** update row arrays/objects immutably; in-place mutations are not tracked. `initialRowSelection` seeds only IDs present on initialization; later seed changes are ignored. `selectionChange` fires once on initialization, then when the selected objects or their source order change, including removal and refreshed object references. Unchanged selections do not re-emit for sorting, layout, or other unrelated state changes. IDs must be unique and must not be reused for different entities.
 
 ## API reference
 

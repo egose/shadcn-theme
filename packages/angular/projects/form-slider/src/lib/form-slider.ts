@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, numberAttribute } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  numberAttribute,
+  OnInit,
+} from '@angular/core';
 import { ControlContainer, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import {
   HlmFormField,
@@ -13,6 +22,7 @@ import { HlmLabel } from '@egose/shadcn-theme-ng/label';
 import { HlmSlider } from '@egose/shadcn-theme-ng/slider';
 import { hlm } from '@egose/shadcn-theme-ng/utils';
 import { ClassValue } from 'clsx';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { NumberInput } from '@angular/cdk/coercion';
 import { injectEgFormSliderConfig } from './form-slider.token';
 
@@ -48,6 +58,7 @@ import { injectEgFormSliderConfig } from './form-slider.token';
         [step]="step()"
         [disabled]="effectiveDisabled()"
         [aria-labelledby]="lbl ? labelId() : null"
+        [aria-describedby]="describedBy()"
         [class]="$sliderClass()"
       />
 
@@ -65,12 +76,22 @@ import { injectEgFormSliderConfig } from './form-slider.token';
     </hlm-form-field>
   `,
 })
-export class EgFormSlider {
+export class EgFormSlider implements OnInit {
   private readonly formGroupDirective = inject(FormGroupDirective);
   private readonly _errorMessages = injectEgFormErrorMessages();
   private readonly generatedId = inject(HlmFormIdGenerator).generate('eg-form-slider');
   private readonly _config = injectEgFormSliderConfig();
   private readonly _shared = injectEgFormSharedConfig();
+
+  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    // Submit/reset may change message visibility without changing the field's value or validity.
+    this.formGroupDirective.form.events
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => this._cdr.markForCheck());
+  }
 
   label = input<string | undefined>(undefined);
   controlId = input<string | undefined>(undefined);
@@ -83,6 +104,8 @@ export class EgFormSlider {
    */
   autoError = input<boolean>(true);
   hint = input<string | undefined>(undefined);
+  /** Consumer-owned description IDs, merged with the current error and hint IDs on every thumb. */
+  ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
 
   id = input<string | undefined>(undefined);
   disabled = input<boolean>(false);
@@ -133,8 +156,10 @@ export class EgFormSlider {
     return this.disabled() || !!this.formGroupDirective.form.get(this.controlName())?.disabled;
   }
 
-  // NOTE: BrnSlider exposes aria-labelledby but no aria-describedby, so error/hint
-  // ids render for sighted users without an input-level describedby link.
+  protected describedBy(): string | null {
+    const ids = [this.ariaDescribedBy(), this.showError() ? this.errorId() : this.hint() ? this.hintId() : null];
+    return [...new Set(ids.filter(Boolean).join(' ').split(/\s+/).filter(Boolean))].join(' ') || null;
+  }
 
   // Styling
   userClass = input<ClassValue>('', { alias: 'class' });

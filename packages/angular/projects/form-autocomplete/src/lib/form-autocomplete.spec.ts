@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { configureLibraryTestBed } from '../../../../test/setup';
 import { EgFormAutocomplete } from './form-autocomplete';
 import { provideEgFormAutocompleteConfig } from './form-autocomplete.token';
+import { expectDescriptions, verifyValidationDescriptions } from '../../../../test/validation-descriptions';
 
 @Component({
   imports: [ReactiveFormsModule, EgFormAutocomplete],
@@ -15,9 +16,12 @@ import { provideEgFormAutocompleteConfig } from './form-autocomplete.token';
       [disabled]="disabled()"
       [options]="options"
       error="Fruit required"
-      hint="Type a fruit"
-      required
+      [hint]="hint()"
+      [aria-describedby]="descriptions()"
+      [required]="required()"
     />
+    <p id="fruit-external">External fruit instructions</p>
+    <p id="fruit-other">Other fruit instructions</p>
   </form>`,
 })
 class Host {
@@ -25,6 +29,9 @@ class Host {
   readonly id = signal<string | undefined>('fruit');
   readonly disabled = signal(false);
   readonly options = ['Apple', 'Banana', 'Cherry'];
+  readonly hint = signal<string | undefined>('Type a fruit');
+  readonly descriptions = signal<string | null>(null);
+  readonly required = signal(true);
 }
 
 @Component({
@@ -55,6 +62,44 @@ describe('EgFormAutocomplete', () => {
     fixture.detectChanges();
   });
   afterEach(() => fixture.destroy());
+
+  it('describes the native input with the visible hint', () => {
+    const control = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    expect(control.getAttribute('aria-describedby')).toBe('fruit-hint');
+  });
+
+  for (const interaction of ['touch', 'submit'] as const) {
+    it(`keeps native descriptions current through ${interaction}, correction and reset`, async () => {
+      await verifyValidationDescriptions(
+        fixture,
+        () => [fixture.nativeElement.querySelector('input')],
+        fixture.componentInstance.form.controls.value,
+        'Apple',
+        interaction,
+      );
+    });
+  }
+
+  it('merges consumer descriptions and removes obsolete hint/error IDs when inputs change', () => {
+    const host = fixture.componentInstance;
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+    host.descriptions.set(' fruit-external  fruit-external\tfruit-other ');
+    host.form.markAllAsTouched();
+    fixture.detectChanges();
+    expectDescriptions([input], ['fruit-external', 'fruit-other', 'fruit-error']);
+    expect(input.getAttribute('aria-required')).toBe('true');
+    host.id.set('renamed-fruit');
+    host.hint.set(undefined);
+    host.required.set(false);
+    fixture.detectChanges();
+    expectDescriptions([input], ['fruit-external', 'fruit-other', 'renamed-fruit-error']);
+    expect(input.labels?.[0].htmlFor).toBe('renamed-fruit');
+    expect(input.getAttribute('aria-required')).toBeNull();
+    host.form.controls.value.setValue('Apple');
+    host.descriptions.set(null);
+    fixture.detectChanges();
+    expectDescriptions([input], []);
+  });
 
   it('renders one item per option with label, error, and hint', () => {
     const items = () => Array.from(fixture.nativeElement.querySelectorAll('hlm-autocomplete-item')) as HTMLElement[];

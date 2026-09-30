@@ -15,7 +15,25 @@ export const realExamplesSection = defineSection({
   base: '/real-examples',
   entries: [
     {
+      slug: 'support-inbox',
+      capabilities: [
+        'Per-ticket drafts',
+        'Reply retry',
+        'Resolve and reopen',
+        'Resizable conversation',
+        'Mobile sheet',
+      ],
+      related: ['/components/resizable', '/components/scroll-area', '/components/sheet', '/components/item'],
+      route: 'dynamic',
+      title: 'Support Inbox',
+      description:
+        'A bounded support inbox with searchable tickets, resizable list/conversation panels, mobile Sheet detail, retained reply drafts, and simulated send, resolve and reopen actions.',
+      load: () => import('@/components/real-examples/support-inbox'),
+    },
+    {
       slug: 'pricing',
+      capabilities: ['Plan comparison', 'Billing interval', 'Confirmed plan change', 'Failure recovery'],
+      related: ['/components/dialog', '/components/table', '/components/toggle-group'],
       route: 'dynamic',
       title: 'Pricing and Plan Selection',
       description:
@@ -24,6 +42,8 @@ export const realExamplesSection = defineSection({
     },
     {
       slug: 'customers',
+      capabilities: ['Add and rename customers', 'Debounced filtering', 'Page clamping', 'Retained retry drafts'],
+      related: ['/components/table', '/components/pagination', '/widgets/action-menu', '/widgets/use-debounced-value'],
       route: 'dynamic',
       title: 'Customer Resource Management',
       description:
@@ -32,6 +52,8 @@ export const realExamplesSection = defineSection({
     },
     {
       slug: 'settings',
+      capabilities: ['Session drafts', 'Section navigation', 'Discard to saved', 'Deletion retry'],
+      related: ['/widgets/content-sidebar', '/components/alert-dialog'],
       route: 'dynamic',
       title: 'Account and Workspace Settings',
       description:
@@ -40,6 +62,8 @@ export const realExamplesSection = defineSection({
     },
     {
       slug: 'launch-request',
+      capabilities: ['Calendar dates', 'Saved baseline', 'Pending edits', 'React Hook Form'],
+      related: ['/form/date-picker', '/form/hook-multi-select', '/form/hook-text-input'],
       route: 'dynamic',
       title: 'Launch Request',
       description:

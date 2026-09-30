@@ -11,6 +11,12 @@ import { useState, useCallback, useEffect, useRef } from 'react';
  *   - `copied` — whether a copy is still "fresh".
  *   - `error` — `Error | null` from a failed write.
  *
+ * Only the latest requested write may update feedback. Its success clears
+ * `error` and restarts the reset timer; its failure sets `copied` to false,
+ * cancels that timer, and sets `error`. Pending writes retain prior feedback
+ * until settlement or timer expiry. Unmount cancels the timer and ignores
+ * pending completions.
+ *
  * @example
  * const { copy, copied } = useClipboard({ timeout: 1500 })
  */
@@ -44,6 +50,9 @@ export function useClipboard({ timeout = 2000 }: { timeout?: number } = {}) {
         }, timeout);
       } catch (err) {
         if (request !== requestRef.current) return;
+        if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = null;
+        setCopied(false);
         setError(err instanceof Error ? err : new Error(String(err)));
       }
     },

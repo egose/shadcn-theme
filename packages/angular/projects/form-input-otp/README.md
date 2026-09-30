@@ -1,8 +1,8 @@
 # Form Input OTP (`@egose/shadcn-theme-ng/form-input-otp`)
 
-A ready-made reactive-form one-time-code field: label + `brn-input-otp` slots + validation error/hint display in one tag. The model is a plain `string`.
+A ready-made reactive-form one-time-code field: label + `hlm-input-otp` slots + validation error/hint display in one tag. The model is a plain `string`.
 
-The Angular implementation is a standalone wrapper: it renders `HlmFormField` / `HlmError` / `HlmHint` from `@egose/shadcn-theme-ng/form-field`, `HlmLabel`, and `BrnInputOtp` + `HlmInputOtp*` parts from `@egose/shadcn-theme-ng/input-otp` and `@spartan-ng/brain/input-otp`. The OTP input is bound with `[formControlName]="controlName()"` and renders one `hlm-input-otp-slot` per `length` unit in a single group. It must live inside a `FormGroupDirective` (`[formGroup]` parent); ids come from `HlmFormIdGenerator` unless overridden.
+The Angular implementation is a standalone wrapper: it renders `HlmFormField` / `HlmError` / `HlmHint` from `@egose/shadcn-theme-ng/form-field`, `HlmLabel`, and `HlmInputOtpControl` + `HlmInputOtp*` parts from `@egose/shadcn-theme-ng/input-otp`. The adapter inherits `BrnInputOtp` behavior. The OTP input is bound with `[formControlName]="controlName()"` and renders one `hlm-input-otp-slot` per `length` unit in a single group. It must live inside a `FormGroupDirective` (`[formGroup]` parent); ids come from `HlmFormIdGenerator` unless overridden.
 
 > **Ships as:** `@egose/shadcn-theme-ng/form-input-otp` and `@egose/shadcn-theme-ng-tw/form-input-otp`
 > (the `tw:`-prefixed Tailwind variant). Both expose the identical TypeScript surface; only the
@@ -53,7 +53,7 @@ NgModule-based consumer: add `EgFormInputOtp` (and `ReactiveFormsModule`) to the
 `imports` — it is a standalone component, not a module.
 
 `ControlValueAccessor` behavior: `eg-form-input-otp` itself is not a `ControlValueAccessor`; the
-inner `brn-input-otp` is (bound via `formControlName`), so `formControlName`/`formGroup` handling,
+inner `hlm-input-otp` is (bound via `formControlName`), so `formControlName`/`formGroup` handling,
 `Validators`, and `disabled` state from the control all flow through the parent form.
 
 ## Anatomy / Structure
@@ -169,8 +169,10 @@ export class PinComponent {
 ## Accessibility notes
 
 - Label `for` ↔ OTP `inputId` wiring is automatic via `effectiveId` — always pass a `label`.
-- `BrnInputOtp` exposes no `aria-describedby`, so error/hint ids render without an input-level link.
-- The required `*` is visual; pair with `Validators.required` (plus `minLength`) so assistive tech and validation agree.
+- The wrapper uses `HlmInputOtpControl` (`hlm-input-otp`), a declarative adapter retaining `BrnInputOtp`'s CVA/editing behavior. Its native input references the displayed error (invalid + touched/dirty/submitted), otherwise the hint; correction/reset restores the hint.
+- Optional `[aria-describedby]` (`string | null`, default `null`) adds consumer-owned IDs before the current message ID, normalized and deduplicated. Keep external elements mounted and reserve `<effectiveId>-error` / `-hint` for the wrapper. Bind the input rather than `[attr.aria-describedby]` on the wrapper host.
+- `required` supplies the visual `*` and native `aria-required`; configure `Validators.required` (plus `minLength`) independently. Native `aria-invalid` follows the form control.
+- `HlmError` is not a live region. Rendered DOM/focus regressions are automated coverage, not screen-reader testing.
 
 ## Theming / CSS variables
 

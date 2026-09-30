@@ -2,9 +2,13 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import PricingExample from './index';
+import * as simulation from '../_shared/async-simulation';
 
 // Vitest globals are disabled, so RTL auto-cleanup never registers.
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 function renderLoaded() {
   render(<PricingExample />);
@@ -55,25 +59,28 @@ describe('PricingExample — plan-change dialog', () => {
     vi.useFakeTimers();
     try {
       renderLoaded();
-      const requests: string[] = [];
+      const operation = vi.spyOn(simulation, 'simulate');
       fireEvent.click(screen.getByRole('button', { name: 'Choose Growth' }));
       const confirm = screen.getByRole('button', { name: 'Confirm plan change' }) as HTMLButtonElement;
       fireEvent.click(confirm);
-      requests.push('first');
       // Pending: confirm is disabled by its loading state — a second click is a no-op.
       expect(confirm.disabled).toBe(true);
       fireEvent.click(confirm);
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+      expect(screen.getByRole('dialog')).toBeTruthy();
 
       await act(async () => {
         await vi.advanceTimersByTimeAsync(400);
       });
 
-      expect(requests).toHaveLength(1);
+      expect(operation).toHaveBeenCalledExactlyOnceWith('growth', expect.any(Object));
       expect(screen.queryByRole('dialog')).toBeNull();
       expect(screen.getByRole('status').textContent).toContain('Your plan is now Growth.');
       // The Growth card now reads "Current plan" as text, not just styling.
       expect(screen.getAllByText('Current plan').length).toBeGreaterThan(0);
       expect(screen.queryByRole('button', { name: 'Choose Growth' })).toBeNull();
+      await act(() => vi.advanceTimersByTimeAsync(0));
+      expect(document.activeElement).toBe(screen.getByRole('region', { name: 'Plan change result' }));
     } finally {
       vi.useRealTimers();
     }
@@ -96,11 +103,38 @@ describe('PricingExample — plan-change dialog', () => {
       expect(alert.textContent).toContain('could not change your plan to Growth');
       // Starter remains the current plan; Growth can still be chosen again.
       expect(screen.getByRole('button', { name: 'Choose Growth' })).toBeTruthy();
+      await act(() => vi.advanceTimersByTimeAsync(0));
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Choose Growth' }));
       expect(screen.getAllByText('Current plan').length).toBeGreaterThan(0);
     } finally {
       vi.useRealTimers();
     }
   });
+
+  it.each(['cancel', 'success', 'failure'])(
+    'uses a stable destination after %s when catalog navigation removes the opener',
+    async (outcome) => {
+      vi.useFakeTimers();
+      try {
+        renderLoaded();
+        if (outcome === 'failure') fireEvent.click(screen.getByRole('radio', { name: 'Simulate failure' }));
+        const loading = screen.getByRole('button', { name: 'Loading' });
+        const trigger = screen.getByRole('button', { name: 'Choose Growth' });
+        fireEvent.click(trigger);
+        // Synthetic lifecycle stress: a modal blocks normal pointer access to
+        // catalog tooling, but these controls can unmount the underlying cards.
+        fireEvent.click(loading);
+        expect(trigger.isConnected).toBe(false);
+        fireEvent.click(screen.getByRole('button', { name: outcome === 'cancel' ? 'Cancel' : 'Confirm plan change' }));
+        await act(() => vi.advanceTimersByTimeAsync(400));
+        await act(() => vi.advanceTimersByTimeAsync(0));
+        expect(document.activeElement).toBe(screen.getByRole('region', { name: 'Plan change result' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    },
+  );
 });
 
 describe('PricingExample — accessible structure', () => {

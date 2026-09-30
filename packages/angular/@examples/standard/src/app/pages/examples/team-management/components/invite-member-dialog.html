@@ -1,0 +1,53 @@
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="tw:contents">
+  <hlm-dialog-header>
+    <h3 hlmDialogTitle>Invite teammate</h3>
+    <p hlmDialogDescription>
+      Preview a workspace invitation with Invited status and the chosen role. No email is sent.
+    </p>
+  </hlm-dialog-header>
+  <div class="tw:grid tw:min-w-0 tw:gap-3 tw:py-4">
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="invite-name">Full name</label>
+      <input
+        hlmInput
+        id="invite-name"
+        data-testid="invite-name"
+        formControlName="name"
+        autocomplete="name"
+        [attr.aria-describedby]="nameError() ? 'invite-name-error' : null"
+        [attr.aria-invalid]="nameError() ? true : null"
+      />
+      @if (nameError(); as error) {
+      <p id="invite-name-error" data-testid="invite-name-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="invite-email">Work email</label>
+      <input
+        hlmInput
+        id="invite-email"
+        data-testid="invite-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-describedby]="emailError() ? 'invite-email-error' : null"
+        [attr.aria-invalid]="emailError() ? true : null"
+      />
+      @if (emailError(); as error) {
+      <p id="invite-email-error" data-testid="invite-email-error" class="tw:text-sm tw:text-red-600">{{ error }}</p>
+      }
+    </div>
+    <div class="tw:grid tw:min-w-0 tw:gap-2">
+      <label hlmLabel for="invite-role">Role</label>
+      <hlm-native-select selectId="invite-role" formControlName="role" data-testid="invite-role">
+        @for (role of roleOptions; track role) {
+        <option [value]="role">{{ role }}</option>
+        }
+      </hlm-native-select>
+    </div>
+  </div>
+  <hlm-dialog-footer>
+    <button hlmButton type="button" variant="secondary" appearance="outline" (click)="cancel()">Cancel</button>
+    <button hlmButton type="submit" data-testid="invite-submit">Send invite</button>
+  </hlm-dialog-footer>
+</form>

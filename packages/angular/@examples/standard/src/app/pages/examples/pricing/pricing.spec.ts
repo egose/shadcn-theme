@@ -1,5 +1,6 @@
-import { provideZonelessChangeDetection } from '@angular/core';
+import { getDebugNode, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgControl } from '@angular/forms';
 import { PricingExamplePage } from './pricing';
 import {
   EXAMPLE_PLANS,
@@ -26,7 +27,7 @@ function setSeats(value: string): void {
 }
 
 async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 180));
   fixture.detectChanges();
   await fixture.whenStable();
   fixture.detectChanges();
@@ -224,6 +225,207 @@ describe('PricingExamplePage', () => {
     expect(overlayPane()).toBeNull();
     expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
     expect(summaryText(host, 'selection-summary')).toContain('Selected: Team');
+  });
+
+  it('rejects fractional seats with an error associated to the rendered input', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    setSeats('1.5');
+    overlayButton('Confirm plan')?.click();
+    await settle(fixture);
+    const input = overlayPane()?.querySelector<HTMLInputElement>('#plan-seats');
+    const error = overlayPane()?.querySelector<HTMLElement>('[data-testid="plan-seats-error"]');
+    expect(error?.textContent).toContain('whole number');
+    expect(input?.getAttribute('aria-describedby')).toContain(error?.id ?? 'missing-error');
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+  });
+
+  it('clears an unrelated prior outcome when a new selection is cancelled', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="select-plan-enterprise"]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    overlayButton('Cancel')?.click();
+    await settle(fixture);
+    expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+    expect(summaryText(host, 'selection-summary')).toContain('cancelled');
+  });
+
+  it('invalidates a dialog when readonly changes before confirmation', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    const page = fixture.componentInstance as unknown as { readOnly: { set: (value: boolean) => void } };
+    page.readOnly.set(true);
+    overlayButton('Confirm plan')?.click();
+    await settle(fixture);
+    expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+    expect(overlayPane()).toBeNull();
+  });
+
+  it('clears a confirmed monthly selection when switching to annual comparison', async () => {
+    const { fixture, host } = setup();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    overlayButton('Confirm plan')?.click();
+    await settle(fixture);
+    (host.querySelector('#billing-annual') as HTMLInputElement).click();
+    fixture.detectChanges();
+    expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+    expect(summaryText(host, 'selection-summary')).toContain('No plan selected');
+  });
+
+  for (const value of ['', '0', '1001', '-1', '1.5', 'NaN', 'Infinity', '1e309']) {
+    it(`keeps seats ${JSON.stringify(value)} invalid in the real dialog with native hints and error feedback`, async () => {
+      const { fixture, host } = setup();
+      (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+      await settle(fixture);
+      const input = overlayPane()!.querySelector<HTMLInputElement>('#plan-seats')!;
+      expect(input.required).toBeTrue();
+      expect(input.min).toBe('1');
+      expect(input.max).toBe('1000');
+      expect(input.step).toBe('1');
+      setSeats(value);
+      overlayButton('Confirm plan')!.click();
+      await settle(fixture);
+      const error = overlayPane()?.querySelector<HTMLElement>('#plan-seats-error');
+      expect(error).not.toBeNull();
+      expect(input.getAttribute('aria-describedby')?.split(' ')).toContain(error?.id);
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      expect(document.activeElement).toBe(input);
+      expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+    });
+  }
+
+  for (const value of [NaN, Infinity, -Infinity]) {
+    it(`rejects a nonfinite ${value} form value even when it bypasses native input sanitization`, async () => {
+      const { fixture, host } = setup();
+      (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+      await settle(fixture);
+      const input = overlayPane()!.querySelector<HTMLInputElement>('#plan-seats')!;
+      // Number inputs sanitize nonnumeric strings to empty; exercise the typed form boundary too.
+      getDebugNode(input)!.injector.get(NgControl).control!.setValue(value);
+      overlayButton('Confirm plan')!.click();
+      await settle(fixture);
+      expect(overlayPane()?.querySelector('#plan-seats-error')?.textContent).toContain('finite whole number');
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+    });
+  }
+
+  for (const cadence of ['monthly', 'annual']) {
+    for (const seats of [1, 1000]) {
+      it(`confirms the ${seats}-seat boundary with captured ${cadence} arithmetic after correcting an error`, async () => {
+        const { fixture, host } = setup();
+        (host.querySelector(`#billing-${cadence}`) as HTMLInputElement).click();
+        fixture.detectChanges();
+        (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+        await settle(fixture);
+        expect(overlayPane()?.textContent).toContain(
+          cadence === 'annual' ? '$374.40/year' : '$39.00/mo, billed monthly',
+        );
+        setSeats('0');
+        overlayButton('Confirm plan')!.click();
+        await settle(fixture);
+        setSeats(String(seats));
+        await settle(fixture);
+        const input = overlayPane()!.querySelector<HTMLInputElement>('#plan-seats')!;
+        expect(input.getAttribute('aria-invalid')).not.toBe('true');
+        expect(input.getAttribute('aria-describedby')).toBe('plan-seats-hint');
+        expect(overlayPane()?.querySelector('#plan-seats-error')).toBeNull();
+        overlayButton('Confirm plan')!.click();
+        await settle(fixture);
+        const result = summaryText(host, 'confirmation-result');
+        expect(result).toContain(`Team confirmed: ${seats} ${seats === 1 ? 'seat ×' : 'seats ×'}`);
+        if (cadence === 'annual') {
+          expect(result).toContain(
+            seats === 1 ? '$31.20/mo, billed as $374.40 per year' : '$31200.00/mo, billed as $374400.00 per year',
+          );
+        } else {
+          expect(result).toContain(seats === 1 ? '$39.00/mo, billed monthly' : '$39000.00/mo, billed monthly');
+        }
+        expect(summaryText(host, 'selection-summary')).toContain('Preview confirmed below');
+        expect(summaryText(host, 'selection-summary')).not.toContain('in the dialog');
+      });
+    }
+  }
+
+  it('restores focus on cancellation and permits a fresh confirmation', async () => {
+    const { fixture, host } = setup();
+    const trigger = host.querySelector<HTMLButtonElement>('[data-testid="select-plan-team"]')!;
+    trigger.focus();
+    trigger.click();
+    await settle(fixture);
+    overlayButton('Cancel')!.click();
+    await settle(fixture);
+    expect(document.activeElement).toBe(trigger);
+    expect(summaryText(host, 'selection-summary')).toContain('cancelled');
+    trigger.click();
+    await settle(fixture);
+    overlayButton('Confirm plan')!.click();
+    await settle(fixture);
+    expect(summaryText(host, 'confirmation-result')).toContain('5 seats');
+  });
+
+  for (const boundary of ['cadence', 'readonly', 'preview', 'reload', 'destroy']) {
+    it(`closes the actual overlay on ${boundary}`, async () => {
+      const { fixture, host } = setup();
+      (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+      await settle(fixture);
+      const page = fixture.componentInstance as unknown as {
+        setReadOnly(value: boolean): void;
+        setViewState(value: 'empty'): void;
+        reload(): Promise<void>;
+      };
+      if (boundary === 'cadence') (host.querySelector('#billing-annual') as HTMLInputElement).click();
+      if (boundary === 'readonly') page.setReadOnly(true);
+      if (boundary === 'preview') page.setViewState('empty');
+      if (boundary === 'reload') await page.reload();
+      if (boundary === 'destroy') fixture.destroy();
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      expect(overlayPane()).toBeNull();
+      if (boundary !== 'destroy') {
+        await settle(fixture);
+        expect(host.querySelector('[data-testid="confirmation-result"]')).toBeNull();
+      }
+    });
+  }
+
+  it('contains narrow pending, invalid, confirmed, cancelled and readonly states with one routed title', async () => {
+    const { fixture, host } = setup();
+    host.style.cssText = 'display:block;width:280px;position:absolute;top:0;left:0;';
+    const fits = () => {
+      expect(host.scrollWidth).toBeLessThanOrEqual(host.clientWidth + 1);
+      expect(host.querySelectorAll('h2').length).toBe(1);
+    };
+    fits();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    fits();
+    setSeats('1.5');
+    overlayButton('Confirm plan')!.click();
+    await settle(fixture);
+    const pane = overlayPane()!;
+    expect(pane.scrollWidth).toBeLessThanOrEqual(pane.clientWidth + 1);
+    expect(pane.getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth);
+    setSeats('1000');
+    await settle(fixture);
+    overlayButton('Confirm plan')!.click();
+    await settle(fixture);
+    expect(overlayPane()).toBeNull();
+    expect(summaryText(host, 'confirmation-result')).toContain('Team confirmed: 1000 seats');
+    fits();
+    (host.querySelector('[data-testid="select-plan-team"]') as HTMLButtonElement).click();
+    await settle(fixture);
+    overlayButton('Cancel')!.click();
+    await settle(fixture);
+    fits();
+    (fixture.componentInstance as unknown as { setReadOnly(value: boolean): void }).setReadOnly(true);
+    await settle(fixture);
+    fits();
   });
 
   it('handles enterprise contact without a dialog and with one visible result', async () => {

@@ -35,7 +35,8 @@ export function formatNanpPhoneNumber(digits: string): string {
 /**
  * A masked phone input. The form model holds raw digits (`"4155552671"`);
  * the visible text is formatted (`"(415) 555-2671"`). Caret position is
- * preserved across mask characters while typing or deleting.
+ * preserved across mask characters while typing or deleting. Backspace/Delete
+ * skip separators in their direction; selected ranges delete only selected digits.
  */
 @Component({
   selector: 'hlm-phone-input',
@@ -62,6 +63,7 @@ export function formatNanpPhoneNumber(digits: string): string {
       [forceInvalid]="forceInvalid()"
       [class]="$inputClass()"
       [value]="_display()"
+      (beforeinput)="_handleBeforeInput($event)"
       (input)="_handleInput($event)"
       (blur)="_handleBlur()"
     />
@@ -90,7 +92,7 @@ export class HlmPhoneInput implements ControlValueAccessor {
    */
   public readonly modelFormat = input<'digits' | 'formatted'>('digits');
 
-  /** Display formatter. Receives raw digits, returns display text. */
+  /** Display formatter. Preserve digit order/content and add only non-digit separators for caret mapping. */
   public readonly formatPhoneNumber = input<PhoneNumberFormatter>(formatNanpPhoneNumber);
 
   /** Extra classes merged onto the inner `<input>` (over the `HlmInput` base). */
@@ -122,12 +124,45 @@ export class HlmPhoneInput implements ControlValueAccessor {
     }
   }
 
+  protected _handleBeforeInput(event: InputEvent): void {
+    if (event.defaultPrevented || !event.cancelable) return;
+    if (this.disabledState() || this.readonly()) {
+      event.preventDefault();
+      return;
+    }
+    if (event.inputType !== 'deleteContentBackward' && event.inputType !== 'deleteContentForward') return;
+
+    // Input events contain the already-edited value. Only beforeinput retains
+    // both the browser's deletion intent and the original selected range.
+    const element = event.target as HTMLInputElement;
+    const start = element.selectionStart;
+    const end = element.selectionEnd;
+    if (start === null || end === null) return;
+    const digits = element.value.replace(/\D/g, '');
+    let from = element.value.slice(0, start).replace(/\D/g, '').length;
+    let to = element.value.slice(0, end).replace(/\D/g, '').length;
+    if (start === end) {
+      if (event.inputType === 'deleteContentBackward') from = Math.max(0, from - 1);
+      else to = Math.min(digits.length, to + 1);
+    }
+
+    event.preventDefault();
+    this._renderEdit(element, digits.slice(0, from) + digits.slice(to), from);
+  }
+
   protected _handleInput(event: Event): void {
     const element = event.target as HTMLInputElement;
+    if (this.disabledState() || this.readonly()) {
+      element.value = this._display();
+      return;
+    }
     const caret = element.selectionStart ?? element.value.length;
     const digitsBeforeCaret = element.value.slice(0, caret).replace(/\D/g, '').length;
+    this._renderEdit(element, element.value.replace(/\D/g, ''), digitsBeforeCaret);
+  }
 
-    const digits = element.value.replace(/\D/g, '').slice(0, Math.max(0, this.maxDigits()));
+  private _renderEdit(element: HTMLInputElement, rawDigits: string, digitsBeforeCaret: number): void {
+    const digits = rawDigits.slice(0, Math.max(0, this.maxDigits()));
     const formatted = this.formatPhoneNumber()(digits);
 
     const target = Math.min(digitsBeforeCaret, digits.length);

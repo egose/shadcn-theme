@@ -123,20 +123,38 @@ Lazy body (attached only when the step is first selected):
 
 ### `HlmStepper` — selector `hlm-stepper` (component, extends `CdkStepper`)
 
-| Input                   | Type                            | Default                 | Description                                                      |
-| ----------------------- | ------------------------------- | ----------------------- | ---------------------------------------------------------------- |
-| `orientation`           | forwarded to `CdkStepper`       | —                       | `'horizontal' \| 'vertical'`.                                    |
-| `linear`                | forwarded to `CdkStepper`       | —                       | Current step must be valid (via `stepControl`) before advancing. |
-| `selectedIndex`         | forwarded to `CdkStepper`       | —                       | Controlled selected-step index.                                  |
-| `labelPosition`         | `'end' \| 'bottom'`             | `'end'`                 | Horizontal layout: label beside vs. below the indicator.         |
-| `headerPosition`        | `'top' \| 'bottom'`             | `'top'`                 | Horizontal layout: headers above vs. below the content panel.    |
-| `indicatorMode`         | `'number' \| 'state' \| 'icon'` | from config (`'state'`) | Indicator rendering (see below).                                 |
-| `stepperAriaLabel`      | `string \| null`                | `'Progress'`            | `aria-label` for the tablist (ignored when labelledby is set).   |
-| `stepperAriaLabelledby` | `string \| null`                | `null`                  | `aria-labelledby` for the tablist.                               |
-| `animationsEnabled`     | `boolean`                       | from config (`true`)    | Toggle step transitions per instance.                            |
-| `animationDuration`     | `number` (ms)                   | from config (`300`)     | Transition duration per instance.                                |
+| Input                   | Type                            | Default                 | Description                                                         |
+| ----------------------- | ------------------------------- | ----------------------- | ------------------------------------------------------------------- |
+| `orientation`           | forwarded to `CdkStepper`       | —                       | `'horizontal' \| 'vertical'`.                                       |
+| `linear`                | forwarded to `CdkStepper`       | —                       | CDK checks preceding steps, honoring optional/completion overrides. |
+| `selectedIndex`         | forwarded to `CdkStepper`       | —                       | Controlled selected-step index.                                     |
+| `labelPosition`         | `'end' \| 'bottom'`             | `'end'`                 | Horizontal layout: label beside vs. below the indicator.            |
+| `headerPosition`        | `'top' \| 'bottom'`             | `'top'`                 | Horizontal layout: headers above vs. below the content panel.       |
+| `indicatorMode`         | `'number' \| 'state' \| 'icon'` | from config (`'state'`) | Indicator rendering (see below).                                    |
+| `stepperAriaLabel`      | `string \| null`                | `'Progress'`            | `aria-label` for the tablist (ignored when labelledby is set).      |
+| `stepperAriaLabelledby` | `string \| null`                | `null`                  | `aria-labelledby` for the tablist.                                  |
+| `animationsEnabled`     | `boolean`                       | from config (`true`)    | Toggle step transitions per instance.                               |
+| `animationDuration`     | `number` (ms)                   | from config (`300`)     | Transition duration per instance.                                   |
 
-`next()` is overridden to `markAllAsTouched()` + `updateValueAndValidity()` on the current `stepControl` first, so linear steppers surface validation errors before denying the transition.
+`next()` and `button[hlmStepperNext]` call `markAllAsTouched()` + `updateValueAndValidity()` on the current classic reactive-forms `stepControl` before delegating navigation to CDK. This preserves touch/validation feedback even when navigation is denied, and also runs for optional, completed, and non-linear steps. Signal-form Fields are passed through to CDK without this classic-control touch pass.
+
+CDK determines eligibility for Next, header selection, and direct index changes:
+
+- In linear mode, all preceding required steps must satisfy CDK's interaction and validation rules. Invalid or pending controls block advancement unless their step is optional or explicitly `[completed]="true"`.
+- Optional steps can be skipped while invalid or pending. Explicit completion also permits advancement in those states.
+- Without a `stepControl`, CDK uses `completed` (by default, whether the step was interacted with). Explicit `[completed]="false"` blocks a required control-less step. With a control, CDK uses its validation state; `[completed]="false"` does not veto an otherwise valid, interacted control.
+- Non-linear navigation is not blocked by invalid/pending forms. CDK's backward-navigation `editable` rule still applies.
+
+Header/direct selection retains CDK's interaction behavior and does not run Next's form-touch/revalidation pass. Next revalidation can restart a validator attached to the current control, so pending eligibility is evaluated after that pass.
+
+Header `aria-disabled`, disabled styling and active state preview the same transition that CDK will attempt, in both orientations:
+
+- An unvisited destination is enabled when its predecessors permit entry; the destination's own incomplete/invalid control does not block entry. A completed destination cannot bypass a blocked predecessor.
+- The preview accounts for CDK marking the **current** step interacted on an attempt to leave it. It does not mark steps interacted while rendering. Other unvisited required predecessors still block skipping ahead unless optional or explicitly completed.
+- Backward selection requires the destination's `editable` input and, in linear mode, eligible predecessors **before that destination**. The current step's invalid/pending state does not itself prevent going back.
+- The selected header stays enabled as a no-op, including vertically; selecting it neither collapses the panel nor marks the step interacted.
+
+Actual clicks and Enter/Space selection remain delegated to CDK. Disabled headers remain discoverable by keyboard focus; attempted keyboard selection cannot change the selected index, but retains CDK's current-step interaction notification. Header attempts do not touch or revalidate form controls. Classic-form status notifications (including async validator completion) refresh the affordance; Signal Field validity is read reactively.
 
 ### `HlmStep` — selector `hlm-step` (component, extends `CdkStep`)
 
@@ -145,7 +163,9 @@ Lazy body (attached only when the step is first selected):
 | `label`           | forwarded to `CdkStep`                   | —                                            | Step title (string, or rich template via `hlmStepLabel`).                |
 | `icon`            | `string \| null`                         | `null`                                       | Icon name rendered when `indicatorMode="icon"`.                          |
 | `stepControl`     | forwarded to `CdkStep`                   | —                                            | Form group driving `linear` validation.                                  |
-| `optional`        | forwarded to `CdkStep`                   | —                                            | Shows an "Optional" caption in the header.                               |
+| `optional`        | forwarded to `CdkStep`                   | —                                            | Permits skipping in linear mode and shows an "Optional" caption.         |
+| `completed`       | forwarded to `CdkStep`                   | —                                            | Explicit completion override; see CDK navigation rules above.            |
+| `editable`        | forwarded to `CdkStep`                   | `true`                                       | Allows returning to this step; enforced in linear and non-linear modes.  |
 | `errorMessage`    | forwarded to `CdkStep`                   | —                                            | Header error caption when the step state is `error`.                     |
 | `hasError`        | forwarded to `CdkStep`                   | —                                            | Forces the error state (pair with `STEPPER_GLOBAL_OPTIONS` `showError`). |
 | `tooltip`         | `string \| TemplateRef<unknown> \| null` | `null` (falls back to the full string label) | Styled header tooltip override; rich templates allowed.                  |
@@ -263,7 +283,7 @@ export class DemoResponsive {
 
 ### 4. Linear stepper with validation
 
-With `linear`, the current step must be valid before advancing — `HlmStepper.next()` marks the step form touched first:
+With `linear`, required steps normally need valid, non-pending controls before advancing. `HlmStepper.next()` marks the current step form touched first; optional and explicitly completed steps follow the exceptions above:
 
 ```ts
 import { Component, inject } from '@angular/core';
@@ -361,9 +381,9 @@ Steps using `<ng-template hlmStepLabel>` have no string to fall back to — pass
 
 - Horizontal headers get `role="tab"` semantics inside a `role="tablist"` (labelled `Progress` by default — override with `stepperAriaLabel` / `stepperAriaLabelledby`); panels get `role="tabpanel"` wired via `aria-labelledby` / `aria-controls`.
 - Vertical headers use `role="button"` with `aria-expanded` / `aria-current="step"`.
-- Keyboard: `HlmStepper` inherits CDK arrow-key navigation (`_onKeydown`). Headers are focusable via roving `tabIndex`.
-- Disabled steps (`linear` + not navigable) get `aria-disabled` and `data-disabled` styling — explain in the label why a step is unavailable.
-- In `linear` mode, failed validation marks fields touched so screen readers announce the errors.
+- Keyboard: CDK manages roving `tabIndex`, horizontal Left/Right (direction-aware), vertical Up/Down, Home/End, wrapping, and Enter/Space activation. Focus movement does not select a step. Disabled headers can receive keyboard focus so their labels and unavailable state remain discoverable.
+- Headers that CDK cannot select get matching `aria-disabled="true"` and `data-disabled="true"` pointer/opacity styling, including non-editable backward destinations in non-linear mode. Explain in the label why a step is unavailable. Eligible unvisited destinations and the selected header are not disabled.
+- Next marks classic form controls touched so applications can display validation feedback. Associate error text with the relevant controls; touching alone does not guarantee a screen-reader announcement.
 
 ## Theming / CSS variables
 

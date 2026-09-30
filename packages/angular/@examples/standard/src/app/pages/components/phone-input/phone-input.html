@@ -1,0 +1,49 @@
+<app-demo-header
+  title="Phone Input"
+  description="Public masked phone primitive with raw-digit or formatted form models. This demo uses the default 10-digit NANP mask."
+/>
+<div class="tw:grid tw:min-w-0 tw:gap-6">
+  <app-demo-section
+    title="Edit and correct"
+    description="Select digits to replace them, or use Backspace/Delete across mask separators. Paste a number to strip punctuation; the model keeps at most 10 digits. Masking is not phone-number validation."
+  >
+    <div class="tw:grid tw:min-w-0 tw:max-w-md tw:gap-4">
+      <div class="tw:grid tw:gap-2">
+        <label for="phone-raw">Raw-digit model</label>
+        <hlm-phone-input inputId="phone-raw" ariaDescribedby="phone-raw-value" [formControl]="raw" />
+        <p id="phone-raw-value" class="tw:break-words tw:text-sm" role="status">
+          Raw value: {{ raw.value ?? 'null (empty)' }}
+        </p>
+      </div>
+      <div class="tw:grid tw:gap-2">
+        <label for="phone-formatted">Formatted model</label>
+        <hlm-phone-input
+          inputId="phone-formatted"
+          ariaDescribedby="phone-formatted-value"
+          modelFormat="formatted"
+          [formControl]="formatted"
+        />
+        <p id="phone-formatted-value" class="tw:break-words tw:text-sm" role="status">
+          Formatted value: {{ formatted.value ?? 'null (empty)' }}
+        </p>
+      </div>
+      <div><button hlmButton type="button" (click)="reset()">Reset editable numbers</button></div>
+      <p class="tw:text-sm">Reset clears both editable values to null and restores pristine, untouched form state.</p>
+    </div>
+  </app-demo-section>
+  <app-demo-section
+    title="Readonly and disabled"
+    description="Readonly remains focusable for copying; disabled is excluded from keyboard navigation. Both preserve their values."
+  >
+    <div class="tw:grid tw:min-w-0 tw:max-w-md tw:gap-4">
+      <div class="tw:grid tw:gap-2">
+        <label for="phone-readonly">Readonly number</label>
+        <hlm-phone-input inputId="phone-readonly" [readonly]="true" [formControl]="readOnly" />
+      </div>
+      <div class="tw:grid tw:gap-2">
+        <label for="phone-disabled">Disabled number (reactive form)</label>
+        <hlm-phone-input inputId="phone-disabled" [formControl]="disabled" />
+      </div>
+    </div>
+  </app-demo-section>
+</div>

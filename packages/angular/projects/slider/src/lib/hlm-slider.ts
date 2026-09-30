@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
+import { BrnFieldControl, BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 import { BrnSlider, BrnSliderImports, injectBrnSlider } from '@spartan-ng/brain/slider';
 import { classes } from '@egose/shadcn-theme-ng/utils';
 
 @Component({
   selector: 'hlm-slider, brn-slider [hlm]',
-  imports: [BrnSliderImports],
+  imports: [BrnSliderImports, BrnFieldControlDescribedBy],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [
     {
@@ -49,6 +50,9 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
         <span
           class="tw:border-primary tw:ring-ring/50 tw:size-4 tw:rounded-full tw:border tw:bg-white tw:shadow-sm tw:transition-[color,box-shadow] tw:hover:ring-4 tw:focus-visible:ring-4 tw:focus-visible:outline-hidden tw:absolute tw:block tw:shrink-0 tw:select-none tw:after:absolute tw:after:-inset-2"
           brnSliderThumb
+          brnFieldControlDescribedBy
+          [aria-describedby]="ariaDescribedBy()"
+          [attr.aria-invalid]="_fieldControl.invalid() ? 'true' : null"
         ></span>
       }
     </div>
@@ -72,6 +76,10 @@ import { classes } from '@egose/shadcn-theme-ng/utils';
 })
 export class HlmSlider {
   protected readonly _slider = injectBrnSlider();
+  protected readonly _fieldControl = inject(BrnFieldControl);
+
+  /** Description IDs applied to every thumb, merged with enclosing Spartan field descriptions. */
+  public readonly ariaDescribedBy = input<string | null>(null, { alias: 'aria-describedby' });
 
   constructor() {
     classes(() => [
