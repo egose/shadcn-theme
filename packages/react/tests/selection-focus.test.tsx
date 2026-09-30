@@ -43,9 +43,7 @@ function Fixture({ kind, onBlur }: { kind: Kind; onBlur?: () => void }) {
     kind === 'select' ? HookFormSelect : kind === 'searchable' ? HookFormSearchableSelect : HookFormMultiSelect;
   return (
     <FormProvider {...form}>
-
       <form onSubmit={form.handleSubmit(() => undefined)} noValidate>
-
         <Control
           name="customer"
           label="Customer"
@@ -57,13 +55,11 @@ function Fixture({ kind, onBlur }: { kind: Kind; onBlur?: () => void }) {
         <button type="button" onClick={() => form.setFocus('customer')}>
           Focus customer
         </button>
-                <button type="submit">Submit</button>
-                <output data-testid="touched">{String(!!form.formState.touchedFields.customer)}</output>
-                <output data-testid="error">{form.formState.errors.customer?.message ?? ''}</output>
-                <output data-testid="value">{JSON.stringify(form.watch('customer'))}</output>
-
+        <button type="submit">Submit</button>
+        <output data-testid="touched">{String(!!form.formState.touchedFields.customer)}</output>
+        <output data-testid="error">{form.formState.errors.customer?.message ?? ''}</output>
+        <output data-testid="value">{JSON.stringify(form.watch('customer'))}</output>
       </form>
-
     </FormProvider>
   );
 }
@@ -210,11 +206,9 @@ describe('public selection refs and input composition', () => {
         <FormMultiSelect name="multi" data={customers} value={[]} onChange={vi.fn()} ref={ref} />
       ) : (
         <MultiSelector values={[]} onValuesChange={vi.fn()}>
-
           <MultiSelectorTrigger>
             <MultiSelectorInput ref={ref} />
           </MultiSelectorTrigger>
-
         </MultiSelector>
       );
     const { rerender, unmount } = render(field(firstRef));
@@ -244,7 +238,6 @@ describe('public selection refs and input composition', () => {
     });
     const { unmount } = render(
       <StrictMode>
-
         <FormSelect
           name="select"
           data={customers}
@@ -266,7 +259,6 @@ describe('public selection refs and input composition', () => {
           onChange={vi.fn()}
           ref={kind === 'object' ? multi : multiCallback}
         />
-
       </StrictMode>,
     );
     expect(select.current).toBe(screen.getAllByRole('combobox')[0]);
@@ -291,11 +283,8 @@ describe('public selection refs and input composition', () => {
     const onValuesChange = vi.fn();
     render(
       <>
-
         <MultiSelector values={customers} onValuesChange={onValuesChange}>
-
           <MultiSelectorTrigger>
-
             <MultiSelectorInput
               ref={ref}
               onBlur={onBlur}
@@ -303,12 +292,9 @@ describe('public selection refs and input composition', () => {
               onClick={onClick}
               onValueChange={onValueChange}
             />
-
           </MultiSelectorTrigger>
-
         </MultiSelector>
-                <button>Outside</button>
-
+        <button>Outside</button>
       </>,
     );
     const input = screen.getByRole('combobox');
@@ -367,10 +353,8 @@ describe('public selection refs and input composition', () => {
     const onBlur = vi.fn();
     const { unmount } = render(
       <StrictMode>
-
         <FormSearchableSelect name="customer" data={customers} onChange={vi.fn()} onBlur={onBlur} />
-                <button>Outside</button>
-
+        <button>Outside</button>
       </StrictMode>,
     );
     focus(screen.getByRole('combobox'));

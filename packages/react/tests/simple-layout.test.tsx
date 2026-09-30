@@ -14,7 +14,7 @@ describe('SimpleLayout loading', () => {
     (loadingContent) => {
       const page = (loading?: boolean) => (
         <SimpleLayout aslink={TestLink} loading={loading} loadingContent={loadingContent}>
-                  Page content
+          Page content
         </SimpleLayout>
       );
       const { rerender } = render(page(true));
@@ -50,7 +50,7 @@ describe('SimpleLayout loading', () => {
         right={{ menus: [{ label: 'Support', link: '/support' }] }}
         footer={{ menus: [{ label: 'Help', action: footerAction }], content: 'Footer content' }}
       >
-                Customer list
+        Customer list
       </SimpleLayout>
     );
     const { rerender } = render(page(true));
@@ -92,9 +92,7 @@ describe('SimpleLayout loading', () => {
     }
     const page = (loading: boolean) => (
       <SimpleLayout aslink={TestLink} loading={loading}>
-
         <Draft />
-
       </SimpleLayout>
     );
     const { rerender } = render(page(true));
@@ -130,7 +128,7 @@ describe('SimpleLayout navigation', () => {
         user={{ menuSections: [{ label: 'Account', items: [{ label: 'Profile', link: '/profile' }] }] }}
         classNames={{ content: { wrapper: 'content-override', bottom: 'bottom-override' } }}
       >
-                Page content
+        Page content
       </SimpleLayout>,
     );
 
@@ -157,14 +155,12 @@ describe('SimpleLayout navigation', () => {
     const footerAction = vi.fn();
     const { container } = render(
       <form onSubmit={onSubmit}>
-
         <SimpleLayout
           aslink={TestLink}
           left={{ menus: [{ label: 'Dashboard', action: leftAction, title: true }] }}
           right={{ menus: [{ label: 'Sign out', action: rightAction }] }}
           footer={{ menus: [{ label: 'Help', action: footerAction }] }}
         />
-
       </form>,
     );
 

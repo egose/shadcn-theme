@@ -78,19 +78,14 @@ function Fixture({
         onSubmit();
       }}
     >
-
       <NavMenus menus={[{ title: 'Operations', items }]} aslink={aslink} />
-            <button type="submit">Save form</button>
-
+      <button type="submit">Save form</button>
     </form>
   );
   return (
     <React.StrictMode>
-
       <TooltipProvider>
-
         <SidebarProvider>
-
           {mobile ? (
             <>
               <SidebarTrigger type="button" />
@@ -99,11 +94,8 @@ function Fixture({
           ) : (
             content
           )}
-
         </SidebarProvider>
-
       </TooltipProvider>
-
     </React.StrictMode>
   );
 }

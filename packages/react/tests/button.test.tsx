@@ -10,7 +10,7 @@ describe('public component behavior', () => {
     const onClick = vi.fn();
     render(
       <Button loading onClick={onClick}>
-                Save changes
+        Save changes
       </Button>,
     );
 
@@ -33,7 +33,7 @@ describe('public component behavior', () => {
     const onClick = vi.fn();
     const renderButton = (loading: boolean) => (
       <Button {...disabledProps} loading={loading} onClick={onClick}>
-                Save changes
+        Save changes
       </Button>
     );
     const { rerender } = render(renderButton(false));
@@ -66,7 +66,7 @@ describe('public component behavior', () => {
     (appearance) => {
       render(
         <Button variant="action" appearance={appearance} className="text-info border-info hover:bg-info" loading>
-                    Save changes
+          Save changes
         </Button>,
       );
 
@@ -80,7 +80,7 @@ describe('public component behavior', () => {
   it.each(['ghost', 'link'] as const)('supports a semantic action tone with the %s appearance', (appearance) => {
     render(
       <Button variant="action" appearance={appearance}>
-                Publish
+        Publish
       </Button>,
     );
 
@@ -97,7 +97,7 @@ describe('public component behavior', () => {
   ] as const)('preserves readable neutral outline styling for %s', (variant, textClass) => {
     render(
       <Button variant={variant} appearance="outline" loading>
-                Save changes
+        Save changes
       </Button>,
     );
 
@@ -112,7 +112,7 @@ describe('public component behavior', () => {
   it('provides complete outline-filled styling to consumers of the public resolver', () => {
     render(
       <a href="/publish" className={cn(buttonVariants({ variant: 'action', appearance: 'outline-filled' }))}>
-                Publish
+        Publish
       </a>,
     );
 
@@ -138,9 +138,8 @@ describe('public component behavior', () => {
   it('exposes alert content through the alert accessibility role', () => {
     render(
       <Alert>
-                <AlertTitle>Connection lost</AlertTitle>
-                <AlertDescription>Try again in a moment.</AlertDescription>
-
+        <AlertTitle>Connection lost</AlertTitle>
+        <AlertDescription>Try again in a moment.</AlertDescription>
       </Alert>,
     );
 
