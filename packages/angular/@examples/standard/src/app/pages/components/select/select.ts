@@ -25,30 +25,30 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
           <div class="tw:mt-5 tw:grid tw:min-w-0 tw:gap-4 sm:tw:grid-cols-2">
             <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Priority</span>
-              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+              <hlm-select [itemToString]="priorityToString" class="tw:inline-flex tw:min-w-0 tw:max-w-full">
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Choose priority" />
                 </hlm-select-trigger>
                 <hlm-select-content *hlmSelectPortal>
-                  <hlm-select-item value="low">Low</hlm-select-item>
-                  <hlm-select-item value="medium">Medium</hlm-select-item>
-                  <hlm-select-item value="high">High</hlm-select-item>
+                  @for (option of priorities; track option.value) {
+                    <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                  }
                 </hlm-select-content>
-              </div>
+              </hlm-select>
             </label>
 
             <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Owner</span>
-              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+              <hlm-select [itemToString]="ownerToString" class="tw:inline-flex tw:min-w-0 tw:max-w-full">
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Assign owner" />
                 </hlm-select-trigger>
                 <hlm-select-content *hlmSelectPortal>
-                  <hlm-select-item value="jahn">J. Hahn</hlm-select-item>
-                  <hlm-select-item value="chen">N. Chen</hlm-select-item>
-                  <hlm-select-item value="patel">A. Patel</hlm-select-item>
+                  @for (option of owners; track option.value) {
+                    <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                  }
                 </hlm-select-content>
-              </div>
+              </hlm-select>
             </label>
           </div>
         </article>
@@ -64,16 +64,16 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
           <div class="tw:mt-5 tw:w-full tw:min-w-0 tw:max-w-full sm:tw:max-w-xs">
             <label class="tw:grid tw:min-w-0 tw:gap-2">
               <span class="tw:text-sm tw:font-medium tw:text-slate-700">Fruit</span>
-              <div hlmSelect class="tw:inline-flex tw:min-w-0 tw:max-w-full">
+              <hlm-select [itemToString]="fruitToString" class="tw:inline-flex tw:min-w-0 tw:max-w-full">
                 <hlm-select-trigger class="tw:w-full tw:min-w-0 tw:max-w-full">
                   <hlm-select-value placeholder="Select a fruit" />
                 </hlm-select-trigger>
                 <hlm-select-content *hlmSelectPortal>
-                  <hlm-select-item value="apple">Apple</hlm-select-item>
-                  <hlm-select-item value="banana">Banana</hlm-select-item>
-                  <hlm-select-item value="cherry">Cherry</hlm-select-item>
+                  @for (option of fruits; track option.value) {
+                    <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+                  }
                 </hlm-select-content>
-              </div>
+              </hlm-select>
             </label>
           </div>
         </article>
@@ -81,4 +81,27 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
     </section>
   `,
 })
-export class SelectPage {}
+export class SelectPage {
+  readonly priorities = [
+    { value: 'low', label: 'Low' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'high', label: 'High' },
+  ];
+  readonly owners = [
+    { value: 'jahn', label: 'J. Hahn' },
+    { value: 'chen', label: 'N. Chen' },
+    { value: 'patel', label: 'A. Patel' },
+  ];
+  readonly fruits = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'cherry', label: 'Cherry' },
+  ];
+
+  // The trigger renders `itemToString(value)` — without it the raw value
+  // (e.g. `jahn`) would show instead of the label (e.g. `J. Hahn`).
+  readonly priorityToString = (value: string) =>
+    this.priorities.find((option) => option.value === value)?.label ?? value;
+  readonly ownerToString = (value: string) => this.owners.find((option) => option.value === value)?.label ?? value;
+  readonly fruitToString = (value: string) => this.fruits.find((option) => option.value === value)?.label ?? value;
+}

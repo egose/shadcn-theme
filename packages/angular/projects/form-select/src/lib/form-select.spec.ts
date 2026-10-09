@@ -70,6 +70,108 @@ describe('EgFormSelect', () => {
 @Component({
   imports: [ReactiveFormsModule, EgFormSelect],
   template: `<form [formGroup]="form">
+    <eg-form-select controlName="owner" label="Owner" placeholder="Assign owner" [options]="options()" />
+  </form>`,
+})
+class LabelHost {
+  readonly form = new FormGroup({ owner: new FormControl('') });
+  readonly options = signal([
+    { value: 'jahn', label: 'J. Hahn' },
+    { value: 'chen', label: 'N. Chen' },
+  ]);
+}
+
+describe('EgFormSelect label display (single)', () => {
+  let fixture: ComponentFixture<LabelHost>;
+  beforeEach(async () => {
+    configureLibraryTestBed();
+    await TestBed.configureTestingModule({ imports: [LabelHost] }).compileComponents();
+    fixture = TestBed.createComponent(LabelHost);
+    fixture.detectChanges();
+  });
+  afterEach(() => fixture.destroy());
+
+  const displayedValue = () =>
+    (fixture.nativeElement.querySelector('hlm-select-value') as HTMLElement).textContent?.trim();
+
+  it('shows the placeholder before selection and the label (not the raw value) after', () => {
+    expect(displayedValue()).toBe('Assign owner');
+    fixture.componentInstance.form.controls.owner.setValue('jahn');
+    fixture.detectChanges();
+    expect(displayedValue()).toBe('J. Hahn');
+  });
+
+  it('falls back to the raw value for unknown IDs and refreshes when options arrive', () => {
+    fixture.componentInstance.form.controls.owner.setValue('patel');
+    fixture.detectChanges();
+    expect(displayedValue()).toBe('patel');
+    fixture.componentInstance.options.set([
+      { value: 'jahn', label: 'J. Hahn' },
+      { value: 'patel', label: 'A. Patel' },
+    ]);
+    fixture.detectChanges();
+    expect(displayedValue()).toBe('A. Patel');
+  });
+});
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormSelect],
+  template: `<form [formGroup]="form">
+    <eg-form-select
+      controlName="fruits"
+      label="Fruits"
+      placeholder="Pick fruits"
+      [multiple]="true"
+      [options]="options()"
+    />
+  </form>`,
+})
+class MultiLabelHost {
+  readonly form = new FormGroup({ fruits: new FormControl<string[]>([]) });
+  readonly options = signal([
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'cherry', label: 'Cherry' },
+  ]);
+}
+
+describe('EgFormSelect label display (multiple)', () => {
+  let fixture: ComponentFixture<MultiLabelHost>;
+  beforeEach(async () => {
+    configureLibraryTestBed();
+    await TestBed.configureTestingModule({ imports: [MultiLabelHost] }).compileComponents();
+    fixture = TestBed.createComponent(MultiLabelHost);
+    fixture.detectChanges();
+  });
+  afterEach(() => fixture.destroy());
+
+  const trigger = () => fixture.nativeElement.querySelector('hlm-select-trigger button') as HTMLButtonElement;
+  const valuesContent = () => fixture.nativeElement.querySelector('hlm-select-values-content') as HTMLElement | null;
+
+  it('shows the placeholder when empty and comma-joined labels when selected', () => {
+    expect(trigger().textContent).toContain('Pick fruits');
+    expect(valuesContent()).toBeNull();
+    fixture.componentInstance.form.controls.fruits.setValue(['apple', 'cherry']);
+    fixture.detectChanges();
+    expect(valuesContent()?.textContent?.trim()).toBe('Apple, Cherry');
+  });
+
+  it('falls back to raw IDs for unknown values and refreshes when options arrive', () => {
+    fixture.componentInstance.form.controls.fruits.setValue(['mango']);
+    fixture.detectChanges();
+    expect(valuesContent()?.textContent?.trim()).toBe('mango');
+    fixture.componentInstance.options.set([
+      { value: 'apple', label: 'Apple' },
+      { value: 'mango', label: 'Mango' },
+    ]);
+    fixture.detectChanges();
+    expect(valuesContent()?.textContent?.trim()).toBe('Mango');
+  });
+});
+
+@Component({
+  imports: [ReactiveFormsModule, EgFormSelect],
+  template: `<form [formGroup]="form">
     <eg-form-select
       controlName="value"
       label="Role"

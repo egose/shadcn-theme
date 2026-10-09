@@ -100,16 +100,15 @@ Single select:
 </div>
 ```
 
-Multi select (same skeleton, `hlmSelectMultiple` + `hlmSelectValues`):
+Multi select (same skeleton, `hlmSelectMultiple` + `hlmSelectValues` template):
 
 ```html
 <div hlmSelectMultiple [(value)]="toppings">
   <hlm-select-trigger>
-    <span hlmSelectValues>
-      <span hlmSelectValuesContent>
-        <span hlmSelectValue placeholder="Pick toppings" />
-      </span>
-    </span>
+    <hlm-select-placeholder>Pick toppings</hlm-select-placeholder>
+    <ng-template hlmSelectValues let-values>
+      <hlm-select-values-content> {{ formatToppings(values) }} </hlm-select-values-content>
+    </ng-template>
   </hlm-select-trigger>
 
   <hlm-select-content *hlmSelectPortal>
@@ -118,6 +117,8 @@ Multi select (same skeleton, `hlmSelectMultiple` + `hlmSelectValues`):
   </hlm-select-content>
 </div>
 ```
+
+> Display rule: the closed trigger does **not** read the item content — single mode renders `itemToString(value)` (raw `value` when unset), so whenever the label differs from the value (e.g. `jahn` → `J. Hahn`) pass `[itemToString]` that maps values to labels. Multi mode renders whatever the `hlmSelectValues` template outputs, so map each id to its label there (see examples 1 and 4).
 
 Selector/slot summary:
 
@@ -145,13 +146,13 @@ Selector/slot summary:
 
 Thin wrappers. Forwarded `BrnSelect` / `BrnSelectMultiple` bindings:
 
-| Binding              | Kind   | Description                                                  |
-| -------------------- | ------ | ------------------------------------------------------------ |
-| `disabled`           | input  | Disables the select                                          |
-| `value`              | input  | Selected value (single) / values (multiple); use `[(value)]` |
-| `isItemEqualToValue` | input  | Custom equality fn for object values                         |
-| `itemToString`       | input  | Custom label fn for object values                            |
-| `valueChange`        | output | Emits on selection change                                    |
+| Binding              | Kind   | Description                                                                                                                        |
+| -------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `disabled`           | input  | Disables the select                                                                                                                |
+| `value`              | input  | Selected value (single) / values (multiple); use `[(value)]`                                                                       |
+| `isItemEqualToValue` | input  | Custom equality fn for object values                                                                                               |
+| `itemToString`       | input  | Maps a value to its trigger/type-ahead label. Required whenever the label differs from the value — without it the raw value shows. |
+| `valueChange`        | output | Emits on selection change                                                                                                          |
 
 Forwarded `BrnPopover` bindings (positioning of the floating panel):
 
@@ -194,18 +195,18 @@ Forwarded `BrnSelectItem` inputs: `id`, `disabled`, `value`. Shows a `lucideChec
 
 ### Remaining pieces
 
-| Class                    | Forwarded inputs                             | Notes                                           |
-| ------------------------ | -------------------------------------------- | ----------------------------------------------- |
-| `HlmSelectGroup`         | — (plain `BrnSelectGroup`)                   | Padding wrapper                                 |
-| `HlmSelectLabel`         | `id` (via `BrnSelectLabel`)                  | Muted small-caps-ish heading                    |
-| `HlmSelectValue`         | `placeholder` (via `BrnSelectValue`)         | Hides itself (`data-hidden`) when a value shows |
-| `HlmSelectValues`        | — (plain `BrnSelectValues`)                  | Multi-value host                                |
-| `HlmSelectValuesContent` | —                                            | Flex row with gap                               |
-| `HlmSelectPlaceholder`   | — (plain `BrnSelectPlaceholder`)             | Hides when a value shows (`data-hidden`)        |
-| `HlmSelectSeparator`     | `orientation` (via `BrnSelectSeparator`)     | 1px divider                                     |
-| `HlmSelectScrollUp/Down` | —                                            | Sticky chevron affordances                      |
-| `HlmSelectPortal`        | `context`, `class` (via `BrnPopoverContent`) | Structural use: `*hlmSelectPortal="let ctx"`    |
-| `HlmSelectValueTemplate` | — (plain `BrnSelectValueTemplate`)           | Marker for custom value rendering               |
+| Class                    | Forwarded inputs                             | Notes                                                                                   |
+| ------------------------ | -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `HlmSelectGroup`         | — (plain `BrnSelectGroup`)                   | Padding wrapper                                                                         |
+| `HlmSelectLabel`         | `id` (via `BrnSelectLabel`)                  | Muted small-caps-ish heading                                                            |
+| `HlmSelectValue`         | `placeholder` (via `BrnSelectValue`)         | Renders `itemToString(value)` or the placeholder; hidden when empty with no placeholder |
+| `HlmSelectValues`        | — (plain `BrnSelectValues`)                  | Multi-value template host (`<ng-template hlmSelectValues let-values>`)                  |
+| `HlmSelectValuesContent` | —                                            | Flex row with gap                                                                       |
+| `HlmSelectPlaceholder`   | — (plain `BrnSelectPlaceholder`)             | Hides when a value shows (`data-hidden`)                                                |
+| `HlmSelectSeparator`     | `orientation` (via `BrnSelectSeparator`)     | 1px divider                                                                             |
+| `HlmSelectScrollUp/Down` | —                                            | Sticky chevron affordances                                                              |
+| `HlmSelectPortal`        | `context`, `class` (via `BrnPopoverContent`) | Structural use: `*hlmSelectPortal="let ctx"`                                            |
+| `HlmSelectValueTemplate` | — (plain `BrnSelectValueTemplate`)           | Marker for custom value rendering                                                       |
 
 ## Examples
 
@@ -220,14 +221,14 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
   standalone: true,
   imports: [HlmSelectImports],
   template: `
-    <div hlmSelect [(value)]="fruit">
+    <div hlmSelect [(value)]="fruit" [itemToString]="fruitToString">
       <hlm-select-trigger>
         <hlm-select-value placeholder="Pick a fruit" />
       </hlm-select-trigger>
       <hlm-select-content *hlmSelectPortal>
-        <hlm-select-item value="apple">Apple</hlm-select-item>
-        <hlm-select-item value="banana">Banana</hlm-select-item>
-        <hlm-select-item value="orange">Orange</hlm-select-item>
+        @for (option of fruits; track option.value) {
+          <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+        }
       </hlm-select-content>
     </div>
     <p>Selected: {{ fruit() ?? 'none' }}</p>
@@ -235,13 +236,22 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
 })
 export class BasicSelectComponent {
   readonly fruit = signal<string | null>(null);
+  readonly fruits = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'orange', label: 'Orange' },
+  ];
+
+  // Without this the trigger would show `apple` instead of `Apple`.
+  readonly fruitToString = (value: string | null) =>
+    this.fruits.find((option) => option.value === value)?.label ?? value ?? '';
 }
 ```
 
 ### 2. Grouped options with labels, separator, disabled item, scroll buttons
 
 ```html
-<div hlmSelect [(value)]="city">
+<div hlmSelect [(value)]="city" [itemToString]="cityToString">
   <hlm-select-trigger>
     <hlm-select-value placeholder="Pick a city" />
   </hlm-select-trigger>
@@ -264,6 +274,19 @@ export class BasicSelectComponent {
 </div>
 ```
 
+```ts
+// Component companion: map every grouped value to its label so the trigger
+// shows `Berlin`, not `berlin`.
+readonly cities = [
+  { value: 'berlin', label: 'Berlin' },
+  { value: 'munich', label: 'Munich' },
+  { value: 'paris', label: 'Paris' },
+  { value: 'lyon', label: 'Lyon (unavailable)' },
+];
+readonly cityToString = (value: string | null) =>
+  this.cities.find((option) => option.value === value)?.label ?? value ?? '';
+```
+
 ### 3. Reactive forms + small trigger + forced invalid demo
 
 `BrnSelect` is a `ControlValueAccessor`: bind `formControlName` on the `hlmSelect` host.
@@ -279,14 +302,14 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
   imports: [HlmSelectImports, ReactiveFormsModule],
   template: `
     <form [formGroup]="form" (ngSubmit)="submit()">
-      <div hlmSelect formControlName="country">
+      <div hlmSelect formControlName="country" [itemToString]="countryToString">
         <hlm-select-trigger size="sm" ariaDescribedby="country-hint">
           <hlm-select-value placeholder="Country" />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
-          <hlm-select-item value="de">Germany</hlm-select-item>
-          <hlm-select-item value="fr">France</hlm-select-item>
-          <hlm-select-item value="es">Spain</hlm-select-item>
+          @for (option of countries; track option.value) {
+            <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+          }
         </hlm-select-content>
       </div>
       <p id="country-hint" class="tw:text-muted-foreground tw:text-xs">Used for shipping.</p>
@@ -298,6 +321,13 @@ export class FormSelectComponent {
   readonly form = new FormGroup({
     country: new FormControl<string | null>(null, Validators.required),
   });
+  readonly countries = [
+    { value: 'de', label: 'Germany' },
+    { value: 'fr', label: 'France' },
+    { value: 'es', label: 'Spain' },
+  ];
+  readonly countryToString = (value: string | null) =>
+    this.countries.find((option) => option.value === value)?.label ?? value ?? '';
 
   submit(): void {
     this.form.markAllAsTouched();
@@ -318,16 +348,17 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
   template: `
     <div hlmSelectMultiple [(value)]="toppings">
       <hlm-select-trigger>
-        <span hlmSelectValues>
-          <span hlmSelectValuesContent>
-            <span hlmSelectValue placeholder="Pick toppings" />
-          </span>
-        </span>
+        <hlm-select-placeholder>Pick toppings</hlm-select-placeholder>
+        <ng-template hlmSelectValues let-values>
+          <hlm-select-values-content>
+            {{ formatToppings(values) }}
+          </hlm-select-values-content>
+        </ng-template>
       </hlm-select-trigger>
       <hlm-select-content *hlmSelectPortal>
-        <hlm-select-item value="cheese">Extra cheese</hlm-select-item>
-        <hlm-select-item value="bacon">Bacon</hlm-select-item>
-        <hlm-select-item value="mushrooms">Mushrooms</hlm-select-item>
+        @for (option of options; track option.value) {
+          <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+        }
       </hlm-select-content>
     </div>
     <p>{{ toppings().length }} selected</p>
@@ -335,6 +366,17 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
 })
 export class MultiSelectComponent {
   readonly toppings = signal<string[]>([]);
+  readonly options = [
+    { value: 'cheese', label: 'Extra cheese' },
+    { value: 'bacon', label: 'Bacon' },
+    { value: 'mushrooms', label: 'Mushrooms' },
+  ];
+
+  // The values template renders raw ids — map them to labels explicitly.
+  formatToppings(values: string[]): string {
+    const labels = new Map(this.options.map((option) => [option.value, option.label]));
+    return values.map((value) => labels.get(value) ?? value).join(', ');
+  }
 }
 ```
 
@@ -400,11 +442,12 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
       (closed)="onClosed()"
     >
       <hlm-select-trigger>
-        <span hlmSelectValueTemplate>⭐ {{ plan() ?? 'Pick a plan' }}</span>
+        <span hlmSelectValueTemplate>⭐ {{ planLabel() }}</span>
       </hlm-select-trigger>
       <hlm-select-content *hlmSelectPortal="let ctx">
-        <hlm-select-item value="hobby">Hobby</hlm-select-item>
-        <hlm-select-item value="pro">Pro</hlm-select-item>
+        @for (option of plans; track option.value) {
+          <hlm-select-item [value]="option.value">{{ option.label }}</hlm-select-item>
+        }
       </hlm-select-content>
     </div>
   `,
@@ -412,6 +455,15 @@ import { HlmSelectImports } from '@egose/shadcn-theme-ng/select';
 export class AdvancedSelectComponent {
   readonly plan = signal<string | null>(null);
   readonly open = signal(false);
+  readonly plans = [
+    { value: 'hobby', label: 'Hobby' },
+    { value: 'pro', label: 'Pro' },
+  ];
+
+  // Custom templates bypass itemToString — resolve the label explicitly.
+  planLabel(): string {
+    return this.plans.find((option) => option.value === this.plan())?.label ?? 'Pick a plan';
+  }
 
   onClosed(): void {
     console.log('panel closed');

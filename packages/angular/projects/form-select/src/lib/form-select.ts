@@ -16,8 +16,12 @@ import { BrnSelectImports } from '@spartan-ng/brain/select';
 import {
   HlmSelectImports,
   HlmSelect,
+  HlmSelectMultiple,
   HlmSelectTrigger,
   HlmSelectValue,
+  HlmSelectPlaceholder,
+  HlmSelectValues,
+  HlmSelectValuesContent,
   HlmSelectContent,
   HlmSelectItem,
   HlmSelectLabel,
@@ -44,8 +48,12 @@ interface SelectOption {
     BrnSelectImports,
     HlmSelectImports,
     HlmSelect,
+    HlmSelectMultiple,
     HlmSelectTrigger,
     HlmSelectValue,
+    HlmSelectPlaceholder,
+    HlmSelectValues,
+    HlmSelectValuesContent,
     HlmSelectContent,
     HlmSelectItem,
     HlmSelectLabel,
@@ -68,14 +76,19 @@ interface SelectOption {
       }
 
       @if (multiple()) {
-        <brn-select-multiple hlmSelect [formControlName]="cnm">
+        <hlm-select-multiple [formControlName]="cnm" [itemToString]="itemToString">
           <hlm-select-trigger
             [buttonId]="effectiveId()"
             [ariaDescribedby]="describedBy()"
             [wrapperDisabled]="disabled()"
             [class]="$selectClass()"
           >
-            <hlm-select-value [placeholder]="placeholder()" />
+            <hlm-select-placeholder>{{ placeholder() }}</hlm-select-placeholder>
+            <ng-template hlmSelectValues let-values>
+              <hlm-select-values-content>
+                {{ formatMultipleLabels(values) }}
+              </hlm-select-values-content>
+            </ng-template>
           </hlm-select-trigger>
 
           <hlm-select-content *hlmSelectPortal>
@@ -88,9 +101,9 @@ interface SelectOption {
               }
             }
           </hlm-select-content>
-        </brn-select-multiple>
+        </hlm-select-multiple>
       } @else {
-        <brn-select hlmSelect [formControlName]="cnm">
+        <hlm-select [formControlName]="cnm" [itemToString]="itemToString">
           <hlm-select-trigger
             [buttonId]="effectiveId()"
             [ariaDescribedby]="describedBy()"
@@ -110,7 +123,7 @@ interface SelectOption {
               }
             }
           </hlm-select-content>
-        </brn-select>
+        </hlm-select>
       }
 
       @if (showError()) {
@@ -192,6 +205,32 @@ export class EgFormSelect {
   multiple = input<boolean>(false);
   options = input<SelectOption[]>([]);
   optionsLabel = input<string | undefined>(undefined); // optional group label
+
+  /**
+   * Maps a stored `value` to its human-readable `label` for the closed trigger
+   * (and listbox type-ahead). Spartan's `BrnSelectValue` renders
+   * `stringifyAsLabel(value, itemToString)` — without this it would show the raw
+   * value (e.g. `jahn` instead of `J. Hahn`). Unknown IDs fall back to the raw
+   * value so async/programmatic values stay visible. Plain arrow-function
+   * property (stable identity); reads `options()` at call time so Spartan's
+   * display computed re-evaluates when options arrive.
+   */
+  readonly itemToString = (value: string | null | undefined): string => {
+    if (value === null || value === undefined) return '';
+    return this.options().find((option) => option.value === value)?.label ?? String(value);
+  };
+
+  /**
+   * Comma-joined labels for multi-select trigger content. Plain method (not a
+   * computed): `values` comes from the `hlmSelectValues` template context, while
+   * `options()` is read fresh so late-arriving options refresh labels without
+   * touching selection — mirroring the React `FormMultiSelect` fallback.
+   */
+  protected formatMultipleLabels(values: string[] | null | undefined): string {
+    if (!values?.length) return '';
+    const labels = new Map(this.options().map((option) => [option.value, option.label]));
+    return values.map((value) => labels.get(value) ?? String(value)).join(', ');
+  }
 
   // Styling classes
   userClass = input<ClassValue>('', { alias: 'class' });
