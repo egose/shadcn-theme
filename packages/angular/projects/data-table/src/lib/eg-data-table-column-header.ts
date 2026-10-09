@@ -22,6 +22,8 @@ export interface EgSortableColumn {
   getIsSorted(): false | SortDirection;
   toggleSorting(desc?: boolean): void;
   toggleVisibility(value?: boolean): void;
+  /** Whether the column can be hidden (`columnDef.enableHiding` and table `enableHiding`). Optional for back-compat mocks — absent means hideable. */
+  getCanHide?(): boolean;
 }
 
 /**
@@ -29,7 +31,10 @@ export interface EgSortableColumn {
  *
  * Render via `flexRenderComponent(EgDataTableColumnHeader, { inputs: { column, title } })`
  * so the extra `title` input flows alongside the flex-render `column` context.
- * Non-sortable columns render a plain label.
+ * Non-sortable columns render a plain label. The `Hide` menu item only renders
+ * when `column.getCanHide()` is true — `EgDataTable` ties table-level
+ * `enableHiding` to its `showColumnToggle` input so there is always a way back
+ * via the View menu, and per-column `enableHiding: false` further disables it.
  */
 @Component({
   selector: 'eg-data-table-column-header',
@@ -69,11 +74,13 @@ export interface EgSortableColumn {
               <ng-icon hlm size="sm" name="lucideArrowDown" />
               Desc
             </button>
-            <div hlmDropdownMenuSeparator></div>
-            <button hlmDropdownMenuItem type="button" (click)="column().toggleVisibility(false)">
-              <ng-icon hlm size="sm" name="lucideEyeOff" />
-              Hide
-            </button>
+            @if (_canHide()) {
+              <div hlmDropdownMenuSeparator></div>
+              <button hlmDropdownMenuItem type="button" (click)="column().toggleVisibility(false)">
+                <ng-icon hlm size="sm" name="lucideEyeOff" />
+                Hide
+              </button>
+            }
           </div>
         </ng-template>
       </div>
@@ -90,6 +97,9 @@ export class EgDataTableColumnHeader {
   public readonly size = input<HlmTableSize>('default');
 
   protected readonly _sorted = computed(() => this.column().getIsSorted());
+
+  /** Hideable only when TanStack allows it (table + column `enableHiding`). Absent `getCanHide` (legacy mocks) means hideable. */
+  protected readonly _canHide = computed(() => this.column().getCanHide?.() ?? true);
 
   /** Height per density. Merged by `hlmButton`. */
   protected readonly _buttonClass = computed(() =>

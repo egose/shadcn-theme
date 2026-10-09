@@ -29,7 +29,7 @@ import type { HlmTableSize } from '@egose/shadcn-theme-ng/table';
       type="button"
       [hlmDropdownMenuTrigger]="_menu"
     >
-      <ng-icon hlm name="lucideSettings2" />
+      <ng-icon hlm size="sm" name="lucideSettings2" />
       View
     </button>
     <ng-template #_menu>

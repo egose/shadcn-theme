@@ -346,7 +346,7 @@ export class EgDataTable<TData extends RowData> implements OnInit {
   /** Column id the toolbar filter input writes to (e.g. `'email'`). Empty means client-side filtering is skipped and keystrokes only emit `filterChange` (server-side pattern). */
   public readonly filterColumnId = input<string>('');
   public readonly filterPlaceholder = input<string>('Filter...');
-  /** Show the column-visibility dropdown inside the toolbar. Off by default; opt in per table. */
+  /** Show the column-visibility dropdown inside the toolbar (requires `showToolbar`). Off by default; opt in per table. Also enables hiding — the `Hide` item in `EgDataTableColumnHeader` only renders when this is true, so hidden columns always have a way back. Per-column `enableHiding: false` further disables individual columns. */
   public readonly showColumnToggle = input<boolean>(false);
   /** Custom right-side toolbar content (e.g. action buttons) as a template. Renders the toolbar row even when `showToolbar` is false; built-ins stay on the left. */
   public readonly toolbarActions = input<TemplateRef<unknown> | undefined>(undefined);
@@ -497,6 +497,10 @@ export class EgDataTable<TData extends RowData> implements OnInit {
       columns: this._finalColumns(),
       data: this._tableItems(),
       getRowId: this.getRowId(),
+      // Hiding is only allowed when the View menu can bring columns back.
+      // This drives `column.getCanHide()` for both `EgDataTableColumnHeader`
+      // (Hide item) and `EgDataTableViewOptions` (toggle list).
+      enableHiding: this.showColumnToggle(),
       manualPagination: server,
       manualSorting: server,
       manualFiltering: server,
