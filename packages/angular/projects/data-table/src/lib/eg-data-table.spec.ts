@@ -3,8 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { HlmCheckbox } from '@egose/shadcn-theme-ng/checkbox';
 import { createColumnHelper, type SortingState } from '@tanstack/angular-table';
-import { EgDataTable, type EgPaginationNavMode } from '../public-api';
+import { EgDataTable, EgDataTableColumnHeader, type EgPaginationNavMode } from '../public-api';
 import { defaultEgDataTableFeatures, type EgDataTableFeatures } from './eg-data-table-features';
+import type { EgSortableColumn } from './eg-data-table-column-header';
 import type { EgPaginatedResponse } from './eg-paginated-response';
 
 interface Person {
@@ -807,5 +808,123 @@ describe('EgDataTable', () => {
 
   it('exposes the default feature registry', () => {
     expect(defaultEgDataTableFeatures).toBeDefined();
+  });
+
+  describe('column hiding', () => {
+    function mockColumn(canHide: boolean | undefined): EgSortableColumn {
+      return {
+        id: 'email',
+        getCanSort: () => true,
+        getIsSorted: () => false,
+        toggleSorting: () => {},
+        toggleVisibility: () => {},
+        ...(canHide === undefined ? {} : { getCanHide: () => canHide }),
+      };
+    }
+
+    it('hides the header Hide item when the column cannot hide', () => {
+      const hidden = TestBed.createComponent(EgDataTableColumnHeader);
+      hidden.componentRef.setInput('column', mockColumn(false));
+      hidden.componentRef.setInput('title', 'Email');
+      hidden.detectChanges();
+      expect((hidden.componentInstance as unknown as { _canHide: () => boolean })._canHide()).toBeFalse();
+
+      const shown = TestBed.createComponent(EgDataTableColumnHeader);
+      shown.componentRef.setInput('column', mockColumn(true));
+      shown.componentRef.setInput('title', 'Email');
+      shown.detectChanges();
+      expect((shown.componentInstance as unknown as { _canHide: () => boolean })._canHide()).toBeTrue();
+
+      const legacy = TestBed.createComponent(EgDataTableColumnHeader);
+      legacy.componentRef.setInput('column', mockColumn(undefined));
+      legacy.componentRef.setInput('title', 'Email');
+      legacy.detectChanges();
+      expect((legacy.componentInstance as unknown as { _canHide: () => boolean })._canHide()).toBeTrue();
+    });
+
+    it('disables hiding by default so columns cannot be hidden without the View menu', async () => {
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', columns);
+      fixture.componentRef.setInput('data', PEOPLE);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const table = (
+        fixture.componentInstance as unknown as {
+          _table: {
+            getAllColumns: () => {
+              getCanHide: () => boolean;
+              getIsVisible: () => boolean;
+              toggleVisibility: (v: boolean) => void;
+            }[];
+          };
+        }
+      )._table;
+      const email = table.getAllColumns().find((column) => column.getCanHide !== undefined);
+      expect(table.getAllColumns().every((column) => column.getCanHide() === false)).toBeTrue();
+      // TanStack ignores hide requests when hiding is disabled — no dead-end.
+      email?.toggleVisibility(false);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(table.getAllColumns().every((column) => column.getIsVisible() === true)).toBeTrue();
+    });
+
+    it('enables hiding when showColumnToggle is set', async () => {
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', columns);
+      fixture.componentRef.setInput('data', PEOPLE);
+      fixture.componentRef.setInput('showToolbar', true);
+      fixture.componentRef.setInput('showColumnToggle', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const table = (
+        fixture.componentInstance as unknown as {
+          _table: {
+            getAllColumns: () => {
+              id: string;
+              getCanHide: () => boolean;
+              getIsVisible: () => boolean;
+              toggleVisibility: (v: boolean) => void;
+            }[];
+          };
+        }
+      )._table;
+      expect(table.getAllColumns().every((column) => column.getCanHide() === true)).toBeTrue();
+      table
+        .getAllColumns()
+        .find((column) => column.id === 'email')
+        ?.toggleVisibility(false);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(
+        table
+          .getAllColumns()
+          .find((column) => column.id === 'email')
+          ?.getIsVisible(),
+      ).toBeFalse();
+    });
+
+    it('keeps per-column enableHiding: false disabled even with showColumnToggle', async () => {
+      const fixed = columnHelper.columns([
+        columnHelper.accessor('name', { header: 'Name', enableHiding: false }),
+        columnHelper.accessor('email', { header: 'Email' }),
+      ]);
+      const fixture = TestBed.createComponent(EgDataTable<Person>);
+      fixture.componentRef.setInput('columns', fixed);
+      fixture.componentRef.setInput('data', PEOPLE);
+      fixture.componentRef.setInput('showToolbar', true);
+      fixture.componentRef.setInput('showColumnToggle', true);
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const table = (
+        fixture.componentInstance as unknown as {
+          _table: { getColumn: (id: string) => { getCanHide: () => boolean } | undefined };
+        }
+      )._table;
+      expect(table.getColumn('name')?.getCanHide()).toBeFalse();
+      expect(table.getColumn('email')?.getCanHide()).toBeTrue();
+    });
   });
 });
