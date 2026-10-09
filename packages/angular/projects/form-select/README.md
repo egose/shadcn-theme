@@ -44,8 +44,9 @@ export class MyForm {}
 Requirements:
 
 - Must sit inside a `<form [formGroup]>` (it injects `FormGroupDirective` and provides `ControlContainer`).
-- `controlName` is required — forwarded as `[formControlName]` to the inner `brn-select` / `brn-select-multiple`.
+- `controlName` is required — forwarded as `[formControlName]` to the inner `hlm-select` / `hlm-select-multiple`.
 - Single mode binds `string`; multi mode (`multiple`) binds `string[]`.
+- The closed trigger always shows the option `label` (single: via `itemToString`; multi: comma-joined labels). The form value stays the raw `value` string(s).
 
 ## Anatomy / Structure
 
@@ -54,7 +55,7 @@ Requirements:
   <!-- rendered internally (single mode) -->
   <hlm-form-field>
     <label hlmLabel for="<effectiveId>">Country <span>*</span></label>
-    <brn-select hlmSelect formControlName="country">
+    <hlm-select formControlName="country" itemToString="…">
       <hlm-select-trigger buttonId="<effectiveId>" ariaDescribedby="…">
         <hlm-select-value placeholder="Select…" />
       </hlm-select-trigger>
@@ -62,14 +63,14 @@ Requirements:
         <hlm-select-label>Fruits</hlm-select-label>
         <hlm-select-item value="apple">Apple</hlm-select-item>
       </hlm-select-content>
-    </brn-select>
+    </hlm-select>
     <hlm-error id="<effectiveId>-error">…</hlm-error>
     <hlm-hint id="<effectiveId>-hint">…</hlm-hint>
   </hlm-form-field>
 </eg-form-select>
 ```
 
-In multi mode the inner `brn-select` becomes `brn-select-multiple`; everything else is identical. Real selectors: `eg-form-select`, `hlm-form-field`, `label[hlmLabel]`, `brn-select[hlmSelect]` / `brn-select-multiple[hlmSelect]`, `hlm-select-trigger`, `hlm-select-value`, `hlm-select-content`, `hlm-select-label`, `hlm-select-item`, `hlm-error`, `hlm-hint`.
+In multi mode the inner `hlm-select` becomes `hlm-select-multiple` and the trigger renders `<hlm-select-placeholder>` plus an `hlmSelectValues` template with comma-joined labels inside `<hlm-select-values-content>`; everything else is identical. Real selectors: `eg-form-select`, `hlm-form-field`, `label[hlmLabel]`, `hlm-select` / `hlm-select-multiple`, `hlm-select-trigger`, `hlm-select-value` (single) / `hlm-select-placeholder` + `hlm-select-values-content` (multi), `hlm-select-content`, `hlm-select-label`, `hlm-select-item`, `hlm-error`, `hlm-hint`.
 
 ## API reference
 
@@ -84,11 +85,11 @@ In multi mode the inner `brn-select` becomes `brn-select-multiple`; everything e
 | `error`               | `string \| undefined` | `undefined` | Error text rendered in `<hlm-error>`.                                                                                                                                                            |
 | `autoError`           | `boolean`             | `true`      | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
 | `hint`                | `string \| undefined` | `undefined` | Hint text rendered in `<hlm-hint>`.                                                                                                                                                              |
-| `placeholder`         | `string`              | `''`        | Placeholder forwarded to `<hlm-select-value>`.                                                                                                                                                   |
+| `placeholder`         | `string`              | `''`        | Placeholder forwarded to `<hlm-select-value>` (single) / `<hlm-select-placeholder>` (multi).                                                                                                     |
 | `disabled`            | `boolean`             | `false`     | Forwarded as `wrapperDisabled` to `<hlm-select-trigger>`.                                                                                                                                        |
 | `required`            | `boolean`             | `false`     | Renders a red `*` next to the label (pair with `Validators.required`).                                                                                                                           |
-| `multiple`            | `boolean`             | `false`     | When `true`, renders `brn-select-multiple` (value is `string[]`).                                                                                                                                |
-| `options`             | `SelectOption[]`      | `[]`        | `{ value: string; label: string }[]` rendered as `<hlm-select-item>` rows. Local interface, not exported.                                                                                        |
+| `multiple`            | `boolean`             | `false`     | When `true`, renders `hlm-select-multiple` (value is `string[]`, trigger shows comma-joined labels).                                                                                             |
+| `options`             | `SelectOption[]`      | `[]`        | `{ value: string; label: string }[]` rendered as `<hlm-select-item>` rows. `label` is shown in the list and the closed trigger; `value` is the form value. Local interface, not exported.        |
 | `optionsLabel`        | `string \| undefined` | `undefined` | Optional group heading rendered once as `<hlm-select-label>`.                                                                                                                                    |
 | `class` (`userClass`) | `ClassValue`          | `''`        | Extra host classes (merged over `tw:flex tw:flex-col`).                                                                                                                                          |
 | `labelClass`          | `string`              | `''`        | Extra label classes (merged over `tw:mb-1 tw:gap-0`).                                                                                                                                            |
