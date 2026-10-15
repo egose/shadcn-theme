@@ -97,7 +97,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfdaf702ffe6aYfj3rL12tI6R`
+- Assigned agent/session: `REACT-01 implementation session`
 - Changed: `scripts/publish.mjs`, `packages/react/package.json`, `packages/react/scripts/validate-package.mjs`, `packages/react/scripts/validate-package.test.mjs`, `packages/react/test-fixtures/package-valid/`
 - Verified: `pnpm prepare:package`; `pnpm test:package-validator`; `pnpm exec tsc --noEmit --pretty false`; `pnpm validate:package`; `npm pack --dry-run --json --ignore-scripts`
 - Result: validator fixture tests passed 7/7; staged metadata, exports, declarations, runtime loading, and packed files are checked; the real artifact reproduced the expected 25 ESM failures for REACT-02
@@ -106,7 +106,7 @@ Completion evidence:
 
 Final-review remediation evidence:
 
-- Assigned agent/session: `ses_fcfdaf702ffe6aYfj3rL12tI6R`
+- Assigned agent/session: `REACT-01 implementation session`
 - Changed: condition-aware ESM/CommonJS type exports in `packages/react/package.json`; staged Node16 `.mts`/`.cts` compilation in the package validator and fixtures
 - Verified: `pnpm test:package-validator`; `pnpm typecheck`; `pnpm prepare:package`; `pnpm validate:package`; `pnpm test:package`; `pnpm lint`
 - Result: 8 validator tests passed; 238 runtime and 238 condition-specific declaration targets passed; staged ESM and CommonJS TypeScript consumers compile
@@ -156,7 +156,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfd346b8ffeERUdoUZIRMIwcW`
+- Assigned agent/session: `REACT-02 implementation session`
 - Changed: 20 React form/UI modules and `packages/react/utils/date.ts`, replacing extensionless `lodash-es` method imports with explicit `.js` package subpaths
 - Verified: `pnpm exec tsc --noEmit --pretty false`; `pnpm test:package-validator`; `pnpm bundle`; `pnpm prepare:package`; `pnpm validate:package`
 - Result: all 238 staged ESM/CommonJS runtime targets and 119 declaration targets passed; emitted ESM has zero extensionless `lodash-es` imports
@@ -205,7 +205,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfcffdb6ffe4wEtNU4zoMwsfA`
+- Assigned agent/session: `REACT-03 implementation session`
 - Changed: `packages/react/package.json`, `packages/react/pnpm-lock.yaml`, `packages/react/tsconfig.json`, `packages/react/eslint.config.mjs`, `packages/react/vitest.config.mts`, `packages/react/tests/`, plus focused unused-code cleanup
 - Verified: `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm bundle`; `pnpm test:package`
 - Result: 3 source test files/4 tests and 7 validator tests passed; lint passed with zero warnings; staged validation passed 120 exports, 238 runtime targets, 119 declarations, and 786 packed files
@@ -255,7 +255,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfc2022bffej0DKzSQrnFBuun`
+- Assigned agent/session: `REACT-04 implementation session`
 - Changed: `packages/react/components/form/date-picker.tsx`, `packages/react/components/form/date-range-picker.tsx`, `packages/react/tests/date-pickers.test.tsx`
 - Verified: `pnpm exec vitest run tests/date-pickers.test.tsx`; `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm bundle`; `pnpm test:package`
 - Result: 4 focused date-picker tests and all 8 source tests passed; staged validation passed 120 exports, 238 runtime targets, 119 declarations, and 784 packed files
@@ -264,7 +264,7 @@ Completion evidence:
 
 Final-review remediation evidence:
 
-- Assigned agent/session: `ses_fcfc2022bffej0DKzSQrnFBuun`
+- Assigned agent/session: `REACT-04 implementation session`
 - Changed: strict local `YYYY-MM-DD` parsing and invalid-value handling in `date-picker.tsx`; non-UTC string-value regressions in `date-pickers.test.tsx`
 - Verified: `TZ=America/Los_Angeles pnpm exec vitest run tests/date-pickers.test.tsx`; `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm bundle`; `pnpm test:package`
 - Result: 6 focused date tests and all 22 source tests passed; date-only strings preserve their local calendar day and invalid values render empty without callbacks
@@ -313,7 +313,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfbcb85bffeN1a11dboIuXa7C`
+- Assigned agent/session: `REACT-05 implementation session`
 - Changed: `packages/react/layouts/sidebar1/index.tsx`, dialog-manager provider/context/exports, `packages/react/tests/sidebar-layout-state.test.tsx`, `packages/react/tests/dialog-manager.test.tsx`, React README and `llms.txt`
 - Verified: `pnpm exec vitest run tests/sidebar-layout-state.test.tsx tests/dialog-manager.test.tsx`; `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm bundle`; `pnpm test:package`
 - Result: 5 focused state tests and all 13 source tests passed; all pending dialogs reject with exported `DialogCancellationError`; staged package validation passed
@@ -371,7 +371,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfb48360ffec6vbn9Ykwl2Zht`
+- Assigned agent/session: `REACT-06 implementation session`
 - Changed: clipboard hook, tag picker, carousel, context switcher, `layouts/simple/`, React README, and three focused reliability test files
 - Verified: `pnpm exec vitest run tests/lifecycle-reliability.test.tsx tests/listener-and-context-reliability.test.tsx tests/simple-layout.test.tsx`; `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm bundle`; `pnpm test:package`
 - Result: 7 focused tests and all 20 source tests passed; staged package validation passed 120 exports, 238 runtime targets, 119 declarations, and 784 packed files
@@ -425,7 +425,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcfac988cffe7gc7W6Fi8wUTwb`
+- Assigned agent/session: `REACT-07 implementation session`
 - Changed: client directives across actual client source entries, `packages/react/tsup.config.ts`, `packages/react/prepend-use-client.mjs`, boundary/RSC validators and fixtures, public textarea/layout types, React README and `llms.txt`
 - Verified: `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm test:package-validator`; `pnpm prepare:package`; `pnpm test:client-boundaries`; `pnpm validate:package`; `pnpm test:rsc`; `npm pack --dry-run --json --ignore-scripts`
 - Result: all 111 entries checked in ESM/CommonJS (83 client, 28 server-safe); production Next.js RSC fixture passed; 238 runtime and 119 declaration targets passed with no avoidable public `any` in remediated declarations
@@ -434,7 +434,7 @@ Completion evidence:
 
 Final-review remediation evidence:
 
-- Assigned agent/session: `ses_fcfac988cffe7gc7W6Fi8wUTwb`
+- Assigned agent/session: `REACT-07 implementation session`
 - Changed: dialog-manager barrel client directive, transitive client re-export enforcement/test, dual-format declaration boundary validation, and RSC fixture coverage of the documented barrel
 - Verified: `pnpm typecheck`; `pnpm lint`; `pnpm test`; `pnpm prepare:package`; `pnpm test:client-boundaries`; `pnpm test:rsc`; `pnpm validate:package`; `pnpm test:package-validator`
 - Result: 111 entries pass in both formats (84 client, 27 server-safe); the production RSC fixture renders the dialog-manager barrel; ESM/CommonJS declarations and runtime targets pass
@@ -486,7 +486,7 @@ Acceptance criteria:
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcf9c2acdffeW5wiTeHZVixG6K`
+- Assigned agent/session: `REACT-08 implementation session`
 - Changed: React CI/setup steps, package packing/consumer scripts, isolated Vite consumer fixture and lockfile, React README and `llms.txt`
 - Verified: frozen React install; all package quality/artifact/RSC commands; `pnpm pack:package`; `pnpm prepare:consumer`; `pnpm test:consumer`; `pnpm build:consumer`; existing Next.js example lint/build
 - Result: isolated tarball consumer test passed and production build transformed 1,949 modules; React lockfile remained unchanged; CI now runs distinct push/pull-request gates
@@ -495,7 +495,7 @@ Completion evidence:
 
 Final-review remediation evidence:
 
-- Assigned agent/session: `ses_fcf9c2acdffeW5wiTeHZVixG6K`
+- Assigned agent/session: `REACT-08 implementation session`
 - Changed: explicit CI steps for validator regressions, staged ESM/CommonJS/declaration validation, and the dialog-manager RSC case; corrected installed paths and boundary guidance in README/`llms.txt`
 - Verified: frozen installs; all package commands; isolated consumer install/test/build; Next.js example lint/build
 - Result: `.mts`/`.cts` consumers, the production RSC barrel case, 22 source tests, 8 validator tests, and isolated consumer test/build all passed
@@ -543,13 +543,13 @@ Acceptance criteria:
 
 Initial review evidence:
 
-- Assigned agent/session: `ses_fcf8aa548ffe2hpyPgf0c4txjV`
+- Assigned agent/session: `REACT-FINAL initial review session (independent)`
 - Result: release rejected due to CommonJS declaration resolution, dialog-manager barrel boundary, and non-UTC string date handling; REACT-01, REACT-04, REACT-07, and REACT-08 were reopened and remediated
 - Follow-up: fresh independent review required after remediation
 
 Completion evidence:
 
-- Assigned agent/session: `ses_fcf6d185affeAmrfHzFYQkc6sP`
+- Assigned agent/session: `REACT-FINAL completion review session (independent)`
 - Changed: review evidence only; no source, task, Angular, or repository files changed by the reviewer
 - Verified: frozen root/React/consumer/example installs; all React quality, bundle, staging, validator, boundary, RSC, packing, isolated-consumer, and Next.js example commands; extracted-tarball metadata/file/security inspection
 - Result: no P0/P1/P2 blockers; all REACT-01 through REACT-08 criteria passed; 22 source tests, 8 validator tests, 238 runtime targets, 238 declaration targets, 84 client and 27 server-safe entries, isolated consumer, and production RSC build passed
