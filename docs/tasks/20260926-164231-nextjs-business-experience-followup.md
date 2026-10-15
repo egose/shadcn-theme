@@ -12,7 +12,7 @@ Primary scope: example `app/`, `components/`, `lib/`, focused tests and READMEs.
 
 ## Analysis coverage, comparison, and limitations
 
-- Reviewed all four real-example entry points, local components/fixtures/tests, shared state tooling, catalog/navigation/registry code, and relevant actual parent primitives and form APIs. Analysis session: `ses_f1fe94547ffegGRgKAmXz46ze9` (read-only).
+- Reviewed all four real-example entry points, local components/fixtures/tests, shared state tooling, catalog/navigation/registry code, and relevant actual parent primitives and form APIs. Analysis session: `EXB analysis session (read-only)` (read-only).
 - Compared with completed `20260903-124249-nextjs-example-catalog-remediation.md`, especially NEXTEX-05/07 architecture, NEXTEX-08/09/10/11 workflows, and deferred NEXTEX-12 support/onboarding breadth. This is a new phase: it repairs uncovered interaction sequences rather than repeating completed construction work.
 - Compared with completed `20260926-154202-react-business-workflow-remediation.md`: loading buttons, selection labels/retention/ref/blur, context switching, navigation, clipboard, and SimpleLayout fixes already exist. Consume those fixes; do not duplicate or overwrite them.
 - At entry, many parent React/Angular source files and two task documents were already modified/untracked. The target Next.js example had no changes. Preserve all earlier work and generated output boundaries.
@@ -39,16 +39,16 @@ Priority: P1 = user-visible state/correctness/recovery defect; P2 = concrete usa
 
 The coordinator launched each task in a fresh sub-agent session and waited for its completion before launching the next. EXB-08 was a separate independent reviewer. Agents did not need their own nested delegation tools.
 
-| Task   | Assigned session                 |
-| ------ | -------------------------------- |
-| EXB-01 | `ses_f1fe56dbaffeOC9MNeFUvjeVdt` |
-| EXB-02 | `ses_f1fdf56c2ffedKbcAeMW28S3T8` |
-| EXB-03 | `ses_f1fd821eaffeTV91nNr1K14mQF` |
-| EXB-04 | `ses_f1fd2727effe9I3YtgR8YKK2aW` |
-| EXB-05 | `ses_f1fc79ddbffeqbxleNEG4zp0BD` |
-| EXB-06 | `ses_f1fc10175ffefkFcBRhq1vjUlQ` |
-| EXB-07 | `ses_f1fba41dfffeJWD3l52yCiDKZ2` |
-| EXB-08 | `ses_f1fb37b0affekCko2Ihj7PtKKD` |
+| Task   | Assigned session                      |
+| ------ | ------------------------------------- |
+| EXB-01 | `EXB-01 implementation session`       |
+| EXB-02 | `EXB-02 implementation session`       |
+| EXB-03 | `EXB-03 implementation session`       |
+| EXB-04 | `EXB-04 implementation session`       |
+| EXB-05 | `EXB-05 implementation session`       |
+| EXB-06 | `EXB-06 implementation session`       |
+| EXB-07 | `EXB-07 implementation session`       |
+| EXB-08 | `EXB-08 review session (independent)` |
 
 ## Tasks
 

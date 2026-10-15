@@ -12,7 +12,7 @@ Scope: `packages/react/@examples/nextjs/components/real-examples/{settings,launc
 
 ## Analysis and triage
 
-- Read-only audit session `ses_f1f5d4a4ffferetRCDwg8xM05I` inspected all five workflows, previous task criteria, controllers/views/tests, and ran Chromium 151 probes against the existing static export. No fresh build/full test baseline was run during analysis; stale export uncertainty is limited by matching inspected source. Implementation must reproduce in current source tests.
+- Read-only audit session `SX audit session (read-only)` inspected all five workflows, previous task criteria, controllers/views/tests, and ran Chromium 151 probes against the existing static export. No fresh build/full test baseline was run during analysis; stale export uncertainty is limited by matching inspected source. Implementation must reproduce in current source tests.
 - Confirmed in the browser: delete workspace → save Workspace draft succeeds and advances the baseline; clearing the launch date → submit leaves focus on Submit with no trigger ID/invalid/error association; launch discard cancel/confirm leaves BODY focused at 1440px/320px; three-space required project/summary fields submit revision 1 successfully.
 - Prior EXB-03 proves retained terminal deletion state but not eligibility of other mutations. EXB-02 proves calendar-date semantics but not accessible invalid-date focus. EXB-01 proves save/discard values but not discard settlement focus or trimmed-empty validation. This phase extends those boundaries rather than repeating completed fixes.
 - Existing customer, pricing and support behavior yielded no additional concrete high-value finding. Documented full-session reset, customer Empty reset, and support navigation during pending remain intentional. Backend authorization/persistence, full primitive parity, other browser engines and assistive technology are outside this bounded review.
@@ -33,12 +33,12 @@ Scope: `packages/react/@examples/nextjs/components/real-examples/{settings,launc
 
 Coordinator-recorded sequential isolated sessions:
 
-| Task  | Assigned session                                                                                        |
-| ----- | ------------------------------------------------------------------------------------------------------- |
-| SX-01 | `ses_f1f573b4cffeeSU10j7NNVnZgZ`                                                                        |
-| SX-02 | `ses_f1f50cf6bffe8lVh0QrGL7MJyB`                                                                        |
-| SX-03 | `ses_f1f442d43ffeVtHM0t8qgZbYx4` (resumed under the repository-only constraint after permission denial) |
-| SX-04 | `ses_f1f20e2a9ffeOIR3lzTgUfOksQ` (independent reviewer)                                                 |
+| Task  | Assigned session                                                                                      |
+| ----- | ----------------------------------------------------------------------------------------------------- |
+| SX-01 | `SX-01 implementation session`                                                                        |
+| SX-02 | `SX-02 implementation session`                                                                        |
+| SX-03 | `SX-03 implementation session` (resumed under the repository-only constraint after permission denial) |
+| SX-04 | `SX-04 review session (independent)` (independent reviewer)                                           |
 
 Each session finished before the next task began. No nested agents were used.
 

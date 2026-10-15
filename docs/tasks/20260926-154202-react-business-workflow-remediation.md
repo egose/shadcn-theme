@@ -441,15 +441,15 @@ After the independent reviewer finished, the coordinator reread the complete tas
 
 The harness exposed these distinct session IDs to the coordinator (individual agents did not receive their own IDs). Sessions ran sequentially:
 
-| Task    | Isolated sub-agent session       |
-| ------- | -------------------------------- |
-| BUS-01  | `ses_f201cfdc7ffeh2YPmHANqXfkxE` |
-| BUS-02  | `ses_f201aa20cffeXjlMrbRFsxto1B` |
-| BUS-03  | `ses_f2016ec04ffeZ5bG2GV5p4mOOg` |
-| BUS-04  | `ses_f2014f896ffe0E2pKGWzjZYkJK` |
-| BUS-04A | `ses_f200be622ffeqiTRv2FSHS1tcy` |
-| BUS-05  | `ses_f20085219ffePa6rkwXA38zQBm` |
-| BUS-06  | `ses_f2005685affe1UovF5199OK0vr` |
-| BUS-07  | `ses_f2002073fffewkw5X255xHLGDd` |
-| BUS-08  | `ses_f20004096ffeJj5AP2fqy1Ppvv` |
-| BUS-09  | `ses_f1ffe0226ffeIvrMHAHHpUDDxf` |
+| Task    | Isolated sub-agent session          |
+| ------- | ----------------------------------- |
+| BUS-01  | `BUS-01 implementation session`     |
+| BUS-02  | `BUS-02 implementation session`     |
+| BUS-03  | `BUS-03 implementation session`     |
+| BUS-04  | `BUS-04 implementation session`     |
+| BUS-04A | `BUS-04A implementation session`    |
+| BUS-05  | `BUS-05 implementation session`     |
+| BUS-06  | `BUS-06 implementation session`     |
+| BUS-07  | `BUS-07 implementation session`     |
+| BUS-08  | `BUS-08 implementation session`     |
+| BUS-09  | `BUS-09 final verification session` |
