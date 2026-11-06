@@ -23,6 +23,8 @@ export interface SelectOption {
 /**
  * Chip multiselect with local, case-insensitive label search over the complete options input.
  * Filtering never changes selected IDs or chip labels. Search edits do not emit or touch the form.
+ * The search field and the selected chips row are independently hideable via `showSearch` and
+ * `showSelectedChips`; hiding either keeps the trigger count and the form value authoritative.
  * Import from `@egose/shadcn-theme-ng/searchable-multiselect` (or the `-tw` variant).
  */
 @Component({
@@ -43,35 +45,37 @@ export interface SelectOption {
   template: `
     <div class="tw:flex tw:flex-col tw:gap-2 tw:w-full">
       <!-- Selected chips -->
-      <div class="tw:flex tw:flex-wrap tw:gap-2">
-        @if (selectedItems().length === 0) {
-          <span
-            class="tw:bg-gray-100 tw:text-gray-400 tw:rounded-full
-                   tw:px-2 tw:py-1 tw:inline-flex tw:items-center tw:text-xs"
-          >
-            {{ placeholder() }}
-          </span>
-        } @else {
-          @for (item of selectedItems(); track item.value) {
+      @if (showSelectedChips()) {
+        <div class="tw:flex tw:flex-wrap tw:gap-2">
+          @if (selectedItems().length === 0) {
             <span
-              class="tw:bg-gray-200 tw:rounded-full tw:px-2 tw:py-1
-                     tw:inline-flex tw:items-center tw:gap-2 tw:text-xs"
+              class="tw:bg-gray-100 tw:text-gray-400 tw:rounded-full
+                     tw:px-2 tw:py-1 tw:inline-flex tw:items-center tw:text-xs"
             >
-              {{ item.label }}
-              <button
-                type="button"
-                [disabled]="disabledState()"
-                [attr.aria-label]="removeLabel()(item)"
-                (click)="removeItem(item.value)"
-                class="tw:bg-transparent tw:border-0 tw:text-gray-600
-                       tw:hover:text-red-500 tw:cursor-pointer"
-              >
-                ✕
-              </button>
+              {{ placeholder() }}
             </span>
+          } @else {
+            @for (item of selectedItems(); track item.value) {
+              <span
+                class="tw:bg-gray-200 tw:rounded-full tw:px-2 tw:py-1
+                       tw:inline-flex tw:items-center tw:gap-2 tw:text-xs"
+              >
+                {{ item.label }}
+                <button
+                  type="button"
+                  [disabled]="disabledState()"
+                  [attr.aria-label]="removeLabel()(item)"
+                  (click)="removeItem(item.value)"
+                  class="tw:bg-transparent tw:border-0 tw:text-gray-600
+                         tw:hover:text-red-500 tw:cursor-pointer"
+                >
+                  ✕
+                </button>
+              </span>
+            }
           }
-        }
-      </div>
+        </div>
+      }
 
       <!-- Trigger -->
       <hlm-popover>
@@ -90,19 +94,21 @@ export interface SelectOption {
         </button>
 
         <hlm-popover-content class="tw:w-64 tw:p-2" *hlmPopoverPortal="let ctx">
-          <label class="tw:flex tw:flex-col tw:gap-1 tw:text-sm">
-            <span>{{ searchLabel() }}</span>
-            <input
-              #search
-              type="search"
-              [value]="searchQuery()"
-              [placeholder]="searchPlaceholder()"
-              [disabled]="disabledState()"
-              (input)="updateSearch(search.value)"
-              (keydown.enter)="$event.preventDefault()"
-              class="tw:w-full tw:rounded-md tw:border tw:border-input tw:bg-transparent tw:px-2 tw:py-1 tw:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-ring tw:disabled:opacity-50"
-            />
-          </label>
+          @if (showSearch()) {
+            <label class="tw:flex tw:flex-col tw:gap-1 tw:text-sm">
+              <span>{{ searchLabel() }}</span>
+              <input
+                #search
+                type="search"
+                [value]="searchQuery()"
+                [placeholder]="searchPlaceholder()"
+                [disabled]="disabledState()"
+                (input)="updateSearch(search.value)"
+                (keydown.enter)="$event.preventDefault()"
+                class="tw:w-full tw:rounded-md tw:border tw:border-input tw:bg-transparent tw:px-2 tw:py-1 tw:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-ring tw:disabled:opacity-50"
+              />
+            </label>
+          }
           <div class="tw:max-h-60 tw:overflow-auto tw:flex tw:flex-col tw:gap-1">
             @for (option of filteredOptions(); track option.value) {
               <label
@@ -139,6 +145,10 @@ export class EgSearchableMultiselect implements ControlValueAccessor {
   emptyMessage = input<string>('No matching options');
   /** Accessible remove name from the current chip label (raw ID when unresolved). Supply a pure formatter. */
   removeLabel = input<(option: SelectOption) => string>((option) => `Remove ${option.label}`);
+  /** Whether the selected chips row renders above the trigger; the trigger count stays live when hidden. */
+  showSelectedChips = input<boolean>(true);
+  /** Whether the picker popover renders its search field; disable for a fixed option list with no filtering. */
+  showSearch = input<boolean>(true);
   id = input<string>('');
   disabled = input<boolean>(false);
   wrapperDisabled = input<boolean>(false);

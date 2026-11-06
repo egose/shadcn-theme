@@ -23,6 +23,8 @@ import { SelectOption } from '@egose/shadcn-theme-ng/searchable-multiselect';
       searchPlaceholder="Filter tags…"
       emptyMessage="No tags found"
       [removeLabel]="removeLabel"
+      [showSearch]="showSearch()"
+      [showSelectedChips]="showSelectedChips()"
       required
     />
   </form>`,
@@ -34,6 +36,8 @@ class Host {
   readonly id = signal<string | undefined>('tags');
   readonly disabled = signal(false);
   readonly userClass = signal('');
+  readonly showSearch = signal<boolean | undefined>(undefined);
+  readonly showSelectedChips = signal<boolean | undefined>(undefined);
   readonly options = signal([{ value: 'angular', label: 'Angular' }]);
   readonly removeLabel = (option: SelectOption) => `Unassign ${option.label}`;
 }
@@ -151,6 +155,29 @@ describe('EgFormSearchableMultiselect', () => {
     expect(host().className).toContain('tw:max-w-xs');
   });
 
+  it('forwards per-instance show search and chips toggles to the underlying picker', async () => {
+    const host = fixture.componentInstance;
+    host.form.controls.value.setValue(['angular']);
+    fixture.detectChanges();
+    const chips = () =>
+      fixture.nativeElement.querySelectorAll('eg-searchable-multiselect button:not([hlmpopovertrigger])').length;
+    expect(chips()).toBe(1);
+    host.showSelectedChips.set(false);
+    host.showSearch.set(false);
+    fixture.detectChanges();
+    expect(chips()).withContext('chips hidden through the wrapper').toBe(0);
+    (fixture.nativeElement.querySelector('button[hlmpopovertrigger]') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const overlay = TestBed.inject(OverlayContainer).getContainerElement();
+    expect(overlay.querySelector('input[type="search"]')).withContext('search hidden through the wrapper').toBeNull();
+    expect(overlay.querySelectorAll('[role="checkbox"]').length).toBe(1);
+    host.showSelectedChips.set(true);
+    host.showSearch.set(true);
+    await fixture.whenStable();
+    expect(overlay.querySelector('input[type="search"]')).not.toBeNull();
+    expect(chips()).toBe(1);
+  });
+
   it('keeps async assignments through relabeling and chip edits, then renders external writes and reset', async () => {
     const host = fixture.componentInstance;
     const control = host.form.controls.value;
@@ -193,6 +220,8 @@ describe('EgFormSearchableMultiselect', () => {
       label="Tags"
       [labelClass]="labelClass()"
       [controlClass]="controlClass()"
+      [showSearch]="showSearch()"
+      [showSelectedChips]="showSelectedChips()"
       [options]="options"
     />
   </form>`,
@@ -201,14 +230,21 @@ class ConfigHost {
   readonly form = new FormGroup({ value: new FormControl<string[]>([]) });
   readonly labelClass = signal('');
   readonly controlClass = signal('');
+  readonly showSearch = signal<boolean | undefined>(undefined);
+  readonly showSelectedChips = signal<boolean | undefined>(undefined);
   readonly options = [{ value: 'angular', label: 'Angular' }];
 }
 
-describe('EgFormSearchableMultiselect global class defaults', () => {
+describe('EgFormSearchableMultiselect global config defaults', () => {
   let fixture: ComponentFixture<ConfigHost>;
   beforeEach(async () => {
     configureLibraryTestBed([
-      provideEgFormSearchableMultiselectConfig({ labelClass: 'tw:text-xs', controlClass: 'tw:text-xs' }),
+      provideEgFormSearchableMultiselectConfig({
+        labelClass: 'tw:text-xs',
+        controlClass: 'tw:text-xs',
+        showSearch: false,
+        showSelectedChips: false,
+      }),
     ]);
     await TestBed.configureTestingModule({ imports: [ConfigHost] }).compileComponents();
     fixture = TestBed.createComponent(ConfigHost);
@@ -229,5 +265,25 @@ describe('EgFormSearchableMultiselect global class defaults', () => {
     expect(label().className).not.toContain('tw:text-xs');
     expect(control().className).toContain('tw:text-lg');
     expect(control().className).not.toContain('tw:text-xs');
+  });
+
+  it('applies global visibility defaults while explicit per-instance values win', async () => {
+    const host = fixture.componentInstance;
+    const chips = () =>
+      fixture.nativeElement.querySelectorAll('eg-searchable-multiselect button:not([hlmpopovertrigger])').length;
+    host.form.controls.value.setValue(['angular']);
+    fixture.detectChanges();
+    expect(chips()).withContext('global config hides the chips row').toBe(0);
+    (fixture.nativeElement.querySelector('button[hlmpopovertrigger]') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const overlay = TestBed.inject(OverlayContainer).getContainerElement();
+    expect(overlay.querySelector('input[type="search"]'))
+      .withContext('global config hides the search field')
+      .toBeNull();
+    host.showSearch.set(true);
+    host.showSelectedChips.set(true);
+    await fixture.whenStable();
+    expect(overlay.querySelector('input[type="search"]')).withContext('per-instance value wins').not.toBeNull();
+    expect(chips()).withContext('per-instance value wins').toBe(1);
   });
 });

@@ -47,6 +47,8 @@ import { injectEgFormSearchableMultiselectConfig } from './form-searchable-multi
         [searchPlaceholder]="searchPlaceholder()"
         [emptyMessage]="emptyMessage()"
         [removeLabel]="removeLabel()"
+        [showSelectedChips]="$showSelectedChips()"
+        [showSearch]="$showSearch()"
         [formControlName]="cnm"
         [required]="rqrd"
         [wrapperDisabled]="disabled()"
@@ -140,6 +142,10 @@ export class EgFormSearchableMultiselect {
   emptyMessage = input<string>('No matching options');
   /** Pure accessible chip-remove name formatter; receives the resolved label or raw unresolved ID. */
   removeLabel = input<(option: SelectOption) => string>((option) => `Remove ${option.label}`);
+  /** Whether the selected chips row renders above the trigger; unset defers to the global config, then shown. */
+  showSelectedChips = input<boolean | undefined>(undefined);
+  /** Whether the picker popover renders its search field; unset defers to the global config, then shown. */
+  showSearch = input<boolean | undefined>(undefined);
 
   // Styling classes
   userClass = input<ClassValue>('', { alias: 'class' });
@@ -158,4 +164,8 @@ export class EgFormSearchableMultiselect {
   );
   $errorClass = computed(() => hlm('tw:mt-0', this._shared.errorClass, this._config.errorClass, this.errorClass()));
   $hintClass = computed(() => hlm('tw:mt-0', this._shared.hintClass, this._config.hintClass, this.hintClass()));
+
+  // Computed visibility flags (library base < global config < per-instance)
+  $showSelectedChips = computed(() => this.showSelectedChips() ?? this._config.showSelectedChips ?? true);
+  $showSearch = computed(() => this.showSearch() ?? this._config.showSearch ?? true);
 }

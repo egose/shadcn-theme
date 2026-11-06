@@ -10,6 +10,16 @@ export interface EgFormSearchableMultiselectConfig {
   controlClass?: string;
   errorClass?: string;
   hintClass?: string;
+  /**
+   * Global default for whether the picker popover renders its search field.
+   * An explicit per-instance `showSearch` input wins over this.
+   */
+  showSearch?: boolean;
+  /**
+   * Global default for whether the selected chips row renders above the trigger.
+   * An explicit per-instance `showSelectedChips` input wins over this.
+   */
+  showSelectedChips?: boolean;
 }
 
 const EgFormSearchableMultiselectConfigToken = new InjectionToken<EgFormSearchableMultiselectConfig>(
