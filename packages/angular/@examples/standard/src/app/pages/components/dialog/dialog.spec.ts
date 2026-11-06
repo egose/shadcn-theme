@@ -11,6 +11,10 @@ function overlayButton(text: string): HTMLButtonElement | null {
   return buttons.find((button) => button.textContent?.trim() === text) ?? null;
 }
 
+function openDialogButton(nativeElement: HTMLElement): HTMLButtonElement {
+  return nativeElement.querySelector<HTMLButtonElement>('button')!;
+}
+
 function setInputValue(selector: string, value: string): void {
   const input = overlayPane()?.querySelector<HTMLInputElement>(selector);
   expect(input).withContext(`${selector} should exist`).not.toBeNull();
@@ -25,6 +29,32 @@ async function settle(fixture: ComponentFixture<unknown>): Promise<void> {
   fixture.detectChanges();
 }
 
+/** Polls until the predicate holds, flushing change detection between ticks. */
+async function waitFor(
+  fixture: ComponentFixture<DialogPage>,
+  predicate: (page: DialogPage) => boolean,
+  timeoutMs = 3000,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate(fixture.componentInstance) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    fixture.detectChanges();
+  }
+  fixture.detectChanges();
+  const page = fixture.componentInstance;
+  expect(predicate(page))
+    .withContext(
+      `condition met before timeout (phase=${page.savePhase()}, apiCalls=${page.apiCallCount()}, log=\n${page
+        .eventLog()
+        .join('\n')}\n)`,
+    )
+    .toBeTrue();
+}
+
+function statusText(fixture: ComponentFixture<DialogPage>): string {
+  return (fixture.nativeElement as HTMLElement).querySelector('[data-testid="dialog-status"]')?.textContent ?? '';
+}
+
 describe('DialogPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -37,7 +67,7 @@ describe('DialogPage', () => {
     const fixture = TestBed.createComponent(DialogPage);
     fixture.detectChanges();
 
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('button')!.click();
+    openDialogButton(fixture.nativeElement).click();
     await settle(fixture);
 
     expect(overlayPane()?.textContent).toContain('Edit profile');
@@ -53,11 +83,12 @@ describe('DialogPage', () => {
     expect(fixture.componentInstance.savedProfile()).toBeNull();
   });
 
-  it('saves edited values once and shows a visible saved outcome', async () => {
+  it('saves edited values once and updates state from the async API response', async () => {
     const fixture = TestBed.createComponent(DialogPage);
     fixture.detectChanges();
+    const page = fixture.componentInstance;
 
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('button')!.click();
+    openDialogButton(fixture.nativeElement).click();
     await settle(fixture);
 
     expect(overlayPane()?.contains(document.activeElement)).withContext('focus is moved into the dialog').toBeTrue();
@@ -68,23 +99,41 @@ describe('DialogPage', () => {
     await settle(fixture);
 
     expect(overlayPane()).toBeNull();
-    expect(fixture.componentInstance.savedProfile()).toEqual({
+    // The close event dispatches an async API call; its response — not the close
+    // itself — must update the page state and be reflected in the template.
+    await waitFor(fixture, (p) => p.savePhase() === 'saved');
+
+    expect(page.apiCallCount()).toBe(1);
+    expect(page.eventLog().join('\n'))
+      .withContext('the API call was dispatched by the close event')
+      .toContain('in flight');
+    expect(page.eventLog().join('\n')).withContext('the response wrote the savedProfile signal').toContain('resolved');
+    expect(page.savedProfile()).toEqual({
       displayName: 'Grace Hopper',
       email: 'grace@example.com',
     });
-    const status = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="dialog-status"]');
-    expect(status?.textContent).toContain('Saved profile: Grace Hopper (grace@example.com)');
+    expect(statusText(fixture)).toContain('Saved profile: Grace Hopper (grace@example.com)');
 
+    // Clicking Save after the dialog has closed must not dispatch another call.
     overlayButton('Save changes')?.click();
     await settle(fixture);
-    expect(fixture.componentInstance.savedProfile()?.displayName).toBe('Grace Hopper');
+    expect(page.apiCallCount()).withContext('no duplicate save after close').toBe(1);
+
+    // Reopening and saving again must run the whole close → API → state cycle again.
+    openDialogButton(fixture.nativeElement).click();
+    await settle(fixture);
+    setInputValue('#dialog-display-name', 'Ada Lovelace');
+    overlayButton('Save changes')?.click();
+    await settle(fixture);
+    await waitFor(fixture, (p) => p.apiCallCount() === 2 && p.savePhase() === 'saved');
+    expect(page.savedProfile()?.displayName).toBe('Ada Lovelace');
   });
 
   it('shows a visible cancellation outcome when cancelled', async () => {
     const fixture = TestBed.createComponent(DialogPage);
     fixture.detectChanges();
 
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('button')!.click();
+    openDialogButton(fixture.nativeElement).click();
     await settle(fixture);
 
     setInputValue('#dialog-display-name', 'Changed Name');
@@ -94,7 +143,27 @@ describe('DialogPage', () => {
     expect(overlayPane()).toBeNull();
     expect(fixture.componentInstance.savedProfile()).toBeNull();
     expect(fixture.componentInstance.cancelled()).toBeTrue();
-    const status = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="dialog-status"]');
-    expect(status?.textContent).toContain('cancelled; no changes saved');
+    expect(statusText(fixture)).toContain('cancelled; no changes saved');
+  });
+
+  it('shows the failed phase and keeps prior state when the API response rejects', async () => {
+    const fixture = TestBed.createComponent(DialogPage);
+    fixture.detectChanges();
+    const page = fixture.componentInstance;
+    page.failNextApiCall.set(true);
+
+    openDialogButton(fixture.nativeElement).click();
+    await settle(fixture);
+
+    setInputValue('#dialog-display-name', 'Grace Hopper');
+    setInputValue('#dialog-email', 'grace@example.com');
+    overlayButton('Save changes')?.click();
+    await settle(fixture);
+
+    await waitFor(fixture, (p) => p.savePhase() === 'failed');
+
+    expect(page.savedProfile()).withContext('a rejected response must not write savedProfile').toBeNull();
+    expect(page.eventLog().join('\n')).withContext('the rejection was logged').toContain('failed:');
+    expect(statusText(fixture)).toContain('API call failed');
   });
 });
