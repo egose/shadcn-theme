@@ -77,24 +77,26 @@ Real selectors involved: `eg-form-searchable-multiselect` (this wrapper), `eg-fo
 
 ### `eg-form-searchable-multiselect` — `EgFormSearchableMultiselect`
 
-| Input                 | Type                  | Default                  | Description                                                                                                                                                                                      |
-| --------------------- | --------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `label`               | `string \| undefined` | `undefined`              | Field label. When set, a `<label hlmLabel>` bound to the control id is rendered.                                                                                                                 |
-| `controlName`         | `string`              | `''`                     | **Required.** Name of the control in the parent `FormGroup`; forwarded as `formControlName`.                                                                                                     |
-| `controlId`           | `string \| undefined` | `undefined`              | Explicit control id. Falls back to `id`, then to a generated `eg-form-searchable-multiselect-…` id.                                                                                              |
-| `id`                  | `string \| undefined` | `undefined`              | Alias for an explicit control id (same fallback chain as `controlId`).                                                                                                                           |
-| `error`               | `string \| undefined` | `undefined`              | Error text rendered in `<hlm-error>`.                                                                                                                                                            |
-| `autoError`           | `boolean`             | `true`                   | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
-| `hint`                | `string \| undefined` | `undefined`              | Hint text rendered in `<hlm-hint>`.                                                                                                                                                              |
-| `placeholder`         | `string`              | `'Start typing to add…'` | Placeholder forwarded to the inner multiselect.                                                                                                                                                  |
-| `disabled`            | `boolean`             | `false`                  | Wrapper-level disable, forwarded as `wrapperDisabled` to the inner multiselect.                                                                                                                  |
-| `required`            | `boolean`             | `false`                  | Adds `required` to the inner control and renders a red `*` next to the label.                                                                                                                    |
-| `options`             | `SelectOption[]`      | `[]`                     | `{ label: string; value: string }[]` forwarded to the inner multiselect.                                                                                                                         |
-| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes for the host (merged over `tw:w-full`).                                                                                                                                            |
-| `labelClass`          | `string`              | `''`                     | Extra classes for the `<label>` (merged over `tw:mb-1 tw:gap-0`).                                                                                                                                |
-| `controlClass`        | `string`              | `''`                     | Extra classes for the inner multiselect (merged over `tw:w-full`).                                                                                                                               |
-| `errorClass`          | `string`              | `''`                     | Extra classes for `<hlm-error>` (merged over `tw:mt-0`).                                                                                                                                         |
-| `hintClass`           | `string`              | `''`                     | Extra classes for `<hlm-hint>` (merged over `tw:mt-0`).                                                                                                                                          |
+| Input                 | Type                   | Default                  | Description                                                                                                                                                                                      |
+| --------------------- | ---------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `label`               | `string \| undefined`  | `undefined`              | Field label. When set, a `<label hlmLabel>` bound to the control id is rendered.                                                                                                                 |
+| `controlName`         | `string`               | `''`                     | **Required.** Name of the control in the parent `FormGroup`; forwarded as `formControlName`.                                                                                                     |
+| `controlId`           | `string \| undefined`  | `undefined`              | Explicit control id. Falls back to `id`, then to a generated `eg-form-searchable-multiselect-…` id.                                                                                              |
+| `id`                  | `string \| undefined`  | `undefined`              | Alias for an explicit control id (same fallback chain as `controlId`).                                                                                                                           |
+| `error`               | `string \| undefined`  | `undefined`              | Error text rendered in `<hlm-error>`.                                                                                                                                                            |
+| `autoError`           | `boolean`              | `true`                   | Auto-resolve the message from the control's `ValidationErrors` when `error` is unset. Explicit `error` always wins; `error=""` counts as unset. Global wording via `provideEgFormErrorMessages`. |
+| `hint`                | `string \| undefined`  | `undefined`              | Hint text rendered in `<hlm-hint>`.                                                                                                                                                              |
+| `placeholder`         | `string`               | `'Start typing to add…'` | Placeholder forwarded to the inner multiselect.                                                                                                                                                  |
+| `disabled`            | `boolean`              | `false`                  | Wrapper-level disable, forwarded as `wrapperDisabled` to the inner multiselect.                                                                                                                  |
+| `required`            | `boolean`              | `false`                  | Adds `required` to the inner control and renders a red `*` next to the label.                                                                                                                    |
+| `options`             | `SelectOption[]`       | `[]`                     | `{ label: string; value: string }[]` forwarded to the inner multiselect.                                                                                                                         |
+| `showSelectedChips`   | `boolean \| undefined` | `undefined`              | Whether the chips row renders; unset defers to the global config, then shown. Forwarded to the inner multiselect.                                                                                |
+| `showSearch`          | `boolean \| undefined` | `undefined`              | Whether the popover renders its search field; unset defers to the global config, then shown. Forwarded to the inner multiselect.                                                                 |
+| `class` (`userClass`) | `ClassValue`           | `''`                     | Extra classes for the host (merged over `tw:w-full`).                                                                                                                                            |
+| `labelClass`          | `string`               | `''`                     | Extra classes for the `<label>` (merged over `tw:mb-1 tw:gap-0`).                                                                                                                                |
+| `controlClass`        | `string`               | `''`                     | Extra classes for the inner multiselect (merged over `tw:w-full`).                                                                                                                               |
+| `errorClass`          | `string`               | `''`                     | Extra classes for `<hlm-error>` (merged over `tw:mt-0`).                                                                                                                                         |
+| `hintClass`           | `string`               | `''`                     | Extra classes for `<hlm-hint>` (merged over `tw:mt-0`).                                                                                                                                          |
 
 No outputs. Readonly computeds/methods (usable via template ref): `effectiveId()`, `errorId()` (`<id>-error`), `hintId()` (`<id>-hint`), `describedBy(): string | null` (returns the error id when the control is invalid + dirty/touched, else the hint id, else `null`).
 
@@ -111,7 +113,7 @@ Additional copy inputs:
 
 Pass the full options list. The inner control trims the query and matches label substrings case-insensitively in source order. Filtering retains hidden selections and their labels, including unresolved IDs written before asynchronous options arrive. Searching/clearing the query never changes or touches the form value. The query persists across closing/reopening and form resets; clearing its text restores all options. Wrapper and reactive-form disabled states disable the search even if the popover is already open.
 
-The search has an associated visible label, no-match feedback uses a polite live region, and each chip remove button has an accessible name. All four copy inputs above are forwarded unchanged. For example, on the wrapper in the complete reactive-form example below, add `searchLabel="Find tags" searchPlaceholder="Type a tag name…" emptyMessage="No tags match"`. Import `SelectOption` from the multiselect subpath to type a localized `[removeLabel]` callback. See the [multiselect usage](../searchable-multiselect/README.md#local-search) for keyboard and async ownership details. This is local label search, with no remote request or virtualization behavior.
+The search has an associated visible label, no-match feedback uses a polite live region, and each chip remove button has an accessible name. All four copy inputs above are forwarded unchanged. The visibility toggles `showSearch` (popover search field) and `showSelectedChips` (chips row above the trigger) are forwarded the same way; leave them unset to defer to the global config, then the library defaults (both shown). For example, on the wrapper in the complete reactive-form example below, add `searchLabel="Find tags" searchPlaceholder="Type a tag name…" emptyMessage="No tags match"`. Import `SelectOption` from the multiselect subpath to type a localized `[removeLabel]` callback. See the [multiselect usage](../searchable-multiselect/README.md#local-search) for keyboard and async ownership details. This is local label search, with no remote request or virtualization behavior.
 
 ## Examples
 
@@ -369,13 +371,20 @@ export class ProgrammaticExample {
 
 No component-specific CSS variables; styling flows through the shared theme tokens (`--radius`, `--popover`, `--ring`, …) consumed by the inner popover/checkbox classes. Use `class` / `labelClass` / `controlClass` / `errorClass` / `hintClass` to append utilities.
 
-Global defaults per styling slot via the wrapper config (precedence: library base < global config < per-instance):
+Global defaults per styling slot and visibility toggle via the wrapper config (precedence: library base < global config < per-instance):
 
 ```ts
 import { provideEgFormSearchableMultiselectConfig } from '@egose/shadcn-theme-ng/form-searchable-multiselect';
 
 await bootstrapApplication(App, {
-  providers: [provideEgFormSearchableMultiselectConfig({ controlClass: 'tw:text-sm', labelClass: 'tw:font-medium' })],
+  providers: [
+    provideEgFormSearchableMultiselectConfig({
+      controlClass: 'tw:text-sm',
+      labelClass: 'tw:font-medium',
+      showSearch: false,
+      showSelectedChips: false,
+    }),
+  ],
 });
 ```
 

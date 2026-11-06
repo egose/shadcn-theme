@@ -213,6 +213,60 @@ describe('EgSearchableMultiselect value ownership', () => {
     expect(overlay().querySelector('[role="status"]')!.textContent).toContain('Liste vide');
   });
 
+  it('hides the search field when showSearch is false while options, selection and empty feedback still work', async () => {
+    fixture.componentRef.setInput('options', [
+      { value: 'a', label: 'Alpha' },
+      { value: 'b', label: 'Beta' },
+    ]);
+    fixture.componentRef.setInput('value', ['a']);
+    fixture.componentRef.setInput('showSearch', false);
+    fixture.detectChanges();
+    await openOptions();
+    expect(overlay().querySelector('input[type="search"]')).withContext('no search field is rendered').toBeNull();
+    expect(overlay().querySelectorAll('[role="checkbox"]').length).toBe(2);
+    visibleOptions()[1].click();
+    await fixture.whenStable();
+    expect(trigger().textContent).toContain('2 selected');
+    expect(changes).toHaveBeenCalledOnceWith(['a', 'b']);
+    expect(onChange).toHaveBeenCalledOnceWith(['a', 'b']);
+    expect(onTouched).toHaveBeenCalledTimes(1);
+    fixture.componentRef.setInput('options', []);
+    await fixture.whenStable();
+    expect(overlay().querySelector('[role="status"]')!.textContent).toContain('No matching options');
+    fixture.componentRef.setInput('showSearch', true);
+    await fixture.whenStable();
+    expect(overlay().querySelector('input[type="search"]'))
+      .withContext('toggling back restores the field')
+      .not.toBeNull();
+  });
+
+  it('hides the selected chips row when showSelectedChips is false while the trigger count stays live', async () => {
+    fixture.componentRef.setInput('options', [
+      { value: 'a', label: 'Alpha' },
+      { value: 'b', label: 'Beta' },
+    ]);
+    fixture.componentRef.setInput('value', ['a']);
+    fixture.detectChanges();
+    expect(chipLabels()).toEqual(['Alpha']);
+    fixture.componentRef.setInput('showSelectedChips', false);
+    fixture.detectChanges();
+    expect(chipLabels()).withContext('chips, remove buttons and placeholder pill are absent').toEqual([]);
+    expect(trigger().textContent).toContain('1 selected');
+    const checkboxes = await openOptions();
+    checkboxes[1].click();
+    await fixture.whenStable();
+    expect(trigger().textContent).toContain('2 selected');
+    expect(changes).toHaveBeenCalledOnceWith(['a', 'b']);
+    expect(onTouched).toHaveBeenCalledTimes(1);
+    fixture.componentInstance.writeValue(['b']);
+    await fixture.whenStable();
+    expect(trigger().textContent).toContain('1 selected');
+    expect(changes).toHaveBeenCalledTimes(1);
+    fixture.componentRef.setInput('showSelectedChips', true);
+    await fixture.whenStable();
+    expect(chipLabels()).toEqual(['Beta']);
+  });
+
   it('focuses the native search, prevents Enter submission and closes on Escape with trigger focus restored', async () => {
     fixture.componentRef.setInput('options', [{ value: 'a', label: 'Alpha' }]);
     fixture.detectChanges();

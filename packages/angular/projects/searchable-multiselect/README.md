@@ -82,17 +82,19 @@ Real selector: `eg-searchable-multiselect` (element). The `✕` chip buttons and
 
 ### EgSearchableMultiselect (component, `ControlValueAccessor`)
 
-| Input                 | Type                  | Default                  | Description                                                                                           |
-| --------------------- | --------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------- |
-| `options`             | `SelectOption[]`      | `[]`                     | Full option list (`{ label, value }`)                                                                 |
-| `value`               | `string[]`            | `[]`                     | Standalone selected IDs; pairs with `valueChange` for `[(value)]`. Ignored after the first CVA write. |
-| `placeholder`         | `string`              | `'Start typing to add…'` | Text of the pill shown when nothing is selected                                                       |
-| `id`                  | `string`              | `''`                     | `id` placed on the trigger button                                                                     |
-| `disabled`            | `boolean`             | `false`                  | Disables chips + trigger + search + checkboxes                                                        |
-| `wrapperDisabled`     | `boolean`             | `false`                  | Second disable flag (e.g. set by wrapper form components); OR-ed with `disabled`                      |
-| `ariaLabel`           | `string \| undefined` | `undefined`              | `aria-label` for the trigger button                                                                   |
-| `ariaDescribedby`     | `string \| null`      | `null`                   | `aria-describedby` for the trigger button                                                             |
-| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes on the host                                                                             |
+| Input                 | Type                  | Default                  | Description                                                                                             |
+| --------------------- | --------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `options`             | `SelectOption[]`      | `[]`                     | Full option list (`{ label, value }`)                                                                   |
+| `value`               | `string[]`            | `[]`                     | Standalone selected IDs; pairs with `valueChange` for `[(value)]`. Ignored after the first CVA write.   |
+| `placeholder`         | `string`              | `'Start typing to add…'` | Text of the pill shown when nothing is selected                                                         |
+| `showSelectedChips`   | `boolean`             | `true`                   | Renders the selected chips row above the trigger; the `N selected` trigger count stays live when hidden |
+| `showSearch`          | `boolean`             | `true`                   | Renders the search field inside the popover; disable for a fixed option list with no filtering          |
+| `id`                  | `string`              | `''`                     | `id` placed on the trigger button                                                                       |
+| `disabled`            | `boolean`             | `false`                  | Disables chips + trigger + search + checkboxes                                                          |
+| `wrapperDisabled`     | `boolean`             | `false`                  | Second disable flag (e.g. set by wrapper form components); OR-ed with `disabled`                        |
+| `ariaLabel`           | `string \| undefined` | `undefined`              | `aria-label` for the trigger button                                                                     |
+| `ariaDescribedby`     | `string \| null`      | `null`                   | `aria-describedby` for the trigger button                                                               |
+| `class` (`userClass`) | `ClassValue`          | `''`                     | Extra classes on the host                                                                               |
 
 | Output        | Type       | Description                                                      |
 | ------------- | ---------- | ---------------------------------------------------------------- |
@@ -114,6 +116,13 @@ Additional copy inputs:
 Pass the complete `options` list. The native search field trims the query and performs case-insensitive substring matching on **labels**, retaining source order. An empty/whitespace query restores all choices. Search is local to the supplied list: it does not search IDs, fetch remote options, or virtualize results. New option arrays and label replacements recompute the current filter immediately.
 
 Filtering hides checkbox rows only. All selections, including unresolved IDs, remain selected; chip labels still resolve from the complete options list. Search edits never emit `valueChange`/CVA changes or mark touched. The query persists across close/reopen and external value writes/resets; clear its text to restore all choices. The empty message occupies a persistent polite status region while the popover is open.
+
+### Hiding the search field and chips
+
+- `showSearch: boolean` (default `true`): renders the popover's search field. Set `false` for a fixed option list; the checkbox list and the empty message still render, and `searchLabel`/`searchPlaceholder` become unused.
+- `showSelectedChips: boolean` (default `true`): renders the chips row above the trigger (placeholder pill when empty). Set `false` to keep only the `N selected` trigger as the visible summary; users then add and remove selections through the popover checkboxes.
+
+Both toggles are pure template switches: selection state, form value, and change notifications are identical whether a region is hidden or shown.
 
 ### Selection ownership and asynchronous options
 
