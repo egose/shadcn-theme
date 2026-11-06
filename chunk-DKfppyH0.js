@@ -1,0 +1,1 @@
+var i=[`loading`,`empty`,`error`,`loaded`];var o=`The preview request failed. Retry to load the deterministic fixtures again.`;var d=`Read-only preview: mutation controls are disabled.`;function p(r,e={}){let t=e.latencyMs??120,a=e.errorMessage??o,E=e.shouldFail??!1;return new Promise((l,s)=>{setTimeout(()=>{E?s(new Error(a)):l(r)},t)})}export{i as n,p as r,d as t};
